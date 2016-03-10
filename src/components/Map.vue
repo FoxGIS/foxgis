@@ -23,7 +23,6 @@ export default {
 </script>
 
 <style>
-/*@import url(/node_modules/mapbox-gl/dist/mapbox-gl.css);*/
 #map { 
   position:absolute; 
   top: 0; 
