@@ -9,11 +9,18 @@ module.exports = {
     // publicPath: '/dist/',
     filename: 'build.js'
   },
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules'),
+  node: {
+    console: true,
+    fs: "empty"
   },
   resolve: {
-    extensions: ['', '.js', '.vue']
+    extensions: ['', '.js', '.vue'],
+    alias: {
+      webworkify: 'webworkify-webpack'
+    }
+  },
+  resolveLoader: {
+    root: path.join(__dirname, 'node_modules'),
   },
   module: {
     loaders: [{
@@ -36,6 +43,14 @@ module.exports = {
         limit: 10000,
         name: '[name].[ext]?[hash]'
       }
+    }, {
+      test: /\.js$/,
+      include: path.resolve(__dirname, 'node_modules/mapbox-gl/js/render/shaders.js'),
+      loader: 'transform/cacheable?brfs'
+    }, {
+      test: /\.js$/,
+      include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
+      loader: 'worker'
     }]
   },
   devServer: {

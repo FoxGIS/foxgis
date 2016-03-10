@@ -1,0 +1,34 @@
+<template>
+<div>
+  <div id="map"></div>
+</div>    
+</template>
+
+<script>
+import mapboxgl from 'mapbox-gl'
+
+export default {
+  attached() {
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2lsNmZ4MjVoMDAwZ3Zxa3U1am9ndnZjYyJ9.Po8UY7yYwu6Y2Y7HOrJVpQ'
+    let map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v8',
+      center: [-245.7129, 30.5354],
+      zoom: 12,
+      attributionControl: false
+    })
+    map.addControl(new mapboxgl.Navigation())
+  }
+}
+</script>
+
+<style>
+/*@import url(/node_modules/mapbox-gl/dist/mapbox-gl.css);*/
+#map { 
+  position:absolute; 
+  top: 0; 
+  bottom: 0; 
+  width: 100%;
+  height: 100%;
+}
+</style>
