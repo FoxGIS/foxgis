@@ -5,8 +5,8 @@
   "author": "jingsam <jingsam@163.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "dev": "webpack-dev-server --inline --hot --content-base dist/",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && ncp src/assets dist/assets && ncp favicon.png dist/favicon.png",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "css-loader": "^0.23.0",
     "file-loader": "^0.8.4",
     "gh-pages": "^0.11.0",
+    "html-webpack-plugin": "^2.9.0",
     "json-loader": "^0.5.4",
     "url-loader": "^0.5.7",
     "vue-hot-reload-api": "^1.2.0",
