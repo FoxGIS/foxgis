@@ -1,2 +1,2 @@
 # foxgis
-FoxGIS Home
+[FoxGIS Home](http://foxgis.github.io/foxgis/)

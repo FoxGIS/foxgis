@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --content-base dist/",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && ncp src/assets dist/assets && ncp favicon.png dist/favicon.png",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && ncp favicon.png dist/favicon.png",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
