@@ -2,7 +2,9 @@
 <div>
   <div class="mdl-layout mdl-js-layout">
     <header class="mdl-layout__header">
-      <img class="mdl-layout-icon" src="../assets/logo.png" alt="logo">
+      <div class="mdl-layout-icon">
+        <img src="../assets/logo.png" alt="logo">
+      </div>
       <div class="mdl-layout__header-row">
         <span class="mdl-layout__title">FoxGIS</span>
         <div class="mdl-layout-spacer"></div>
