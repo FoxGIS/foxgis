@@ -1,29 +1,29 @@
 <template>
 <div>
-  <div class="mdl-layout mdl-js-layout">
-    <foxgis-header id='header'></foxgis-header>
-    <main class="mdl-layout__content">
-      <foxgis-map></foxgis-map> 
-    </main>
-    <foxgis-footer id='footer'></foxgis-footer>
-  </div>
+  <foxgis-header id='header'></foxgis-header>
+  <foxgis-home></foxgis-home>
+  <foxgis-footer id='footer'></foxgis-footer>
 </div>
 </template>
 
 <script>
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Map from './components/Map'
+import Home from './components/Home'
 
 export default {
   components: {
     foxgisHeader: Header,
     foxgisFooter: Footer,
-    foxgisMap: Map
+    foxgisHome: Home
   }
 }
 </script>
 
 <style scoped>
+/*#footer {
+  position: fixed;
+  bottom: 0;
+}*/
 
 </style>
