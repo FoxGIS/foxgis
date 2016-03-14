@@ -20,5 +20,7 @@
 </script>
 
 <style scoped>
-
+.mdl-layout.has-drawer .mdl-layout__header>.mdl-layout-icon {
+  display: block;
+}
 </style>
