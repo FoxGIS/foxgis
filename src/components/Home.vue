@@ -1,7 +1,5 @@
 <template>
 <div>
-  <div mdl-layout__content>
-    Home
-  </div>
+  Home
 </div>
 </template>

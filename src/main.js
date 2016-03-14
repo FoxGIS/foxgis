@@ -1,7 +1,20 @@
 import Vue from 'vue'
-import App from './App.vue'
+import Router from 'vue-router'
+import App from './components/App'
+import Home from './components/Home'
 
-new Vue({
-  el: 'body',
-  components: { App }
+Vue.use(Router)
+
+let router = new Router()
+
+router.map({
+  '/': {
+    component: Home
+  }
 })
+
+router.redirect({
+  '*': '/'
+})
+
+router.start(App, '#app')
