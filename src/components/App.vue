@@ -12,26 +12,29 @@
     </router-view>
   </main>
 
-  <foxgis-footer></foxgis-footer>
 </div>
 
 </template>
 
+
 <script>
 import Header from './Header'
 import Drawer from './Drawer'
-import Footer from './Footer'
 
 export default {
   components: {
     foxgisHeader: Header,
-    foxgisDrawer: Drawer,
-    foxgisFooter: Footer
+    foxgisDrawer: Drawer
   }
 }
 </script>
 
-<style scoped>
 
+<style scoped>
+.mdl-layout__content {
+  display: flex;  
+  background-color: #f9f9f9;
+  overflow: visible;
+}
 
 </style>
