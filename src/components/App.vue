@@ -1,5 +1,5 @@
 <template>
-<div class="mdl-layout mdl-js-layout mdl-layout--no-desktop-drawer-button">
+<div class="mdl-layout mdl-js-layout">
   <foxgis-header></foxgis-header>
   <foxgis-drawer></foxgis-drawer>
 

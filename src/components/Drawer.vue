@@ -1,5 +1,5 @@
 <template>
-<div class="mdl-layout__drawer">
+<div class="mdl-layout__drawer mdl-layout--small-screen-only">
   <span class="mdl-layout__title">在线快速制图平台</span>
   <nav class="mdl-navigation">
     <a class="mdl-navigation__link" href="#">图集</a>
