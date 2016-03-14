@@ -14,7 +14,7 @@
 
 <style scoped>
 .login {
-  flex-grow: 1;  
+  flex-grow: 1;
 
   display: flex;  
   justify-content: center;

@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
 .mdl-layout__content {
-  display: flex;  
+  display: flex;
   background-color: #f9f9f9;
   overflow: visible;
 }
