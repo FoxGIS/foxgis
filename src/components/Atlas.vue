@@ -96,7 +96,7 @@ export default {
         introduction: '地图介绍',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
-      },]
+      }]
     }
   }
 }
@@ -105,77 +105,77 @@ export default {
 
 
 <style scoped>
-  #atlas-container {
-    padding: 10px 15px;
-  }
+#atlas-container {
+  padding: 10px 15px;
+}
 
-  /**search tool**/
+/**search tool**/
 
-  #search-tool {
-    margin: 40px 25% 15px 25%;
-    border-radius: 20px;
-    border: solid 2px rgba(0, 0, 0, 0.34902);
-    padding-left: 13px;
-    background-color: #f9f9f9;
-  }
-  #search-tool:hover{
-    box-shadow: 0 0 20px #bbb;
-  }
-  #search-tool i {
-    vertical-align: middle;
-    margin-left: 5px;
-  }
-  #search-tool input {
-    width: calc(100% - 39px);
-    height: 22px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    background-color: #f9f9f9;
-  }
+#search-tool {
+  margin: 40px 25% 15px 25%;
+  border-radius: 20px;
+  border: solid 2px rgba(0, 0, 0, 0.34902);
+  padding-left: 13px;
+  background-color: #f9f9f9;
+}
+#search-tool:hover{
+  box-shadow: 0 0 20px #bbb;
+}
+#search-tool i {
+  vertical-align: middle;
+  margin-left: 5px;
+}
+#search-tool input {
+  width: calc(100% - 39px);
+  height: 22px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
 
-  /** card-item */
-  @media (min-width: 840px){
-    .mdl-cell--3-col {
-      margin: 25px;
-      width: calc(25% - 50px);
-    }
+/** card-item */
+@media (min-width: 840px){
+  .mdl-cell--3-col {
+    margin: 25px;
+    width: calc(25% - 50px);
   }
+}
 
-  .mdl-card {
-    height: 300px;
-  }
-  .mdl-card img{
-    max-height:220px;
-    background-color: rgb(255,255,255,0.8);
-  }
-  #wrapper-item-bottom{
-    height: 80px;
-  }
-  .mdl-card__title{
-    padding: 20px 0px 0px 15px;
-  }
-  .mdl-card__title-text{
-    font-size: 16px;
-  }
+.mdl-card {
+  height: 300px;
+}
+.mdl-card img{
+  max-height:220px;
+  background-color: rgb(255,255,255,0.8);
+}
+#wrapper-item-bottom{
+  height: 80px;
+}
+.mdl-card__title{
+  padding: 20px 0px 0px 15px;
+}
+.mdl-card__title-text{
+  font-size: 16px;
+}
 
-  #item-subtitle{
-    padding: 8px 0px 0px 15px;
-    position: absolute;
-    bottom: 10px;
-    height: 26px;
-  }
-  #item-subtitle a{
-    position: absolute;
-    right: 5px;
-    bottom: 0px;
-    color: black;
-  }
+#item-subtitle{
+  padding: 8px 0px 0px 15px;
+  position: absolute;
+  bottom: 10px;
+  height: 26px;
+}
+#item-subtitle a{
+  position: absolute;
+  right: 5px;
+  bottom: 0px;
+  color: black;
+}
 
-  /** spinner-container */
-  #spin-container {
-    width: 100%;
-    text-align: center;
-    z-index: 100;
-  }
+/** spinner-container */
+#spin-container {
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+}
 </style>
