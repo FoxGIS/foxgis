@@ -1,29 +1,26 @@
 <template>
-<div class="login">
+<foxgis-layout>
   <div class="mdl-card mdl-shadow--4dp">
   </div>
-</div>
+</foxgis-layout>
 </template>
 
 
 <script>
+import Layout from './Layout'
 
-
+export default {
+  components: {
+    foxgisLayout: Layout
+  }
+}
 </script>
 
 
 <style scoped>
-.login {
-  flex-grow: 1;
-
-  display: flex;  
-  justify-content: center;
-  align-items: center;
-}
-
 .mdl-card {
-  width: 320px;
-  height: 320px;
+  width: 300px;
+  height: 300px;
 }
-  
 </style>
+
