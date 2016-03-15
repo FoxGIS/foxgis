@@ -2,35 +2,54 @@
 <foxgis-layout>
   <div id="atlas-container" class="mdl-grid">
     <div id="search-tool" class="mdl-cell mdl-cell--12-col">
-      <input /><i class="material-icons">search</i>
+      <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
     </div>
-    <div v-for="item in atlas"  class="map-item-container mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col mdl-cell--6-col-phone"  >
+    <div v-for="item in atlas" track-by="$index" class="map-item-container mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone"  >
       <img src="{{ item.backgroundImage }}">
-      <div class="mdl-card__title">
-        <h2 class="mdl-card__title-text">{{ item.name }}{{ $index+1 }}</h2>
+      <div id="wrapper-item-bottom">
+        <div class="mdl-card__title">
+          <h4 class="mdl-card__title-text">{{ item.name }}{{ $index+1 }}</h4>
+        </div>
+        <div id="item-subtitle" class="mdl-card__supporting-text">
+          <span>{{item.introduction}}</span>
+          <a href="{{item.url}}"><i class="material-icons">info</i></a>
+        </div>
       </div>
-      <div id="item-subtitle" class="mdl-card__supporting-text">
-        <span>{{item.introduction}}</span>
-        <a href="{{item.url}}"><i class="material-icons">info</i></a>
-      </div>
+
 		</div>
+    <div id="spin-container">
+      <div class="mdl-spinner mdl-js-spinner is-active is-upgraded" data-upgraded=",MaterialSpinner"><div class="mdl-spinner__layer mdl-spinner__layer-1"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-2"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-3"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-4"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div></div>
+    </div>
+
 	</div>
 
-    </div>
-  </div>
 </foxgis-layout>
 </template>
 
 <script>
 import Layout from './Layout'
 
-
 export default {
   components: {
     foxgisLayout: Layout
   },
-
-  data:() => {
+  ready () {
+    var vm = this;
+    var done = false;
+    window.addEventListener("scroll",() => {
+      console.log("scroll");
+      let spin_container = document.getElementById("spin-container");
+      if(spin_container.getBoundingClientRect().top < 700 && !done){
+        console.log("fa");
+        done = true;
+        setTimeout(()=>{
+          done = false;
+          this.atlas = this.atlas.concat(this.atlas.slice(0,8));
+        },2000);
+      }
+    });
+  },
+  data: function () {
     return {
       'atlas': [{
         name: '地图',
@@ -89,11 +108,14 @@ export default {
   #atlas-container {
     padding: 10px 15px;
   }
+
+  /**search tool**/
+
   #search-tool {
-    margin: 10px 25% 10px 25%;
+    margin: 40px 25% 15px 25%;
     border-radius: 20px;
-    border: solid 1px rgba(0, 0, 0, 0.14902);
-    padding-left: 10px;
+    border: solid 2px rgba(0, 0, 0, 0.34902);
+    padding-left: 13px;
     background-color: #f9f9f9;
   }
   #search-tool:hover{
@@ -108,25 +130,52 @@ export default {
     height: 22px;
     border: none;
     outline: none;
-    font-size: 22px;
+    font-size: 16px;
     background-color: #f9f9f9;
   }
+
+  /** card-item */
   @media (min-width: 840px){
-    .mdl-cell--4-col {
+    .mdl-cell--3-col {
       margin: 25px;
-      width: calc(33.3333% - 50px);
+      width: calc(25% - 50px);
     }
   }
-  #item-subtitle{
-    display: flex;
-  }
-  #item-subtitle span{
 
+  .mdl-card {
+    height: 300px;
+  }
+  .mdl-card img{
+    max-height:220px;
+    background-color: rgb(255,255,255,0.8);
+  }
+  #wrapper-item-bottom{
+    height: 80px;
+  }
+  .mdl-card__title{
+    padding: 20px 0px 0px 15px;
+  }
+  .mdl-card__title-text{
+    font-size: 16px;
+  }
+
+  #item-subtitle{
+    padding: 8px 0px 0px 15px;
+    position: absolute;
+    bottom: 10px;
+    height: 26px;
   }
   #item-subtitle a{
     position: absolute;
     right: 5px;
-    bottom: 5px;
+    bottom: 0px;
     color: black;
+  }
+
+  /** spinner-container */
+  #spin-container {
+    width: 100%;
+    text-align: center;
+    z-index: 100;
   }
 </style>
