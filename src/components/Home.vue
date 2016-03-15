@@ -1,7 +1,9 @@
 <template>
-<foxgis-layout>
-  <div>HOME</div>
-</foxgis-layout>
+<div>
+  <foxgis-layout>
+    <div>HOME</div>
+  </foxgis-layout>
+</div>
 </template>
 
 

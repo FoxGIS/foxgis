@@ -4,9 +4,7 @@
   <foxgis-drawer></foxgis-drawer>
 
   <main class="mdl-layout__content">
-    <div>
-      <slot></slot>
-    </div>    
+    <slot>Missing content!</slot>
     <foxgis-footer></foxgis-footer>
   </main>
 </div>

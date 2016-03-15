@@ -1,9 +1,11 @@
 <template>
-<foxgis-layout>
-  <div class="mdl-card mdl-shadow--4dp">
-    Login
-  </div>
-</foxgis-layout>
+<div>
+  <foxgis-layout>
+    <div class="mdl-card mdl-shadow--4dp">
+      Login
+    </div>
+  </foxgis-layout>
+</div>
 </template>
 
 

@@ -1,25 +1,27 @@
 <template>
-<foxgis-layout>
-  <div id="atlas-container" class="mdl-grid">
-    <div id="search-tool" class="mdl-cell mdl-cell--12-col">
-      <input /><i class="material-icons">search</i>
+<div>
+  <foxgis-layout>
+    <div id="atlas-container" class="mdl-grid">
+      <div id="search-tool" class="mdl-cell mdl-cell--12-col">
+        <input /><i class="material-icons">search</i>
+      </div>
+      <div v-for="item in atlas"  class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col"  v-bind:style="item.backgroundStyle"  >
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">{{ item.name }}{{ $index+1 }}</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Mauris sagittis pellentesque lacus eleifend lacinia...
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="{{item.url}}">
+            <i class="material-icons">info</i>
+          </a>
+        </div>
+      </div>
     </div>
-    <div v-for="item in atlas"  class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col"  v-bind:style="item.backgroundStyle"  >
-      <div class="mdl-card__title">
-        <h2 class="mdl-card__title-text">{{ item.name }}{{ $index+1 }}</h2>
-      </div>
-      <div class="mdl-card__supporting-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Mauris sagittis pellentesque lacus eleifend lacinia...
-      </div>
-      <div class="mdl-card__actions mdl-card--border">
-        <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="{{item.url}}">
-          <i class="material-icons">info</i>
-        </a>
-      </div>
-    </div>
-  </div>
-</foxgis-layout>
+  </foxgis-layout>
+</div>
 </template>
 
 
