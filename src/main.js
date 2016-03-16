@@ -7,6 +7,8 @@ import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Carto from './components/Carto'
 import Pictures from './components/Pictures'
+import Data from './components/Data'
+
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -51,6 +53,9 @@ router.map({
         component: Pictures
       }
     }
+  },
+  '/data': {
+    component: Data
   }
 
 })
