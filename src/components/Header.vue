@@ -12,7 +12,7 @@
       <a class="mdl-navigation__link" v-link="{ path: '/home' }">首页</a>
       <a class="mdl-navigation__link" v-link="{ path: '/atlas' }">图集</a>
       <a class="mdl-navigation__link" v-link="{ path: '/data' }">数据</a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio' }">数据</a>
+      <a class="mdl-navigation__link" v-link="{ path: '/studio' }">制图</a>
       <a class="mdl-navigation__link" v-link="{ path: '/blog' }">社区</a>
       <a class="mdl-navigation__link" v-link="{ path: '/login' }">登录</a>
     </nav>
