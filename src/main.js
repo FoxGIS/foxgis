@@ -5,6 +5,8 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Atlas from './components/Atlas'
 import Blog from './components/Blog'
+import Carto from './components/Carto'
+import Pictures from './components/Pictures'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -23,7 +25,34 @@ router.map({
   },
   '/blog': {
     component: Blog
+  },
+  '/carto': {
+    component: Carto,
+    root: 'carto',
+    subRoutes: {
+      '/': {
+
+        component: Pictures
+      },
+      '/pictures': {
+
+        component: Pictures
+      },
+      '/datas': {
+
+        component: Pictures
+      },
+      '/fonts': {
+
+        component: Pictures
+      },
+      '/icons': {
+
+        component: Pictures
+      }
+    }
   }
+
 })
 
 router.redirect({

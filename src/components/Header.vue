@@ -11,7 +11,7 @@
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" v-link="{ path: '/atlas' }">图集</a>
       <a class="mdl-navigation__link" v-link="{ path: '/data' }">数据</a>
-      <a class="mdl-navigation__link" href="#">制图</a>
+      <a class="mdl-navigation__link" v-link="{ path: '/carto' }">制图</a>
       <a class="mdl-navigation__link" v-link="{ path: '/blog' }">社区</a>
       <a class="mdl-navigation__link" v-link="{ path: '/login' }">登录</a>
     </nav>
@@ -25,7 +25,7 @@
 
 <style scoped>
 .mdl-layout.has-drawer .mdl-layout__header>.mdl-layout-icon {
-  display: block;  
+  display: block;
 }
 
 .mdl-layout__header>.mdl-layout-icon {
