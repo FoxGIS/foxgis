@@ -21,6 +21,7 @@
         <li><a  class="link" v-link="{ path: '/login' }">登录</a></li>
       </ul>
     </div>
+    <div class="clearfix"></div>
   </div>
 </template>
 
@@ -38,7 +39,11 @@
     background-color: #3F51B5;
     box-sizing: border-box;
     color: #fff;
+  }
 
+  .clearfix {
+    display: block;
+    clear: both;
   }
 
   /* Title and logo */
