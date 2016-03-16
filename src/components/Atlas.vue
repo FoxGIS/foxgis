@@ -5,13 +5,13 @@
       <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
     </div>
     <div v-for="item in atlas" track-by="$index" class="map-item-container mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone"  >
-      <img src="{{ item.backgroundImage }}">
+      <img v-bind:src='item.backgroundImage'>
       <div id="wrapper-item-bottom">
         <div class="mdl-card__title">
-          <h4 class="mdl-card__title-text">{{ item.name }}{{ $index+1 }}</h4>
+          <h4 class="mdl-card__title-text">{{ item.title }}{{ $index+1 }}</h4>
         </div>
         <div id="item-subtitle" class="mdl-card__supporting-text">
-          <span>{{item.introduction}}</span>
+          <span>{{item.author}}</span>
           <a href="{{item.url}}"><i class="material-icons">info</i></a>
         </div>
       </div>
@@ -37,10 +37,8 @@ export default {
     var vm = this;
     var done = false;
     window.addEventListener("scroll",() => {
-      console.log("scroll");
       let spin_container = document.getElementById("spin-container");
       if(spin_container.getBoundingClientRect().top < 700 && !done){
-        console.log("fa");
         done = true;
         setTimeout(()=>{
           done = false;
@@ -52,48 +50,38 @@ export default {
   data: function () {
     return {
       'atlas': [{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       },{
-        name: '地图',
-        introduction: '地图介绍',
-        url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
-        backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
-      },{
-        name: '地图',
-        introduction: '地图介绍',
-        url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
-        backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
-      },{
-        name: '地图',
-        introduction: '地图介绍',
+        title: '地图',
+        author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
         backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
       }]

@@ -4,6 +4,7 @@ import App from './components/App'
 import Home from './components/Home'
 import Login from './components/Login'
 import Atlas from './components/Atlas'
+import Blog from './components/Blog'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -19,6 +20,9 @@ router.map({
   },
   '/atlas': {
   	component: Atlas
+  },
+  '/blog': {
+    component: Blog
   }
 })
 
