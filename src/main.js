@@ -6,14 +6,14 @@ import Login from './components/Login'
 import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Carto from './components/Carto'
-import Pictures from './components/Pictures'
+import Programs from './components/Programs'
 import Data from './components/Data'
 
 
 Vue.config.debug = true
 Vue.use(Router)
 
-let router = new Router()
+let router = new Router({hashbang:false})
 
 router.map({
   '/': {
@@ -34,23 +34,23 @@ router.map({
     subRoutes: {
       '/': {
 
-        component: Pictures
+        component: Programs
       },
-      '/pictures': {
+      '/programs': {
 
-        component: Pictures
+        component: Programs
       },
       '/datas': {
 
-        component: Pictures
+        component: Programs
       },
       '/fonts': {
 
-        component: Pictures
+        component: Programs
       },
       '/icons': {
 
-        component: Pictures
+        component: Programs
       }
     }
   },

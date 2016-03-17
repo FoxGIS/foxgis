@@ -53,7 +53,7 @@ export default {
         title: '地图',
         author: '作者',
         url: 'https://api.mapbox.com/styles/v1/donglinge/cilrqqik0007f9jm3qciil3dr.html?title=true&access_token=pk.J1IjoiZG9uZ2xpbmdlIiwiYSI6Ik1VbXI1TkkifQ.7ROsya7Q8kZ-ky9OmhKTvg#3.32/35.53/108.80',
-        backgroundImage:'http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg'
+        backgroundImage:'/assets/map-item.png'
       },{
         title: '地图',
         author: '作者',
@@ -105,6 +105,7 @@ export default {
   border: solid 2px rgba(0, 0, 0, 0.34902);
   padding-left: 13px;
   background-color: #f9f9f9;
+  transition: all linear 0.2s
 }
 #search-tool:hover{
   box-shadow: 0 0 20px #bbb;
