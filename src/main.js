@@ -5,7 +5,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Atlas from './components/Atlas'
 import Blog from './components/Blog'
-import Carto from './components/Carto'
+import Studio from './components/Studio'
 import Pictures from './components/Pictures'
 import Data from './components/Data'
 
@@ -23,33 +23,28 @@ router.map({
     component: Login
   },
   '/atlas': {
-  	component: Atlas
+    component: Atlas
   },
   '/blog': {
     component: Blog
   },
-  '/carto': {
-    component: Carto,
-    root: 'carto',
+  '/studio': {
+    component: Studio,
+    root: 'studio',
     subRoutes: {
       '/': {
-
         component: Pictures
       },
       '/pictures': {
-
         component: Pictures
       },
       '/datas': {
-
         component: Pictures
       },
       '/fonts': {
-
         component: Pictures
       },
       '/icons': {
-
         component: Pictures
       }
     }
@@ -60,8 +55,8 @@ router.map({
 
 })
 
-router.redirect({
-  '*': '/'
-})
+// router.redirect({
+//   '*': '/'
+// })
 
 router.start(App, '#app')

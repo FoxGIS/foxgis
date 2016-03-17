@@ -1,13 +1,12 @@
 var path = require('path')
 var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    // publicPath: '/dist/',
-    filename: 'build.js'
+    publicPath: '/dist/',
+    filename: 'bundle.js'
   },
   node: {
     console: true,
@@ -74,11 +73,6 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'index.html',
-      filename: 'index.html',
-      minify: false
-    })
+    new webpack.optimize.OccurenceOrderPlugin()
   ])
 }

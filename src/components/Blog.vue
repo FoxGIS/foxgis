@@ -1,6 +1,5 @@
 <template>
 <div>
-  <foxgis-layout>
     <div id="blog-container">
       <div v-for="blog in blogs" class="blog-item">
         <div class="blog-info"></div>
@@ -9,18 +8,13 @@
         </div>
       </div>
     </div>
-  </foxgis-layout>
 </div>
 </template>
 
 
 <script>
-import Layout from './Layout'
 
 export default {
-  components: {
-    foxgisLayout: Layout
-  },
   data(){
     return {
       blogs: [{

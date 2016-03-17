@@ -1,5 +1,4 @@
 <template>
-<foxgis-layout>
   <div id="atlas-container" class="mdl-grid">
     <div id="search-tool" class="mdl-cell mdl-cell--12-col">
       <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
@@ -22,17 +21,11 @@
     </div>
 
 	</div>
-
-</foxgis-layout>
 </template>
 
 <script>
-import Layout from './Layout'
 
 export default {
-  components: {
-    foxgisLayout: Layout
-  },
   ready () {
     var vm = this;
     var done = false;
