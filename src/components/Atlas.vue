@@ -1,4 +1,7 @@
 <template>
+<div>
+  <foxgis-header></foxgis-header>
+
   <div id="atlas-container" class="mdl-grid">
     <div id="search-tool" class="mdl-cell mdl-cell--12-col">
       <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
@@ -21,11 +24,21 @@
     </div>
 
 	</div>
+
+  <foxgis-footer></foxgis-footer>
+</div>
 </template>
 
 <script>
+import Header from './Header'
+import Footer from './Footer'
 
 export default {
+  components: {
+    foxgisHeader: Header,
+    foxgisFooter: Footer
+  },
+
   ready () {
     var vm = this;
     var done = false;

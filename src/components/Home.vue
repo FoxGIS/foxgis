@@ -1,24 +1,26 @@
 <template>
 <div>
-    <div>HOME</div>
+  <foxgis-header></foxgis-header>
+  <div>HOME</div>
+  <foxgis-footer></foxgis-footer>
 </div>
 </template>
 
 
 <script>
-export default {
+import Header from './Header'
+import Footer from './Footer'
 
+export default {
+  components: {
+    foxgisHeader: Header,
+    foxgisFooter: Footer
+  }
 }
 
 </script>
 
 
 <style scoped>
-.a {
 
-}
-
-.b {
-  
-}
 </style>

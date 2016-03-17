@@ -19,6 +19,9 @@ router.map({
   '/': {
     component: Home
   },
+  '/home': {
+    component: Home
+  },
   '/login': {
     component: Login
   },

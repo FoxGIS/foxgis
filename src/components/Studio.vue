@@ -3,14 +3,14 @@
   <div id="left-toolbar">
     <div id="left-tool-container">
       <img id="logo" src="../assets/logo.png" alt="logo">
-      <a class="left-tool-item mdl-navigation__link" v-link="{ path: '/carto/pictures' }"><i class="material-icons">layers</i></a>
+      <a class="left-tool-item mdl-navigation__link" v-link="{ path: '/carto/programs' }"><i class="material-icons">layers</i></a>
       <a class="left-tool-item mdl-navigation__link" v-link="{ path: '/carto/datas' }"><i class="material-icons">folder</i></a>
       <a class="left-tool-item mdl-navigation__link" v-link="{ path: '/carto/fonts' }"><i class="material-icons">font_download</i></a>
       <a class="left-tool-item mdl-navigation__link" v-link="{ path: '/carto/icons' }"><i class="material-icons">place</i></a>
     </div>
     <div id="user-control-container">
-      <a class="user-control-item"><i class="material-icons">person</i></a>
-      <a class="user-control-item"><i class="material-icons">arrow_back</i></a>
+      <a class="user-control-item" href="/"><i class="material-icons">person</i></a>
+      <a class="user-control-item" href="/"><i class="material-icons">arrow_back</i></a>
     </div>
 
   </div>
@@ -33,6 +33,10 @@ export default {
 
 <style scoped>
 
+.v-link-active {
+  background-color: #313131;
+  border-left: 2px solid blue;
+}
 #carto-wrap{
   height: 100%;
   width: 100%;
@@ -62,7 +66,7 @@ export default {
   margin-bottom: 20px;
 }
 .left-tool-item {
-  margin: 10px;
+  padding: 10px;
   color: white;
 }
 
@@ -77,7 +81,6 @@ export default {
   color: white;
 }
 #main-container {
-  float: left;
   padding-top: 50px;
   padding-left: 100px;
   overflow: auto;
