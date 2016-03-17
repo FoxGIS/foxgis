@@ -1,7 +1,7 @@
 <template>
 <div class="data-page">
     <div class="data-header">
-      <foxgis-header></foxgis-header>
+      <foxgis-header2></foxgis-header2>
     </div>
       <div id="data-bar">
         <p><input type="text" id="data-search"><i class="material-icons search-icon">search</i></p>
@@ -55,10 +55,12 @@
 
 <script>
   import Header from './Header'
+  import Header2 from './Header2'
   import mapboxgl from 'mapbox-gl'
   export default {
   components: {
-    foxgisHeader: Header
+    foxgisHeader: Header,
+    foxgisHeader2: Header2
   },
   attached() {
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2lsNmZ4MjVoMDAwZ3Zxa3U1am9ndnZjYyJ9.Po8UY7yYwu6Y2Y7HOrJVpQ'
@@ -83,13 +85,13 @@
   }
 
   .data-page {
-    overflow: hidden;
+    overflow: hidden!important;
   }
 
 /* search bar*/
   #data-bar {
     width: 50%;
-    margin: 15px auto;
+    margin: 30px auto;
     position: relative;
   }
 
@@ -132,7 +134,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    top: 105px;
+    top: 135px;
     overflow: hidden;
     padding: 10px;
   }
@@ -148,6 +150,7 @@
       top: 20px;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
       margin-right: 20px;
+      background-color: rgba(199,199,199,0.2);
   }
 
   #list-title {
