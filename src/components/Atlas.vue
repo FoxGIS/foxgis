@@ -1,6 +1,6 @@
 <template>
-<div>
-  <foxgis-header></foxgis-header>
+<div >
+  <foxgis-layout>
 
   <div id="atlas-container" class="mdl-grid">
     <div id="search-tool" class="mdl-cell mdl-cell--12-col">
@@ -20,25 +20,17 @@
 
 		</div>
     <div id="spin-container">
-      <div class="mdl-spinner mdl-js-spinner is-active is-upgraded" data-upgraded=",MaterialSpinner"><div class="mdl-spinner__layer mdl-spinner__layer-1"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-2"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-3"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-4"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div></div>
+      <mdl-spinner :active='true'></mdl-spinner>
     </div>
 
 	</div>
 
-  <foxgis-footer></foxgis-footer>
+  </foxgis-layout>
 </div>
 </template>
 
 <script>
-import Header from './Header'
-import Footer from './Footer'
-
 export default {
-  components: {
-    foxgisHeader: Header,
-    foxgisFooter: Footer
-  },
-
   ready () {
     var vm = this;
     var done = false;

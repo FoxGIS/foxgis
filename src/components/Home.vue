@@ -1,26 +1,37 @@
 <template>
 <div>
-  <foxgis-header></foxgis-header>
-  <div>HOME</div>
-  <foxgis-footer></foxgis-footer>
+  <foxgis-layout>
+    <div class="intro">
+      <mdl-button v-mdl-ripple-effect raised colored fab>Ripple Effect</mdl-button>
+    </div>
+    <div class="map-view"></div>
+    <div class="intro2"></div>
+
+    <foxgis-footer></foxgis-footer>
+  </foxgis-layout>
 </div>
 </template>
 
 
 <script>
-import Header from './Header'
-import Footer from './Footer'
-
-export default {
-  components: {
-    foxgisHeader: Header,
-    foxgisFooter: Footer
-  }
-}
 
 </script>
 
 
 <style scoped>
+.intro {
+  border: red solid 1px;
+  height: 300px
+}
+
+.map-view {
+  border: red solid 1px;
+  height: 300px
+}
+
+.intro2 {
+  border: red solid 1px;
+  height: 300px  
+}
 
 </style>
