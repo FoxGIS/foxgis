@@ -39,7 +39,7 @@ module.exports = {
       test: /\.css$/,
       loader: 'vue-style!css'
     }, {
-      test: test: /\.(png|jpg|jpeg|gif)$/,
+      test: /\.(png|jpg|jpeg|gif)$/,
       loader: 'url',
       query: {
         limit: 10000,
