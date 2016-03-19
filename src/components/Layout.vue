@@ -45,6 +45,10 @@ export default {
 
 
 <style scoped>
+.mdl-layout__header {
+  position: fixed;
+}
+
 .mdl-layout.has-drawer .mdl-layout__header > .mdl-layout-icon {
   display: block;
   width: 48px;
@@ -56,9 +60,18 @@ export default {
   padding-left: 100px;
 }
 
-.mdl-layout {
-  background-color: #ECEFF1;
+.mdl-layout-title {
+  font-size: 1.5em;
 }
+
+.mdl-navigation__link {
+  font-size: 1em;
+}
+
+.mdl-layout--content {
+  background-color: #F8F8F5;
+  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
+  height: 100%;
+}
+
 </style>
-
-

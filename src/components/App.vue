@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="container">
 <!--   <router-view></router-view> -->
   <router-view
     keep-alive
@@ -15,6 +15,10 @@
 </script>
 
 
-<style scoped>
+<style>
+.container {
+  font-size: 16px;
+  background-color: #FAFAFA;
+}
 
 </style>

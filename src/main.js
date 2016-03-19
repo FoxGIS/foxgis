@@ -25,7 +25,9 @@ Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
 Vue.component('foxgis-map', Map)
 
-let router = new Router()
+let router = new Router({
+  history: true
+})
 
 router.map({
   '/': {
