@@ -14,7 +14,7 @@ import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import Studio from './components/Studio'
-import Pictures from './components/Pictures'
+import Projects from './components/Projects'
 
 
 Vue.config.debug = true
@@ -26,7 +26,7 @@ Vue.component('foxgis-footer', Footer)
 Vue.component('foxgis-map', Map)
 
 let router = new Router({
-  history: true
+  history: false
 })
 
 router.map({
@@ -49,19 +49,19 @@ router.map({
     component: Studio,
     subRoutes: {
       '/': {
-        component: Pictures
+        component: Projects
       },
       '/pictures': {
-        component: Pictures
+        component: Projects
       },
       '/datas': {
-        component: Pictures
+        component: Projects
       },
       '/fonts': {
-        component: Pictures
+        component: Projects
       },
       '/icons': {
-        component: Pictures
+        component: Projects
       }
     }
   }

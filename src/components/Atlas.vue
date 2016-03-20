@@ -34,9 +34,12 @@ export default {
   ready () {
     var vm = this;
     var done = false;
-    window.addEventListener("scroll",() => {
-      let spin_container = document.getElementById("spin-container");
-      if(spin_container.getBoundingClientRect().top < 700 && !done){
+    var container = document.querySelector(".mdl-layout");
+    let spin_container = document.getElementById("spin-container");
+    container.addEventListener("scroll",() => {
+
+      console.log(spin_container.getBoundingClientRect());
+      if(spin_container.getBoundingClientRect().top < 730 && !done){
         done = true;
         setTimeout(()=>{
           done = false;
@@ -91,8 +94,12 @@ export default {
 
 
 <style scoped>
+main {
+  overflow: auto;
+}
 #atlas-container {
   padding: 10px 15px;
+  padding-top: 100px;
 }
 
 /**search tool**/

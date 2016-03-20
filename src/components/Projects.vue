@@ -7,8 +7,8 @@
   <div id="programs-list">
       <div v-for='program in page_data.page_item_num' v-if="((page_data.current_page-1)*page_data.page_item_num+$index) < programs.length" track-by="$index" class="program-item">
         <a class="program-item-link" href="#">
-          <div class="program-item-thumb">
-            <img v-bind:src="programs[$index].map_thumb">
+          <div class="program-item-thumb" :style="programs[$index].map_thumb">
+            <!-- <img v-bind:src="programs[$index].map_thumb"> -->
           </div>
           <div class="program-item-info">
             <div class="program-item-title">{{ programs[(page_data.current_page-1)*page_data.page_item_num+$index].title }}</div>
@@ -72,62 +72,110 @@ export default {
       },
       'programs': [{
         title: '标题1',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://ww2.sinaimg.cn/bmiddle/7fb785e1jw1erq0m39a38j212z0k2tcb.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题2',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题3',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题4',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题5',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题6',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题7',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题8',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题9',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题10',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题11',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       },{
         title: '标题12',
-        map_thumb: '/assets/map-item.png',
+        map_thumb: {
+          'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
+          'background-position':"center",
+          'background-size':"cover"
+        },
         abstract: '内容',
         url:"#"
       }]
@@ -182,6 +230,7 @@ a {
   width: 80%;
   margin-top: 40px;
 }
+
 .program-item {
   float: left;
   clear: both;
@@ -190,16 +239,17 @@ a {
   padding: 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.34902);
 }
+
 .program-item-link {
   display: inline-block;
 }
+
 .program-item-thumb {
   float: left;
-}
-.program-item-thumb img {
   width: 100px;
   height: 100px;
 }
+
 .program-item-info {
   float: left;
   padding: 10px 0 0 10px;
