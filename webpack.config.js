@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    publicPath: './dist/',
     filename: 'bundle.js'
   },
   node: {
@@ -43,7 +43,7 @@ module.exports = {
       loader: 'url',
       query: {
         limit: 10000,
-        name: '[name].[ext]?[hash]'
+        name: '[name].[ext]'
       }
     }, {
       test: /\.js$/,

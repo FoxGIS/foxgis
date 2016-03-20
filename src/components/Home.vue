@@ -8,7 +8,7 @@
       <mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
     </div>
 
-    <mdl-anchor-button class="down" href="#intro2" v-mdl-ripple-effect colored fab>
+    <mdl-anchor-button class="down" v-link="{path:'#intro2'}" v-mdl-ripple-effect colored fab>
       <i class="material-icons">keyboard_arrow_down</i>
     </mdl-anchor-button>
 
@@ -46,7 +46,7 @@
 
 .slogan h2 {
   color: #FFF;
-  font-family: STKaiti, KaiTi, "Microsoft YaHei", STXihei, serif;  
+  font-family: STKaiti, KaiTi, "Microsoft YaHei", STXihei, serif;
 }
 
 .explore {
