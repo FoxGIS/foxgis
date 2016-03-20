@@ -51,7 +51,7 @@ router.map({
       '/': {
         component: Projects
       },
-      '/pictures': {
+      '/projects': {
         component: Projects
       },
       '/datas': {

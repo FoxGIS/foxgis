@@ -37,7 +37,6 @@ export default {
     var container = document.querySelector(".mdl-layout");
     let spin_container = document.getElementById("spin-container");
     container.addEventListener("scroll",() => {
-
       console.log(spin_container.getBoundingClientRect());
       if(spin_container.getBoundingClientRect().top < 730 && !done){
         done = true;
@@ -94,9 +93,6 @@ export default {
 
 
 <style scoped>
-main {
-  overflow: auto;
-}
 #atlas-container {
   padding: 10px 15px;
   padding-top: 100px;
@@ -114,10 +110,12 @@ main {
 #search-tool:hover{
   box-shadow: 0 0 20px #bbb;
 }
+
 #search-tool i {
   vertical-align: middle;
   margin-left: 5px;
 }
+
 #search-tool input {
   width: calc(100% - 39px);
   height: 22px;
@@ -138,16 +136,20 @@ main {
 .mdl-card {
   height: 300px;
 }
+
 .mdl-card img{
   max-height:220px;
   background-color: rgb(255,255,255,0.8);
 }
+
 #wrapper-item-bottom{
   height: 80px;
 }
+
 .mdl-card__title{
   padding: 20px 0px 0px 15px;
 }
+
 .mdl-card__title-text{
   font-size: 16px;
 }
@@ -158,6 +160,7 @@ main {
   bottom: 10px;
   height: 26px;
 }
+
 #item-subtitle a{
   position: absolute;
   right: 5px;
