@@ -7,6 +7,7 @@ import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Studio from './components/Studio'
 import Pictures from './components/Pictures'
+import Programs from './components/Programs'
 import Data from './components/Data'
 
 
@@ -36,10 +37,10 @@ router.map({
     root: 'studio',
     subRoutes: {
       '/': {
-        component: Pictures
+        component: Programs
       },
-      '/pictures': {
-        component: Pictures
+      '/programs': {
+        component: Programs
       },
       '/datas': {
         component: Pictures
