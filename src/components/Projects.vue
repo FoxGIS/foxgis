@@ -5,22 +5,27 @@
     <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
   </div>
   <div id="programs-list">
-      <div v-for='program in page_config.page_item_num' v-if="((page_config.current_page-1)*page_config.page_item_num+$index) < programs.length" track-by="$index" class="program-item">
+      <div v-for='program in page_config.page_item_num' v-if="((page_config.current_page-1)*page_config.page_item_num+$index) < projects.length" track-by="$index" class="program-item">
         <a class="program-item-link" href="#">
-          <div class="program-item-thumb" :style="programs[$index].map_thumb"></div>
+          <div class="program-item-thumb" :style="projects[$index].map_thumb"></div>
           <div class="program-item-info">
-            <div class="program-item-title">{{ programs[(page_config.current_page-1)*page_config.page_item_num+$index].title }}</div>
-            <div class="program-item-abstract">{{ programs[(page_config.current_page-1)*page_config.page_item_num+$index].abstract }}</div>
+            <div class="program-item-title">{{ projects[(page_config.current_page-1)*page_config.page_item_num+$index].title }}</div>
+            <div class="program-item-abstract">{{ projects[(page_config.current_page-1)*page_config.page_item_num+$index].abstract }}</div>
           </div>
         </a>
         <div class="program-item-operate">
           <a class="program-item-operate-edit" href="#">编辑</a>
-          <a class="program-item-operate-menu" href="#"><i class="material-icons">reorder</i></a>
+          <a class="program-item-operate-menu" href="#" id="{{projects[(page_config.current_page-1)*page_config.page_item_num+$index].id}}" v-on:click.stop.prevent="menuClick"><i class="material-icons" id="{{projects[(page_config.current_page-1)*page_config.page_item_num+$index].id}}" >reorder</i></a>
+          <div id="project-item-menu" v-on:click="menuItemClick">
+            <a class="menu-item" id="download-item"><i class="material-icons">file_download</i>下载</a>
+            <a class="menu-item" id="duplicate-item"><i class="material-icons">content_copy</i>复制</a>
+            <a class="menu-item" id="delete-item"><i class="material-icons">close</i>删除</a>
+          </div>
         </div>
       </div>
 
   </div>
-  <div id="page-bar">
+  <div id="page-bar" v-show="projects.length>0?true:false">
     <ul>
       <li id="page-pre" v-on:click="prePage" v-if="page_config.current_page > 1"><span><i class="material-icons">navigate_before</i></span></li>
       <li v-for="page in show_page_num"  v-bind:class="{ 'page-active': page_config.current_page == page + page_config.first_page}" v-on:click="setPage(page)"><span>{{ page_config.first_page + page }}</span></li>
@@ -44,25 +49,84 @@ export default {
     },
     prePage: function (event) {
       this.page_config.current_page -= 1;
-       if(this.page_config.current_page < this.page_config.first_page){
+      if(this.page_config.current_page < this.page_config.first_page){
         this.page_config.first_page -=1;
       }
     },
-    setPage: function (page){
+    setPage: function (page) {
       console.log(page);
       this.page_config.current_page = page+1;
+    },
+    menuItemClick: function (e) {
+      switch(e.target.id){
+        case "delete-item":
+          this.deleteProject(e)
+          break
+        case "duplicate-item":
+          this.duplicateProject(e)
+          break
+      }
+    },
+    menuClick: function (e) {
+      console.log(e);
+      let menu_tip = document.getElementById("project-item-menu")
+      let menu_items = document.querySelectorAll(".menu-item")
+      menu_tip.style.display = "block";
+      menu_tip.style.top = e.clientY+20 + "px";
+      menu_tip.style.left = e.clientX+20 + "px";
+      if(e.clientY > 640){
+        menu_tip.style.top = e.clientY - 80 + "px";
+      }
+      var id = e.target.id;
+      for(let j=0,length=menu_items.length;j<length;j++){
+        menu_items[j].attributes['key'] = id;
+      }
+
+    },
+    deleteProject: function (e) {
+      let id = e.target.attributes['key']
+      let projects = this.projects;
+      for(let i=0,length=projects.length;i<length;i++){
+        if(projects[i].id == id){
+          projects.splice(i,1)
+          i--
+          length--
+        }
+        console.log(i);
+      }
+      console.log(this.page_config.current_page);
+    },
+    duplicateProject: function (e) {
+      let id = e.target.attributes['key']
+      let projects = this.projects;
+      for(let i=0,length=projects.length;i<length;i++){
+        if(projects[i].id == id){
+          let newobj = JSON.parse(JSON.stringify(projects[i]))
+          newobj.id = projects.length+1
+          projects.push(newobj)
+        }
+      }
     }
   },
   computed: {
      show_page_num: function (){
-        let cop_page_num = parseInt(this.total_items / this.page_config.page_item_num) + 1 ;
+        let cop_page_num = Math.ceil(this.total_items / this.page_config.page_item_num)
         console.log(cop_page_num);
         return cop_page_num > 5 ? 5 : cop_page_num;
      },
      total_items: function (){
-      let count = this.programs.length;
+      let count = this.projects.length;
       return count;
      }
+  },
+  attached: function () {
+    let menu_tip = document.getElementById("project-item-menu")
+    let wrap = document.getElementById("programs-wrap")
+    wrap.addEventListener("click",e => {
+      if(e.target.className != "program-item-operate-menu"){
+        menu_tip.style.display = "none";
+      }
+    })
   },
   data: function (){
     return {
@@ -71,7 +135,8 @@ export default {
         current_page: 1,
         first_page: 1
       },
-      'programs': [{
+      projects: [{
+        id: 1,
         title: '标题1',
         map_thumb: {
           'background-image':"url('http://ww2.sinaimg.cn/bmiddle/7fb785e1jw1erq0m39a38j212z0k2tcb.jpg')",
@@ -81,6 +146,7 @@ export default {
         abstract: '内容',
         url:"#"
       },{
+        id: 2,
         title: '标题2',
         map_thumb: {
           'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
@@ -90,6 +156,7 @@ export default {
         abstract: '内容',
         url:"#"
       },{
+        id: 3,
         title: '标题3',
         map_thumb: {
           'background-image':"url('http://img.25pp.com/uploadfile/soft/images/2013/0928/20130928044418910.jpg')",
@@ -189,7 +256,6 @@ i {
 }
 
 .program-item-abstract {
-
   padding: 10px;
 }
 
@@ -215,6 +281,7 @@ i {
 
 .program-item-operate a:hover {
   color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .program-item-operate-edit {
@@ -230,9 +297,31 @@ i {
   flex:1;
 }
 
-.program-item-operate a i{
+.program-item-operate i {
   font-size: 16px;
 }
+
+#project-item-menu {
+  display: none;
+  position: fixed;
+  left: 95px;
+  top: 10px;
+  width: 100px;
+  text-align: center;
+  border: solid 1px rgba(0, 0, 0, 0.09902);
+  border-radius: 10px;
+}
+
+.menu-item {
+  border: 1px solid rgba(0, 0, 0, 0.09902);
+  width: 100%;
+}
+
+.menu-item i {
+  margin-right: 10px;
+}
+
+
 
 /** page_bar */
 #page-bar {
@@ -269,8 +358,6 @@ i {
   padding: 6px 12px;
   line-height: 30px;
 }
-
-
 
 #page-pre {
   margin-right: 10px;
