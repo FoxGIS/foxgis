@@ -16,7 +16,7 @@
         <div class="program-item-operate">
           <a class="program-item-operate-edit" href="#">编辑</a>
           <a class="program-item-operate-menu" href="#" id="{{projects[(page_config.current_page-1)*page_config.page_item_num+$index].id}}" v-on:click.stop.prevent="menuClick"><i class="material-icons" id="{{projects[(page_config.current_page-1)*page_config.page_item_num+$index].id}}" >reorder</i></a>
-          <div id="project-item-menu" v-on:click="menuItemClick">
+          <div id="project-item-menu" v-on:click.capture="menuItemClick">
             <a class="menu-item" id="download-item"><i class="material-icons">file_download</i>下载</a>
             <a class="menu-item" id="duplicate-item"><i class="material-icons">content_copy</i>复制</a>
             <a class="menu-item" id="delete-item"><i class="material-icons">close</i>删除</a>
@@ -58,13 +58,13 @@ export default {
       this.page_config.current_page = page+1;
     },
     menuItemClick: function (e) {
-      switch(e.target.id){
-        case "delete-item":
-          this.deleteProject(e)
-          break
-        case "duplicate-item":
-          this.duplicateProject(e)
-          break
+      console.log(e);
+      var targetId = e.target.id
+      console.log(e.target.parentNode.id)
+      if(targetId=="duplicate-item"||e.target.parentNode.id=="duplicate-item"){
+        this.duplicateProject(e);
+      }else if(targetId=="delete-item"||e.target.parentNode.id=="delete-item"){
+        this.deleteProject(e)
       }
     },
     menuClick: function (e) {
@@ -73,7 +73,7 @@ export default {
       let menu_items = document.querySelectorAll(".menu-item")
       menu_tip.style.display = "block";
       menu_tip.style.top = e.clientY+20 + "px";
-      menu_tip.style.left = e.clientX+20 + "px";
+      menu_tip.style.left = e.clientX+50 + "px";
       if(e.clientY > 640){
         menu_tip.style.top = e.clientY - 80 + "px";
       }
@@ -84,7 +84,8 @@ export default {
 
     },
     deleteProject: function (e) {
-      let id = e.target.attributes['key']
+      let id = e.target.attributes['key']?e.target.attributes['key']:e.target.parentNode.attributes['key']
+      console.log(id);
       let projects = this.projects;
       for(let i=0,length=projects.length;i<length;i++){
         if(projects[i].id == id){
@@ -94,10 +95,13 @@ export default {
         }
         console.log(i);
       }
-      console.log(this.page_config.current_page);
+      while(this.page_config.current_page>Math.ceil(projects.length/10)){
+        this.page_config.current_page--;
+      }
+      console.log("当前页面"+this.page_config.current_page);
     },
     duplicateProject: function (e) {
-      let id = e.target.attributes['key']
+      let id = e.target.attributes['key']?e.target.attributes['key']:e.target.parentNode.attributes['key']
       let projects = this.projects;
       for(let i=0,length=projects.length;i<length;i++){
         if(projects[i].id == id){
