@@ -3,7 +3,7 @@
   <foxgis-layout>
     <div class="intro1">
       <div class="slogan">
-        <h2>欣赏地图之美，探索地图力量</h2>
+        <h2>欣赏地图之美，探索地图魅力</h2>
       </div>
       <mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
     </div>
