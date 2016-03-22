@@ -27,7 +27,7 @@
   </div>
 
   <main class="mdl-layout--content">
-    <slot>Content is missing</slot>
+    <slot>Layout content</slot>
   </main>
 
 </div>
@@ -69,9 +69,8 @@ export default {
 }
 
 .mdl-layout--content {
-  background-color: #F8F8F5;
-  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
   height: 100%;
+  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
 }
 
 </style>

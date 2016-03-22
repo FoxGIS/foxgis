@@ -7,6 +7,8 @@ import Router from 'vue-router'
 import Vmdl from 'vue-mdl'
 import Layout from './components/Layout'
 import Footer from './components/Footer'
+import Card from './components/Card'
+import Search from './components/Search'
 import Map from './components/Map'
 import App from './components/App'
 import Home from './components/Home'
@@ -23,10 +25,12 @@ Vue.use(Router)
 Vmdl.registerAll(Vue)
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
+Vue.component('foxgis-card', Card)
+Vue.component('foxgis-search', Search)
 Vue.component('foxgis-map', Map)
 
 let router = new Router({
-  history: false
+  history: true
 })
 
 router.map({

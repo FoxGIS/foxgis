@@ -2,7 +2,7 @@
 <div>
   <foxgis-layout>
     <div class="wrapper">
-      <form action="" class="login">
+      <foxgis-card class="login">
         <mdl-textfield floating-label="用户名"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password"></mdl-textfield>
         <mdl-button v-mdl-ripple-effect accent raised>登录</mdl-button>
@@ -15,7 +15,7 @@
           <p>没有账号？</p>
           <mdl-button v-mdl-ripple-effect raised>注册</mdl-button>
         </div>
-      </form>
+      </foxgis-card>
     </div>
   </foxgis-layout>
 </div>
@@ -40,9 +40,6 @@
   width: 300px;
   height: 300px;
   padding: 20px;
-  background: #FFF;
-  border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 
 .mdl-button {
@@ -63,7 +60,7 @@
 .sign-up {
   border-top: 1px solid rgba(0,0,0,.1);
   margin-top: 10px;
-  padding-top: 5px; 
+  padding-top: 5px;
   text-align: center;
 }
 

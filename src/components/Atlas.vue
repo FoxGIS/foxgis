@@ -3,9 +3,7 @@
   <foxgis-layout>
 
   <div id="atlas-container" class="mdl-grid">
-    <div id="search-tool" class="mdl-cell mdl-cell--12-col">
-      <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
-    </div>
+    <foxgis-search class="mdl-cell mdl-cell-12-col" :placeholder="'中国人口地图集'"></foxgis-search>
     <div v-for="item in atlas" track-by="$index" class="map-item-container mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone"  >
       <img v-bind:src='item.backgroundImage'>
       <div id="wrapper-item-bottom">
