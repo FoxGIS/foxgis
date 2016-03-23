@@ -16,6 +16,8 @@ import Login from './components/Login'
 import Studio from './components/Studio'
 import Projects from './components/Projects'
 import Fonts from './components/Fonts'
+import Datas from './components/Datas'
+import Icons from './components/Icons'
 
 
 Vue.config.debug = true
@@ -56,13 +58,13 @@ router.map({
         component: Projects
       },
       '/datas': {
-        component: Projects
+        component: Datas
       },
       '/fonts': {
         component: Fonts
       },
       '/icons': {
-        component: Projects
+        component: Icons
       }
     }
   }
