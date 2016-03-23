@@ -8,14 +8,15 @@
       <mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
     </div>
 
-    <mdl-anchor-button class="down" v-link="{path:'#intro2'}" v-mdl-ripple-effect colored fab>
+    <mdl-anchor-button class="down" href="#intro2" v-mdl-ripple-effect colored fab>
       <i class="material-icons">keyboard_arrow_down</i>
     </mdl-anchor-button>
 
-    <div class="intro2" id="intro2">
-      <div class="intro2-1"></div>
-      <div class="intro2-2"></div>
-      <div class="intro2-3"></div>
+    <div class="intro2 mdl-grid" id="intro2">
+      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
     </div>
 
     <foxgis-footer></foxgis-footer>
@@ -41,12 +42,13 @@
 }
 
 .slogan {
-  /*padding: 50px;*/
+  margin-bottom: 10px;
 }
 
 .slogan h2 {
   color: #FFF;
   font-family: STKaiti, KaiTi, "Microsoft YaHei", STXihei, serif;
+  text-shadow: 10px 10px 20px #000;
 }
 
 .explore {
@@ -56,30 +58,22 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  border-radius: 30px;
 }
 
 .down {
   position: absolute;
-  bottom: -10px;
-  left: 50%;
-  margin-left: -28px;
+  bottom: 20px;
+  right: 20px;
   transition: all 0.35s;
 }
 
 .intro2 {
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
-  height: 100%;
+  padding: 100px 40px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-}
-
-.intro2>* {
-  width: 300px;
-  height: 400px;
-  background: #FFF;
-  border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 
 </style>

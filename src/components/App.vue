@@ -18,7 +18,7 @@
 <style>
 .container {
   font-size: 16px;
-  background-color: #FAFAFA;
+  background-color: #F8F8F5;
 }
 
 </style>
