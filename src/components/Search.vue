@@ -19,6 +19,7 @@ export default {
   border: solid 2px rgba(0, 0, 0, 0.34902);
   padding-left: 13px;
   background-color: #F9F9F9;
+  transition: all linear 0.2s;
 }
 
 .foxgis-search:hover{
@@ -31,7 +32,7 @@ export default {
 }
 
 .foxgis-search input {
-  width: calc(100% - 12px);
+  width: calc(100% - 30px);
   height: 22px;
   border: none;
   outline: none;

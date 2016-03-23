@@ -33,7 +33,7 @@ Vue.component('foxgis-search', Search)
 Vue.component('foxgis-map', Map)
 
 let router = new Router({
-  history: true
+  history: false
 })
 
 router.map({

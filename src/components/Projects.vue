@@ -1,9 +1,7 @@
 <template>
 <div id="programs-wrap">
   <div id="header-info"><i class="material-icons">layers</i><span>工程</span></div>
-  <div id="search-tool">
-    <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
-  </div>
+  <foxgis-search class="mdl-cell mdl-cell-12-col" :placeholder="'中国人口地图集'"></foxgis-search>
   <div id="toolbar">
     <mdl-button id="newproject" v-mdl-ripple-effect colored Raised>新建工程</mdl-button>
   </div>
@@ -199,34 +197,6 @@ i {
 
 #header-info span{
   margin-left: 10px;
-}
-
-/**search tool**/
-
-#search-tool {
-  margin: 40px 30% 15px 20%;
-  border-radius: 20px;
-  border: solid 2px rgba(0, 0, 0, 0.34902);
-  padding-left: 13px;
-  background-color: #f9f9f9;
-  transition: all linear 0.2s;
-}
-
-#search-tool:hover{
-  box-shadow: 0 0 20px #bbb;
-}
-
-#search-tool i {
-  margin-left: 5px;
-}
-
-#search-tool input {
-  width: calc(100% - 39px);
-  height: 22px;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  background-color: #f9f9f9;
 }
 
 #toolbar {

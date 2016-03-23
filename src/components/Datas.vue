@@ -3,9 +3,7 @@
   <div id="header-info">
     <i class="material-icons">folder</i><span>数据</span>
   </div>
-  <div id="search-tool">
-    <input type="text" placeholder="search"/><i class="material-icons">search</i>
-  </div>
+  <foxgis-search class="mdl-cell mdl-cell-12-col" :placeholder="'中国人口地图集'"></foxgis-search>
   <div id="toolbar">
     <mdl-button id="upload-data" v-mdl-ripple-effect colored Raised>上传数据</mdl-button>
   </div>
@@ -102,7 +100,6 @@ i {
   text-align: left;
   font-size: 32px;
   vertical-align: middle;
-  padding-top: 10px;
 }
 
 #header-info span{
