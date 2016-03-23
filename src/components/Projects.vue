@@ -1,8 +1,11 @@
 <template>
 <div id="programs-wrap">
-  <div id="header-info"><span><i class="material-icons">layers</i>工程</span></div>
+  <div id="header-info"><i class="material-icons">layers</i><span>工程</span></div>
   <div id="search-tool">
     <input type="text" placeholder="中国人口地图集"/><i class="material-icons">search</i>
+  </div>
+  <div id="toolbar">
+    <mdl-button id="newproject" v-mdl-ripple-effect colored Raised>新建工程</mdl-button>
   </div>
   <div id="programs-list">
       <div v-for='program in page_config.page_item_num' v-if="((page_config.current_page-1)*page_config.page_item_num+$index) < projects.length" track-by="$index" class="program-item">
@@ -194,6 +197,10 @@ i {
   font-size: 32px;
 }
 
+#header-info span{
+  margin-left: 10px;
+}
+
 /**search tool**/
 
 #search-tool {
@@ -202,7 +209,7 @@ i {
   border: solid 2px rgba(0, 0, 0, 0.34902);
   padding-left: 13px;
   background-color: #f9f9f9;
-  transition: all linear 0.2s
+  transition: all linear 0.2s;
 }
 
 #search-tool:hover{
@@ -220,6 +227,15 @@ i {
   outline: none;
   font-size: 16px;
   background-color: #f9f9f9;
+}
+
+#toolbar {
+  position: relative;
+  margin: 10px 20%;
+}
+
+#newproject {
+  float: right;
 }
 
 /** program-item */

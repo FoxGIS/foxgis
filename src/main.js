@@ -15,6 +15,7 @@ import Blog from './components/Blog'
 import Login from './components/Login'
 import Studio from './components/Studio'
 import Projects from './components/Projects'
+import Fonts from './components/Fonts'
 
 
 Vue.config.debug = true
@@ -58,7 +59,7 @@ router.map({
         component: Projects
       },
       '/fonts': {
-        component: Projects
+        component: Fonts
       },
       '/icons': {
         component: Projects
@@ -67,6 +68,9 @@ router.map({
   }
 })
 
+router.alias({
+  '/studio':'/studio/projects'
+})
 // router.redirect({
 //   '*': '/'
 // })
