@@ -13,6 +13,7 @@
 <style scoped>
 .pictures {
   height: 100%;
+  border: red solid 1px;
 }
   
 </style>

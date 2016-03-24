@@ -78,9 +78,9 @@ router.map({
   }
 })
 
-router.alias({
-  '/studio':'/studio/projects'
-})
+// router.alias({
+//   '/studio':'/studio/projects'
+// })
 // router.redirect({
 //   '*': '/'
 // })

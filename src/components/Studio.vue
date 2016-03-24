@@ -1,7 +1,7 @@
 <template>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
   <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">制图工作室</span>
+    <span class="mdl-layout-title">制图工作台</span>
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" v-link="{ path: '/studio/projects' }"><i class="material-icons">map</i>制图工程</a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/datas' }"><i class="material-icons">layers</i>数据</a>
@@ -16,7 +16,8 @@
     </nav>
   </div>
   <main class="mdl-layout__content">
-    <router-view keep-alive transition transition-mode="out-in"></router-view>
+    <router-view></router-view>
+    <!-- <router-view keep-alive transition transition-mode="out-in"></router-view> -->
   </main>
 </div>
 
@@ -46,9 +47,5 @@ export default {
 .material-icons {
   padding-right: 10px;
 }
-
-/*.mdl-layout-spacer {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-}*/
 
 </style>
