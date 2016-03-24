@@ -20,6 +20,7 @@ import Projects from './components/Projects'
 import Fonts from './components/Fonts'
 import Datas from './components/Datas'
 import Icons from './components/Icons'
+import Pictures from './components/Pictures'
 
 
 Vue.config.debug = true
@@ -69,6 +70,9 @@ router.map({
       },
       '/icons': {
         component: Icons
+      },
+      '/pictures': {
+        component: Pictures
       }
     }
   }
