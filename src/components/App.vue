@@ -1,11 +1,6 @@
 <template>
 <div class="container">
-<!--   <router-view></router-view> -->
-  <router-view
-    keep-alive
-    transition
-    transition-mode="out-in">
-  </router-view>
+  <router-view keep-alive transition transition-mode="out-in"></router-view>
 </div>
 </template>
 
