@@ -1,7 +1,6 @@
 <template>
 <div class="container">
-  <router-view></router-view>
-  <!-- <router-view keep-alive transition transition-mode="out-in"></router-view> -->  
+  <router-view keep-alive transition transition-mode="out-in"></router-view>  
 </div>
 </template>
 
@@ -14,6 +13,7 @@
 <style>
 .container {
   font-size: 16px;
+  /*font-family: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;*/
   background-color: #F8F8F5;
 }
 

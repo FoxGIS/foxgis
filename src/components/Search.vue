@@ -1,6 +1,7 @@
 <template>
 <div class="foxgis-search">
-  <input type="text" placeholder="{{ placeholder }}"/><i class="material-icons">search</i>
+  <i class="material-icons">search</i>
+  <input type="text" placeholder="{{ placeholder }}"/>  
 </div>
 </template>
 
@@ -14,29 +15,30 @@ export default {
 
 <style scoped>
 .foxgis-search {
-  margin: 40px 25% 15px 25%;
-  border-radius: 20px;
-  border: solid 2px rgba(0, 0, 0, 0.34902);
-  padding-left: 13px;
-  background-color: #F9F9F9;
-  transition: all linear 0.2s;
+  width: 500px;
+  height: 40px;
+  background-color: #FFF;
+  border: 1px solid #b8b8b8;
+  border-bottom: 1px solid #ccc;
+  display: inline-flex;
 }
 
-.foxgis-search:hover{
-  box-shadow: 0 0 20px #BBB;
+.foxgis-search:hover {
+  border: 1px solid #4285F4;
 }
 
-.foxgis-search i {
-  vertical-align: middle;
-  margin-left: 5px;
-}
-
-.foxgis-search input {
-  width: calc(100% - 30px);
-  height: 22px;
+input {  
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 9px 7px;
+  font: 16px arial,sans-serif;
   border: none;
   outline: none;
-  font-size: 16px;
-  background-color: #F9F9F9;
+}
+
+.material-icons {
+  box-sizing: border-box;
+  padding: 8px 0;
 }
 </style>

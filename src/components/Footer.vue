@@ -1,5 +1,5 @@
 <template>
-<footer class="mdl-mini-footer">
+<footer class="mdl-mini-footer foxgis-footer">
   <div class="mdl-mini-footer__left-section">
     <div class="mdl-logo">
       

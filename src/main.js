@@ -9,6 +9,7 @@ import Layout from './components/Layout'
 import Footer from './components/Footer'
 import Card from './components/Card'
 import Search from './components/Search'
+import Table from './components/Table'
 import Map from './components/Map'
 import App from './components/App'
 import Home from './components/Home'
@@ -18,9 +19,10 @@ import Login from './components/Login'
 import Studio from './components/Studio'
 import Projects from './components/Projects'
 import Fonts from './components/Fonts'
-import Datas from './components/Datas'
+import Data from './components/Data'
 import Icons from './components/Icons'
 import Pictures from './components/Pictures'
+import DataCards from './components/DataCards'
 
 
 Vue.config.debug = true
@@ -31,7 +33,9 @@ Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
 Vue.component('foxgis-card', Card)
 Vue.component('foxgis-search', Search)
+Vue.component('foxgis-table', Table)
 Vue.component('foxgis-map', Map)
+Vue.component('foxgis-data-cards', DataCards)
 
 let router = new Router({
   history: false
@@ -62,8 +66,8 @@ router.map({
       '/projects': {
         component: Projects
       },
-      '/datas': {
-        component: Datas
+      '/data': {
+        component: Data
       },
       '/fonts': {
         component: Fonts
