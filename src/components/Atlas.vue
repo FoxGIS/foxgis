@@ -4,6 +4,7 @@
 
   <div id="atlas-container" class="mdl-grid">
     <foxgis-search class="mdl-cell mdl-cell-12-col" :placeholder="'中国人口地图集'"></foxgis-search>
+
     <div v-for="item in atlas" track-by="$index" class="map-item-container mdl-card mdl-shadow--4dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone"  >
       <img v-bind:src='item.backgroundImage'>
       <div id="wrapper-item-bottom">
@@ -15,8 +16,8 @@
           <a href="{{item.url}}"><i class="material-icons">info</i></a>
         </div>
       </div>
-
 		</div>
+
     <div id="spin-container">
       <mdl-spinner :active='true'></mdl-spinner>
     </div>

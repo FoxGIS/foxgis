@@ -37,7 +37,6 @@ export default {
 <style scoped>
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
-  height: 100%;
 }
 
 .mdl-navigation {

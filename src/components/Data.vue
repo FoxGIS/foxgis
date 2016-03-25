@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper">
+<div class="data">
   <h5><i class="material-icons">layers</i><span>数据</span></h5>
 
   <div class="search">
@@ -7,18 +7,45 @@
     <mdl-button raised colored v-mdl-ripple-effect>上传数据</mdl-button>
   </div>
 
-  <foxgis-data-cards></foxgis-data-cards>
-</div>  
+  <foxgis-data-cards :dataset="dataset"></foxgis-data-cards>
+</div>
 </template>
 
 
 <script>
-  
+export default {
+  data() {
+    return {
+      dataset: [{
+        name: '全国人口分布数据',
+        layers: 5,
+        size: '200 MB',
+        upload_time: '2016-3-25'
+      },{
+        name: '全国人口分布数据',
+        layers: 5,
+        size: '200 MB',
+        upload_time: '2016-3-25'
+      },{
+        name: '全国人口分布数据',
+        layers: 5,
+        size: '200 MB',
+        upload_time: '2016-3-25'
+      },{
+        name: '全国人口分布数据',
+        layers: 5,
+        size: '200 MB',
+        upload_time: '2016-3-25'
+      }]
+    }
+  }
+}
+
 </script>
 
 
 <style scoped>
-.wrapper {
+.data {
   height: 100%;
   width: 83.3333%;
   max-width: 1000px;
@@ -32,6 +59,7 @@ h5 {
 
 .material-icons {
   padding: 10px;
+  margin-right: 5px;
   vertical-align: middle;
   border-radius: 50%;
   color: #FB8C00;
@@ -60,6 +88,5 @@ span {
 
 .foxgis-data-cards {
   margin-top: 40px;
-  /*max-width: 600px;*/
 }
 </style>

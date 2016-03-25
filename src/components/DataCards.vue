@@ -1,30 +1,30 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card">
+  <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
-      <p>全国人口迁徙数据</p>
+      <p>{{ data.name }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到制图工程</mdl-anchor-button>
     </div>
     <div class="meta">
-      <p>200 MB · 2016.3.25</p>
+      <p>{{ data.layers }}个图层 · {{ data.size }} · {{  data.upload_time }}</p>
       <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
     </div>
   </div>
-  <div class="card"></div>
-  <div class="card"></div>
-  <div class="card"></div>
 </div>
 </template>
 
 
 <script>
-  
+export default {
+  props: ['dataset']
+}
+
 </script>
 
 
 <style>
 .card {
-  height: 110px;
+  height: 120px;
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
@@ -43,25 +43,35 @@
   margin: 12px -12px;
 }
 
-.card * {
-  border: 1px solid red;
-}
-
 .card .name {
-  margin: 0 24px;
+  margin: 24px 24px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align: left;
 }
 
 .name p {
   font-size: 1em;
+  margin: 0;
 }
 
 .card .meta {
-  margin: 0 24px;
+  margin: 5px 24px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.meta p {
+  color: #9E9E9E;
+  font-size: .5em;
+  margin: 0;
+}
+
+.meta .mdl-button {
+  text-align: right;
+  min-width: 0;
 }
 </style>
