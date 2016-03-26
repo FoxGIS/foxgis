@@ -15,7 +15,7 @@
         </nav>
       </div>
     </header>
-  
+
     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
       <span class="mdl-layout-title">在线快速制图平台</span>
       <nav class="mdl-navigation">
@@ -26,11 +26,11 @@
         <a class="mdl-navigation__link" v-link="{ path: 'login' }">登录</a>
       </nav>
     </div>
-  
+
     <main class="mdl-layout--content">
       <slot>Layout content</slot>
     </main>
-  
+
   </div>
 </div>
 </template>
@@ -71,7 +71,8 @@ export default {
 }
 
 .mdl-layout--content {
-  height: 100%;
+  height: calc(100% - 64px);
+  margin-top: 64px;
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
 }
 
