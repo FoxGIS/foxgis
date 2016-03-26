@@ -20,22 +20,58 @@ export default {
         name: '全国人口分布数据',
         layers: 5,
         size: '200 MB',
-        upload_time: '2016-3-25'
+        upload_time: '2016-3-25',
+        metadatas: [{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        }]
       },{
         name: '全国人口分布数据',
         layers: 5,
         size: '200 MB',
-        upload_time: '2016-3-25'
+        upload_time: '2016-3-25',
+        metadatas: [{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        }]
       },{
         name: '全国人口分布数据',
         layers: 5,
         size: '200 MB',
-        upload_time: '2016-3-25'
+        upload_time: '2016-3-25',
+        metadatas: [{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        }]
       },{
         name: '全国人口分布数据',
         layers: 5,
         size: '200 MB',
-        upload_time: '2016-3-25'
+        upload_time: '2016-3-25',
+        metadatas: [{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        },{
+          name: "数据1"
+        }]
       }]
     }
   }
