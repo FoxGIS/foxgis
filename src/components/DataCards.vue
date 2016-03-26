@@ -1,6 +1,6 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for="data in dataset" track-by="$index">
+  <div class="card" v-for="data in dataset" track-by="$index" v-on:click.stop="showDetails">
     <div class="name">
       <p>{{ data.name }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到制图工程</mdl-anchor-button>
@@ -9,6 +9,10 @@
       <p>{{ data.layers }}个图层 · {{ data.size }} · {{  data.upload_time }}</p>
       <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
     </div>
+    <div class="card-details">
+      <p>数据</p>
+      <li v-for="item in data.metadatas">{{item.name}}</li>
+    </div>
   </div>
 </div>
 </template>
@@ -16,7 +20,24 @@
 
 <script>
 export default {
-  props: ['dataset']
+  props: ['dataset'],
+  methods: {
+    showDetails: function (e) {
+      //移除之前的active
+      let activeCards = this.$el.querySelector(".active")
+      if(activeCards&&activeCards!==e.currentTarget){
+        activeCards.className = activeCards.className.replace(" active","")
+      }
+      //给当前的dom添加active
+      let claName = e.currentTarget.className
+      if(claName.indexOf("active")!=-1){
+        claName = claName.replace(" active","")
+      }else{
+        claName += " active"
+      }
+      e.currentTarget.className = claName
+    }
+  }
 }
 
 </script>
@@ -24,7 +45,7 @@ export default {
 
 <style>
 .card {
-  height: 120px;
+/*  height: 120px;*/
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
@@ -62,6 +83,41 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.card-details {
+  opacity: 0;
+  max-height: 0;
+  margin: 24px 24px 0;
+  transition: .2s;
+}
+
+.card-details p {
+  font-weight: bolder;
+}
+
+.card-details li {
+  list-style: none;
+  margin-left: 10px;
+  padding: 5px 0;
+}
+
+.active .card-details {
+  max-height: 4000px;
+  opacity: 1;
+}
+
+.active .meta {
+  display: none;
+}
+
+.active .name {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 12px 15px;
+}
+
+.active .name p {
+  font-size: 1.5rem;
 }
 
 .meta p {
