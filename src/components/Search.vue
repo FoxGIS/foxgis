@@ -1,7 +1,7 @@
 <template>
 <div class="foxgis-search">
   <i class="material-icons">search</i>
-  <input type="text" placeholder="{{ placeholder }}"/>  
+  <input type="text" placeholder="{{ placeholder }}"/>
 </div>
 </template>
 
@@ -27,11 +27,11 @@ export default {
   border: 1px solid #4285F4;
 }
 
-input {  
+input {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 9px 7px;
+  padding: 9px 0px;
   font: 16px arial,sans-serif;
   border: none;
   outline: none;
@@ -39,6 +39,6 @@ input {
 
 .material-icons {
   box-sizing: border-box;
-  padding: 8px 0;
+  padding: 8px 0 8px 8px;
 }
 </style>

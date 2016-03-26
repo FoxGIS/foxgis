@@ -7,16 +7,33 @@
     </div>
 
     <div class="search-results mdl-grid">
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card></foxgis-card>
+      </div>
     </div>
   </foxgis-layout>
 </div>
@@ -49,11 +66,18 @@
   margin-top: 20px;
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
   display: flex;
+  /*justify-content: center;*/
   flex-wrap: wrap;
 }
 
 .foxgis-card {
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  height: 0px;
+  padding-bottom: 100%;
+  margin: 0 auto;
+}
+
+.mdl-cell {
+
 }
 </style>
