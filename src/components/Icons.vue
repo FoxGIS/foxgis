@@ -7,7 +7,7 @@
     <mdl-button raised colored v-mdl-ripple-effect>上传图标</mdl-button>
   </div>
 
-  <foxgis-data-cards :dataset="dataset"></foxgis-data-cards>
+  <foxgis-data-cards-icon :dataset="dataset"></foxgis-data-cards-icon>
 </div>
 </template>
 

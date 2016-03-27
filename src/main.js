@@ -17,12 +17,16 @@ import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import Studio from './components/Studio'
-import Projects from './components/Projects'
+import Maps from './components/Maps'
 import Fonts from './components/Fonts'
 import Data from './components/Data'
 import Icons from './components/Icons'
 import Pictures from './components/Pictures'
-import DataCards from './components/DataCards'
+import DataCardsMap from './components/DataCards-Map'
+import DataCardsData from './components/DataCards-Data'
+import DataCardsIcon from './components/DataCards-Icon'
+import DataCardsFont from './components/DataCards-Font'
+import MapView from './components/MapView'
 
 
 Vue.config.debug = true
@@ -35,7 +39,10 @@ Vue.component('foxgis-card', Card)
 Vue.component('foxgis-search', Search)
 Vue.component('foxgis-table', Table)
 Vue.component('foxgis-map', Map)
-Vue.component('foxgis-data-cards', DataCards)
+Vue.component('foxgis-data-cards-map', DataCardsMap)
+Vue.component('foxgis-data-cards-data', DataCardsData)
+Vue.component('foxgis-data-cards-font', DataCardsIcon)
+Vue.component('foxgis-data-cards-icon', DataCardsFont)
 
 let router = new Router({
   history: false
@@ -61,10 +68,10 @@ router.map({
     component: Studio,
     subRoutes: {
       '/': {
-        component: Projects
+        component: Maps
       },
-      '/projects': {
-        component: Projects
+      '/maps': {
+        component: Maps
       },
       '/data': {
         component: Data
@@ -79,11 +86,14 @@ router.map({
         component: Pictures
       }
     }
+  },
+  '/mapview': {
+    component: MapView
   }
 })
 
 // router.alias({
-//   '/studio':'/studio/projects'
+//   '/studio':'/studio/Maps'
 // })
 // router.redirect({
 //   '*': '/'

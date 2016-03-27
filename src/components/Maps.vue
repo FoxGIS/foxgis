@@ -1,13 +1,13 @@
 <template>
 <div class="data">
-  <h5><i class="material-icons">text_format</i><span>字体</span></h5>
+  <h5><i class="material-icons">map</i><span>地图</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传字体</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect>新建地图</mdl-button>
   </div>
 
-  <foxgis-data-cards-font :dataset="dataset"></foxgis-data-cards-font>
+  <foxgis-data-cards-map :dataset="dataset"></foxgis-data-cards-map>
 </div>
 </template>
 
@@ -17,22 +17,22 @@ export default {
   data() {
     return {
       dataset: [{
-        name: '全国人口分布数据',
+        name: '全国人口分布地图',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '全国人口分布地图',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '全国人口分布地图',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '全国人口分布地图',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
