@@ -13,10 +13,30 @@
     </mdl-anchor-button>
 
     <div class="intro2 mdl-grid" id="intro2">
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col"></foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col">
+        <div class="feature-icon">
+          <i class="material-icons">build</i>
+        </div>
+        <div class="feature-description">
+          <h2>使用方便</h2>
+        </div>
+      </foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col">
+        <div class="feature-icon">
+          <i class="material-icons">brightness_high</i>
+        </div>
+        <div class="feature-description">
+          <h2>样式精美</h2>
+        </div>
+      </foxgis-card>
+      <foxgis-card class="mdl-cell mdl-cell--3-col">
+        <div class="feature-icon">
+          <i class="material-icons">print</i>
+        </div>
+        <div class="feature-description">
+          <h2>随时打印</h2>
+        </div>
+      </foxgis-card>
     </div>
 
     <foxgis-footer></foxgis-footer>
@@ -74,6 +94,42 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+
+.feature-icon {
+  height: 225px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0.7;
+  transition: all 0.5s;
+  cursor: pointer;
+  background-color: #46B6AC;
+}
+
+.feature-icon .material-icons {
+  font-size: 120px;
+  color: #fff;
+}
+
+.feature-icon:hover {
+  opacity: 1;
+}
+
+.feature-description {
+  border-top: 1px solid #fff;
+  height: 175px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  background-color: #3E4EB8;
+}
+
+.mdl-cell {
+  background-color: #e3e3e3;
 }
 
 </style>
