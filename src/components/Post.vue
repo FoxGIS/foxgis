@@ -2,7 +2,7 @@
 <div class="foxgis-post">
   <div class="post-header">
     <div class="post-title">
-      <h2>{{ post.title}}</h2>
+      <h3>{{ post.title}}</h3>
     </div>
     <div class="post-meta">
       <span> <i class="fa fa-calendar"></i>  {{ post.date }}</span>
