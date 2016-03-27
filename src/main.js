@@ -23,6 +23,7 @@ import Data from './components/Data'
 import Icons from './components/Icons'
 import Pictures from './components/Pictures'
 import DataCards from './components/DataCards'
+import Post from './components/Post.vue'
 
 
 Vue.config.debug = true
@@ -36,6 +37,7 @@ Vue.component('foxgis-search', Search)
 Vue.component('foxgis-table', Table)
 Vue.component('foxgis-map', Map)
 Vue.component('foxgis-data-cards', DataCards)
+Vue.component('foxgis-post', Post)
 
 let router = new Router({
   history: false
