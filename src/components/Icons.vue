@@ -17,22 +17,22 @@ export default {
   data() {
     return {
       dataset: [{
-        name: '全国人口分布数据',
+        name: '基本形状',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '公共交通图标',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '地形符号',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'
       },{
-        name: '全国人口分布数据',
+        name: '特殊标注',
         layers: 5,
         size: '200 MB',
         upload_time: '2016-3-25'

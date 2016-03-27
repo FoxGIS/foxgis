@@ -3,10 +3,11 @@
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
       <p>{{ data.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button>
+      <a v-link="{ path: '/mapeditor' }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
     </div>
     <div class="meta">
-      <p>{{ data.layers }}个图层 · {{ data.size }} · {{  data.upload_time }}</p>
+      <p>{{ data.layers }}个图层  · {{  data.upload_time }}</p>
+      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
     </div>
   </div>
 </div>

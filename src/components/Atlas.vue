@@ -12,33 +12,7 @@
           <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
           <div class="meta-info">
             <p>作者</p>
-            <div><p>时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-                    <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-        <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div></foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>时间:2016-03-27</p><i class="material-icons">info</i></div>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
           </div>
         </foxgis-card>
       </div>
@@ -47,21 +21,72 @@
           <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
           <div class="meta-info">
             <p>作者</p>
-            <div><p>时间:2016-03-27</p><i class="material-icons">info</i></div>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
           </div>
         </foxgis-card>
       </div>
       <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card></foxgis-card>
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+          </foxgis-card>
       </div>
       <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card></foxgis-card>
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
       </div>
       <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card></foxgis-card>
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
       </div>
       <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card></foxgis-card>
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
+      </div>
+      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+        <foxgis-card>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <div class="meta-info">
+            <p>作者</p>
+            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+          </div>
+        </foxgis-card>
       </div>
     </div>
   </foxgis-layout>
@@ -76,7 +101,7 @@
 
 <style scoped>
 .foxgis-layout * {
-  border: 1px solid red;
+  /*border: 1px solid red;*/
 }
 
 .search-bar {
@@ -101,8 +126,7 @@
 
 .foxgis-card {
   width: 100%;
-  height: 0px;
-  padding-bottom: 100%;
+  height: 300px;
   margin: 0 auto;
 }
 
@@ -113,7 +137,7 @@
 .header-info {
   margin: 0px;
   padding: 0px;
-  height: 270px;
+  height: 210px;
   background-image: url("http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg");
 }
 

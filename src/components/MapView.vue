@@ -8,6 +8,14 @@
 </template>
 
 <style>
+body {
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+}
+
 .tool {
   position: relative;
   padding: 10px;
@@ -26,6 +34,6 @@
 }
 
 #map {
-  height: 710px;
+  height: calc(100% - 51px);
 }
 </style>

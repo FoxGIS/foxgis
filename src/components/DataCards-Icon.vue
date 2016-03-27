@@ -3,11 +3,11 @@
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
       <p>{{ data.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到制图工程</mdl-anchor-button>
+<!--       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button> -->
     </div>
     <div class="meta">
-      <p>{{ data.layers }}个图层 · {{ data.size }} · {{  data.upload_time }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
+      <p>{{ data.layers }}种字体 ·  {{  data.upload_time }}</p>
+      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
     </div>
   </div>
 </div>

@@ -27,6 +27,7 @@ import DataCardsData from './components/DataCards-Data'
 import DataCardsIcon from './components/DataCards-Icon'
 import DataCardsFont from './components/DataCards-Font'
 import MapView from './components/MapView'
+import MapEditor from './components/MapEditor'
 
 
 Vue.config.debug = true
@@ -89,6 +90,9 @@ router.map({
   },
   '/mapview': {
     component: MapView
+  },
+  '/mapeditor': {
+    component: MapEditor
   }
 })
 
