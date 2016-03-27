@@ -22,11 +22,16 @@ import Fonts from './components/Fonts'
 import Data from './components/Data'
 import Icons from './components/Icons'
 import Pictures from './components/Pictures'
+<<<<<<< HEAD
 import DataCardsMap from './components/DataCards-Map'
 import DataCardsData from './components/DataCards-Data'
 import DataCardsIcon from './components/DataCards-Icon'
 import DataCardsFont from './components/DataCards-Font'
 import MapView from './components/MapView'
+=======
+import DataCards from './components/DataCards'
+import Post from './components/Post.vue'
+>>>>>>> dev_fwj
 
 
 Vue.config.debug = true
@@ -43,6 +48,8 @@ Vue.component('foxgis-data-cards-map', DataCardsMap)
 Vue.component('foxgis-data-cards-data', DataCardsData)
 Vue.component('foxgis-data-cards-font', DataCardsIcon)
 Vue.component('foxgis-data-cards-icon', DataCardsFont)
+Vue.component('foxgis-data-cards', DataCards)
+Vue.component('foxgis-post', Post)
 
 let router = new Router({
   history: false
