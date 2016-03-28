@@ -18,7 +18,7 @@
           <i class="material-icons">build</i>
         </div>
         <div class="feature-description">
-          <h2>使用方便</h2>
+          <h3>使用方便</h3>
         </div>
       </foxgis-card>
       <foxgis-card class="mdl-cell mdl-cell--3-col">
@@ -26,7 +26,7 @@
           <i class="material-icons">brightness_high</i>
         </div>
         <div class="feature-description">
-          <h2>样式精美</h2>
+          <h3>样式精美</h3>
         </div>
       </foxgis-card>
       <foxgis-card class="mdl-cell mdl-cell--3-col">
@@ -34,7 +34,7 @@
           <i class="material-icons">print</i>
         </div>
         <div class="feature-description">
-          <h2>随时打印</h2>
+          <h3>随时打印</h3>
         </div>
       </foxgis-card>
     </div>
