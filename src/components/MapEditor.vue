@@ -189,31 +189,68 @@
         e.dataTransfer.setData("dragid",e.target.id);
       },
       eledragover: function(e){
-        console.log('over');
-        if(e.currentTarget.id === "layer-control"){
-          return
-        }
-        e.currentTarget.id = e.currentTarget.querySelector("input[type='checkbox']").name
-        e.currentTarget.setAttribute("data-ref",'1')
+        // console.log('over');
+        // let currentTarget = e.currentTarget
+        // if(currentTarget.id === "layer-control"){
+        //   return
+        // }
+        // currentTarget.id = currentTarget.querySelector("input[type='checkbox']").name
+        // currentTarget.setAttribute("data-ref",'1')
+        // var lyindex = currentTarget.className.indexOf(' layerover')
+        // if(lyindex === -1){
+        //   currentTarget.className += " layerover"
+        // }
       },
       eledrop: function(e){
         console.log('drop');
         let dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
-        console.log(dragnode);
         let refnode = document.querySelector("div[data-ref='1']")
-
-        console.log(refnode);
         e.currentTarget.insertBefore(dragnode,refnode)
-        refnode.setAttribute("data-ref",'0')
+        //如果refnode是null，则插入底部
+        if(refnode){
+          refnode.setAttribute("data-ref",'0')
+          var lyindex = refnode.className.indexOf(' layerover')
+          if(lyindex!=-1){
+            refnode.className = refnode.className.replace(" layerover","")
+          }
+        }
+
+        //chang map style
+        let styleObj = this.map.getStyle()
+        var reflayer;
+        let draglayer;
+        for(var i=0,length=styleObj.layers.length;i<length;i++){
+          if(styleObj.layers[i].id === refnode.id){
+            reflayer = styleObj.layers[i+1]
+          }
+          if(styleObj.layers[i].id===dragnode.id){
+            draglayer = styleObj.layers[i]
+          }
+        }
+        if(reflayer.id!=draglayer.id){
+          this.map.removeLayer(draglayer.id)
+          this.map.addLayer(draglayer,reflayer.id)
+        }
       },
       eledragenter: function(e){
-        console.log('enter');
-        e.currentTarget.id = e.currentTarget.querySelector("input[type='checkbox']").name
-        e.currentTarget.setAttribute("data-ref",'1')
+        //console.log('enter');
+        let currentTarget = e.currentTarget
+        currentTarget.id = currentTarget.querySelector("input[type='checkbox']").name
+        currentTarget.setAttribute("data-ref",'1')
+        var lyindex = currentTarget.className.indexOf('layerover')
+        if(lyindex === -1){
+          e.currentTarget.className += " layerover"
+        }
+
       },
       eledragleave: function(e){
-        console.log('leave');
-        e.currentTarget.setAttribute("data-ref",'0')
+        //console.log('leave');
+        let currentTarget = e.currentTarget
+        currentTarget.setAttribute("data-ref",'0')
+        var lyindex = currentTarget.className.indexOf(' layerover')
+        if(lyindex!=-1){
+          currentTarget.className = currentTarget.className.replace(" layerover","")
+        }
       }
     },
     ready: function(){
@@ -286,9 +323,9 @@
 </script>
 <style>
 
-#edit-wrap * {
+/*#edit-wrap * {
   border: 1px solid red;
-}
+}*/
 
 body {
   height: 100%;
@@ -324,6 +361,10 @@ body {
   font-size: 12px;
   line-height: 12px;
   border:0;
+}
+
+.layerover {
+  border-top: #ff4081 1px solid;
 }
 
 .layer label {
