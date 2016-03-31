@@ -2,19 +2,18 @@
   <div id="edit-wrap">
     <div id="toc">
       <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-        <div class="layer" v-for="layer in layers" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
+        <div class="layer"  v-for="layer in layers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
           <label for="{{$index}}" v-on:click="showProperty">
             <i class="material-icons">keyboard_arrow_right</i>
             <i class="material-icons" style="display:none">keyboard_arrow_down</i>
             <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-            <span v-if="layer.items!==undefined">{{layer.name}}</span>
-            <span v-else>{{layer.id}}</span>
+            <span>{{layer.id}}</span>
           </label>
-          <input type="checkbox" id="{{$index}}" v-if="layer.items!==undefined" name="{{layer.name}}">
-          <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}">
+          <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
+          <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
           <div v-if="layer.items!==undefined" class="sublayer">
             <div v-for="item in layer.items" v-on:click="showProperty">
-              <span>{{item.id}}</span>
+              <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
             </div>
           </div>
         </div>
@@ -157,11 +156,34 @@
           if(checkbox.checked){
             is[0].style.display="none"
             is[1].style.display="inline-block"
+            //change layer的collapse
+            var metadata = this.map.getStyle()['metadata']
+            if(metadata&&metadata['mapbox:groups']){
+              var metadatagroup = metadata['mapbox:groups']
+            }
+            for(let index in metadatagroup){
+              if(ct.name == metadatagroup[index].name){
+                metadatagroup[index].collapsed = false
+              }
+            }
+            this.map.removeClass('metadata')
+            console.log(this.map.getStyle());
           }else{
             is[0].style.display="inline-block"
             is[1].style.display="none"
+            //change layer的collapse
+            var metadata = this.map.getStyle()['metadata']
+            if(metadata&&metadata['mapbox:groups']){
+              var metadatagroup = metadata['mapbox:groups']
+            }
+            for(let index in metadatagroup){
+              if(ct.name == metadatagroup[index].name){
+                metadatagroup[index].collapsed = true
+              }
+            }
           }
         }
+
       },
       change:function(e){
         let currentLayer = this.currentLayer
@@ -184,9 +206,13 @@
         }
       },
       eledragstart: function(e){
-        console.log(e);
-        e.target.id = e.target.querySelector("input[type='checkbox']").name
-        e.dataTransfer.setData("dragid",e.target.id);
+        if(e.target.tagName === 'DIV'){
+          e.target.id = e.target.querySelector("input[type='checkbox']").name
+          e.dataTransfer.setData("dragid",e.target.id);
+        }else if(e.target.tagName === 'SPAN'){
+          e.dataTransfer.setData("dragid",e.target.id);
+        }
+
       },
       eledragover: function(e){
         // console.log('over');
@@ -203,45 +229,159 @@
       },
       eledrop: function(e){
         console.log('drop');
-        let dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
-        let refnode = document.querySelector("div[data-ref='1']")
-        e.currentTarget.insertBefore(dragnode,refnode)
-        //如果refnode是null，则插入底部
-        if(refnode){
-          refnode.setAttribute("data-ref",'0')
-          var lyindex = refnode.className.indexOf(' layerover')
-          if(lyindex!=-1){
-            refnode.className = refnode.className.replace(" layerover","")
+        var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
+        var refnode = document.querySelector("*[data-ref='1']")
+        console.log(refnode);
+        console.log(dragnode);
+        //如果refnode是null，则不改变
+        if(refnode ==null){
+          return
+        }
+
+        //移除高亮
+        refnode.setAttribute("data-ref",'0')
+        var lyindex = refnode.className.indexOf(' layerover')
+        if(lyindex!=-1){
+          refnode.className = refnode.className.replace(" layerover","")
+        }
+
+        // 获取dragTocLayer refTocLayer
+        let refindex
+        let dragTocLayer
+        for(let i=0,length=this.layers.length;i<length;i++){
+          let name = this.layers[i].id
+          if(name == refnode.id){
+            refindex = i
+          }
+          if(this.layers[i].id === dragnode.id){
+            dragTocLayer = this.layers[i]
+          }
+        }
+        refindex = refindex>=0?refindex:0
+
+        //chang map style
+        console.log('change map');
+        var reflayer;
+        let draglayer;
+        var styleObj = this.map.getStyle()
+        var maplayers = styleObj.layers;
+        //如果refnode是group
+        var refsublayer = refnode.querySelectorAll("div.sublayer div span")
+        if(refsublayer&&refsublayer.length>0){
+          refnode = refsublayer[refsublayer.length-1]
+        }
+
+        //如果dragnode是group
+        var dragsublayer = dragnode.querySelectorAll("div.sublayer div span")
+        if(dragsublayer&&dragsublayer.length>0){
+          dragnode = dragsublayer[dragsublayer.length-1]
+        }
+
+        var mapreflayerindex
+        for(var i=0,length=maplayers.length;i<length;i++){
+
+          if(maplayers[i].id === refnode.id){
+            reflayer = maplayers[i+1]
+            mapreflayerindex = i
+          }
+
+          if(maplayers[i].id === dragnode.id){
+            draglayer = maplayers[i]
           }
         }
 
-        //chang map style
-        let styleObj = this.map.getStyle()
-        var reflayer;
-        let draglayer;
-        for(var i=0,length=styleObj.layers.length;i<length;i++){
-          if(styleObj.layers[i].id === refnode.id){
-            reflayer = styleObj.layers[i+1]
-          }
-          if(styleObj.layers[i].id===dragnode.id){
-            draglayer = styleObj.layers[i]
+        //如果dragnode 是sublayer
+        if(dragnode.tagName === "SPAN"){
+          delete draglayer['metadata']
+        }
+
+        //如果refnode是sublayer
+        if(refnode.tagName === "SPAN"){
+          //如果dragnode是group
+          if(dragTocLayer&&dragTocLayer.items){
+            //移动group
+            for(let j=dragTocLayer.items.length-1;j>=0;j--){
+              dragTocLayer.items[j]['metadata'] = {}
+              dragTocLayer.items[j]['metadata']['mapbox:group'] = maplayers[mapreflayerindex]['metadata']['mapbox:group']
+            }
+          }else{
+            draglayer['metadata'] = {}
+            draglayer['metadata']['mapbox:group'] = maplayers[mapreflayerindex]['metadata']['mapbox:group']
           }
         }
-        if(reflayer.id!=draglayer.id){
+
+
+
+
+        if(reflayer.id === draglayer.id){
+          return
+        }
+
+        if(dragTocLayer&&dragTocLayer.items){
+          //移动group
+          for(let j=dragTocLayer.items.length-1;j>=0;j--){
+            this.map.removeLayer(dragTocLayer.items[j].id)
+            this.map.addLayer(dragTocLayer.items[j],reflayer.id)
+          }
+        }else{
+          //单层移动
+          console.log('单层移动');
           this.map.removeLayer(draglayer.id)
           this.map.addLayer(draglayer,reflayer.id)
+
+        }
+
+        styleObj = this.map.getStyle();
+        this.layers = createTocLayer(styleObj)
+        console.log(this.layers);
+
+        //构建TocLayer
+        function createTocLayer(styleObj){
+          let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
+          let layers = styleObj['layers']
+          layers.reverse()
+          let mylayers = []
+          let layerIndex = -1
+          let checkedInputs = document.querySelectorAll("#layer-control input:checked")
+          for(let i=0,length=layers.length;i<length;i++){
+            let layer = layers[i]
+            if(layer['metadata']){
+              let layername = groups[layer['metadata']['mapbox:group']].name
+
+              if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
+                // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
+                mylayers[layerIndex]['items'].push(layer)
+              }else{
+                layerIndex++
+                mylayers[layerIndex] = {}
+                mylayers[layerIndex]['items'] = []
+                mylayers[layerIndex]['id'] = layername
+                mylayers[layerIndex]['items'].push(layer)
+                for(let j=checkedInputs.length-1;j>=0;j--){
+                  if(checkedInputs[j].name === layername){
+                    mylayers[layerIndex]['collapsed'] = false
+                  }else{
+                    mylayers[layerIndex]['collapsed'] = true
+                  }
+                }
+              }
+            }else{
+              layerIndex++
+              mylayers[layerIndex] = layer
+            }
+          }
+
+          return mylayers
         }
       },
       eledragenter: function(e){
         //console.log('enter');
         let currentTarget = e.currentTarget
-        currentTarget.id = currentTarget.querySelector("input[type='checkbox']").name
         currentTarget.setAttribute("data-ref",'1')
         var lyindex = currentTarget.className.indexOf('layerover')
         if(lyindex === -1){
-          e.currentTarget.className += " layerover"
+          currentTarget.className += " layerover"
         }
-
       },
       eledragleave: function(e){
         //console.log('leave');
@@ -269,31 +409,37 @@
         }
         if (this.status === 200) {
           initMap(this.response)
-          let groups = this.response['metadata']?['mapbox:groups']:[]
+          let groups = this.response['metadata']?this.response['metadata']['mapbox:groups']:{}
           let layers = this.response['layers']
-
+          that.sourceLayer = layers
           layers.reverse()
           that.currentLayer = layers[0]
-          console.log(layers[0]);
-          let mylayers = {}
+          let mylayers = []
+          let layerIndex = -1
           for(let i=0,length=layers.length;i<length;i++){
             let layer = layers[i]
             if(layer['metadata']){
-              if(mylayers[layer['metadata']['mapbox:group']]){
-                mylayers[layer['metadata']['mapbox:group']]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-                mylayers[layer['metadata']['mapbox:group']]['items'].push(layer)
+              let layername = groups[layer['metadata']['mapbox:group']].name
+              let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
+
+              if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
+                // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
+                mylayers[layerIndex]['items'].push(layer)
               }else{
-                mylayers[layer['metadata']['mapbox:group']]={}
-                mylayers[layer['metadata']['mapbox:group']]['items'] = []
-                mylayers[layer['metadata']['mapbox:group']]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-                mylayers[layer['metadata']['mapbox:group']]['items'].push(layer)
+                layerIndex++
+                mylayers[layerIndex] = {}
+                mylayers[layerIndex]['items'] = []
+                mylayers[layerIndex]['id'] = layername
+                mylayers[layerIndex]['collapsed'] = collapsed
+                mylayers[layerIndex]['items'].push(layer)
               }
             }else{
-              mylayers[layer.id] = layer
+              layerIndex++
+              mylayers[layerIndex] = layer
             }
           }
           that.layers = mylayers
-
+          console.log(mylayers);
         } else {
           console.log(this.responseText);
         }
@@ -316,7 +462,8 @@
       return {
         layers: [],
         map:{},
-        currentLayer:{}
+        currentLayer:{},
+        sourceLayer:[]
       }
     }
   }
