@@ -326,16 +326,16 @@
         // }
       },
       eledrop: function(e){
-        console.log('drop');
-        console.log(this.styleObj['metadata']);
+        //console.log('drop');
+
         var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
         var refnode = document.querySelector("*[data-ref='1']")
         let dragLayer
         let dragLayerId=dragnode.id
         let refLayerId = refnode.id
         let dragLayerIndex,refLayerIndex;
-        console.log(refnode);
-        console.log(dragnode);
+        // console.log(refnode);
+        // console.log(dragnode);
         //如果refnode是null，则不改变
         if(refnode ==null){
           return
@@ -421,11 +421,10 @@
             dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
           }
         }
-
-        console.log(this.styleObj);
-
         //change toc
+
         this.layers = createTocLayer(styleObj)
+
         //构建TocLayer
         function createTocLayer(style){
           let styleObj = JSON.parse(JSON.stringify(style))
@@ -458,6 +457,8 @@
 
           return mylayers
         }
+        let data = JSON.parse(JSON.stringify(this.styleObj))
+        this.$dispatch('style-change',data)
       },
       eledragenter: function(e){
         //console.log('enter');

@@ -25,32 +25,32 @@
       'map-style-change': function(newStyle){
 
         let comds = diff(this.originStyle,newStyle)
-
+        console.log(comds);
         for(var i=0,length=comds.length;i<length;i++){
           switch(comds[i].command){
             case "setPaintProperty":
               this.map.setPaintProperty.apply(this.map,comds[i].args)
               break
             case "setLayoutProperty":
-              this.map.setLayoutProperty(comds[i].args.join())
+              this.map.setLayoutProperty.apply(this.map,comds[i].args)
               break
             case "setStyle":
-              this.map.setStyle(comds[i].args.join())
+              this.map.setStyle.apply(this.map,comds[i].args)
               break
             case "addLayer":
-              this.map.addLayer(comds[i].args.join())
+              this.map.addLayer.apply(this.map,comds[i].args)
               break
             case "removeLayer":
-              this.map.removeLayer(comds[i].args.join())
+              this.map.removeLayer.apply(this.map,comds[i].args)
               break
             case "setFilter":
-              this.map.setFilter(comds[i].args.join())
+              this.map.setFilter.apply(this.map,comds[i].args)
               break
             case "addSource":
-              this.map.addSource(comds[i].args.join())
+              this.map.addSource.apply(this.map,comds[i].args)
               break
             case "removeSource":
-              this.map.removeSource(comds[i].args.join())
+              this.map.removeSource.apply(this.map,comds[i].args)
               break
           }
         }

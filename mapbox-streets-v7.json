@@ -40,7 +40,29 @@
       "fill-opacity": 1,
       "fill-antialias": false
     }
-  }],
+  },{
+        "id": "province",
+        "type": "fill",
+        "source": "mapbox://mapbox.mapbox-terrain-v2",
+        "source-layer": "landcover",
+        "paint": {
+            "fill-color": "red",
+            "fill-opacity": 1
+        }
+    }, {
+        "id": "province-line",
+        "type": "line",
+        "source": "mapbox://mapbox.mapbox-terrain-v2",
+        "source-layer": "landcover",
+        "layout": {
+            "line-cap": "round",
+            "line-join": "round"
+        },
+        "paint": {
+            "line-color": "black",
+            "line-width": 5
+        }
+    }],
   "owner": "nicki",
   "modified": "2015-04-20T22:52:06.997Z",
   "created": "2015-04-20T17:11:47.261Z",
