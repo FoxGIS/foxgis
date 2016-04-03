@@ -4,7 +4,7 @@ require('mapbox-gl/dist/mapbox-gl.css')
 
 import Vue from 'vue'
 import Router from 'vue-router'
-import Vmdl from 'vue-mdl'
+import VueMdl from 'vue-mdl'
 import Layout from './components/Layout'
 import Footer from './components/Footer'
 import Card from './components/Card'
@@ -34,11 +34,10 @@ import TOC from './components/MapEditorToc.vue'
 import MapEditorView from './components/MapEditorView.vue'
 
 
-
 Vue.config.debug = true
 Vue.use(Router)
+Vue.use(VueMdl)
 
-Vmdl.registerAll(Vue)
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
 Vue.component('foxgis-card', Card)

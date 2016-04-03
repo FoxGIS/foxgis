@@ -19,7 +19,7 @@
     ready: function(){
       let client = new XMLHttpRequest()
       let that = this
-      let url = "http://localhost:8080/mapbox-streets-v7.json"
+      let url = "/node_modules/mapbox-gl-styles/styles/streets-v7.json"
       client.open("GET", url)
       client.onreadystatechange = handler
       //client.responseType = "json"

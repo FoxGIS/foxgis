@@ -13,7 +13,7 @@ module.exports = {
     fs: "empty"
   },
   resolve: {
-    extensions: ['', '.js', '.vue'],
+    extensions: ['', '.js', '.vue', '.json'],
     alias: {
       webworkify: 'webworkify-webpack'
     }
