@@ -30,6 +30,8 @@ import MapView from './components/MapView'
 import MapEditor from './components/MapEditor'
 import DataCards from './components/DataCards'
 import Post from './components/Post.vue'
+import TOC from './components/MapEditorToc.vue'
+import MapEditorView from './components/MapEditorView.vue'
 
 
 
@@ -49,6 +51,8 @@ Vue.component('foxgis-data-cards-font', DataCardsIcon)
 Vue.component('foxgis-data-cards-icon', DataCardsFont)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-post', Post)
+Vue.component('foxgis-toc', TOC)
+Vue.component('foxgis-drafmap',MapEditorView)
 
 let router = new Router({
   history: false
