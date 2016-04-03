@@ -18,9 +18,11 @@
         })
         map.addControl(new mapboxgl.Navigation())
         this.map = map;
+        console.log(map.getStyle());
       },
-      'style-change': function(style){
-
+      'map-style-change': function(style){
+        console.log('map-style-change');
+        console.log(style);
       }
     },
     data: function(){

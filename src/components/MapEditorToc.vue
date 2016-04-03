@@ -26,10 +26,18 @@
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'"/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}">
-            <input type="checkbox" value="{{checked}}" v-model=value v-if="name=='visibility'&&value=='visible'" checked v-on:change='change' name="{{name}}">
-            <input type="checkbox" value="{{checked}}" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}">
+            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'" data-type='paint'/>
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <!-- layout -->
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value">
+            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'" data-type='layout'/>
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -37,11 +45,21 @@
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value" v-if="value.base!==undefined">
-            <input type="text" value="{{value.base}}" v-on:change='change'/>
+            <input type="text" value="{{value.base}}" v-on:change='change' data-type='paint' />
           </div>
           <div class="property-value" v-else>
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}"/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value" v-if="value.base!==undefined">
+            <input type="text" value="{{value.base}}" v-on:change='change' data-type='layout'/>
+          </div>
+          <div class="property-value" v-else>
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout'/>
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -49,8 +67,15 @@
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}"/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -58,17 +83,31 @@
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}"/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='circle'">
-        <div v-for="(name,value) in currentLayer.paint">
+        <div v-for="(name,value) in currentLayer.paint">circle
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}"/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -76,7 +115,13 @@
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}"/>
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+        </div>
+        <div v-for="(name,value) in currentLayer.layout">
+          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-value">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -85,6 +130,7 @@
 </template>
 
 <script>
+
   export default {
     props: ['styleObj'],
     methods: {
@@ -101,41 +147,74 @@
         //show property
         let defaultProperty = {
           'background': {
-            "background-color": "#000000",
-            "background-opacity": 1,
-            "visibility": "visible"
+            'paint': {
+              "background-color": "#000000",
+              "background-opacity": 1
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           },
           "fill": {
-            "fill-color": "#000000",
-            "fill-opacity": 1
+            'paint': {
+              "fill-color": "#000000",
+              "fill-opacity": 1
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           },
           "line": {
-            "line-color": "#000000",
-            "line-opacity": 1
+            'paint': {
+              "line-color": "#000000",
+              "line-opacity": 1
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           },
           "raster": {
-            "raster-opacity": 1,
-            "raster-contrast": 0
+            'paint': {
+              "raster-opacity": 1,
+              "raster-contrast": 0
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           },
           "circle": {
-            "circle-color": "#000000",
-            "circle-radius": 5
+            'paint': {
+              "circle-color": "#000000",
+              "circle-radius": 5
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           },
           'symbol': {
-            'icon-opacity':1,
-            'icon-color': "#000000",
-            'text-color': "#000000",
-            'icon-halo-color': "rgba(0,0,0,0)",
-            'icon-halo-width': 0,
-            'text-halo-color': "#000000",
-            'text-halo-width': 1
+            'paint': {
+              'icon-opacity':1,
+              'icon-color': "#000000",
+              'text-color': "#000000",
+              'icon-halo-color': "rgba(0,0,0,0)",
+              'icon-halo-width': 0,
+              'text-halo-color': "#000000",
+              'text-halo-width': 1
+            },
+            'layout': {
+              "visibility": "visible"
+            }
           }
         }
-
-        for(name in this.currentLayer.paint){
-          defaultProperty[this.currentLayer['type']][name] = this.currentLayer.paint[name];
+        for(let name in this.currentLayer.paint){
+          defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
         }
-        this.currentLayer.paint = defaultProperty[this.currentLayer['type']]
+        for(let name in this.currentLayer.layout){
+          defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
+        }
+        this.currentLayer.paint = defaultProperty[this.currentLayer['type']]['paint']
+        this.currentLayer.layout = defaultProperty[this.currentLayer['type']]['layout']
+        console.log(this.currentLayer);
       },
       show:function(e){
         //防止触发两次
@@ -181,22 +260,37 @@
             }
           }
         }
-
       },
       change:function(e){
+        console.log('change');
         let currentLayer = this.currentLayer
-        console.log(currentLayer);
+        let layers = this.styleObj.layers
         let targetDom = e.target
+        console.log(e);
         var value = targetDom.value
+
         var temp = Number(value)
         if(!isNaN(temp)){
           value = temp
         }
+        if(targetDom['data-type'] === 'paint'){
+          currentLayer.paint[targetDom.name] = value
+        }
+
+        if(targetDom['data-type'] === 'layout'){
+          currentLayer.layout[targetDom.name] = value
+        }
+
+        let data = JSON.parse(JSON.stringify(this.styleObj))
+        console.log(value);
+        this.$dispatch('style-change',data)
+
         // if(targetDom.type === "text" && targetDom.name.indexOf("color")==-1){
         //   var temp = Number(value)
         //   if(!isNaN(temp)){
         //     this.map.setPaintProperty(currentLayer.id,targetDom.name,temp)
         //   }
+        // }
 
         // }else{
         //   this.map.setPaintProperty(currentLayer.id,targetDom.name,value)
@@ -388,6 +482,7 @@
     },
     events: {
       'toc-init': function(style){
+          console.log(style);
           let styleObj = this.styleObj = style
           let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
           let layers = styleObj['layers']
@@ -430,6 +525,7 @@
       }
     }
   }
+
 </script>
 
 <style>

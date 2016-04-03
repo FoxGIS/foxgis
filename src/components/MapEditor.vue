@@ -1,6 +1,6 @@
 <template>
   <div id="edit-wrap">
-    <foxgis-toc :style-obj='styleObj'></foxgis-toc>
+    <foxgis-toc :style-obj='styleObj' v-on:style-change='styleChange'></foxgis-toc>
     <foxgis-drafmap></foxgis-drafmap>
   </div>
 </template>
@@ -9,14 +9,25 @@
   import mapboxgl from 'mapbox-gl'
   import { diff } from 'mapbox-gl-style-spec'
   export default {
+    methods: {
+      'styleChange': function(style){
+        let currentStyleObj = JSON.parse(JSON.stringify(this.originStyle))
+        let comds = diff(style,currentStyleObj)
+        //todo change the map
+        console.log(currentStyleObj);
+        console.log(style);
+        console.log(comds);
+        this.$broadcast('map-style-change',comds)
+      }
+    },
     ready: function(){
       let client = new XMLHttpRequest()
       let that = this
-      let url = "https://api.mapbox.com/styles/v1/mapbox/streets-v8?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA"
+      let url = "http://localhost:8080/mapbox-streets-v7.json"
       client.open("GET", url)
       client.onreadystatechange = handler
-      client.responseType = "json"
-      client.setRequestHeader("Accept", "application/json")
+      //client.responseType = "json"
+      //client.setRequestHeader("Accept", "application/json")
       client.send()
 
       function handler() {
@@ -24,9 +35,18 @@
           return
         }
         if (this.status === 200) {
-          that.styleObj = this.response
-          that.$broadcast('toc-init', this.response)
-          that.$broadcast('map-init', this.response,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+          console.log(this);
+          let data = this.response
+          if(typeof data === 'string'){
+            that.originStyle = JSON.parse(data)
+            var tocdata = JSON.parse(data)
+          }else{
+            that.originStyle = JSON.parse(JSON.stringify(data))
+            var tocdata = JSON.parse(JSON.stringify(data))
+          }
+
+          that.$broadcast('toc-init', tocdata)
+          that.$broadcast('map-init', that.originStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
         } else {
           console.log(this.responseText);
         }
@@ -38,7 +58,7 @@
         layers: [],
         map:{},
         currentLayer:{},
-        styleObj:{}
+        originStyle:{}
       }
     }
   }

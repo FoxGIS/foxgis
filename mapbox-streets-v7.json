@@ -1,0 +1,48 @@
+{
+  "version": 8,
+  "name": "mapbox-streets",
+  "sources": {
+    "mapbox://mapbox.mapbox-streets-v6": {
+      "url": "mapbox://mapbox.mapbox-streets-v6",
+      "type": "vector"
+    },
+    "mapbox://mapbox.mapbox-terrain-v2": {
+      "url": "mapbox://mapbox.mapbox-terrain-v2",
+      "type": "vector"
+    }
+  },
+  "sprite": "https://www.mapbox.com/mapbox-gl-styles/sprites/mapbox-streets",
+  "glyphs": "mapbox://fontstack/{fontstack}/{range}.pbf",
+  "layers": [{
+    "id": "background",
+    "type": "background",
+    "minzoom": 0,
+    "maxzoom": 22,
+    "layout": {
+      "visibility": "visible"
+    },
+    "paint": {
+      "background-color": "#ff00ff"
+    }
+  }, {
+    "id": "landcover_crop",
+    "type": "fill",
+    "source": "mapbox://mapbox.mapbox-terrain-v2",
+    "source-layer": "landcover",
+    "minzoom": 0,
+    "maxzoom": 22,
+    "filter": ["all", ["==", "class", "crop"]],
+    "layout": {
+      "visibility": "visible"
+    },
+    "paint": {
+      "fill-color": "#ff11dd",
+      "fill-opacity": 1,
+      "fill-antialias": false
+    }
+  }],
+  "owner": "nicki",
+  "modified": "2015-04-20T22:52:06.997Z",
+  "created": "2015-04-20T17:11:47.261Z",
+  "id": "nicki.be444c8f"
+}
