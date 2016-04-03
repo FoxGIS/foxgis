@@ -27,6 +27,7 @@
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'" data-type='paint'/>
+            <input type="text" value="{{value}}" number v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
@@ -132,7 +133,6 @@
 <script>
 
   export default {
-    props: ['styleObj'],
     methods: {
       showProperty:function(e){
         let currentTarget = e.currentTarget
@@ -266,7 +266,6 @@
         let currentLayer = this.currentLayer
         let layers = this.styleObj.layers
         let targetDom = e.target
-        console.log(e);
         var value = targetDom.value
 
         var temp = Number(value)
@@ -282,7 +281,6 @@
         }
 
         let data = JSON.parse(JSON.stringify(this.styleObj))
-        console.log(value);
         this.$dispatch('style-change',data)
 
         // if(targetDom.type === "text" && targetDom.name.indexOf("color")==-1){
@@ -482,46 +480,49 @@
     },
     events: {
       'toc-init': function(style){
-          console.log(style);
-          let styleObj = this.styleObj = style
-          let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
-          let layers = styleObj['layers']
-          layers.reverse()
-          this.currentLayer = layers[0]
-          let mylayers = []
-          let layerIndex = -1
-          for(let i=0,length=layers.length;i<length;i++){
-            let layer = layers[i]
-            if(layer['metadata']){
-              let layername = groups[layer['metadata']['mapbox:group']].name
-              let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
+          this.styleObj = JSON.parse(JSON.stringify(style))
+          this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
+          this.layers = createTocLayer(style)
 
-              if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
-                // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-                mylayers[layerIndex]['items'].push(layer)
+          function createTocLayer(style){
+            let styleObj = JSON.parse(JSON.stringify(style))
+            let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
+            let layers = styleObj['layers']
+            layers.reverse()
+
+            let mylayers = []
+            let layerIndex = -1
+            for(let i=0,length=layers.length;i<length;i++){
+              let layer = layers[i]
+              if(layer['metadata']){
+                let layername = groups[layer['metadata']['mapbox:group']].name
+                let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
+
+                if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
+                  // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
+                  mylayers[layerIndex]['items'].push(layer)
+                }else{
+                  layerIndex++
+                  mylayers[layerIndex] = {}
+                  mylayers[layerIndex]['items'] = []
+                  mylayers[layerIndex]['id'] = layername
+                  mylayers[layerIndex]['collapsed'] = collapsed
+                  mylayers[layerIndex]['items'].push(layer)
+                }
               }else{
                 layerIndex++
-                mylayers[layerIndex] = {}
-                mylayers[layerIndex]['items'] = []
-                mylayers[layerIndex]['id'] = layername
-                mylayers[layerIndex]['collapsed'] = collapsed
-                mylayers[layerIndex]['items'].push(layer)
+                mylayers[layerIndex] = layer
               }
-            }else{
-              layerIndex++
-              mylayers[layerIndex] = layer
             }
+            return mylayers
           }
-          this.layers = mylayers
-      },
-      'style-change': function (){
-
       }
     },
     data: function() {
       return {
         layers: [],
-        currentLayer: {}
+        currentLayer: {},
+        styleObj: {}
       }
     }
   }

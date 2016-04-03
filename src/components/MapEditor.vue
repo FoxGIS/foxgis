@@ -6,18 +6,13 @@
 </template>
 
 <script>
+
   import mapboxgl from 'mapbox-gl'
-  import { diff } from 'mapbox-gl-style-spec'
+
   export default {
     methods: {
       'styleChange': function(style){
-        let currentStyleObj = JSON.parse(JSON.stringify(this.originStyle))
-        let comds = diff(style,currentStyleObj)
-        //todo change the map
-        console.log(currentStyleObj);
-        console.log(style);
-        console.log(comds);
-        this.$broadcast('map-style-change',comds)
+        this.$broadcast('map-style-change',style)
       }
     },
     ready: function(){
@@ -35,18 +30,19 @@
           return
         }
         if (this.status === 200) {
-          console.log(this);
+
           let data = this.response
+          let initStyle
           if(typeof data === 'string'){
-            that.originStyle = JSON.parse(data)
+            initStyle = JSON.parse(data)
             var tocdata = JSON.parse(data)
           }else{
-            that.originStyle = JSON.parse(JSON.stringify(data))
+            initStyle = JSON.parse(JSON.stringify(data))
             var tocdata = JSON.parse(JSON.stringify(data))
           }
 
           that.$broadcast('toc-init', tocdata)
-          that.$broadcast('map-init', that.originStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+          that.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
         } else {
           console.log(this.responseText);
         }
