@@ -39,12 +39,11 @@ module.exports = {
       test: /\.css$/,
       loader: 'vue-style!css'
     }, {
-      test: /\.(png|jpg|jpeg|gif)$/,
-      loader: 'url',
-      query: {
-        limit: 10000,
-        name: '[name].[ext]'
-      }
+      test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+      loader: 'url?limit=10000'
+    }, {
+      test: /\.(ttf|eot)$/,
+      loader: 'file'
     }, {
       test: /\.js$/,
       include: path.resolve(__dirname, 'node_modules/mapbox-gl/js/render/shaders.js'),

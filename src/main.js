@@ -1,5 +1,6 @@
 require('material-design-lite/material.js')
 require('material-design-lite/dist/material.min.css')
+require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
 
 import Vue from 'vue'
