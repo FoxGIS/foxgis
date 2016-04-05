@@ -530,7 +530,11 @@
 
 </script>
 
+<<<<<<< HEAD
 <style scoped>
+=======
+<style>
+>>>>>>> dev
 
 #toc {
   width:200px;
