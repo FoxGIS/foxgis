@@ -6,13 +6,13 @@
           <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
           <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
           <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-          <span>{{layer.id}}</span>
+          <i class="material-icons" v-if="layer.items==undefined">title</i><span>{{layer.id}}</span>
         </label>
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
           <div v-for="item in layer.items" v-on:click="showProperty">
-            <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
+            <i class="material-icons">title</i><span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
           </div>
         </div>
       </div>
@@ -532,14 +532,13 @@
 
 <style scoped>
 
-
 #layer-control {
   padding-top: 5px;
   border:solid 1px rgba(0,0,0,0.5);
   background-color: rgba(237, 233, 217,0.4);
-  height: 84%;
   overflow-y: auto;
   overflow-x: hidden;
+  height: calc(100% - 75px);
 }
 
 .layer {
@@ -560,6 +559,7 @@
 
 .layer i {
   font-size: 12px;
+  vertical-align: middle;
 }
 
 .layer input[type='checkbox'] {

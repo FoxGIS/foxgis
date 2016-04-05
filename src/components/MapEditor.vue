@@ -1,4 +1,5 @@
 <template>
+  <div id="header"></div>
   <div id="edit-wrap">
     <foxgis-toc :style-obj='styleObj' v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <foxgis-drafmap></foxgis-drafmap>
@@ -61,17 +62,26 @@ export default {
 }
 </script>
 <style scoped>
+#header {
+  height: 50px;
+  background-image: url('../assets/editor-header.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #2061C6;
+  box-shadow: 0 5px 5px 0 rgba(32,97,198,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  margin-bottom: 5px;
+}
 
 #edit-wrap {
   display: flex;
-  height: 100%;
+  height: calc(100% - 50px);
 }
 
 #toc-container {
-  width:200px;
-  padding: 10px 0px 0 10px;
-  height: 100%;
+  width: 200px;
+  height: calc(100% - 55px);
   box-sizing: border-box;
+  position: absolute;
 }
 
 </style>

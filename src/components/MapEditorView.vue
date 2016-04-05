@@ -72,7 +72,8 @@
   flex:1;
   flex-grow:1;
   position: absolute;
-  height: 100%;
+  left: 200px;
+  height: calc(100% - 55px);
   width: calc(100% - 200px);
   box-sizing: border-box;
 }
