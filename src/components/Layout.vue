@@ -47,10 +47,6 @@ export default {
 
 
 <style scoped>
-.mdl-layout__header {
-  position: fixed;
-}
-
 .mdl-layout.has-drawer .mdl-layout__header > .mdl-layout-icon {
   display: block;
   width: 48px;
@@ -71,9 +67,11 @@ export default {
 }
 
 .mdl-layout--content {
-  height: calc(100% - 64px);
-  margin-top: 64px;
+  height: inherit;
+  min-height: calc(100% - 64px);
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
+  display: flex;
+  flex-flow: column;
 }
 
 </style>

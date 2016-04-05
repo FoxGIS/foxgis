@@ -1,6 +1,7 @@
 <template>
-<div>
+<div class="foxgis-home">
   <foxgis-layout>
+
     <div class="intro1">
       <div class="slogan">
         <h2>欣赏地图之美，探索地图魅力</h2>
@@ -8,38 +9,8 @@
       <mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
     </div>
 
-    <mdl-anchor-button class="down" href="#intro2" v-mdl-ripple-effect colored fab>
-      <i class="material-icons">keyboard_arrow_down</i>
-    </mdl-anchor-button>
-
-    <div class="intro2 mdl-grid" id="intro2">
-      <foxgis-card class="mdl-cell mdl-cell--3-col">
-        <div class="feature-icon">
-          <i class="material-icons">build</i>
-        </div>
-        <div class="feature-description">
-          <h3>使用方便</h3>
-        </div>
-      </foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col">
-        <div class="feature-icon">
-          <i class="material-icons">brightness_high</i>
-        </div>
-        <div class="feature-description">
-          <h3>样式精美</h3>
-        </div>
-      </foxgis-card>
-      <foxgis-card class="mdl-cell mdl-cell--3-col">
-        <div class="feature-icon">
-          <i class="material-icons">print</i>
-        </div>
-        <div class="feature-description">
-          <h3>随时打印</h3>
-        </div>
-      </foxgis-card>
-    </div>
-
     <foxgis-footer></foxgis-footer>
+
   </foxgis-layout>
 </div>
 </template>
@@ -54,7 +25,7 @@
 .intro1 {
   background-image: url('../assets/intro1.jpg');
   background-size: cover;
-  height: 100%;
+  min-height: calc(100% - 64px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -79,57 +50,6 @@
   justify-content: center;
   align-items: center;
   border-radius: 30px;
-}
-
-.down {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  transition: all 0.35s;
-}
-
-.intro2 {
-  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
-  padding: 100px 40px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.feature-icon {
-  height: 225px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  opacity: 0.7;
-  transition: all 0.5s;
-  cursor: pointer;
-  background-color: #46B6AC;
-}
-
-.feature-icon .material-icons {
-  font-size: 120px;
-  color: #fff;
-}
-
-.feature-icon:hover {
-  opacity: 1;
-}
-
-.feature-description {
-  border-top: 1px solid #fff;
-  height: 175px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #fff;
-  background-color: #3E4EB8;
-}
-
-.mdl-cell {
-  background-color: #e3e3e3;
 }
 
 </style>

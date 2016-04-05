@@ -19,7 +19,7 @@
     ready: function(){
       let client = new XMLHttpRequest()
       let that = this
-      let url = "/node_modules/mapbox-gl-styles/styles/streets-v7.json"
+      let url = "/node_modules/mapbox-gl-styles/styles/streets-v8.json"
       client.open("GET", url)
       client.onreadystatechange = handler
       //client.responseType = "json"
@@ -65,14 +65,6 @@
 /*#edit-wrap * {
   border: 1px solid red;
 }*/
-
-body {
-  height: 100%;
-}
-
-#app {
-  height: 100%;
-}
 
 #edit-wrap {
   display: flex;

@@ -38,7 +38,6 @@ input {
 }
 
 .material-icons {
-  box-sizing: border-box;
-  padding: 8px 0 8px 8px;
+  padding: 8px 0px 8px 8px;
 }
 </style>
