@@ -1,5 +1,5 @@
 <template>
-  <div id="toc">
+  <div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer"  v-for="layer in layers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
         <label for="{{$index}}" v-on:click="showProperty">
@@ -530,18 +530,8 @@
 
 </script>
 
-<<<<<<< HEAD
 <style scoped>
-=======
-<style>
->>>>>>> dev
 
-#toc {
-  width:200px;
-  padding: 10px 0px 0 10px;
-  height: 100%;
-  box-sizing: border-box;
-}
 
 #layer-control {
   padding-top: 5px;

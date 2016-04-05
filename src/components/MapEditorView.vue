@@ -1,5 +1,7 @@
 <template>
-  <div id="draft-map"></div>
+
+  <div id="map-container"></div>
+
 </template>
 
 <script>
@@ -11,7 +13,7 @@
         this.originStyle = style
         mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'
         let map = new mapboxgl.Map({
-          container: 'draft-map',
+          container: 'map-container',
           style: style,
           center: [-245.7129, 30.5354],
           zoom: 12,
@@ -64,3 +66,15 @@
     }
   }
 </script>
+
+<style scoped>
+#map-container {
+  flex:1;
+  flex-grow:1;
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 200px);
+  box-sizing: border-box;
+}
+
+</style>
