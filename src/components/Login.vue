@@ -30,7 +30,7 @@
 
 <style scoped>
 .wrapper {
-  height: 100%;
+  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;

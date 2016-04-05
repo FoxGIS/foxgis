@@ -530,7 +530,7 @@
 
 </script>
 
-<style>
+<style scoped>
 
 #toc {
   width:200px;

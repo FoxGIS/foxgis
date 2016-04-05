@@ -66,14 +66,6 @@
   border: 1px solid red;
 }*/
 
-body {
-  height: 100%;
-}
-
-#app {
-  height: 100%;
-}
-
 #edit-wrap {
   display: flex;
   height: 100%;

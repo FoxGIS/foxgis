@@ -1,6 +1,7 @@
 <template>
 <div class="atlas">
   <foxgis-layout>
+    <div class="content">
     <div class="search-bar">
       <foxgis-search></foxgis-search>
       <mdl-button raised accent v-mdl-ripple-effect>搜索</mdl-button>
@@ -89,6 +90,7 @@
         </foxgis-card>
       </div>
     </div>
+    </div>
   </foxgis-layout>
 </div>
 </template>
@@ -102,6 +104,11 @@
 <style scoped>
 .foxgis-layout * {
   /*border: 1px solid red;*/
+}
+
+.content {
+  float: left;
+  width: 100%;
 }
 
 .search-bar {
