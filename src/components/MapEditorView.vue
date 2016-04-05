@@ -56,6 +56,7 @@
               break
           }
         }
+        this.originStyle = newStyle
       }
     },
     data: function(){

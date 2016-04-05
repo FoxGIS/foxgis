@@ -22,12 +22,13 @@
       <mdl-anchor-button accent raised v-mdl-ripple-effect>打印</mdl-anchor-button>
     </div>
     <div id="property-panel">
+      <div id="property-header">{{currentLayer.id}}</div>
       <div v-if="currentLayer.type=='background'">
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'" data-type='paint'/>
-            <input type="text" value="{{value}}" number v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
+            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
+            <input type="text" value="{{value}}" number v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
@@ -35,9 +36,7 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-opacity'||name=='background-color'" data-type='layout'/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
@@ -59,8 +58,10 @@
             <input type="text" value="{{value.base}}" v-on:change='change' data-type='layout'/>
           </div>
           <div class="property-value" v-else>
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout'/>
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -75,8 +76,10 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -91,8 +94,10 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -107,8 +112,10 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -122,7 +129,9 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
@@ -141,7 +150,7 @@
         let layers = styleObj.layers
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id==idname.textContent){
-            this.currentLayer = layers[i]
+            this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
           }
         }
         //show property
@@ -272,37 +281,29 @@
         if(!isNaN(temp)){
           value = temp
         }
-        if(targetDom['data-type'] === 'paint'){
-          currentLayer.paint[targetDom.name] = value
+
+        //visibility
+        if(targetDom.type === "checkbox"){
+          if(targetDom.checked){
+
+            value = 'visible'
+          }else{
+            value = 'none'
+          }
         }
 
-        if(targetDom['data-type'] === 'layout'){
-          currentLayer.layout[targetDom.name] = value
-        }
+        currentLayer[targetDom.dataset.type][targetDom.name] = value
 
+        //同时更新style
+        let styleObj = this.styleObj
+        for(let i=0,length=layers.length;i<length;i++){
+          if(layers[i].id==this.currentLayer.id){
+            layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
+          }
+        }
         let data = JSON.parse(JSON.stringify(this.styleObj))
         this.$dispatch('style-change',data)
 
-        // if(targetDom.type === "text" && targetDom.name.indexOf("color")==-1){
-        //   var temp = Number(value)
-        //   if(!isNaN(temp)){
-        //     this.map.setPaintProperty(currentLayer.id,targetDom.name,temp)
-        //   }
-        // }
-
-        // }else{
-        //   this.map.setPaintProperty(currentLayer.id,targetDom.name,value)
-        // }
-
-        // if(targetDom.name === "visibility"){
-        //   this.map.setLayoutProperty(currentLayer.id,targetDom.name,value)
-        // }
-        // for(let j=this.styleObj.layers.length-1;j>-1;j--){
-        //   if(this.styleObj.layers[j].id === currentLayer.id){
-        //     this.styleObj.layers[j].paint[targetDom.name] = value
-        //   }
-        // }
-        //this.map.setStyle(this.styleObj)
       },
       eledragstart: function(e){
         if(e.target.tagName === 'DIV'){
@@ -482,7 +483,7 @@
     events: {
       'toc-init': function(style){
           this.styleObj = JSON.parse(JSON.stringify(style))
-          this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
+          this.currentLayer = JSON.parse(JSON.stringify(this.styleObj.layers[this.styleObj.layers.length-1]))
           this.layers = createTocLayer(style)
 
           function createTocLayer(style){
@@ -587,12 +588,19 @@
 
 #property-panel {
   position: absolute;
-  width:300px;
+  width: 300px;
   height: 100%;
   background-color: rgba(0,0,0,0.3);
   left: 200px;
-  top:0px;
+  top: 0px;
   z-index: 1;
+}
+
+#property-header {
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  margin-bottom: 3px;
+  padding-left: 3px;
 }
 
 #property-panel .property-name {

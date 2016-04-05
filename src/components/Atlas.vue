@@ -7,85 +7,19 @@
       <mdl-button raised accent v-mdl-ripple-effect>搜索</mdl-button>
     </div>
 
+    <div id="search-category">
+      <label><input type="radio" />地图</label>
+      <label><input type="radio" />地图</label>
+      <label><input type="radio" />地图</label>
+    </div>
+
     <div class="search-results mdl-grid">
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+      <div v-for="i in 10" class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
         <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
+          <a v-link="{ path: '/mapview' }"><div class="header-info" v-bind:style=atlas[0].thumb ></div></a>
           <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-          </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
-          </div>
-        </foxgis-card>
-      </div>
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-        <foxgis-card>
-          <a v-link="{ path: '/mapview' }"><div class="header-info" ></div></a>
-          <div class="meta-info">
-            <p>作者</p>
-            <div><p>创建时间:2016-03-27</p><i class="material-icons">info</i></div>
+            <p>{{atlas[0].author}}</p>
+            <div><p>创建时间:{{atlas[0].createtime}}</p><i class="material-icons">info</i></div>
           </div>
         </foxgis-card>
       </div>
@@ -97,7 +31,19 @@
 
 
 <script>
-
+export default {
+  data: function(){
+    return {
+      atlas: [{
+        author: '作者',
+        createtime: "2016-03-27",
+        thumb: {
+          "background-image":"url('http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg')"
+        }
+      }]
+    }
+  }
+}
 </script>
 
 
@@ -116,6 +62,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#search-category {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .mdl-button {
