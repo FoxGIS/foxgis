@@ -2,19 +2,31 @@
   <div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer"  v-for="layer in layers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
-        <label for="{{$index}}" v-on:click="showProperty">
+        <a><label for="{{$index}}" v-on:click="showProperty">
           <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
           <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
           <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-          <i class="material-icons" v-if="layer.items==undefined">title</i><span>{{layer.id}}</span>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='symbol'">grade</i>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='line'">remove</i>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='background'">filter_hdr</i>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='fill'">filter_b_and_w</i>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='circle'">lens</i>
+          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='raster'">image</i>
+          <span>{{layer.id}}</span>
         </label>
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
           <div v-for="item in layer.items" v-on:click="showProperty">
-            <i class="material-icons">title</i><span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
+            <i class="material-icons" v-if="item.type=='symbol'">grade</i>
+            <i class="material-icons" v-if="item.type=='line'">remove</i>
+            <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
+            <i class="material-icons" v-if="item.type=='fill'">filter_b_and_w</i>
+            <i class="material-icons" v-if="item.type=='circle'">lens</i>
+            <i class="material-icons" v-if="item.type=='raster'">image</i>
+            <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
           </div>
-        </div>
+        </div></a>
       </div>
     </div>
     <div id="map-tool">
@@ -67,46 +79,87 @@
       </div>
       <div v-if="currentLayer.type=='fill'">
         <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value">
+          <div class="property-name"><span>{{name}}</span></div>
+          <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
+          <div class="property-value" v-if="name=='fill-translate-anchor'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+              <option value="map" v-bind:value>map</option>
+              <option value="viewport" v-bind:value>viewport</option>
+            </select>
+          </div>
+          <div class="property-value" v-if="name=='fill-antialias'">
+            <input type="checkbox" v-if="value==true" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="checkbox" v-else v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+
         </div>
         <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
+          <div class="property-name"><span>{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-else v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='line'">
         <div v-for="(name,value) in currentLayer.paint">
           <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value">
+          <div class="property-value" v-if="name!=='line-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
+          <div class="property-value" v-if="name=='line-translate-anchor'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+              <option value="map" v-bind:value>map</option>
+              <option value="viewport" v-bind:value>viewport</option>
+            </select>
+          </div>
+
         </div>
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value">
-            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+          <div class="property-value" v-if="name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+          </div>
+          <div class="property-value" v-if="name.indexOf('color')!=-1">
+            <input type="text" value="{{value}}"  v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="color" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" data-type='layout' />
+          </div>
+          <div class="property-value" v-if="name=='visibility'">
+            <input type="checkbox" v-if="value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="checkbox" v-if="value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+          </div>
+          <div class="property-value" v-if="name=='line-cap'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+              <option value="butt" v-bind:value>butt</option>
+              <option value="round" v-bind:value>round</option>
+              <option value="square" v-bind:value>square</option>
+            </select>
+          </div>
+          <div class="property-value" v-if="name=='line-join'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+              <option value="bevel" v-bind:value>bevel</option>
+              <option value="round" v-bind:value>round</option>
+              <option value="miter" v-bind:value>miter</option>
+            </select>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='circle'">
         <div v-for="(name,value) in currentLayer.paint">circle
           <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value">
+          <div class="property-value" v-if="name!=='circle-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+          <div class="property-value" v-if="name=='circle-translate-anchor'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+              <option value="map" v-bind:value>map</option>
+              <option value="viewport" v-bind:value>viewport</option>
+            </select>
           </div>
         </div>
         <div v-for="(name,value) in currentLayer.layout">
@@ -129,7 +182,6 @@
         <div v-for="(name,value) in currentLayer.layout">
           <div class="property-name"><span >{{name}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
             <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
@@ -167,7 +219,12 @@
           "fill": {
             'paint': {
               "fill-color": "#000000",
-              "fill-opacity": 1
+              "fill-opacity": 1,
+              "fill-antialias": true,
+              "fill-outline-color": "#000000",
+              "fill-translate": [0,0],
+              "fill-translate-anchor": 'map',
+              "fill-pattern": ""
             },
             'layout': {
               "visibility": "visible"
@@ -176,16 +233,34 @@
           "line": {
             'paint': {
               "line-color": "#000000",
-              "line-opacity": 1
+              "line-opacity": 1,
+              "line-translate": [0,0],
+              "line-translate-anchor": 'map',
+              "line-width": 1,
+              "line-gap-width": 0,
+              "line-offset": 0,
+              "line-blur": 0,
+              "line-dasharray": [0,0],
+              "line-pattern": ""
             },
             'layout': {
-              "visibility": "visible"
+              "visibility": "visible",
+              "line-cap": "butt",
+              "line-join": "miter",
+              "line-miter-limit": 2,
+              "line-round-limit": 1.05
             }
           },
           "raster": {
             'paint': {
               "raster-opacity": 1,
-              "raster-contrast": 0
+              "raster-contrast": 0,
+              "raster-hue-rotate": 0,
+              "raster-brightness-min": 0,
+              "raster-brightness-max": 1,
+              "raster-saturation": 0,
+              "raster-fade-duration": 300
+
             },
             'layout': {
               "visibility": "visible"
@@ -194,7 +269,11 @@
           "circle": {
             'paint': {
               "circle-color": "#000000",
-              "circle-radius": 5
+              "circle-radius": 5,
+              "circle-blur": 0,
+              "circle-opacity": 1,
+              "circle-translate": [0,0],
+              "circle-translate-anchor": 'map'
             },
             'layout': {
               "visibility": "visible"
@@ -211,10 +290,23 @@
               'text-halo-width': 1
             },
             'layout': {
-              "visibility": "visible"
+              "visibility": "visible",
+              "symbol-placement": "point",
+              "symbol-spacing": 250
             }
           }
         }
+
+        let proRequire = {
+          "line-miter-limit": {
+            "line-join" : "miter",
+
+          },
+          "line-round-limit": {
+            "ine-join" : "round"
+          }
+        }
+
         for(let name in this.currentLayer.paint){
           defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
         }
@@ -230,11 +322,18 @@
         if(e.target.tagName!=="INPUT"){
           return
         }
+        let activeLayer = document.getElementById("layer-control").querySelector(".layer.active")
+        if(activeLayer&&activeLayer.className.indexOf("active")!==-1){
+          activeLayer.className = activeLayer.className.replace(" active","")
+        }
 
-        //show downicons
         let ct = e.currentTarget
+        if(ct.className.indexOf("active")===-1){
+          ct.className += " active"
+        }
+        //show downicons
         let is = ct.querySelectorAll("i")
-        if(is.length === 3){
+        if(is.length > 3){
           let checkbox = ct.querySelector("input[type='checkbox']")
           if(checkbox.checked){
             is[0].style.display="none"
@@ -283,13 +382,14 @@
         }
 
         //visibility
-        if(targetDom.type === "checkbox"){
+        if(targetDom.type === "checkbox" && targetDom.name === "visibility"){
           if(targetDom.checked){
-
             value = 'visible'
           }else{
             value = 'none'
           }
+        }else if(targetDom.type === "checkbox" && targetDom.name === "fill-antialias"){
+          value = targetDom.checked
         }
 
         currentLayer[targetDom.dataset.type][targetDom.name] = value
@@ -312,25 +412,26 @@
         }else if(e.target.tagName === 'SPAN'){
           e.dataTransfer.setData("dragid",e.target.id);
         }
+
       },
       eledragover: function(e){
-        // console.log('over');
-        // let currentTarget = e.currentTarget
-        // if(currentTarget.id === "layer-control"){
-        //   return
-        // }
-        // currentTarget.id = currentTarget.querySelector("input[type='checkbox']").name
-        // currentTarget.setAttribute("data-ref",'1')
-        // var lyindex = currentTarget.className.indexOf(' layerover')
-        // if(lyindex === -1){
-        //   currentTarget.className += " layerover"
-        // }
+        //console.log('enter');
+
+        let currentTarget = e.currentTarget
+        currentTarget.setAttribute("data-ref",'1')
+        var lyindex = currentTarget.className.indexOf('layerover')
+        if(lyindex === -1){
+          currentTarget.className += " layerover"
+        }
       },
       eledrop: function(e){
         //console.log('drop');
 
         var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
         var refnode = document.querySelector("*[data-ref='1']")
+        if(refnode ==null){
+          return
+        }
         let dragLayer
         let dragLayerId=dragnode.id
         let refLayerId = refnode.id
@@ -338,9 +439,7 @@
         // console.log(refnode);
         // console.log(dragnode);
         //如果refnode是null，则不改变
-        if(refnode ==null){
-          return
-        }
+
 
         //移除高亮
         refnode.setAttribute("data-ref",'0')
@@ -461,6 +560,7 @@
         let data = JSON.parse(JSON.stringify(this.styleObj))
         this.$dispatch('style-change',data)
       },
+
       eledragenter: function(e){
         //console.log('enter');
         let currentTarget = e.currentTarget
@@ -471,7 +571,8 @@
         }
       },
       eledragleave: function(e){
-        //console.log('leave');
+
+        console.log('leave');
         let currentTarget = e.currentTarget
         currentTarget.setAttribute("data-ref",'0')
         var lyindex = currentTarget.className.indexOf(' layerover')
@@ -532,7 +633,9 @@
 </script>
 
 <style scoped>
-
+/** {
+  border: solid red 1px;
+}*/
 #layer-control {
   padding-top: 5px;
   border:solid 1px rgba(0,0,0,0.5);
@@ -542,11 +645,28 @@
   height: calc(100% - 75px);
 }
 
+a {
+  color: black;
+}
+
 .layer {
   vertical-align: middle;
   font-size: 12px;
   line-height: 12px;
   border:0;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
+.layer a {
+  display: inline-block;
+  line-height: 12px;
+  width: 100%;
+
+}
+
+.layer a:hover {
+  background-color: rgba(247, 223, 128, 0.55);
 }
 
 .layerover {
@@ -572,6 +692,10 @@
   height: 100%;
   display: block;
   margin-left: 30px;
+}
+
+.layer.active {
+  background-color: rgba(247, 223, 128, 0.55);
 }
 
 .layer .sublayer {
