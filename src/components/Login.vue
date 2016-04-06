@@ -3,9 +3,9 @@
   <foxgis-layout>
     <div class="wrapper">
       <foxgis-card class="login">
-        <mdl-textfield floating-label="用户名"></mdl-textfield>
-        <mdl-textfield floating-label="密码" type="password"></mdl-textfield>
-        <mdl-button v-mdl-ripple-effect accent raised>登录</mdl-button>
+        <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
+        <mdl-textfield floating-label="密码" type="password" id="password"></mdl-textfield>
+        <mdl-button v-mdl-ripple-effect accent raised v-on:click="login">登录</mdl-button>
         <div class="tips">
           <!-- <a href="" >注册</a> -->
           <a href="" >找回密码</a>
@@ -13,7 +13,7 @@
 
         <div class="sign-up">
           <p>没有账号？</p>
-          <mdl-button v-mdl-ripple-effect raised>注册</mdl-button>
+          <mdl-button v-mdl-ripple-effect raised v-on:click="register">注册</mdl-button>
         </div>
       </foxgis-card>
     </div>
@@ -24,6 +24,31 @@
 
 <script>
 
+export default {
+  methods:{
+    register: function(){
+      let url = "http://localhost:11111/api/register"
+      let username = this.$el.querySelector("#username").value
+      let password = this.$el.querySelector("#password").value
+      this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
+        console.log(response.data.token);
+      },function(response){
+        console.log(response);
+      })
+    },
+    login: function(){
+      let url = "http://localhost:11111/api/login"
+      let username = this.$el.querySelector("#username").value
+      let password = this.$el.querySelector("#password").value
+      this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
+        console.log(this);
+        console.log(response.data.token);
+      },function(response){
+        console.log(response);
+      })
+    }
+  }
+}
 
 </script>
 

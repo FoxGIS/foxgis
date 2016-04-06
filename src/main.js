@@ -3,8 +3,11 @@ require('material-design-lite/dist/material.min.css')
 require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
 
+
+
 import Vue from 'vue'
 import Router from 'vue-router'
+import Resource from 'vue-resource'
 import VueMdl from 'vue-mdl'
 import Layout from './components/Layout'
 import Footer from './components/Footer'
@@ -38,6 +41,7 @@ import MapEditorView from './components/MapEditorView.vue'
 Vue.config.debug = true
 Vue.use(Router)
 Vue.use(VueMdl)
+Vue.use(Resource);
 
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
