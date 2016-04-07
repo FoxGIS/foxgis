@@ -7,10 +7,17 @@
       <mdl-button raised accent v-mdl-ripple-effect>搜索</mdl-button>
     </div>
 
-    <div id="search-category">
-      <label><input type="radio" />地图</label>
-      <label><input type="radio" />地图</label>
-      <label><input type="radio" />地图</label>
+    <div id="hotwords">
+      <div>
+        <span>热门：</span>
+        <a class="hotactive"  href="#" v-on:click.prevent='search'>经济</a>
+        <a href="#" v-on:click.prevent='search'>社会</a>
+        <a href="#" v-on:click.prevent='search'>人口</a>
+        <a href="#" v-on:click.prevent='search'>旅游</a>
+        <a href="#" v-on:click.prevent='search'>农业</a>
+        <a href="#" v-on:click.prevent='search'>新闻用图</a>
+        <a href="#" v-on:click.prevent='search'>决策用图</a>
+      </div>
     </div>
 
     <div class="search-results mdl-grid">
@@ -32,6 +39,17 @@
 
 <script>
 export default {
+  methods: {
+    search: function(e){
+      let parentElement = e.target.parentElement;
+      let oldActive = parentElement.querySelector(".hotactive")
+      console.log(oldActive);
+      if(oldActive){
+        oldActive.className = oldActive.className.replace("hotactive","");
+      }
+      e.target.className += " hotactive"
+    }
+  },
   data: function(){
     return {
       atlas: [{
@@ -64,19 +82,46 @@ export default {
   align-items: center;
 }
 
-#search-category {
+#hotwords {
   margin-top: 20px;
+  display: flex;
   text-align: center;
+  justify-content: center;
+  height: 30px;
+  line-height: 30px;
+}
+
+#hotwords div {
+  width: 500px;
+  margin-left: -74px;
+  display: flex;
+}
+
+#hotwords div a {
+  text-decoration: none;
+  margin-left: 10px;
+  color: #666;
+}
+
+#hotwords div a:hover {
+  font-weight: bolder;
+}
+
+.hotactive {
+  padding: 0 15px;
+  background-color: rgba(206, 160, 114, 0.53);
+  font-weight: bolder;
 }
 
 .mdl-button {
   height: 40px;
   margin-left: 10px;
+  background-color: #D4BC23;
 }
 
 .search-results {
   margin-top: 20px;
-  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
+  background-image: radial-gradient(50% 30%,circle cover,#ddd,#e1eab1 60%);
   display: flex;
   /*justify-content: center;*/
   flex-wrap: wrap;

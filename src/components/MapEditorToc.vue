@@ -1,8 +1,11 @@
 <template>
   <div>
+    <div id="style-header">
+      <span>{{styleObj.name}}</span><i class="material-icons">add</i>
+    </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer"  v-for="layer in layers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
-        <a><label for="{{$index}}" v-on:click="showProperty">
+        <a><label for="{{$index}}" v-on:click="showProperty" title="{{layer.id}}">
           <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
           <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
           <i class="material-icons" v-if="layer.items!==undefined">folder</i>
@@ -12,18 +15,20 @@
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='fill'">filter_b_and_w</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='circle'">lens</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='raster'">image</i>
+
           <span>{{layer.id}}</span>
         </label>
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
-          <div v-for="item in layer.items" v-on:click="showProperty">
+          <div v-for="item in layer.items" v-on:click="showProperty" title="{{item.id}}">
             <i class="material-icons" v-if="item.type=='symbol'">grade</i>
             <i class="material-icons" v-if="item.type=='line'">remove</i>
             <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
             <i class="material-icons" v-if="item.type=='fill'">filter_b_and_w</i>
             <i class="material-icons" v-if="item.type=='circle'">lens</i>
             <i class="material-icons" v-if="item.type=='raster'">image</i>
+            <i class="material-icons" v-if="item.type==undefined">image</i>
             <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
           </div>
         </div></a>
@@ -36,8 +41,8 @@
     <div id="property-panel">
       <div id="property-header">{{currentLayer.id}}</div>
       <div v-if="currentLayer.type=='background'">
-        <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
             <input type="text" value="{{value}}" number v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
@@ -45,41 +50,49 @@
           </div>
         </div>
         <!-- layout -->
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='symbol'">
-        <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value" v-if="value.base!==undefined">
-            <input type="text" value="{{value.base}}" v-on:change='change' data-type='paint' />
-          </div>
-          <div class="property-value" v-else>
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-value" v-if="name.indexOf('color')==-1">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+          </div>
+          <div class="property-value" v-if="name.indexOf('color')!=-1">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value  v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
-          <div class="property-value" v-if="value.base!==undefined">
-            <input type="text" value="{{value.base}}" v-on:change='change' data-type='layout'/>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-value" v-if="name!=='symbol-placement'&&name.indexOf('color')==-1&&name!=='visibility'">
+            <input type="text" value="{{value}}" v-on:change='change' data-type='layout'/>
           </div>
-          <div class="property-value" v-else>
-            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout'/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+          <div class="property-value" v-if="name=='symbol-placement'">
+            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+              <option value="point" v-bind:value>point</option>
+              <option value="line" v-bind:value>line</option>
+            </select>
+          </div>
+          <div class="property-value" v-if="name.indexOf('color')!=-1">
+            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout'/>
+            <input type="color" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" data-type='layout' />
+          </div>
+          <div class="property-value" v-if="name=='visibility'">
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='fill'">
-        <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span>{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span>{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
@@ -91,22 +104,22 @@
             </select>
           </div>
           <div class="property-value" v-if="name=='fill-antialias'">
-            <input type="checkbox" v-if="value==true" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="checkbox" v-else v-on:change='change' name="{{name}}" data-type='paint' />
+            <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='change' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false" v-else v-on:change='change' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
           </div>
 
         </div>
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span>{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span>{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-else v-on:change='change' name="{{name}}" data-type='layout' />
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='line'">
-        <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span >{{name}}</span></div>
+      <div v-if="currentLayer.type=='line'" >
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value" v-if="name!=='line-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
@@ -119,8 +132,8 @@
           </div>
 
         </div>
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value" v-if="name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
@@ -129,8 +142,8 @@
             <input type="color" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
           <div class="property-value" v-if="name=='visibility'">
-            <input type="checkbox" v-if="value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
           <div class="property-value" v-if="name=='line-cap'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
@@ -149,8 +162,8 @@
         </div>
       </div>
       <div v-if="currentLayer.type=='circle'">
-        <div v-for="(name,value) in currentLayer.paint">circle
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value" v-if="name!=='circle-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
@@ -162,28 +175,26 @@
             </select>
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-if="name!=='visibility'" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='raster'">
-        <div v-for="(name,value) in currentLayer.paint">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.paint" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout">
-          <div class="property-name"><span >{{name}}</span></div>
+        <div v-for="(name,value) in currentLayer.layout" class="property-item">
+          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
           <div class="property-value">
-            <input type="checkbox" v-if="name=='visibility'&&value=='visible'" v-model="checked" checked v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="checkbox" v-if="name=='visibility'&&value=='none'" v-on:change='change' name="{{name}}" data-type='layout' />
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -203,6 +214,7 @@
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id==idname.textContent){
             this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+            break
           }
         }
         //show property
@@ -223,8 +235,7 @@
               "fill-antialias": true,
               "fill-outline-color": "#000000",
               "fill-translate": [0,0],
-              "fill-translate-anchor": 'map',
-              "fill-pattern": ""
+              "fill-translate-anchor": 'map'
             },
             'layout': {
               "visibility": "visible"
@@ -240,8 +251,7 @@
               "line-gap-width": 0,
               "line-offset": 0,
               "line-blur": 0,
-              "line-dasharray": [0,0],
-              "line-pattern": ""
+              "line-dasharray": [0,0]
             },
             'layout': {
               "visibility": "visible",
@@ -297,21 +307,35 @@
           }
         }
 
-        let proRequire = {
-          "line-miter-limit": {
-            "line-join" : "miter",
-
-          },
-          "line-round-limit": {
-            "ine-join" : "round"
+        //有的layer没有type属性，有ref属性,补充这个信息
+        if(this.currentLayer.type===undefined&&this.currentLayer.ref){
+          for(let i=0,length=layers.length;i<length;i++){
+            if(layers[i].id==this.currentLayer.ref){
+              this.currentLayer.type = layers[i].type
+              break
+            }
           }
         }
 
+
         for(let name in this.currentLayer.paint){
-          defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
+          //目前只支持 defaultProperty 中的属性
+          if(defaultProperty[this.currentLayer['type']]['paint'][name] === undefined){
+            continue
+          }
+          if(typeof this.currentLayer.paint[name] !== 'object' && typeof this.currentLayer.paint[name] !== 'function'){
+            defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
+          }
+
         }
         for(let name in this.currentLayer.layout){
-          defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
+          //目前只支持 defaultProperty 中的属性
+          if(defaultProperty[this.currentLayer['type']]['layout'][name] === undefined){
+            continue
+          }
+          if(typeof this.currentLayer.layout[name] !== 'object' || typeof this.currentLayer.layout[name] !== 'function'){
+            defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
+          }
         }
         this.currentLayer.paint = defaultProperty[this.currentLayer['type']]['paint']
         this.currentLayer.layout = defaultProperty[this.currentLayer['type']]['layout']
@@ -377,22 +401,26 @@
         var value = targetDom.value
 
         var temp = Number(value)
-        if(!isNaN(temp)){
+        if(!isNaN(temp)&&temp!==NaN){
           value = temp
         }
 
         //visibility
-        if(targetDom.type === "checkbox" && targetDom.name === "visibility"){
+        if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "visibility"){
           if(targetDom.checked){
             value = 'visible'
           }else{
             value = 'none'
           }
-        }else if(targetDom.type === "checkbox" && targetDom.name === "fill-antialias"){
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+        }else if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "fill-antialias"){
           value = targetDom.checked
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+        }else{
+          currentLayer[targetDom.dataset.type][targetDom.name] = value
         }
 
-        currentLayer[targetDom.dataset.type][targetDom.name] = value
+
 
         //同时更新style
         let styleObj = this.styleObj
@@ -436,10 +464,6 @@
         let dragLayerId=dragnode.id
         let refLayerId = refnode.id
         let dragLayerIndex,refLayerIndex;
-        // console.log(refnode);
-        // console.log(dragnode);
-        //如果refnode是null，则不改变
-
 
         //移除高亮
         refnode.setAttribute("data-ref",'0')
@@ -453,8 +477,6 @@
         if(refsublayer&&refsublayer.length>0){
           refLayerId = refsublayer[0].id
         }
-
-
 
         //如果dragnode是group,获得这个draggroup,用来插入
         let dragGroup
@@ -636,13 +658,50 @@
 /** {
   border: solid red 1px;
 }*/
+#style-header {
+  height: 30px;
+  padding: 5px;
+  background-color: #2061C6;
+}
+
+#style-header span {
+  display: inline-block;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+#style-header i {
+  margin-left: 5px;
+  font-size: 30px;
+  line-height: 30px;
+}
+
 #layer-control {
   padding-top: 5px;
   border:solid 1px rgba(0,0,0,0.5);
+  border-top: none;
   background-color: rgba(237, 233, 217,0.4);
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 75px);
+  height: calc(100% - 115px);
+}
+
+#layer-control::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#layer-control::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+#layer-control::-webkit-scrollbar-thumb {
+    background-color: #2061C6;
 }
 
 a {
@@ -651,8 +710,8 @@ a {
 
 .layer {
   vertical-align: middle;
-  font-size: 12px;
-  line-height: 12px;
+  font-size: 16px;
+  line-height: 16px;
   border:0;
   margin: 5px 0;
   box-sizing: border-box;
@@ -677,9 +736,14 @@ a {
   width:100%;
   display: block;
 }
+.layer a label{
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
 
 .layer i {
-  font-size: 12px;
+  font-size: 16px;
   vertical-align: middle;
 }
 
@@ -691,7 +755,7 @@ a {
 .layer input:checked + .sublayer{
   height: 100%;
   display: block;
-  margin-left: 30px;
+  margin-left: 20px;
 }
 
 .layer.active {
@@ -701,6 +765,13 @@ a {
 .layer .sublayer {
   height: 0px;
   display: none;
+}
+
+.sublayer div {
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  margin: 15px 0px;
 }
 
 #map-tool {
@@ -714,37 +785,63 @@ a {
   position: absolute;
   width: 300px;
   height: 100%;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgb(237, 233, 217);
   left: 200px;
   top: 0px;
   z-index: 1;
+  padding-right: 10px;
 }
 
 #property-header {
   background-color: rgba(0,0,0,0.5);
   color: white;
   margin-bottom: 3px;
-  padding-left: 3px;
+  padding: 5px 0px 5px 10px;
+  width: 300px;
+}
+
+#property-panel .property-item {
+  margin-top: 10px;
 }
 
 #property-panel .property-name {
-  width:120px;
+  width:110px;
   text-align: right;
   float: left;
-  font-size: 12px;
+  padding-right: 15px;
+  white-space: nowrap;
+  line-height: 30px;
 }
 
 #property-panel .property-value {
-  margin-left: 120px;
+  margin-left: 125px;
   position: relative;
 }
 
 #property-panel .property-value input[type='color'] {
   position: absolute;
   right: 8px;
-  top: 0px;
+  top: 5px;
   width: 15px;
   height: 15px;
   border-radius: 10px;
 }
+
+.property-value input[type='text'] {
+  display: inline-block;
+  height: 20px;
+  padding: 5px 0px 5px 5px;
+  border: none;
+}
+
+.property-value select {
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #f2f2f2;
+  border-radius: 2px;
+  height: 30px;
+  font-size: 16px;
+}
+
 </style>

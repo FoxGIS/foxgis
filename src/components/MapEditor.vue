@@ -62,6 +62,7 @@ export default {
   height: calc(100% - 55px);
   box-sizing: border-box;
   position: absolute;
+  border:solid 1px rgba(0,0,0,0.5);
 }
 
 </style>
