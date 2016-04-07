@@ -15,7 +15,6 @@
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='fill'">filter_b_and_w</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='circle'">lens</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='raster'">image</i>
-
           <span>{{layer.id}}</span>
         </label>
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
@@ -608,6 +607,128 @@
           this.styleObj = JSON.parse(JSON.stringify(style))
           this.currentLayer = JSON.parse(JSON.stringify(this.styleObj.layers[this.styleObj.layers.length-1]))
           this.layers = createTocLayer(style)
+          //show property
+          let defaultProperty = {
+            'background': {
+              'paint': {
+                "background-color": "#000000",
+                "background-opacity": 1
+              },
+              'layout': {
+                "visibility": "visible"
+              }
+            },
+            "fill": {
+              'paint': {
+                "fill-color": "#000000",
+                "fill-opacity": 1,
+                "fill-antialias": true,
+                "fill-outline-color": "#000000",
+                "fill-translate": [0,0],
+                "fill-translate-anchor": 'map'
+              },
+              'layout': {
+                "visibility": "visible"
+              }
+            },
+            "line": {
+              'paint': {
+                "line-color": "#000000",
+                "line-opacity": 1,
+                "line-translate": [0,0],
+                "line-translate-anchor": 'map',
+                "line-width": 1,
+                "line-gap-width": 0,
+                "line-offset": 0,
+                "line-blur": 0,
+                "line-dasharray": [0,0]
+              },
+              'layout': {
+                "visibility": "visible",
+                "line-cap": "butt",
+                "line-join": "miter",
+                "line-miter-limit": 2,
+                "line-round-limit": 1.05
+              }
+            },
+            "raster": {
+              'paint': {
+                "raster-opacity": 1,
+                "raster-contrast": 0,
+                "raster-hue-rotate": 0,
+                "raster-brightness-min": 0,
+                "raster-brightness-max": 1,
+                "raster-saturation": 0,
+                "raster-fade-duration": 300
+
+              },
+              'layout': {
+                "visibility": "visible"
+              }
+            },
+            "circle": {
+              'paint': {
+                "circle-color": "#000000",
+                "circle-radius": 5,
+                "circle-blur": 0,
+                "circle-opacity": 1,
+                "circle-translate": [0,0],
+                "circle-translate-anchor": 'map'
+              },
+              'layout': {
+                "visibility": "visible"
+              }
+            },
+            'symbol': {
+              'paint': {
+                'icon-opacity':1,
+                'icon-color': "#000000",
+                'text-color': "#000000",
+                'icon-halo-color': "rgba(0,0,0,0)",
+                'icon-halo-width': 0,
+                'text-halo-color': "#000000",
+                'text-halo-width': 1
+              },
+              'layout': {
+                "visibility": "visible",
+                "symbol-placement": "point",
+                "symbol-spacing": 250
+              }
+            }
+          }
+
+          //有的layer没有type属性，有ref属性,补充这个信息
+          if(this.currentLayer.type===undefined&&this.currentLayer.ref){
+            for(let i=0,length=layers.length;i<length;i++){
+              if(layers[i].id==this.currentLayer.ref){
+                this.currentLayer.type = layers[i].type
+                break
+              }
+            }
+          }
+
+
+          for(let name in this.currentLayer.paint){
+            //目前只支持 defaultProperty 中的属性
+            if(defaultProperty[this.currentLayer['type']]['paint'][name] === undefined){
+              continue
+            }
+            if(typeof this.currentLayer.paint[name] !== 'object' && typeof this.currentLayer.paint[name] !== 'function'){
+              defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
+            }
+
+          }
+          for(let name in this.currentLayer.layout){
+            //目前只支持 defaultProperty 中的属性
+            if(defaultProperty[this.currentLayer['type']]['layout'][name] === undefined){
+              continue
+            }
+            if(typeof this.currentLayer.layout[name] !== 'object' || typeof this.currentLayer.layout[name] !== 'function'){
+              defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
+            }
+          }
+          this.currentLayer.paint = defaultProperty[this.currentLayer['type']]['paint']
+          this.currentLayer.layout = defaultProperty[this.currentLayer['type']]['layout']
 
           function createTocLayer(style){
             let styleObj = JSON.parse(JSON.stringify(style))
@@ -710,8 +831,6 @@ a {
 
 .layer {
   vertical-align: middle;
-  font-size: 16px;
-  line-height: 16px;
   border:0;
   margin: 5px 0;
   box-sizing: border-box;
@@ -719,9 +838,9 @@ a {
 
 .layer a {
   display: inline-block;
-  line-height: 12px;
+  line-height: 25px;
   width: 100%;
-
+  height: 25px;
 }
 
 .layer a:hover {
@@ -736,6 +855,7 @@ a {
   width:100%;
   display: block;
 }
+
 .layer a label{
   white-space: nowrap;
   text-overflow:ellipsis;
@@ -772,6 +892,10 @@ a {
   text-overflow:ellipsis;
   overflow:hidden;
   margin: 15px 0px;
+}
+
+.sublayer a:hover {
+  font-weight: bolder;
 }
 
 #map-tool {
