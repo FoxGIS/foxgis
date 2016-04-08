@@ -112,6 +112,7 @@
 }
 
 #info-container {
+  display: none;
   width: 200px;
   position: absolute;
   left: 500px;

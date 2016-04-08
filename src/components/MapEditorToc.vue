@@ -4,7 +4,7 @@
       <span>{{styleObj.name}}</span><i class="material-icons">add</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-      <div class="layer"  v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
+      <div class="layer" v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
         <a><label for="{{$index}}" v-on:click="showPropertyPanel" title="{{layer.id}}">
           <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
           <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
@@ -368,6 +368,13 @@ export default {
       var temp = Number(value)
       if(!isNaN(temp)&&temp!==NaN){
         value = temp
+      }else if(typeof value === 'string'){
+        if(value.indexOf(',')!=-1){
+          value = value.split(",")
+          for(var i=0,length=value.length;i<length;i++){
+            value[i] = Number(value[i])
+          }
+        }
       }
 
       //visibility
