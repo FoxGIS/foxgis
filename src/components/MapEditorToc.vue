@@ -37,10 +37,10 @@
       <mdl-anchor-button accent raised v-mdl-ripple-effect>打印</mdl-anchor-button>
     </div>
     <div id="property-panel">
-      <div id="property-header">{{currentLayer.id}}</div>
-      <div v-if="currentLayer.type=='background'">
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div id="property-header">{{curPanelLayer.id}}</div>
+      <div v-if="curPanelLayer.type=='background'">
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
             <input type="text" value="{{value}}" number v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
@@ -48,17 +48,17 @@
           </div>
         </div>
         <!-- layout -->
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='symbol'">
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div v-if="curPanelLayer.type=='symbol'">
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name.indexOf('color')==-1">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
@@ -67,17 +67,17 @@
             <input type="color" value="{{value}}" v-model=value  v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='symbol-placement'&&name.indexOf('color')==-1&&name!=='visibility'">
-            <input type="text" value="{{value}}" v-on:change='change' data-type='layout'/>
+            <input type="text" value="{{value}}" name="{{name}}" v-on:change='change' data-type='layout'/>
           </div>
           <div class="property-value" v-if="name=='symbol-placement'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
-              <option value="point" v-bind:value v-if="value=='point'" selected>点</option>
-              <option value="point" v-bind:value v-else>点</option>
-              <option value="line" v-bind:value v-if="value=='line'" selected>线</option>
-              <option value="line" v-bind:value v-else>线</option>
+              <option value="point" v-if="value=='point'" selected>点</option>
+              <option value="point"  v-else>点</option>
+              <option value="line" v-if="value=='line'" selected>线</option>
+              <option value="line" v-else>线</option>
             </select>
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
@@ -90,19 +90,19 @@
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='fill'">
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span>{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div v-if="curPanelLayer.type=='fill'">
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='fill-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
-              <option value="map" v-bind:value v-else>地图</option>
-              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
-              <option value="viewport" v-bind:value v-else>视图窗口</option>
+              <option value="map" v-if="value=='map'" selected>地图</option>
+              <option value="map" v-else>地图</option>
+              <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport" v-else>视图窗口</option>
             </select>
           </div>
           <div class="property-value" v-if="name=='fill-antialias'">
@@ -111,32 +111,32 @@
           </div>
 
         </div>
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span>{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false" v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='line'" >
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div v-if="curPanelLayer.type=='line'" >
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='line-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='line-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
-              <option value="map" v-bind:value v-else>地图</option>
-              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
-              <option value="viewport" v-bind:value v-else>视图窗口</option>
+              <option value="map" v-if="value=='map'" selected>地图</option>
+              <option value="map" v-else>地图</option>
+              <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport" v-else>视图窗口</option>
             </select>
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
@@ -169,48 +169,48 @@
             </select>
           </div>
           <div class="property-value" v-if="name=='line-round-limit'">
-            <input type="text" value="{{value}}" v-on:change='change' v-if="currentLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='change' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
             <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
           </div>
           <div class="property-value" v-if="name=='line-miter-limit'">
-            <input type="text" value="{{value}}" v-on:change='change' v-if="currentLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='change' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
             <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='circle'">
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div v-if="curPanelLayer.type=='circle'">
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='circle-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='circle-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
-              <option value="map" v-bind:value v-else>地图</option>
-              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
-              <option value="viewport" v-bind:value v-else>视图窗口</option>
+              <option value="map" v-if="value=='map'" selected>地图</option>
+              <option value="map" v-else>地图</option>
+              <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport"  v-else>视图窗口</option>
             </select>
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
-      <div v-if="currentLayer.type=='raster'">
-        <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+      <div v-if="curPanelLayer.type=='raster'">
+        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
-        <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
+          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -240,23 +240,24 @@ export default {
     filterProperty: function(layer){
       //目前只支持 defaultProperty 中的属性
       let defaultProperty = JSON.parse(JSON.stringify(this.defaultProperty))
-
-      if(layer.paint !== undefined){
-        for(let name in defaultProperty[layer.type].paint){
-          if(typeof layer.paint[name] !== 'object' && typeof layer.paint[name] !== 'function' && layer.paint[name] !== undefined){
-            defaultProperty[layer['type']].paint[name] = layer.paint[name]
+      let templayer = JSON.parse(JSON.stringify(layer))
+      if(templayer.paint !== undefined){
+        for(let name in defaultProperty[templayer.type].paint){
+          if(typeof templayer.paint[name] !== 'object' && typeof templayer.paint[name] !== 'function' && templayer.paint[name] !== undefined){
+            defaultProperty[templayer['type']].paint[name] = templayer.paint[name]
           }
         }
       }
-      if(layer.layout !== undefined){
-        for(let name in defaultProperty[layer.type].layout){
-          if(typeof layer.layout[name] !== 'object' && typeof layer.layout[name] !== 'function' && layer.layout[name] !== undefined){
-            defaultProperty[layer['type']].layout[name] = layer.layout[name]
+      if(templayer.layout !== undefined){
+        for(let name in defaultProperty[templayer.type].layout){
+          if(typeof templayer.layout[name] !== 'object' && typeof templayer.layout[name] !== 'function' && templayer.layout[name] !== undefined){
+            defaultProperty[templayer['type']].layout[name] = templayer.layout[name]
           }
         }
       }
-      layer.paint = defaultProperty[layer['type']].paint
-      layer.layout = defaultProperty[layer['type']].layout
+      templayer.paint = defaultProperty[templayer['type']].paint
+      templayer.layout = defaultProperty[templayer['type']].layout
+      return templayer
     },
     createTocLayer: function(style){
       let styleObj = JSON.parse(JSON.stringify(style))
@@ -296,15 +297,19 @@ export default {
       let idname = currentTarget.querySelector("span")
       let styleObj = this.styleObj
       let layers = styleObj.layers
+      let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
         if(layers[i].id==idname.textContent){
-          this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+          clickLayer = layers[i]
+          console.log(clickLayer);
           break
         }
       }
-      this.fixType(this.currentLayer)
-      this.filterProperty(this.currentLayer)
-      console.log(this.currentLayer);
+      if(clickLayer){
+        this.currentLayer = clickLayer
+        this.fixType(clickLayer)
+        this.curPanelLayer = this.filterProperty(clickLayer)
+      }
     },
     show:function(e){
       //防止触发两次
@@ -336,8 +341,6 @@ export default {
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = false
-              console.log(this.styleObj['metadata']);
-              console.log("show")
               break
             }
           }
@@ -363,7 +366,13 @@ export default {
       let currentLayer = this.currentLayer
       let layers = this.styleObj.layers
       let targetDom = e.target
-      var value = targetDom.value
+      let value
+
+      if(targetDom.tagName === 'SELECT'){
+        value = targetDom.options[targetDom.selectedIndex].value
+      }else{
+        value = targetDom.value
+      }
 
       var temp = Number(value)
       if(!isNaN(temp)&&temp!==NaN){
@@ -376,6 +385,8 @@ export default {
           }
         }
       }
+
+
 
       //visibility
       if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "visibility"){
@@ -552,10 +563,11 @@ export default {
   events: {
     'toc-init': function(style){
         this.styleObj = JSON.parse(JSON.stringify(style))
-        this.currentLayer = JSON.parse(JSON.stringify(this.styleObj.layers[this.styleObj.layers.length-1]))
+        this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
         this.tocLayers = this.createTocLayer(style)
         this.fixType(this.currentLayer)
-        this.filterProperty(this.currentLayer)
+        //展示属性
+        this.curPanelLayer = this.filterProperty(this.currentLayer)
     },
     'toc-layer-change': function(id){
       let styleObj = this.styleObj
@@ -567,12 +579,14 @@ export default {
         }
       }
       this.fixType(this.currentLayer)
-      this.filterProperty(this.currentLayer)
+      //展示属性
+      this.curPanelLayer = this.filterProperty(this.currentLayer)
     }
   },
   data: function() {
     return {
       tocLayers: [],
+      curPanelLayer: {},
       currentLayer: {},
       styleObj: {},
       translate: {
