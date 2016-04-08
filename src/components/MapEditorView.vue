@@ -2,7 +2,7 @@
   <div id="map-container">
     <div id="info-container">
       <div id="layer-container">
-        <div v-for="feature in queryFeatures" class="layer">
+        <div v-for="feature in queryFeatures" class="layer" v-on:click='layerClick'>
           <i class="material-icons" v-if="feature.layer.type=='symbol'">grade</i>
           <i class="material-icons" v-if="feature.layer.type=='line'">remove</i>
           <i class="material-icons" v-if="feature.layer.type=='background'">filter_hdr</i>
@@ -32,6 +32,10 @@
           infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
         }
         this.queryFeatures = features
+      },
+      layerClick: function(e){
+        let layerId = e.currentTarget.querySelector("span").textContent;
+        this.$dispatch('current-layer-change',layerId)
       }
     },
     events: {

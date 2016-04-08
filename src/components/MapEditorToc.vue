@@ -549,6 +549,18 @@ export default {
         this.tocLayers = this.createTocLayer(style)
         this.fixType(this.currentLayer)
         this.filterProperty(this.currentLayer)
+    },
+    'toc-layer-change': function(id){
+      let styleObj = this.styleObj
+      let layers = styleObj.layers
+      for(let i=0,length=layers.length;i<length;i++){
+        if(layers[i].id == id){
+          this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+          break
+        }
+      }
+      this.fixType(this.currentLayer)
+      this.filterProperty(this.currentLayer)
     }
   },
   data: function() {
