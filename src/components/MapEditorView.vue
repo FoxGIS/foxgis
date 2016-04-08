@@ -1,6 +1,20 @@
 <template>
-
-  <div id="map-container"></div>
+  <div id="map-container">
+    <div id="info-container">
+      <div id="layer-container">
+        <div v-for="feature in queryFeatures" class="layer">
+          <i class="material-icons" v-if="feature.layer.type=='symbol'">grade</i>
+          <i class="material-icons" v-if="feature.layer.type=='line'">remove</i>
+          <i class="material-icons" v-if="feature.layer.type=='background'">filter_hdr</i>
+          <i class="material-icons" v-if="feature.layer.type=='fill'">filter_b_and_w</i>
+          <i class="material-icons" v-if="feature.layer.type=='circle'">lens</i>
+          <i class="material-icons" v-if="feature.layer.type=='raster'">image</i>
+          <span>{{feature.layer.id}}</span>
+        </div>
+      </div>
+      <div id="info-tip"></div>
+    </div>
+  </div>
 
 </template>
 
@@ -8,6 +22,18 @@
   import mapboxgl from 'mapbox-gl'
   import {diff} from 'mapbox-gl-style-spec'
   export default {
+    methods: {
+      mapClick: function(e){
+        let features = this.map.queryRenderedFeatures(e.point)
+        let infoContainer = document.getElementById("info-container")
+        if(features.length>0){
+          infoContainer.style.display = "block"
+          infoContainer.style.left = e.point.x-100 + 'px'
+          infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
+        }
+        this.queryFeatures = features
+      }
+    },
     events: {
       'map-init': function(style,accessToken){
         this.originStyle = style
@@ -21,6 +47,7 @@
         })
         map.addControl(new mapboxgl.Navigation())
         this.map = map;
+        map.on('click', this.mapClick);
         console.log(map);
         console.log('map-init');
       },
@@ -62,7 +89,8 @@
     data: function(){
       return {
         map: {},
-        originStyle: {}
+        originStyle: {},
+        queryFeatures: []
       }
     }
   }
@@ -77,6 +105,48 @@
   height: calc(100% - 55px);
   width: calc(100% - 200px);
   box-sizing: border-box;
+}
+
+#info-container {
+  width: 200px;
+  position: absolute;
+  left: 500px;
+  top: 300px;
+  z-index: 1;
+}
+
+#layer-container {
+  background-color: #2061C6;
+  color: white;
+  border-radius: 5px;
+}
+
+.layer {
+  font-size: 16px;
+  height: 25px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.layer i {
+  font-size: 1px;
+  line-height: 16px;
+}
+
+.layer span {
+  display: inline-block;
+  line-height: 25px;
+  height: 25px;
+}
+
+#info-tip {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #2061C6;
+  margin: 0 auto;
 }
 
 </style>

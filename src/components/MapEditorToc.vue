@@ -150,12 +150,12 @@
           </div>
           <div class="property-value" v-if="name=='line-cap'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
-              <option value="butt" v-bind:value v-if="value=='butt'" selected>粗</option>
-              <option value="butt" v-bind:value v-else>粗</option>
-              <option value="round" v-bind:value v-if="value=='round'" selected>圆</option>
-              <option value="round" v-bind:value v-else>圆</option>
-              <option value="square" v-bind:value v-if="value=='square'" selected>方</option>
-              <option value="square" v-bind:value v-else>方</option>
+              <option value="butt" v-if="value=='butt'" selected>粗</option>
+              <option value="butt" v-else>粗</option>
+              <option value="round"  v-if="value=='round'" selected>圆</option>
+              <option value="round" v-else>圆</option>
+              <option value="square" v-if="value=='square'" selected>方</option>
+              <option value="square" v-else>方</option>
             </select>
           </div>
           <div class="property-value" v-if="name=='line-join'">
@@ -826,6 +826,22 @@ a {
   top: 0px;
   z-index: 1;
   padding-right: 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#property-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#property-panel::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+#property-panel::-webkit-scrollbar-thumb {
+    background-color: #2061C6;
 }
 
 #property-header {
@@ -872,8 +888,9 @@ a {
 
 .property-value select {
   background-color: rgba(255, 255, 255, 0.9);
-  width: 100%;
-  padding: 5px;
+  display: inline-block;
+  width: 175px;
+  padding: 5px 0px 5px 5px;
   border: 1px solid #f2f2f2;
   border-radius: 2px;
   height: 30px;
