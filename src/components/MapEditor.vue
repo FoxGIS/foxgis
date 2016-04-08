@@ -14,7 +14,6 @@ export default {
   methods: {
     'styleChange': function(style){
       this.$broadcast('map-style-change',style)
-
     }
   },
   ready: function(){

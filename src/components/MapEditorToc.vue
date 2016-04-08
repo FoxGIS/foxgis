@@ -4,8 +4,8 @@
       <span>{{styleObj.name}}</span><i class="material-icons">add</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-      <div class="layer"  v-for="layer in layers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
-        <a><label for="{{$index}}" v-on:click="showProperty" title="{{layer.id}}">
+      <div class="layer"  v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
+        <a><label for="{{$index}}" v-on:click="showPropertyPanel" title="{{layer.id}}">
           <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
           <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
           <i class="material-icons" v-if="layer.items!==undefined">folder</i>
@@ -20,14 +20,13 @@
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
-          <div v-for="item in layer.items" v-on:click="showProperty" title="{{item.id}}">
+          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}">
             <i class="material-icons" v-if="item.type=='symbol'">grade</i>
             <i class="material-icons" v-if="item.type=='line'">remove</i>
             <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
             <i class="material-icons" v-if="item.type=='fill'">filter_b_and_w</i>
             <i class="material-icons" v-if="item.type=='circle'">lens</i>
             <i class="material-icons" v-if="item.type=='raster'">image</i>
-            <i class="material-icons" v-if="item.type==undefined">image</i>
             <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
           </div>
         </div></a>
@@ -41,7 +40,7 @@
       <div id="property-header">{{currentLayer.id}}</div>
       <div v-if="currentLayer.type=='background'">
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
             <input type="text" value="{{value}}" number v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
@@ -50,7 +49,7 @@
         </div>
         <!-- layout -->
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -59,7 +58,7 @@
       </div>
       <div v-if="currentLayer.type=='symbol'">
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name.indexOf('color')==-1">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
@@ -69,14 +68,16 @@
           </div>
         </div>
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='symbol-placement'&&name.indexOf('color')==-1&&name!=='visibility'">
             <input type="text" value="{{value}}" v-on:change='change' data-type='layout'/>
           </div>
           <div class="property-value" v-if="name=='symbol-placement'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
-              <option value="point" v-bind:value>point</option>
-              <option value="line" v-bind:value>line</option>
+              <option value="point" v-bind:value v-if="value=='point'" selected>点</option>
+              <option value="point" v-bind:value v-else>点</option>
+              <option value="line" v-bind:value v-if="value=='line'" selected>线</option>
+              <option value="line" v-bind:value v-else>线</option>
             </select>
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
@@ -91,15 +92,17 @@
       </div>
       <div v-if="currentLayer.type=='fill'">
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span>{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span>{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='fill-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value>map</option>
-              <option value="viewport" v-bind:value>viewport</option>
+              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
+              <option value="map" v-bind:value v-else>地图</option>
+              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport" v-bind:value v-else>视图窗口</option>
             </select>
           </div>
           <div class="property-value" v-if="name=='fill-antialias'">
@@ -109,31 +112,32 @@
 
         </div>
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span>{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span>{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false" v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='line'" >
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='line-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='line-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value>map</option>
-              <option value="viewport" v-bind:value>viewport</option>
+              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
+              <option value="map" v-bind:value v-else>地图</option>
+              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport" v-bind:value v-else>视图窗口</option>
             </select>
           </div>
-
         </div>
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
-          <div class="property-value" v-if="name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
+          <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
@@ -146,36 +150,52 @@
           </div>
           <div class="property-value" v-if="name=='line-cap'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
-              <option value="butt" v-bind:value>butt</option>
-              <option value="round" v-bind:value>round</option>
-              <option value="square" v-bind:value>square</option>
+              <option value="butt" v-bind:value v-if="value=='butt'" selected>粗</option>
+              <option value="butt" v-bind:value v-else>粗</option>
+              <option value="round" v-bind:value v-if="value=='round'" selected>圆</option>
+              <option value="round" v-bind:value v-else>圆</option>
+              <option value="square" v-bind:value v-if="value=='square'" selected>方</option>
+              <option value="square" v-bind:value v-else>方</option>
             </select>
           </div>
           <div class="property-value" v-if="name=='line-join'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
-              <option value="bevel" v-bind:value>bevel</option>
-              <option value="round" v-bind:value>round</option>
-              <option value="miter" v-bind:value>miter</option>
+              <option value="bevel" v-if="value=='bevel'" selected>斜交叉</option>
+              <option value="bevel" v-else>斜交叉</option>
+              <option value="miter" v-if="value=='miter'" selected>切线交叉</option>
+              <option value="miter" v-else>切线交叉</option>
+              <option value="round" v-if="value=='round'" selected>圆交叉</option>
+              <option value="round" v-else>圆交叉</option>
             </select>
+          </div>
+          <div class="property-value" v-if="name=='line-round-limit'">
+            <input type="text" value="{{value}}" v-on:change='change' v-if="currentLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
+          </div>
+          <div class="property-value" v-if="name=='line-miter-limit'">
+            <input type="text" value="{{value}}" v-on:change='change' v-if="currentLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
           </div>
         </div>
       </div>
       <div v-if="currentLayer.type=='circle'">
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='circle-translate-anchor'">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
             <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='circle-translate-anchor'">
             <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
-              <option value="map" v-bind:value>map</option>
-              <option value="viewport" v-bind:value>viewport</option>
+              <option value="map" v-bind:value v-if="value=='map'" selected>地图</option>
+              <option value="map" v-bind:value v-else>地图</option>
+              <option value="viewport" v-bind:value v-if="value=='viewport'" selected>视图窗口</option>
+              <option value="viewport" v-bind:value v-else>视图窗口</option>
             </select>
           </div>
         </div>
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -184,13 +204,13 @@
       </div>
       <div v-if="currentLayer.type=='raster'">
         <div v-for="(name,value) in currentLayer.paint" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
           </div>
         </div>
         <div v-for="(name,value) in currentLayer.layout" class="property-item">
-          <div class="property-name"><span >{{name.replace(currentLayer.type+'-','')}}</span></div>
+          <div class="property-name"><span >{{translate[name.replace(currentLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -203,575 +223,467 @@
 
 <script>
 
-  export default {
-    methods: {
-      showProperty:function(e){
-        let currentTarget = e.currentTarget
-        let idname = currentTarget.querySelector("span")
-        let styleObj = this.styleObj
-        let layers = styleObj.layers
+export default {
+  methods: {
+    fixType: function(layer){
+      //有的layer没有type属性，有ref属性,补充这个信息
+      if(layer.type === undefined && layer.ref){
+        let layers = this.styleObj.layers
         for(let i=0,length=layers.length;i<length;i++){
-          if(layers[i].id==idname.textContent){
-            this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+          if(layers[i].id === layer.ref){
+            layer.type = layers[i].type
             break
           }
         }
-        //show property
-        let defaultProperty = {
-          'background': {
-            'paint': {
-              "background-color": "#000000",
-              "background-opacity": 1
-            },
-            'layout': {
-              "visibility": "visible"
-            }
-          },
-          "fill": {
-            'paint': {
-              "fill-color": "#000000",
-              "fill-opacity": 1,
-              "fill-antialias": true,
-              "fill-outline-color": "#000000",
-              "fill-translate": [0,0],
-              "fill-translate-anchor": 'map'
-            },
-            'layout': {
-              "visibility": "visible"
-            }
-          },
-          "line": {
-            'paint': {
-              "line-color": "#000000",
-              "line-opacity": 1,
-              "line-translate": [0,0],
-              "line-translate-anchor": 'map',
-              "line-width": 1,
-              "line-gap-width": 0,
-              "line-offset": 0,
-              "line-blur": 0,
-              "line-dasharray": [0,0]
-            },
-            'layout': {
-              "visibility": "visible",
-              "line-cap": "butt",
-              "line-join": "miter",
-              "line-miter-limit": 2,
-              "line-round-limit": 1.05
-            }
-          },
-          "raster": {
-            'paint': {
-              "raster-opacity": 1,
-              "raster-contrast": 0,
-              "raster-hue-rotate": 0,
-              "raster-brightness-min": 0,
-              "raster-brightness-max": 1,
-              "raster-saturation": 0,
-              "raster-fade-duration": 300
+      }
+    },
+    filterProperty: function(layer){
+      //目前只支持 defaultProperty 中的属性
+      let defaultProperty = JSON.parse(JSON.stringify(this.defaultProperty))
 
-            },
-            'layout': {
-              "visibility": "visible"
-            }
-          },
-          "circle": {
-            'paint': {
-              "circle-color": "#000000",
-              "circle-radius": 5,
-              "circle-blur": 0,
-              "circle-opacity": 1,
-              "circle-translate": [0,0],
-              "circle-translate-anchor": 'map'
-            },
-            'layout': {
-              "visibility": "visible"
-            }
-          },
-          'symbol': {
-            'paint': {
-              'icon-opacity':1,
-              'icon-color': "#000000",
-              'text-color': "#000000",
-              'icon-halo-color': "rgba(0,0,0,0)",
-              'icon-halo-width': 0,
-              'text-halo-color': "#000000",
-              'text-halo-width': 1
-            },
-            'layout': {
-              "visibility": "visible",
-              "symbol-placement": "point",
-              "symbol-spacing": 250
-            }
+      if(layer.paint !== undefined){
+        for(let name in defaultProperty[layer.type].paint){
+          if(typeof layer.paint[name] !== 'object' && typeof layer.paint[name] !== 'function' && layer.paint[name] !== undefined){
+            defaultProperty[layer['type']].paint[name] = layer.paint[name]
           }
         }
+      }
+      if(layer.layout !== undefined){
+        for(let name in defaultProperty[layer.type].layout){
+          if(typeof layer.layout[name] !== 'object' && typeof layer.layout[name] !== 'function' && layer.layout[name] !== undefined){
+            defaultProperty[layer['type']].layout[name] = layer.layout[name]
+          }
+        }
+      }
+      layer.paint = defaultProperty[layer['type']].paint
+      layer.layout = defaultProperty[layer['type']].layout
+    },
+    createTocLayer: function(style){
+      let styleObj = JSON.parse(JSON.stringify(style))
+      let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
+      let layers = styleObj['layers']
+      layers.reverse()
+      let mylayers = []
+      let layerIndex = -1
+      for(let i=0,length=layers.length;i<length;i++){
+        let layer = layers[i]
+        this.fixType(layer)
+        if(layer['metadata']){
+          let layername = groups[layer['metadata']['mapbox:group']].name
+          let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
 
-        //有的layer没有type属性，有ref属性,补充这个信息
-        if(this.currentLayer.type===undefined&&this.currentLayer.ref){
-          for(let i=0,length=layers.length;i<length;i++){
-            if(layers[i].id==this.currentLayer.ref){
-              this.currentLayer.type = layers[i].type
+          if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
+            // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
+            mylayers[layerIndex]['items'].push(layer)
+          }else{
+            layerIndex++
+            mylayers[layerIndex] = {}
+            mylayers[layerIndex]['items'] = []
+            mylayers[layerIndex]['id'] = layername
+            mylayers[layerIndex]['collapsed'] = collapsed
+            mylayers[layerIndex]['items'].push(layer)
+          }
+        }else{
+          layerIndex++
+          mylayers[layerIndex] = layer
+        }
+      }
+      return mylayers
+    },
+    showPropertyPanel:function(e){
+      console.log('showPropertyPanel');
+      let currentTarget = e.currentTarget
+      let idname = currentTarget.querySelector("span")
+      let styleObj = this.styleObj
+      let layers = styleObj.layers
+      for(let i=0,length=layers.length;i<length;i++){
+        if(layers[i].id==idname.textContent){
+          this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+          break
+        }
+      }
+      this.fixType(this.currentLayer)
+      this.filterProperty(this.currentLayer)
+      console.log(this.currentLayer);
+    },
+    show:function(e){
+      //防止触发两次
+      if(e.target.tagName!=="INPUT"){
+        return
+      }
+      let activeLayer = document.getElementById("layer-control").querySelector(".layer.active")
+      if(activeLayer&&activeLayer.className.indexOf("active")!==-1){
+        activeLayer.className = activeLayer.className.replace(" active","")
+      }
+
+      let ct = e.currentTarget
+      if(ct.className.indexOf("active")===-1){
+        ct.className += " active"
+      }
+      //show downicons
+      let is = ct.querySelectorAll("i")
+      if(is.length > 3){
+        let checkbox = ct.querySelector("input[type='checkbox']")
+        if(checkbox.checked){
+          is[0].style.display="none"
+          is[1].style.display="inline-block"
+          //change layer的collapse
+          var metadata = this.styleObj['metadata']
+          if(metadata&&metadata['mapbox:groups']){
+            var metadatagroup = metadata['mapbox:groups']
+          }
+          console.log(ct);
+          for(let index in metadatagroup){
+            if(ct.id == metadatagroup[index].name){
+              metadatagroup[index].collapsed = false
+              console.log(this.styleObj['metadata']);
+              console.log("show")
               break
             }
           }
-        }
-
-
-        for(let name in this.currentLayer.paint){
-          //目前只支持 defaultProperty 中的属性
-          if(defaultProperty[this.currentLayer['type']]['paint'][name] === undefined){
-            continue
-          }
-          if(typeof this.currentLayer.paint[name] !== 'object' && typeof this.currentLayer.paint[name] !== 'function'){
-            defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
-          }
-
-        }
-        for(let name in this.currentLayer.layout){
-          //目前只支持 defaultProperty 中的属性
-          if(defaultProperty[this.currentLayer['type']]['layout'][name] === undefined){
-            continue
-          }
-          if(typeof this.currentLayer.layout[name] !== 'object' || typeof this.currentLayer.layout[name] !== 'function'){
-            defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
-          }
-        }
-        this.currentLayer.paint = defaultProperty[this.currentLayer['type']]['paint']
-        this.currentLayer.layout = defaultProperty[this.currentLayer['type']]['layout']
-        console.log(this.currentLayer);
-      },
-      show:function(e){
-        //防止触发两次
-        if(e.target.tagName!=="INPUT"){
-          return
-        }
-        let activeLayer = document.getElementById("layer-control").querySelector(".layer.active")
-        if(activeLayer&&activeLayer.className.indexOf("active")!==-1){
-          activeLayer.className = activeLayer.className.replace(" active","")
-        }
-
-        let ct = e.currentTarget
-        if(ct.className.indexOf("active")===-1){
-          ct.className += " active"
-        }
-        //show downicons
-        let is = ct.querySelectorAll("i")
-        if(is.length > 3){
-          let checkbox = ct.querySelector("input[type='checkbox']")
-          if(checkbox.checked){
-            is[0].style.display="none"
-            is[1].style.display="inline-block"
-            //change layer的collapse
-            var metadata = this.styleObj['metadata']
-            if(metadata&&metadata['mapbox:groups']){
-              var metadatagroup = metadata['mapbox:groups']
-            }
-            console.log(ct);
-            for(let index in metadatagroup){
-              if(ct.id == metadatagroup[index].name){
-                metadatagroup[index].collapsed = false
-                console.log(this.styleObj['metadata']);
-                console.log("show")
-                break
-              }
-            }
-          }else{
-            is[0].style.display="inline-block"
-            is[1].style.display="none"
-            //change layer的collapse
-            var metadata = this.styleObj['metadata']
-            if(metadata&&metadata['mapbox:groups']){
-              var metadatagroup = metadata['mapbox:groups']
-            }
-            for(let index in metadatagroup){
-              if(ct.id == metadatagroup[index].name){
-                metadatagroup[index].collapsed = true
-                console.log("hide")
-              }
-            }
-          }
-        }
-      },
-      change:function(e){
-        console.log('change');
-        let currentLayer = this.currentLayer
-        let layers = this.styleObj.layers
-        let targetDom = e.target
-        var value = targetDom.value
-
-        var temp = Number(value)
-        if(!isNaN(temp)&&temp!==NaN){
-          value = temp
-        }
-
-        //visibility
-        if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "visibility"){
-          if(targetDom.checked){
-            value = 'visible'
-          }else{
-            value = 'none'
-          }
-          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
-        }else if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "fill-antialias"){
-          value = targetDom.checked
-          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
         }else{
-          currentLayer[targetDom.dataset.type][targetDom.name] = value
-        }
-
-
-
-        //同时更新style
-        let styleObj = this.styleObj
-        for(let i=0,length=layers.length;i<length;i++){
-          if(layers[i].id==this.currentLayer.id){
-            layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
+          is[0].style.display="inline-block"
+          is[1].style.display="none"
+          //change layer的collapse
+          var metadata = this.styleObj['metadata']
+          if(metadata&&metadata['mapbox:groups']){
+            var metadatagroup = metadata['mapbox:groups']
           }
-        }
-        let data = JSON.parse(JSON.stringify(this.styleObj))
-        this.$dispatch('style-change',data)
-
-      },
-      eledragstart: function(e){
-        if(e.target.tagName === 'DIV'){
-          e.target.id = e.target.querySelector("input[type='checkbox']").name
-          e.dataTransfer.setData("dragid",e.target.id);
-        }else if(e.target.tagName === 'SPAN'){
-          e.dataTransfer.setData("dragid",e.target.id);
-        }
-
-      },
-      eledragover: function(e){
-        //console.log('enter');
-
-        let currentTarget = e.currentTarget
-        currentTarget.setAttribute("data-ref",'1')
-        var lyindex = currentTarget.className.indexOf('layerover')
-        if(lyindex === -1){
-          currentTarget.className += " layerover"
-        }
-      },
-      eledrop: function(e){
-        //console.log('drop');
-
-        var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
-        var refnode = document.querySelector("*[data-ref='1']")
-        if(refnode ==null){
-          return
-        }
-        let dragLayer
-        let dragLayerId=dragnode.id
-        let refLayerId = refnode.id
-        let dragLayerIndex,refLayerIndex;
-
-        //移除高亮
-        refnode.setAttribute("data-ref",'0')
-        var lyindex = refnode.className.indexOf(' layerover')
-        if(lyindex!=-1){
-          refnode.className = refnode.className.replace(" layerover","")
-        }
-
-        //如果refnode是group
-        var refsublayer = refnode.querySelectorAll("div.sublayer div span")
-        if(refsublayer&&refsublayer.length>0){
-          refLayerId = refsublayer[0].id
-        }
-
-        //如果dragnode是group,获得这个draggroup,用来插入
-        let dragGroup
-        var dragsublayer = dragnode.querySelectorAll("div.sublayer div span")
-        if(dragsublayer&&dragsublayer.length>0){
-          dragLayerId = dragsublayer[dragsublayer.length-1].id
-          let groupIndex = parseInt(dragnode.querySelector("input[type='checkbox']").id)
-          dragGroup = this.layers[groupIndex]
-        }
-
-        var styleObj = this.styleObj
-        var maplayers = styleObj.layers;
-
-        //移除
-        for(let i=0,length=maplayers.length;i<length;i++){
-          let name = maplayers[i].id
-          if(name === dragLayerId){
-            dragLayerIndex = i
-            //判断是否是组
-            if(dragGroup&&dragGroup.items.length>0){
-              maplayers.splice(dragLayerIndex,dragGroup.items.length)
-            }else{
-              dragLayer = maplayers[i]            //用来插入
-              maplayers.splice(dragLayerIndex,1)
-
+          for(let index in metadatagroup){
+            if(ct.id == metadatagroup[index].name){
+              metadatagroup[index].collapsed = true
+              console.log("hide")
             }
-            break
           }
         }
+      }
+    },
+    change:function(e){
+      console.log('change');
+      let currentLayer = this.currentLayer
+      let layers = this.styleObj.layers
+      let targetDom = e.target
+      var value = targetDom.value
 
-        //插入
-        for(let i=0,length=maplayers.length;i<length;i++){
-          let name = maplayers[i].id
-          if(name === refLayerId){
-            refLayerIndex = i
-            //如果是组
-            if(dragGroup&&dragGroup.items.length>0){
-              for(let j=0,length = dragGroup.items.length;j<length;j++){
-                maplayers.splice(refLayerIndex+1,0,dragGroup.items[j])
-              }
-            }else{
-              maplayers.splice(refLayerIndex+1,0,dragLayer)
-            }
-            break
+      var temp = Number(value)
+      if(!isNaN(temp)&&temp!==NaN){
+        value = temp
+      }
+
+      //visibility
+      if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "visibility"){
+        if(targetDom.checked){
+          value = 'visible'
+        }else{
+          value = 'none'
+        }
+        currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+      }else if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "fill-antialias"){
+        value = targetDom.checked
+        currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+      }else{
+        currentLayer[targetDom.dataset.type][targetDom.name] = value
+      }
+
+      if(targetDom.name === 'line-join'){
+        let inputDomR = document.querySelector("input[name='line-round-limit']");
+        let inputDomM = document.querySelector("input[name='line-miter-limit']");
+        if(value === 'miter'){
+          inputDomR.disabled = 'disabled';
+          inputDomM.removeAttribute('disabled')
+        }else if(value === 'round'){
+          inputDomM.disabled = 'disabled';
+          inputDomR.removeAttribute('disabled')
+        }else {
+          inputDomR.disabled = 'disabled';
+          inputDomM.disabled = 'disabled';
+        }
+      }
+
+
+
+      //同时更新style
+      let styleObj = this.styleObj
+      for(let i=0,length=layers.length;i<length;i++){
+        if(layers[i].id==this.currentLayer.id){
+          layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
+        }
+      }
+      let data = JSON.parse(JSON.stringify(this.styleObj))
+      this.$dispatch('style-change',data)
+
+    },
+    eledragstart: function(e){
+      if(e.target.tagName === 'DIV'){
+        e.target.id = e.target.querySelector("input[type='checkbox']").name
+        e.dataTransfer.setData("dragid",e.target.id);
+      }else if(e.target.tagName === 'SPAN'){
+        e.dataTransfer.setData("dragid",e.target.id);
+      }
+
+    },
+    eledragover: function(e){
+      //just for preventDefault
+    },
+    eledrop: function(e){
+      var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
+      var refnode = document.querySelector("*[data-ref='1']")
+      if(refnode ==null){
+        return
+      }
+      let dragLayer
+      let dragLayerId=dragnode.id
+      let refLayerId = refnode.id
+      let dragLayerIndex,refLayerIndex;
+
+      //移除高亮
+      refnode.setAttribute("data-ref",'0')
+      var lyindex = refnode.className.indexOf(' layerover')
+      if(lyindex!=-1){
+        refnode.className = refnode.className.replace(" layerover","")
+      }
+
+      //如果refnode是group
+      var refsublayer = refnode.querySelectorAll("div.sublayer div span")
+      if(refsublayer && refsublayer.length>0){
+        refLayerId = refsublayer[0].id
+      }
+
+      //如果dragnode是group,获得这个draggroup,用来插入
+      let dragGroup
+      var dragsublayer = dragnode.querySelectorAll("div.sublayer div span")
+      if(dragsublayer&&dragsublayer.length>0){
+        dragLayerId = dragsublayer[dragsublayer.length-1].id
+        let groupIndex = parseInt(dragnode.querySelector("input[type='checkbox']").id)
+        dragGroup = this.tocLayers[groupIndex]
+      }
+
+      var styleObj = this.styleObj
+      var maplayers = styleObj.layers;
+
+      //移除
+      for(let i=0,length=maplayers.length;i<length;i++){
+        let name = maplayers[i].id
+        if(name === dragLayerId){
+          dragLayerIndex = i
+          //判断是否是组
+          if(dragGroup&&dragGroup.items.length>0){
+            maplayers.splice(dragLayerIndex,dragGroup.items.length)
+          }else{
+            dragLayer = maplayers[i]            //用来插入
+            maplayers.splice(dragLayerIndex,1)
+
           }
+          break
         }
+      }
 
-        //如果dragnode 是sublayer
-        if(dragnode.tagName === "SPAN"){
-          delete dragLayer['metadata']
-        }
-
-        //如果refnode是sublayer
-        if(refnode.tagName === "SPAN"){
-          //如果dragnode是group
-          if(dragGroup&&dragGroup.items){
-            //移动group
-            for(let j=dragGroup.items.length-1;j>=0;j--){
-              dragGroup.items[j]['metadata'] = {}
-              dragGroup.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+      //插入
+      for(let i=0,length=maplayers.length;i<length;i++){
+        let name = maplayers[i].id
+        if(name === refLayerId){
+          refLayerIndex = i
+          console.log(refLayerIndex);
+          //如果是组
+          if(dragGroup&&dragGroup.items.length>0){
+            for(let j=0,length = dragGroup.items.length;j<length;j++){
+              maplayers.splice(refLayerIndex+1,0,dragGroup.items[j])
             }
           }else{
-            dragLayer['metadata'] = {}
-            dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+            maplayers.splice(refLayerIndex+1,0,dragLayer)
           }
-        }
-        //change toc
-
-        this.layers = createTocLayer(styleObj)
-
-        //构建TocLayer
-        function createTocLayer(style){
-          let styleObj = JSON.parse(JSON.stringify(style))
-          let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
-          let layers = styleObj['layers']
-          layers.reverse()
-          let mylayers = []
-          let layerIndex = -1
-          for(let i=0,length=layers.length;i<length;i++){
-            let layer = layers[i]
-            if(layer['metadata']){
-              let layername = groups[layer['metadata']['mapbox:group']].name
-              let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
-              if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
-                // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-                mylayers[layerIndex]['items'].push(layer)
-              }else{
-                layerIndex++
-                mylayers[layerIndex] = {}
-                mylayers[layerIndex]['items'] = []
-                mylayers[layerIndex]['id'] = layername
-                mylayers[layerIndex]['collapsed'] = collapsed
-                mylayers[layerIndex]['items'].push(layer)
-              }
-            }else{
-              layerIndex++
-              mylayers[layerIndex] = layer
-            }
-          }
-
-          return mylayers
-        }
-        let data = JSON.parse(JSON.stringify(this.styleObj))
-        this.$dispatch('style-change',data)
-      },
-
-      eledragenter: function(e){
-        //console.log('enter');
-        let currentTarget = e.currentTarget
-        currentTarget.setAttribute("data-ref",'1')
-        var lyindex = currentTarget.className.indexOf('layerover')
-        if(lyindex === -1){
-          currentTarget.className += " layerover"
-        }
-      },
-      eledragleave: function(e){
-
-        console.log('leave');
-        let currentTarget = e.currentTarget
-        currentTarget.setAttribute("data-ref",'0')
-        var lyindex = currentTarget.className.indexOf(' layerover')
-        if(lyindex!=-1){
-          currentTarget.className = currentTarget.className.replace(" layerover","")
+          break
         }
       }
+
+      //如果dragnode 是sublayer
+      if(dragnode.tagName === "SPAN"){
+        delete dragLayer['metadata']
+      }
+
+      //如果refnode是sublayer
+      if(refnode.tagName === "SPAN"){
+        //如果dragnode是group
+        if(dragGroup&&dragGroup.items){
+          //移动group
+          for(let j=dragGroup.items.length-1;j>=0;j--){
+            dragGroup.items[j]['metadata'] = {}
+            dragGroup.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+          }
+        }else{
+          dragLayer['metadata'] = {}
+          dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+        }
+      }
+      //change toc
+      this.tocLayers = this.createTocLayer(styleObj)
+
+      let data = JSON.parse(JSON.stringify(this.styleObj))
+      this.$dispatch('style-change',data)
     },
-    events: {
-      'toc-init': function(style){
-          this.styleObj = JSON.parse(JSON.stringify(style))
-          this.currentLayer = JSON.parse(JSON.stringify(this.styleObj.layers[this.styleObj.layers.length-1]))
-          this.layers = createTocLayer(style)
-          //show property
-          let defaultProperty = {
-            'background': {
-              'paint': {
-                "background-color": "#000000",
-                "background-opacity": 1
-              },
-              'layout': {
-                "visibility": "visible"
-              }
-            },
-            "fill": {
-              'paint': {
-                "fill-color": "#000000",
-                "fill-opacity": 1,
-                "fill-antialias": true,
-                "fill-outline-color": "#000000",
-                "fill-translate": [0,0],
-                "fill-translate-anchor": 'map'
-              },
-              'layout': {
-                "visibility": "visible"
-              }
-            },
-            "line": {
-              'paint': {
-                "line-color": "#000000",
-                "line-opacity": 1,
-                "line-translate": [0,0],
-                "line-translate-anchor": 'map',
-                "line-width": 1,
-                "line-gap-width": 0,
-                "line-offset": 0,
-                "line-blur": 0,
-                "line-dasharray": [0,0]
-              },
-              'layout': {
-                "visibility": "visible",
-                "line-cap": "butt",
-                "line-join": "miter",
-                "line-miter-limit": 2,
-                "line-round-limit": 1.05
-              }
-            },
-            "raster": {
-              'paint': {
-                "raster-opacity": 1,
-                "raster-contrast": 0,
-                "raster-hue-rotate": 0,
-                "raster-brightness-min": 0,
-                "raster-brightness-max": 1,
-                "raster-saturation": 0,
-                "raster-fade-duration": 300
 
-              },
-              'layout': {
-                "visibility": "visible"
-              }
-            },
-            "circle": {
-              'paint': {
-                "circle-color": "#000000",
-                "circle-radius": 5,
-                "circle-blur": 0,
-                "circle-opacity": 1,
-                "circle-translate": [0,0],
-                "circle-translate-anchor": 'map'
-              },
-              'layout': {
-                "visibility": "visible"
-              }
-            },
-            'symbol': {
-              'paint': {
-                'icon-opacity':1,
-                'icon-color': "#000000",
-                'text-color': "#000000",
-                'icon-halo-color': "rgba(0,0,0,0)",
-                'icon-halo-width': 0,
-                'text-halo-color': "#000000",
-                'text-halo-width': 1
-              },
-              'layout': {
-                "visibility": "visible",
-                "symbol-placement": "point",
-                "symbol-spacing": 250
-              }
-            }
-          }
-
-          //有的layer没有type属性，有ref属性,补充这个信息
-          if(this.currentLayer.type===undefined&&this.currentLayer.ref){
-            for(let i=0,length=layers.length;i<length;i++){
-              if(layers[i].id==this.currentLayer.ref){
-                this.currentLayer.type = layers[i].type
-                break
-              }
-            }
-          }
-
-
-          for(let name in this.currentLayer.paint){
-            //目前只支持 defaultProperty 中的属性
-            if(defaultProperty[this.currentLayer['type']]['paint'][name] === undefined){
-              continue
-            }
-            if(typeof this.currentLayer.paint[name] !== 'object' && typeof this.currentLayer.paint[name] !== 'function'){
-              defaultProperty[this.currentLayer['type']]['paint'][name] = this.currentLayer.paint[name];
-            }
-
-          }
-          for(let name in this.currentLayer.layout){
-            //目前只支持 defaultProperty 中的属性
-            if(defaultProperty[this.currentLayer['type']]['layout'][name] === undefined){
-              continue
-            }
-            if(typeof this.currentLayer.layout[name] !== 'object' || typeof this.currentLayer.layout[name] !== 'function'){
-              defaultProperty[this.currentLayer['type']]['layout'][name] = this.currentLayer.layout[name];
-            }
-          }
-          this.currentLayer.paint = defaultProperty[this.currentLayer['type']]['paint']
-          this.currentLayer.layout = defaultProperty[this.currentLayer['type']]['layout']
-
-          function createTocLayer(style){
-            let styleObj = JSON.parse(JSON.stringify(style))
-            let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
-            let layers = styleObj['layers']
-            layers.reverse()
-
-            let mylayers = []
-            let layerIndex = -1
-            for(let i=0,length=layers.length;i<length;i++){
-              let layer = layers[i]
-              if(layer['metadata']){
-                let layername = groups[layer['metadata']['mapbox:group']].name
-                let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
-
-                if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
-                  // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-                  mylayers[layerIndex]['items'].push(layer)
-                }else{
-                  layerIndex++
-                  mylayers[layerIndex] = {}
-                  mylayers[layerIndex]['items'] = []
-                  mylayers[layerIndex]['id'] = layername
-                  mylayers[layerIndex]['collapsed'] = collapsed
-                  mylayers[layerIndex]['items'].push(layer)
-                }
-              }else{
-                layerIndex++
-                mylayers[layerIndex] = layer
-              }
-            }
-            return mylayers
-          }
+    eledragenter: function(e){
+      //console.log('enter');
+      let currentTarget = e.currentTarget
+      currentTarget.setAttribute("data-ref",'1')
+      var lyindex = currentTarget.className.indexOf('layerover')
+      if(lyindex === -1){
+        currentTarget.className += " layerover"
       }
     },
-    data: function() {
-      return {
-        layers: [],
-        currentLayer: {},
-        styleObj: {}
+    eledragleave: function(e){
+
+      console.log('leave');
+      let currentTarget = e.currentTarget
+      currentTarget.setAttribute("data-ref",'0')
+      var lyindex = currentTarget.className.indexOf(' layerover')
+      if(lyindex!=-1){
+        currentTarget.className = currentTarget.className.replace(" layerover","")
+      }
+    }
+  },
+  events: {
+    'toc-init': function(style){
+        this.styleObj = JSON.parse(JSON.stringify(style))
+        this.currentLayer = JSON.parse(JSON.stringify(this.styleObj.layers[this.styleObj.layers.length-1]))
+        this.tocLayers = this.createTocLayer(style)
+        this.fixType(this.currentLayer)
+        this.filterProperty(this.currentLayer)
+    }
+  },
+  data: function() {
+    return {
+      tocLayers: [],
+      currentLayer: {},
+      styleObj: {},
+      translate: {
+        'color': '颜色',
+        'outline-color': '边框颜色',
+        'opacity': '透明度',
+        'visibility': '显示',
+        'width': '宽度',
+        'translate': '偏移',
+        'translate-anchor': '偏移相对物',
+        'pattern': '图案',
+        'antialias': '反锯齿',
+        'icon-opacity': '图标透明度',
+        'icon-color': '图标颜色',
+        'icon-halo-color': '图标光环颜色',
+        'icon-halo-width': '图标光环宽度',
+        'text-opacity': '字体透明度',
+        'text-color': '字体颜色',
+        'text-halo-color': '字体光环颜色',
+        'text-halo-width': '字体光环宽度',
+        'icon-size': '图标大小',
+        'text-field':'字体字段',
+        'text-size': '字体大小',
+        'text-max-width': '字体最大宽度',
+        'placement': '符号位置',
+        'spacing': '符号间隔',
+        "gap-width": '间隙宽度',
+        "offset": '方向偏移',
+        "blur": '模糊距离',
+        "dasharray": '虚线',
+        "cap": "线尾样式",
+        "join": "线交叉形式",
+        "miter-limit": '切线交叉限制',
+        "round-limit": '圆交叉限制'
+      },
+      defaultProperty: {
+        'background': {
+          'paint': {
+            "background-color": "#000000",
+            "background-opacity": 1
+          },
+          'layout': {
+            "visibility": "visible"
+          }
+        },
+        "fill": {
+          'paint': {
+            "fill-color": "#000000",
+            "fill-opacity": 1,
+            "fill-outline-color": "#000000",
+            "fill-antialias": true,
+            "fill-translate": [0,0],
+            "fill-translate-anchor": 'map'
+          },
+          'layout': {
+            "visibility": "visible"
+          }
+        },
+        "line": {
+          'paint': {
+            "line-color": "#000000",
+            "line-opacity": 1,
+            "line-translate": [0,0],
+            "line-translate-anchor": 'map',
+            "line-width": 1,
+            "line-gap-width": 0,
+            "line-offset": 0,
+            "line-blur": 0,
+            "line-dasharray": [0,0]
+          },
+          'layout': {
+            "visibility": "visible",
+            "line-cap": "butt",
+            "line-join": "miter",
+            "line-miter-limit": 2,
+            "line-round-limit": 1.05
+          }
+        },
+        "raster": {
+          'paint': {
+            "raster-opacity": 1,
+            "raster-contrast": 0,
+            "raster-hue-rotate": 0,
+            "raster-brightness-min": 0,
+            "raster-brightness-max": 1,
+            "raster-saturation": 0,
+            "raster-fade-duration": 300
+
+          },
+          'layout': {
+            "visibility": "visible"
+          }
+        },
+        "circle": {
+          'paint': {
+            "circle-color": "#000000",
+            "circle-radius": 5,
+            "circle-blur": 0,
+            "circle-opacity": 1,
+            "circle-translate": [0,0],
+            "circle-translate-anchor": 'map'
+          },
+          'layout': {
+            "visibility": "visible"
+          }
+        },
+        'symbol': {
+          'paint': {
+            'icon-opacity':1,
+            'icon-color': "#000000",
+            'icon-halo-color': "rgba(0,0,0,0)",
+            'icon-halo-width': 0,
+            'text-color': "#000000",
+            'text-halo-color': "#000000",
+            'text-halo-width': 1
+          },
+          'layout': {
+            "visibility": "visible",
+            'icon-size': 1,
+            'text-field':'{text-field}',
+            'text-size': 16,
+            'text-max-width': 10,
+            "symbol-placement": "point",
+            "symbol-spacing": 250
+          }
+        }
       }
     }
   }
+}
 
 </script>
 
