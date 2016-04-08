@@ -2,7 +2,7 @@
   <div id="header"></div>
   <div id="edit-wrap">
     <foxgis-toc :style-obj='styleObj' v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
-    <foxgis-drafmap></foxgis-drafmap>
+    <foxgis-drafmap v-on:current-layer-change='setTocLayer'></foxgis-drafmap>
   </div>
 </template>
 
@@ -14,7 +14,9 @@ export default {
   methods: {
     'styleChange': function(style){
       this.$broadcast('map-style-change',style)
-
+    },
+    'setTocLayer': function(layerId){
+      this.$broadcast('toc-layer-change',layerId)
     }
   },
   ready: function(){
