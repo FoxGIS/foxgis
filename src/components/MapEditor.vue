@@ -20,7 +20,7 @@ export default {
     }
   },
   ready: function(){
-    let url = "/node_modules/mapbox-gl-styles/styles/streets-v8.json"
+    let url = "./static/streets-v8.json"
 
     this.$http.get(url).then(function(res){
       let data = res.data
