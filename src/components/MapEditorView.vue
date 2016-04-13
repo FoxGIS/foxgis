@@ -24,14 +24,20 @@
   export default {
     methods: {
       mapClick: function(e){
-        let features = this.map.queryRenderedFeatures(e.point)
         let infoContainer = document.getElementById("info-container")
+        console.log('click');
+        let features = this.map.queryRenderedFeatures(e.point)
+
         if(features.length>0){
           infoContainer.style.display = "block"
           infoContainer.style.left = e.point.x-100 + 'px'
           infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
         }
         this.queryFeatures = features
+      },
+      mapDrag: function(e){
+        let infoContainer = document.getElementById("info-container")
+        infoContainer.style.display = 'none'
       },
       layerClick: function(e){
         let layerId = e.currentTarget.querySelector("span").textContent;
@@ -52,6 +58,7 @@
         map.addControl(new mapboxgl.Navigation())
         this.map = map;
         map.on('click', this.mapClick);
+        map.on('drag', this.mapDrag);
         console.log(map);
         console.log('map-init');
       },
