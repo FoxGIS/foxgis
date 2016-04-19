@@ -142,7 +142,8 @@ export default {
   font-size: 16px;
 }
 
-.control-active {
+#main-control .control-active {
+  color: #2061C6;
   background-color: #E5E2D3;
 }
 

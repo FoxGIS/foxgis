@@ -20,7 +20,7 @@
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
-          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" >
+          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
             <i class="material-icons" v-if="item.type=='symbol'">grade</i>
             <i class="material-icons" v-if="item.type=='line'">remove</i>
             <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
@@ -330,8 +330,6 @@ export default {
       if(is.length > 3){
         let checkbox = ct.querySelector("input[type='checkbox']")
         if(checkbox.checked){
-          // is[0].style.display="none"
-          // is[1].style.display="inline-block"
           //change layer的collapse
           var metadata = this.styleObj['metadata']
           if(metadata&&metadata['mapbox:groups']){
@@ -350,8 +348,7 @@ export default {
             }
           }
         }else{
-          // is[0].style.display="inline-block"
-          // is[1].style.display="none"
+
           //change layer的collapse
           var metadata = this.styleObj['metadata']
           if(metadata&&metadata['mapbox:groups']){
@@ -552,9 +549,6 @@ export default {
       let over = $("*[data-ref=1]")
       let currentTarget = e.currentTarget
 
-      if(currentTarget.className.indexOf('sublyaer')!=-1){
-        return
-      }
       for(let i=0,length = over.length;i<length;i++){
         over[i].setAttribute("data-ref",'0')
         over[i].className = over[i].className.replace(" layerover","")
@@ -574,6 +568,14 @@ export default {
       // if(lyindex!=-1){
       //   currentTarget.className = currentTarget.className.replace(" layerover","")
       // }
+    },
+    sublayerMouseover: function(e){
+      if(e.currentTarget.className.indexOf('sublayer-over')===-1){
+        e.currentTarget.className += ' sublayer-over'
+      }
+    },
+    sublayerMouseleave: function(e){
+      e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','')
     }
   },
   events: {
@@ -803,7 +805,7 @@ a {
   display: inline-block;
   line-height: 25px;
   width: 100%;
-  height: 25px;
+/*  height: 25px;*/
   padding-left: 5px;
 }
 
@@ -832,12 +834,11 @@ a {
 }
 
 .layer input[type='checkbox'] {
-  height: 0px;
   display: none;
 }
 
 .layer input:checked + .sublayer{
-  height: 100%;
+/*  height: 100%;*/
   display: block;
   margin-left: 20px;
 }
@@ -847,7 +848,6 @@ a {
 }
 
 .layer .sublayer {
-  height: 0px;
   display: none;
 }
 
@@ -858,7 +858,7 @@ a {
   margin: 15px 0px;
 }
 
-.sublayer a:hover {
+.sublayer-over {
   font-weight: bolder;
 }
 
