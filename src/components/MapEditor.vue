@@ -33,12 +33,20 @@ export default {
       dislink.className = dislink.className.replace(' control-active','')
     },
     'districtControlClick': function(e){
-      console.log('1');
+
       let toc = document.getElementById("toc-container")
       toc.style.display = 'none'
       let discontrol = document.getElementById("district-control")
       discontrol.style.display = 'block'
-      $('#district-control').jstree({
+      let that = this
+      $('#district-control')
+      .on("changed.jstree",function(e,data){
+        console.log(e)
+        console.log(data)
+        let bounds = [[116.111004,39.691665],[116.709188,40.194547]]
+        that.$broadcast('map-bounds-change',bounds)
+      })
+      .jstree({
         "plugins" : [ "wholerow" ],
         'core' : {
           "themes":{

@@ -95,6 +95,14 @@
           }
         }
         this.originStyle = newStyle
+      },
+      'map-bounds-change': function(bounds){
+        if(Object.prototype.toString.call(bounds) === '[object Array]'){
+          this.map.fitBounds(bounds)
+        }else{
+          console.log('bounds must be Array');
+        }
+
       }
     },
     data: function(){
