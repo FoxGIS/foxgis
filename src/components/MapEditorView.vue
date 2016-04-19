@@ -112,9 +112,9 @@
   flex:1;
   flex-grow:1;
   position: absolute;
-  left: 200px;
+  left: 250px;
   height: calc(100% - 55px);
-  width: calc(100% - 200px);
+  width: calc(100% - 250px);
   box-sizing: border-box;
 }
 

@@ -1,6 +1,7 @@
 <template>
   <div id="header"></div>
   <div id="edit-wrap">
+    <div id="main-control">控制</div>
     <foxgis-toc :style-obj='styleObj' v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer'></foxgis-drafmap>
   </div>
@@ -21,7 +22,6 @@ export default {
   },
   ready: function(){
     let url = "/node_modules/mapbox-gl-styles/styles/streets-v8.json"
-
     this.$http.get(url).then(function(res){
       let data = res.data
       let initStyle = JSON.parse(JSON.stringify(data))
@@ -59,11 +59,19 @@ export default {
   height: calc(100% - 50px);
 }
 
+#main-control {
+  width: 50px;
+  height: calc(100% - 55px);
+  box-sizing: border-box;
+  position: absolute;
+}
+
 #toc-container {
   width: 200px;
   height: calc(100% - 55px);
   box-sizing: border-box;
   position: absolute;
+  left: 50px;
   border:solid 1px rgba(0,0,0,0.5);
 }
 
