@@ -6,8 +6,8 @@
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer" v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
         <a><label for="{{$index}}" v-on:click="showPropertyPanel" title="{{layer.id}}">
-          <i class="material-icons" v-if="layer.items!==undefined">keyboard_arrow_right</i>
-          <i class="material-icons" style="display:none" v-if="layer.items!==undefined">keyboard_arrow_down</i>
+          <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
+          <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
           <i class="material-icons" v-if="layer.items!==undefined">folder</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='symbol'">grade</i>
           <i class="material-icons" v-if="layer.items==undefined&&layer.type=='line'">remove</i>
@@ -20,14 +20,14 @@
         <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
         <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
         <div v-if="layer.items!==undefined" class="sublayer">
-          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}">
+          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" >
             <i class="material-icons" v-if="item.type=='symbol'">grade</i>
             <i class="material-icons" v-if="item.type=='line'">remove</i>
             <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
             <i class="material-icons" v-if="item.type=='fill'">filter_b_and_w</i>
             <i class="material-icons" v-if="item.type=='circle'">lens</i>
             <i class="material-icons" v-if="item.type=='raster'">image</i>
-            <span draggable="true" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave'>{{item.id}}</span>
+            <span >{{item.id}}</span>
           </div>
         </div></a>
       </div>
@@ -330,8 +330,8 @@ export default {
       if(is.length > 3){
         let checkbox = ct.querySelector("input[type='checkbox']")
         if(checkbox.checked){
-          is[0].style.display="none"
-          is[1].style.display="inline-block"
+          // is[0].style.display="none"
+          // is[1].style.display="inline-block"
           //change layer的collapse
           var metadata = this.styleObj['metadata']
           if(metadata&&metadata['mapbox:groups']){
@@ -341,12 +341,17 @@ export default {
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = false
+              console.log('show');
+              for(let i=0,length = this.tocLayers.length;i<length;i++){
+                if(this.tocLayers[i].id === ct.id)
+                this.tocLayers[i].collapsed = false;
+              }
               break
             }
           }
         }else{
-          is[0].style.display="inline-block"
-          is[1].style.display="none"
+          // is[0].style.display="inline-block"
+          // is[1].style.display="none"
           //change layer的collapse
           var metadata = this.styleObj['metadata']
           if(metadata&&metadata['mapbox:groups']){
@@ -355,6 +360,10 @@ export default {
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = true
+              for(let i=0,length = this.tocLayers.length;i<length;i++){
+                if(this.tocLayers[i].id === ct.id)
+                this.tocLayers[i].collapsed = true;
+              }
               console.log("hide")
             }
           }
@@ -432,13 +441,12 @@ export default {
 
     },
     eledragstart: function(e){
-      if(e.target.tagName === 'DIV'){
+      if(e.target.className.indexOf("sublayer-item")!=-1){
+        e.dataTransfer.setData("dragid",e.target.id);
+      }else {
         e.target.id = e.target.querySelector("input[type='checkbox']").name
         e.dataTransfer.setData("dragid",e.target.id);
-      }else if(e.target.tagName === 'SPAN'){
-        e.dataTransfer.setData("dragid",e.target.id);
       }
-
     },
     eledragover: function(e){
       //just for preventDefault
@@ -462,14 +470,14 @@ export default {
       }
 
       //如果refnode是group
-      var refsublayer = refnode.querySelectorAll("div.sublayer div span")
+      var refsublayer = refnode.querySelectorAll("div.sublayer-item")
       if(refsublayer && refsublayer.length>0){
         refLayerId = refsublayer[0].id
       }
 
       //如果dragnode是group,获得这个draggroup,用来插入
       let dragGroup
-      var dragsublayer = dragnode.querySelectorAll("div.sublayer div span")
+      var dragsublayer = dragnode.querySelectorAll("div.sublayer-item")
       if(dragsublayer&&dragsublayer.length>0){
         dragLayerId = dragsublayer[dragsublayer.length-1].id
         let groupIndex = parseInt(dragnode.querySelector("input[type='checkbox']").id)
@@ -515,12 +523,12 @@ export default {
       }
 
       //如果dragnode 是sublayer
-      if(dragnode.tagName === "SPAN"){
+      if(dragnode.className.indexOf("sublayer-item") !== -1){
         delete dragLayer['metadata']
       }
 
       //如果refnode是sublayer
-      if(refnode.tagName === "SPAN"){
+      if(refnode.className.indexOf("sublayer-item") !== -1){
         //如果dragnode是group
         if(dragGroup&&dragGroup.items){
           //移动group
@@ -540,8 +548,18 @@ export default {
       this.$dispatch('style-change',data)
     },
     eledragenter: function(e){
-      //console.log('enter');
+      //先移除
+      let over = $("*[data-ref=1]")
       let currentTarget = e.currentTarget
+
+      if(currentTarget.className.indexOf('sublyaer')!=-1){
+        return
+      }
+      for(let i=0,length = over.length;i<length;i++){
+        over[i].setAttribute("data-ref",'0')
+        over[i].className = over[i].className.replace(" layerover","")
+      }
+
       currentTarget.setAttribute("data-ref",'1')
       var lyindex = currentTarget.className.indexOf('layerover')
       if(lyindex === -1){
@@ -550,12 +568,12 @@ export default {
     },
     eledragleave: function(e){
       console.log('leave');
-      let currentTarget = e.currentTarget
-      currentTarget.setAttribute("data-ref",'0')
-      var lyindex = currentTarget.className.indexOf(' layerover')
-      if(lyindex!=-1){
-        currentTarget.className = currentTarget.className.replace(" layerover","")
-      }
+      // let currentTarget = e.currentTarget
+      // currentTarget.setAttribute("data-ref",'0')
+      // var lyindex = currentTarget.className.indexOf(' layerover')
+      // if(lyindex!=-1){
+      //   currentTarget.className = currentTarget.className.replace(" layerover","")
+      // }
     }
   },
   events: {
@@ -746,7 +764,7 @@ export default {
 
 #layer-control {
   padding-top: 5px;
-  padding-left: 5px;
+
   border:solid 1px rgba(0,0,0,0.5);
   border-top: none;
   border-left: none;
@@ -786,6 +804,7 @@ a {
   line-height: 25px;
   width: 100%;
   height: 25px;
+  padding-left: 5px;
 }
 
 .layer a:hover {

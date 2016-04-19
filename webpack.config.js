@@ -22,6 +22,11 @@ module.exports = {
     root: path.join(__dirname, 'node_modules'),
   },
   module: {
+    preLoaders: [{
+      test: /.vue$/,
+      loader: 'eslint',
+      exclude: /node_modules/
+    }],
     loaders: [{
       test: /\.vue$/,
       loader: 'vue'

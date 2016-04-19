@@ -127,24 +127,23 @@ export default {
   width: 30px;
   height: 30px;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #main-control a {
   color: white;
   box-sizing: border-box;
   width: 30px;
-  height: 30px;
-  padding-left: 2px;
-  padding-top: 2px;
   cursor: pointer;
+  padding: 20px 0 20px 5px;
+}
+
+#main-control a i {
+  font-size: 16px;
 }
 
 .control-active {
   background-color: #E5E2D3;
-}
-
-#main-control a:nth-child(2) {
-  margin-top: 10px;
 }
 
 #district-control {
