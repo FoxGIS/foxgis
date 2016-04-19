@@ -539,7 +539,6 @@ export default {
       let data = JSON.parse(JSON.stringify(this.styleObj))
       this.$dispatch('style-change',data)
     },
-
     eledragenter: function(e){
       //console.log('enter');
       let currentTarget = e.currentTarget
@@ -550,7 +549,6 @@ export default {
       }
     },
     eledragleave: function(e){
-
       console.log('leave');
       let currentTarget = e.currentTarget
       currentTarget.setAttribute("data-ref",'0')
@@ -721,11 +719,9 @@ export default {
 </script>
 
 <style scoped>
-/** {
-  border: solid red 1px;
-}*/
+
 #style-header {
-  height: 30px;
+  height: 40px;
   padding: 5px;
   background-color: #2061C6;
 }
@@ -733,8 +729,8 @@ export default {
 #style-header span {
   display: inline-block;
   width: 150px;
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   white-space: nowrap;
   text-overflow:ellipsis;
   overflow:hidden;
@@ -742,15 +738,19 @@ export default {
 
 #style-header i {
   margin-left: 5px;
+  margin-top: -42px;
   font-size: 30px;
-  line-height: 30px;
+  line-height: 40px;
+  vertical-align: middle;
 }
 
 #layer-control {
   padding-top: 5px;
+  padding-left: 5px;
   border:solid 1px rgba(0,0,0,0.5);
   border-top: none;
-  background-color: rgba(237, 233, 217,0.4);
+  border-left: none;
+  background-color: #E5E2D3;
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 115px);
@@ -846,7 +846,7 @@ a {
 #map-tool {
   position: absolute;
   bottom: 20px;
-  left: 0px;
+  left: 3px;
   margin: 0 auto;
 }
 

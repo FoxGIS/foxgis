@@ -59,8 +59,8 @@
         this.map = map;
         map.on('click', this.mapClick);
         map.on('drag', this.mapDrag);
-        console.log(map);
         console.log('map-init');
+        console.log(map);
       },
       'map-style-change': function(newStyle){
 
@@ -112,9 +112,9 @@
   flex:1;
   flex-grow:1;
   position: absolute;
-  left: 250px;
+  left: 230px;
   height: calc(100% - 55px);
-  width: calc(100% - 250px);
+  width: calc(100% - 230px);
   box-sizing: border-box;
 }
 
