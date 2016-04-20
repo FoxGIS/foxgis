@@ -27,24 +27,24 @@
 export default {
   methods:{
     register: function(){
-      let url = "http://localhost:11111/api/register"
-      let username = this.$el.querySelector("#username").value
-      let password = this.$el.querySelector("#password").value
+      let url = 'http://localhost:11111/api/register'
+      let username = this.$el.querySelector('#username').value
+      let password = this.$el.querySelector('#password').value
       this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
-        console.log(response.data.token);
+        console.log(response.data.token)
       },function(response){
-        console.log(response);
+        console.log(response)
       })
     },
     login: function(){
-      let url = "http://localhost:11111/api/login"
-      let username = this.$el.querySelector("#username").value
-      let password = this.$el.querySelector("#password").value
+      let url = 'http://localhost:11111/api/login'
+      let username = this.$el.querySelector('#username').value
+      let password = this.$el.querySelector('#password').value
       this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
-        console.log(this);
-        console.log(response.data.token);
+        console.log(this)
+        console.log(response.data.token)
       },function(response){
-        console.log(response);
+        console.log(response)
       })
     }
   }

@@ -292,16 +292,15 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(e){
-      console.log('showPropertyPanel');
+      console.log('showPropertyPanel')
       let currentTarget = e.currentTarget
-      let idname = currentTarget.querySelector("span")
+      let idname = currentTarget.querySelector('span')
       let styleObj = this.styleObj
       let layers = styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
         if(layers[i].id==idname.textContent){
           clickLayer = layers[i]
-          console.log(clickLayer);
           break
         }
       }
@@ -313,62 +312,63 @@ export default {
     },
     show:function(e){
       //防止触发两次
-      if(e.target.tagName!=="INPUT"){
+      if(e.target.tagName!=='INPUT'){
         return
       }
-      let activeLayer = document.getElementById("layer-control").querySelector(".layer.active")
-      if(activeLayer&&activeLayer.className.indexOf("active")!==-1){
-        activeLayer.className = activeLayer.className.replace(" active","")
+      let activeLayer = document.getElementById('layer-control').querySelector('.layer.active')
+      if(activeLayer&&activeLayer.className.indexOf('active')!==-1){
+        activeLayer.className = activeLayer.className.replace(' active','')
       }
 
       let ct = e.currentTarget
-      if(ct.className.indexOf("active")===-1){
-        ct.className += " active"
+      if(ct.className.indexOf('active') === -1){
+        ct.className += ' active'
       }
       //show downicons
-      let is = ct.querySelectorAll("i")
+      let is = ct.querySelectorAll('i')
       if(is.length > 3){
         let checkbox = ct.querySelector("input[type='checkbox']")
+        var metadata = this.styleObj['metadata']
         if(checkbox.checked){
           //change layer的collapse
-          var metadata = this.styleObj['metadata']
+
           if(metadata&&metadata['mapbox:groups']){
             var metadatagroup = metadata['mapbox:groups']
           }
-          console.log(ct);
+          console.log(ct)
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = false
-              console.log('show');
+              console.log('show')
               for(let i=0,length = this.tocLayers.length;i<length;i++){
-                if(this.tocLayers[i].id === ct.id)
-                this.tocLayers[i].collapsed = false;
+                if(this.tocLayers[i].id === ct.id){
+                  this.tocLayers[i].collapsed = false
+                }
               }
               break
             }
           }
         }else{
-
           //change layer的collapse
-          var metadata = this.styleObj['metadata']
           if(metadata&&metadata['mapbox:groups']){
-            var metadatagroup = metadata['mapbox:groups']
+            metadatagroup = metadata['mapbox:groups']
           }
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = true
               for(let i=0,length = this.tocLayers.length;i<length;i++){
-                if(this.tocLayers[i].id === ct.id)
-                this.tocLayers[i].collapsed = true;
+                if(this.tocLayers[i].id === ct.id){
+                  this.tocLayers[i].collapsed = true
+                }
               }
-              console.log("hide")
+              console.log('hide')
             }
           }
         }
       }
     },
     change:function(e){
-      console.log('change');
+      console.log('change')
       let currentLayer = this.currentLayer
       let layers = this.styleObj.layers
       let targetDom = e.target
@@ -381,11 +381,11 @@ export default {
       }
 
       var temp = Number(value)
-      if(!isNaN(temp)&&temp!==NaN){
+      if(!isNaN(temp)){
         value = temp
       }else if(typeof value === 'string'){
         if(value.indexOf(',')!=-1){
-          value = value.split(",")
+          value = value.split(',')
           for(var i=0,length=value.length;i<length;i++){
             value[i] = Number(value[i])
           }
@@ -395,14 +395,14 @@ export default {
 
 
       //visibility
-      if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "visibility"){
+      if(targetDom.type === 'checkbox' && targetDom.parentElement.dataset.name === 'visibility'){
         if(targetDom.checked){
           value = 'visible'
         }else{
           value = 'none'
         }
         currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
-      }else if(targetDom.type === "checkbox" && targetDom.parentElement.dataset.name === "fill-antialias"){
+      }else if(targetDom.type === 'checkbox' && targetDom.parentElement.dataset.name === 'fill-antialias'){
         value = targetDom.checked
         currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
       }else{
@@ -410,17 +410,17 @@ export default {
       }
 
       if(targetDom.name === 'line-join'){
-        let inputDomR = document.querySelector("input[name='line-round-limit']");
-        let inputDomM = document.querySelector("input[name='line-miter-limit']");
+        let inputDomR = document.querySelector("input[name='line-round-limit']")
+        let inputDomM = document.querySelector("input[name='line-miter-limit']")
         if(value === 'miter'){
-          inputDomR.disabled = 'disabled';
+          inputDomR.disabled = 'disabled'
           inputDomM.removeAttribute('disabled')
         }else if(value === 'round'){
-          inputDomM.disabled = 'disabled';
+          inputDomM.disabled = 'disabled'
           inputDomR.removeAttribute('disabled')
         }else {
-          inputDomR.disabled = 'disabled';
-          inputDomM.disabled = 'disabled';
+          inputDomR.disabled = 'disabled'
+          inputDomM.disabled = 'disabled'
         }
       }
 
@@ -433,19 +433,19 @@ export default {
           layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
         }
       }
-      let data = JSON.parse(JSON.stringify(this.styleObj))
+      let data = JSON.parse(JSON.stringify(styleObj))
       this.$dispatch('style-change',data)
 
     },
     eledragstart: function(e){
-      if(e.target.className.indexOf("sublayer-item")!=-1){
-        e.dataTransfer.setData("dragid",e.target.id);
+      if(e.target.className.indexOf('sublayer-item')!=-1){
+        e.dataTransfer.setData('dragid',e.target.id)
       }else {
         e.target.id = e.target.querySelector("input[type='checkbox']").name
-        e.dataTransfer.setData("dragid",e.target.id);
+        e.dataTransfer.setData('dragid',e.target.id)
       }
     },
-    eledragover: function(e){
+    eledragover: function(){
       //just for preventDefault
     },
     eledrop: function(e){
@@ -457,24 +457,24 @@ export default {
       let dragLayer
       let dragLayerId=dragnode.id
       let refLayerId = refnode.id
-      let dragLayerIndex,refLayerIndex;
+      let dragLayerIndex,refLayerIndex
 
       //移除高亮
-      refnode.setAttribute("data-ref",'0')
+      refnode.setAttribute('data-ref','0')
       var lyindex = refnode.className.indexOf(' layerover')
       if(lyindex!=-1){
-        refnode.className = refnode.className.replace(" layerover","")
+        refnode.className = refnode.className.replace(' layerover','')
       }
 
       //如果refnode是group
-      var refsublayer = refnode.querySelectorAll("div.sublayer-item")
+      var refsublayer = refnode.querySelectorAll('div.sublayer-item')
       if(refsublayer && refsublayer.length>0){
         refLayerId = refsublayer[0].id
       }
 
       //如果dragnode是group,获得这个draggroup,用来插入
       let dragGroup
-      var dragsublayer = dragnode.querySelectorAll("div.sublayer-item")
+      var dragsublayer = dragnode.querySelectorAll('div.sublayer-item')
       if(dragsublayer&&dragsublayer.length>0){
         dragLayerId = dragsublayer[dragsublayer.length-1].id
         let groupIndex = parseInt(dragnode.querySelector("input[type='checkbox']").id)
@@ -482,7 +482,7 @@ export default {
       }
 
       var styleObj = this.styleObj
-      var maplayers = styleObj.layers;
+      var maplayers = styleObj.layers
 
       //移除
       for(let i=0,length=maplayers.length;i<length;i++){
@@ -506,7 +506,7 @@ export default {
         let name = maplayers[i].id
         if(name === refLayerId){
           refLayerIndex = i
-          console.log(refLayerIndex);
+
           //如果是组
           if(dragGroup&&dragGroup.items.length>0){
             for(let j=0,length = dragGroup.items.length;j<length;j++){
@@ -520,12 +520,12 @@ export default {
       }
 
       //如果dragnode 是sublayer
-      if(dragnode.className.indexOf("sublayer-item") !== -1){
+      if(dragnode.className.indexOf('sublayer-item') !== -1){
         delete dragLayer['metadata']
       }
 
       //如果refnode是sublayer
-      if(refnode.className.indexOf("sublayer-item") !== -1){
+      if(refnode.className.indexOf('sublayer-item') !== -1){
         //如果dragnode是group
         if(dragGroup&&dragGroup.items){
           //移动group
@@ -546,28 +546,22 @@ export default {
     },
     eledragenter: function(e){
       //先移除
-      let over = $("*[data-ref=1]")
+      let over = $('*[data-ref=1]')
       let currentTarget = e.currentTarget
 
       for(let i=0,length = over.length;i<length;i++){
-        over[i].setAttribute("data-ref",'0')
-        over[i].className = over[i].className.replace(" layerover","")
+        over[i].setAttribute('data-ref','0')
+        over[i].className = over[i].className.replace(' layerover','')
       }
 
-      currentTarget.setAttribute("data-ref",'1')
+      currentTarget.setAttribute('data-ref','1')
       var lyindex = currentTarget.className.indexOf('layerover')
       if(lyindex === -1){
-        currentTarget.className += " layerover"
+        currentTarget.className += ' layerover'
       }
     },
-    eledragleave: function(e){
-      console.log('leave');
-      // let currentTarget = e.currentTarget
-      // currentTarget.setAttribute("data-ref",'0')
-      // var lyindex = currentTarget.className.indexOf(' layerover')
-      // if(lyindex!=-1){
-      //   currentTarget.className = currentTarget.className.replace(" layerover","")
-      // }
+    eledragleave: function(){
+      console.log('leave')
     },
     sublayerMouseover: function(e){
       if(e.currentTarget.className.indexOf('sublayer-over')===-1){
@@ -631,104 +625,104 @@ export default {
         'text-max-width': '字体最大宽度',
         'placement': '符号位置',
         'spacing': '符号间隔',
-        "gap-width": '间隙宽度',
-        "offset": '方向偏移',
-        "blur": '模糊距离',
-        "dasharray": '虚线',
-        "cap": "线尾样式",
-        "join": "线交叉形式",
-        "miter-limit": '切线交叉限制',
-        "round-limit": '圆交叉限制'
+        'gap-width': '间隙宽度',
+        'offset': '方向偏移',
+        'blur': '模糊距离',
+        'dasharray': '虚线',
+        'cap': '线尾样式',
+        'join': '线交叉形式',
+        'miter-limit': '切线交叉限制',
+        'round-limit': '圆交叉限制'
       },
       defaultProperty: {
         'background': {
           'paint': {
-            "background-color": "#000000",
-            "background-opacity": 1
+            'background-color': '#000000',
+            'background-opacity': 1
           },
           'layout': {
-            "visibility": "visible"
+            'visibility': 'visible'
           }
         },
-        "fill": {
+        'fill': {
           'paint': {
-            "fill-color": "#000000",
-            "fill-opacity": 1,
-            "fill-outline-color": "#000000",
-            "fill-antialias": true,
-            "fill-translate": [0,0],
-            "fill-translate-anchor": 'map'
+            'fill-color': '#000000',
+            'fill-opacity': 1,
+            'fill-outline-color': '#000000',
+            'fill-antialias': true,
+            'fill-translate': [0,0],
+            'fill-translate-anchor': 'map'
           },
           'layout': {
-            "visibility": "visible"
+            'visibility': 'visible'
           }
         },
-        "line": {
+        'line': {
           'paint': {
-            "line-color": "#000000",
-            "line-opacity": 1,
-            "line-translate": [0,0],
-            "line-translate-anchor": 'map',
-            "line-width": 1,
-            "line-gap-width": 0,
-            "line-offset": 0,
-            "line-blur": 0,
-            "line-dasharray": [0,0]
+            'line-color': '#000000',
+            'line-opacity': 1,
+            'line-translate': [0,0],
+            'line-translate-anchor': 'map',
+            'line-width': 1,
+            'line-gap-width': 0,
+            'line-offset': 0,
+            'line-blur': 0,
+            'line-dasharray': [0,0]
           },
           'layout': {
-            "visibility": "visible",
-            "line-cap": "butt",
-            "line-join": "miter",
-            "line-miter-limit": 2,
-            "line-round-limit": 1.05
+            'visibility': 'visible',
+            'line-cap': 'butt',
+            'line-join': 'miter',
+            'line-miter-limit': 2,
+            'line-round-limit': 1.05
           }
         },
-        "raster": {
+        'raster': {
           'paint': {
-            "raster-opacity": 1,
-            "raster-contrast": 0,
-            "raster-hue-rotate": 0,
-            "raster-brightness-min": 0,
-            "raster-brightness-max": 1,
-            "raster-saturation": 0,
-            "raster-fade-duration": 300
+            'raster-opacity': 1,
+            'raster-contrast': 0,
+            'raster-hue-rotate': 0,
+            'raster-brightness-min': 0,
+            'raster-brightness-max': 1,
+            'raster-saturation': 0,
+            'raster-fade-duration': 300
 
           },
           'layout': {
-            "visibility": "visible"
+            'visibility': 'visible'
           }
         },
-        "circle": {
+        'circle': {
           'paint': {
-            "circle-color": "#000000",
-            "circle-radius": 5,
-            "circle-blur": 0,
-            "circle-opacity": 1,
-            "circle-translate": [0,0],
-            "circle-translate-anchor": 'map'
+            'circle-color': '#000000',
+            'circle-radius': 5,
+            'circle-blur': 0,
+            'circle-opacity': 1,
+            'circle-translate': [0,0],
+            'circle-translate-anchor': 'map'
           },
           'layout': {
-            "visibility": "visible"
+            'visibility': 'visible'
           }
         },
         'symbol': {
           'paint': {
             'icon-opacity':1,
-            'icon-color': "#000000",
-            'icon-halo-color': "rgba(0,0,0,0)",
+            'icon-color': '#000000',
+            'icon-halo-color': 'rgba(0,0,0,0)',
             'icon-halo-width': 0,
-            'text-color': "#000000",
-            'text-halo-color': "#000000",
+            'text-color': '#000000',
+            'text-halo-color': '#000000',
             'text-halo-width': 1
           },
           'layout': {
-            "visibility": "visible",
+            'visibility': 'visible',
             'icon-size': 1,
             'text-field':'{text-field}',
             'text-size': 16,
             'text-max-width': 10,
-            "symbol-placement": "point",
-            "symbol-spacing": 250
+            'symbol-placement': 'point',
+            'symbol-spacing': 250
           }
         }
       }
