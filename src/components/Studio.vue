@@ -11,7 +11,7 @@
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>jingsam</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>{{username}}</a>
         <a class="mdl-navigation__link" v-link="{ path: '/home' }"><i class="material-icons">exit_to_app</i>退出</a>
       </nav>
     </div>
@@ -24,10 +24,17 @@
 
 
 <script>
+import docCookie from '../assets/cookie.js'
+console.log(docCookie)
 export default {
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
+  },
+  computed: {
+    username: function(){
+      return docCookie.getItem('username')?docCookie.getItem('username'):''
+    }
   }
 }
 

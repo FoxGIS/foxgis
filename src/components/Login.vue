@@ -24,25 +24,39 @@
 
 <script>
 
+import docCookie from '../assets/cookie.js'
+
 export default {
   methods:{
     register: function(){
-      let url = 'http://localhost:11111/api/register'
+      let url = 'http://bygis.com/api/v1/users'
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
-      this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
-        console.log(response.data.token)
+      this.$http.post(url,{'username':username,'password':password}).then(function(response){
+        let access_token = response.data.access_token
+        let username = response.data.username
+        let date = new Date()
+        date.setTime(date.getTime() + 7*24*3600*1000)
+        docCookie.setItem('access_token',access_token,date)
+        docCookie.setItem('username',username,date)
+        window.location.href = "#!/studio"
       },function(response){
         console.log(response)
       })
     },
     login: function(){
-      let url = 'http://localhost:11111/api/login'
+      let url = 'http://bygis.com/api/v1/users'
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
-      this.$http.post(url,{'username':username,'name':username,'password':password}).then(function(response){
-        console.log(this)
-        console.log(response.data.token)
+      url += '/'+username
+      this.$http.post(url,{'username':username,'password':password}).then(function(response){
+        let access_token = response.data.access_token
+        let username = response.data.username
+        let date = new Date()
+        date.setTime(date.getTime() + 7*24*3600*1000)
+        docCookie.setItem('access_token',access_token,date)
+        docCookie.setItem('username',username,date)
+        window.location.href = "#!/studio"
       },function(response){
         console.log(response)
       })
