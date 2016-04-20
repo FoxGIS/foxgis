@@ -1,53 +1,54 @@
 <template>
-  <div id="map-container">
-    <div id="info-container">
-      <div id="layer-container">
-        <div v-for="feature in queryFeatures" class="layer" v-on:click='layerClick'>
-          <i class="material-icons" v-if="feature.layer.type=='symbol'">grade</i>
-          <i class="material-icons" v-if="feature.layer.type=='line'">remove</i>
-          <i class="material-icons" v-if="feature.layer.type=='background'">filter_hdr</i>
-          <i class="material-icons" v-if="feature.layer.type=='fill'">filter_b_and_w</i>
-          <i class="material-icons" v-if="feature.layer.type=='circle'">lens</i>
-          <i class="material-icons" v-if="feature.layer.type=='raster'">image</i>
+  <div id='map-container'>
+    <div id='info-container'>
+      <div id='layer-container'>
+        <div v-for='feature in queryFeatures' class='layer' v-on:click='layerClick'>
+          <i class='material-icons' v-if='feature.layer.type=='symbol''>grade</i>
+          <i class='material-icons' v-if='feature.layer.type=='line''>remove</i>
+          <i class='material-icons' v-if='feature.layer.type=='background''>filter_hdr</i>
+          <i class='material-icons' v-if='feature.layer.type=='fill''>filter_b_and_w</i>
+          <i class='material-icons' v-if='feature.layer.type=='circle''>lens</i>
+          <i class='material-icons' v-if='feature.layer.type=='raster''>image</i>
           <span>{{feature.layer.id}}</span>
         </div>
       </div>
-      <div id="info-tip"></div>
+      <div id='info-tip'></div>
     </div>
   </div>
 
 </template>
 
 <script>
+  /*global mapboxgl */
   import mapboxgl from 'mapbox-gl'
   import {diff} from 'mapbox-gl-style-spec'
   export default {
     methods: {
       mapClick: function(e){
-        let infoContainer = document.getElementById("info-container")
-        console.log('click');
+        let infoContainer = document.getElementById('info-container')
+        console.log('click')
         let features = this.map.queryRenderedFeatures(e.point)
 
         if(features.length>0){
-          infoContainer.style.display = "block"
+          infoContainer.style.display = 'block'
           infoContainer.style.left = e.point.x-100 + 'px'
           infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
         }
         this.queryFeatures = features
       },
-      mapDrag: function(e){
-        let infoContainer = document.getElementById("info-container")
+      mapDrag: function(){
+        let infoContainer = document.getElementById('info-container')
         infoContainer.style.display = 'none'
       },
       layerClick: function(e){
-        let layerId = e.currentTarget.querySelector("span").textContent;
+        let layerId = e.currentTarget.querySelector('span').textContent
         this.$dispatch('current-layer-change',layerId)
       }
     },
     events: {
       'map-init': function(style,accessToken){
         this.originStyle = style
-        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'
+        mapboxgl.accessToken = accessToken
         let map = new mapboxgl.Map({
           container: 'map-container',
           style: style,
@@ -56,40 +57,39 @@
           attributionControl: false
         })
         map.addControl(new mapboxgl.Navigation())
-        this.map = map;
-        map.on('click', this.mapClick);
-        map.on('drag', this.mapDrag);
-        console.log('map-init');
-        console.log(map);
+        this.map = map
+        map.on('click', this.mapClick)
+        map.on('drag', this.mapDrag)
+        console.log('map-init')
+        console.log(map)
       },
       'map-style-change': function(newStyle){
-
         let comds = diff(this.originStyle,newStyle)
-        console.log(comds);
+        console.log(comds)
         for(var i=0,length=comds.length;i<length;i++){
           switch(comds[i].command){
-            case "setPaintProperty":
+            case 'setPaintProperty':
               this.map.setPaintProperty.apply(this.map,comds[i].args)
               break
-            case "setLayoutProperty":
+            case 'setLayoutProperty':
               this.map.setLayoutProperty.apply(this.map,comds[i].args)
               break
-            case "setStyle":
+            case 'setStyle':
               this.map.setStyle.apply(this.map,comds[i].args)
               break
-            case "addLayer":
+            case 'addLayer':
               this.map.addLayer.apply(this.map,comds[i].args)
               break
-            case "removeLayer":
+            case 'removeLayer':
               this.map.removeLayer.apply(this.map,comds[i].args)
               break
-            case "setFilter":
+            case 'setFilter':
               this.map.setFilter.apply(this.map,comds[i].args)
               break
-            case "addSource":
+            case 'addSource':
               this.map.addSource.apply(this.map,comds[i].args)
               break
-            case "removeSource":
+            case 'removeSource':
               this.map.removeSource.apply(this.map,comds[i].args)
               break
           }
@@ -100,7 +100,7 @@
         if(Object.prototype.toString.call(bounds) === '[object Array]'){
           this.map.fitBounds(bounds)
         }else{
-          console.log('bounds must be Array');
+          console.log('bounds must be Array')
         }
 
       }

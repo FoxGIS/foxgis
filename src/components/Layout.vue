@@ -39,6 +39,7 @@
 <script>
 export default {
   ready() {
+    /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
   }
 }

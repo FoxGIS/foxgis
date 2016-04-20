@@ -41,22 +41,22 @@
 export default {
   methods: {
     search: function(e){
-      let parentElement = e.target.parentElement;
-      let oldActive = parentElement.querySelector(".hotactive")
-      console.log(oldActive);
+      let parentElement = e.target.parentElement
+      let oldActive = parentElement.querySelector('.hotactive')
+
       if(oldActive){
-        oldActive.className = oldActive.className.replace("hotactive","");
+        oldActive.className = oldActive.className.replace('hotactive','')
       }
-      e.target.className += " hotactive"
+      e.target.className += ' hotactive'
     }
   },
   data: function(){
     return {
       atlas: [{
         author: '作者',
-        createtime: "2016-03-27",
+        createtime: '2016-03-27',
         thumb: {
-          "background-image":"url('http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg')"
+          'background-image':"url('http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg')"
         }
       }]
     }
@@ -141,7 +141,7 @@ export default {
   margin: 0px;
   padding: 0px;
   height: 210px;
-  background-image: url("http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg");
+  background-image: url('http://www.weimeixi.com/uploads/allimg/141014/0S1045045-0.jpg');
 }
 
 .meta-info {

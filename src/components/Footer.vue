@@ -2,7 +2,7 @@
 <footer class="mdl-mini-footer foxgis-footer">
   <div class="mdl-mini-footer__left-section">
     <div class="mdl-logo">
-      
+
     </div>
     <ul class="mdl-mini-footer__link-list">
       <li><a href="#">产品介绍</a></li>
@@ -15,10 +15,10 @@
 
 
 <script>
-  
+
 </script>
 
 
 <style>
-  
+
 </style>

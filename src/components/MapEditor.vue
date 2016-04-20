@@ -19,14 +19,12 @@
 
 <script>
 
-import mapboxgl from 'mapbox-gl'
-
 export default {
   methods: {
     'layerControlClick': function(e){
-      let toc = document.getElementById("toc-container")
+      let toc = document.getElementById('toc-container')
       toc.style.display = 'block'
-      let discontrol = document.getElementById("district-control")
+      let discontrol = document.getElementById('district-control')
       discontrol.style.display = 'none'
       e.currentTarget.className += ' control-active'
       let dislink = e.currentTarget.nextElementSibling
@@ -34,36 +32,36 @@ export default {
     },
     'districtControlClick': function(e){
 
-      let toc = document.getElementById("toc-container")
+      let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
-      let discontrol = document.getElementById("district-control")
+      let discontrol = document.getElementById('district-control')
       discontrol.style.display = 'block'
       let that = this
       $('#district-control')
-      .on("changed.jstree",function(e,data){
+      .on('changed.jstree',function(e,data){
         console.log(e)
         console.log(data)
         let bounds = [[116.111004,39.691665],[116.709188,40.194547]]
         that.$broadcast('map-bounds-change',bounds)
       })
       .jstree({
-        "plugins" : [ "wholerow" ],
+        'plugins' : [ 'wholerow' ],
         'core' : {
-          "themes":{
-            "icons":false
+          'themes':{
+            'icons':false
           },
           'data' : [
-            {"id" : 1, "text" : "北京市","type":"root","children":[
-              {"id" : 2, "text" : "海淀区"},
-              {"id" : 3, "text" : "石景山区"},
-              {"id" : 4, "text" : "东城区"},
-              {"id" : 5, "text" : "西城区"},
-              {"id" : 6, "text" : "丰台区"},
-              {"id" : 7, "text" : "昌平区"}]
+            {'id' : 1, 'text' : '北京市','type':'root','children':[
+              {'id' : 2, 'text' : '海淀区'},
+              {'id' : 3, 'text' : '石景山区'},
+              {'id' : 4, 'text' : '东城区'},
+              {'id' : 5, 'text' : '西城区'},
+              {'id' : 6, 'text' : '丰台区'},
+              {'id' : 7, 'text' : '昌平区'}]
             }
           ]
         }
-      });
+      })
       let laycontrol = e.currentTarget.previousElementSibling
       e.currentTarget.className += ' control-active'
       laycontrol.className = laycontrol.className.replace(' control-active','')
@@ -76,7 +74,7 @@ export default {
     }
   },
   ready: function(){
-    let url = "./static/streets-v8.json"
+    let url = './static/streets-v8.json'
     this.$http.get(url).then(function(res){
       let data = res.data
       let initStyle = JSON.parse(JSON.stringify(data))
@@ -84,8 +82,8 @@ export default {
       this.$broadcast('toc-init', tocdata)
       this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
     },function(res){
-      console.log(res);
-    });
+      console.log(res)
+    })
 
   },
   data: function(){
@@ -142,7 +140,8 @@ export default {
   font-size: 16px;
 }
 
-.control-active {
+#main-control .control-active {
+  color: #2061C6;
   background-color: #E5E2D3;
 }
 
