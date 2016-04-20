@@ -2,13 +2,13 @@
   <div id='map-container'>
     <div id='info-container'>
       <div id='layer-container'>
-        <div v-for='feature in queryFeatures' class='layer' v-on:click='layerClick'>
-          <i class='material-icons' v-if='feature.layer.type=='symbol''>grade</i>
-          <i class='material-icons' v-if='feature.layer.type=='line''>remove</i>
-          <i class='material-icons' v-if='feature.layer.type=='background''>filter_hdr</i>
-          <i class='material-icons' v-if='feature.layer.type=='fill''>filter_b_and_w</i>
-          <i class='material-icons' v-if='feature.layer.type=='circle''>lens</i>
-          <i class='material-icons' v-if='feature.layer.type=='raster''>image</i>
+        <div v-for="feature in queryFeatures" class="layer" v-on:click='layerClick'>
+          <i class='material-icons' v-if="feature.layer.type=='symbol'">grade</i>
+          <i class='material-icons' v-if="feature.layer.type=='line'">remove</i>
+          <i class='material-icons' v-if="feature.layer.type=='background'">filter_hdr</i>
+          <i class='material-icons' v-if="feature.layer.type=='fill'">filter_b_and_w</i>
+          <i class='material-icons' v-if="feature.layer.type=='circle'">lens</i>
+          <i class='material-icons' v-if="feature.layer.type=='raster'">image</i>
           <span>{{feature.layer.id}}</span>
         </div>
       </div>
