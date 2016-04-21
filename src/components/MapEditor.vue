@@ -18,7 +18,9 @@
 </template>
 
 <script>
-
+var $ = require('jquery')
+require('jstree')
+require('jstree/dist/themes/default/style.min.css')
 export default {
   methods: {
     'layerControlClick': function(e){
