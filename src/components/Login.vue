@@ -36,7 +36,8 @@ export default {
         let access_token = response.data.access_token
         let username = response.data.username
         let date = new Date()
-        date.setTime(date.getTime() + 7*24*3600*1000)
+        let days = 7
+        date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
         window.location.href = "#!/studio"
@@ -53,7 +54,8 @@ export default {
         let access_token = response.data.access_token
         let username = response.data.username
         let date = new Date()
-        date.setTime(date.getTime() + 7*24*3600*1000)
+        let days = 7
+        date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
         window.location.href = "#!/studio"

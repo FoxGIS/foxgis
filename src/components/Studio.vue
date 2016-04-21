@@ -25,11 +25,32 @@
 
 <script>
 import docCookie from '../assets/cookie.js'
-console.log(docCookie)
+
 export default {
+  init() {
+    //判断是否登陆
+    let username = docCookie.getItem('username')
+    if(username === null){
+      window.location.href = "#!/login"
+    }
+  },
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
+    let username = docCookie.getItem('username')
+    let url = 'http://bygis.com/api/v1/uploads'
+    // this.$http.post(url,{'username':username,'password':password}).then(function(response){
+    //   let access_token = response.data.access_token
+    //   let username = response.data.username
+    //   let date = new Date()
+    //   let days = 7
+    //   date.setTime(date.getTime() + days*24*3600*1000)
+    //   docCookie.setItem('access_token',access_token,date)
+    //   docCookie.setItem('username',username,date)
+    //   window.location.href = "#!/studio"
+    // },function(response){
+    //   console.log(response)
+    // })
   },
   computed: {
     username: function(){

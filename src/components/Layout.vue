@@ -11,7 +11,8 @@
           <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
           <a class="mdl-navigation__link" v-link="{ path: 'studio' }">制图</a>
           <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a>
-          <a class="mdl-navigation__link" v-link="{ path: 'login' }">登录</a>
+          <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==''">登录</a>
+          <a class="mdl-navigation__link" v-else>{{username}}</a>
         </nav>
       </div>
     </header>
@@ -23,7 +24,8 @@
         <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
         <a class="mdl-navigation__link" v-link="{ path: 'studio' }">制图</a>
         <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'login' }">登录</a>
+        <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==''">登录</a>
+        <a class="mdl-navigation__link" v-else>{{username}}</a>
       </nav>
     </div>
 
@@ -37,10 +39,16 @@
 
 
 <script>
+import docCookie from '../assets/cookie.js'
 export default {
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
+  },
+  computed: {
+    username: function(){
+      return docCookie.getItem('username')?docCookie.getItem('username'):''
+    }
   }
 }
 
