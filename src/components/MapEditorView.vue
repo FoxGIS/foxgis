@@ -19,100 +19,100 @@
 </template>
 
 <script>
-  /*global mapboxgl */
-  import mapboxgl from 'mapbox-gl'
-  import {diff} from 'mapbox-gl-style-spec'
-  export default {
-    methods: {
-      mapClick: function(e){
-        let infoContainer = document.getElementById('info-container')
-        console.log('click')
-        let features = this.map.queryRenderedFeatures(e.point)
+/*global mapboxgl */
+import mapboxgl from 'mapbox-gl'
+import {diff} from 'mapbox-gl-style-spec'
+export default {
+  methods: {
+    mapClick: function(e){
+      let infoContainer = document.getElementById('info-container')
+      console.log('click')
+      let features = this.map.queryRenderedFeatures(e.point)
 
-        if(features.length>0){
-          infoContainer.style.display = 'block'
-          infoContainer.style.left = e.point.x-100 + 'px'
-          infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
-        }
-        this.queryFeatures = features
-      },
-      mapDrag: function(){
-        let infoContainer = document.getElementById('info-container')
-        infoContainer.style.display = 'none'
-      },
-      layerClick: function(e){
-        let layerId = e.currentTarget.querySelector('span').textContent
-        this.$dispatch('current-layer-change',layerId)
+      if(features.length>0){
+        infoContainer.style.display = 'block'
+        infoContainer.style.left = e.point.x-100 + 'px'
+        infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
       }
+      this.queryFeatures = features
     },
-    events: {
-      'map-init': function(style,accessToken){
-        this.originStyle = style
-        mapboxgl.accessToken = accessToken
-        let map = new mapboxgl.Map({
-          container: 'map-container',
-          style: style,
-          center: [-245.7129, 30.5354],
-          zoom: 12,
-          attributionControl: false
-        })
-        map.addControl(new mapboxgl.Navigation())
-        this.map = map
-        map.on('click', this.mapClick)
-        map.on('drag', this.mapDrag)
-        console.log('map-init')
-        console.log(map)
-      },
-      'map-style-change': function(newStyle){
-        let comds = diff(this.originStyle,newStyle)
-        console.log(comds)
-        for(var i=0,length=comds.length;i<length;i++){
-          switch(comds[i].command){
-            case 'setPaintProperty':
-              this.map.setPaintProperty.apply(this.map,comds[i].args)
-              break
-            case 'setLayoutProperty':
-              this.map.setLayoutProperty.apply(this.map,comds[i].args)
-              break
-            case 'setStyle':
-              this.map.setStyle.apply(this.map,comds[i].args)
-              break
-            case 'addLayer':
-              this.map.addLayer.apply(this.map,comds[i].args)
-              break
-            case 'removeLayer':
-              this.map.removeLayer.apply(this.map,comds[i].args)
-              break
-            case 'setFilter':
-              this.map.setFilter.apply(this.map,comds[i].args)
-              break
-            case 'addSource':
-              this.map.addSource.apply(this.map,comds[i].args)
-              break
-            case 'removeSource':
-              this.map.removeSource.apply(this.map,comds[i].args)
-              break
-          }
+    mapDrag: function(){
+      let infoContainer = document.getElementById('info-container')
+      infoContainer.style.display = 'none'
+    },
+    layerClick: function(e){
+      let layerId = e.currentTarget.querySelector('span').textContent
+      this.$dispatch('current-layer-change',layerId)
+    }
+  },
+  events: {
+    'map-init': function(style,accessToken){
+      this.originStyle = style
+      mapboxgl.accessToken = accessToken
+      let map = new mapboxgl.Map({
+        container: 'map-container',
+        style: style,
+        center: [-245.7129, 30.5354],
+        zoom: 12,
+        attributionControl: false
+      })
+      map.addControl(new mapboxgl.Navigation())
+      this.map = map
+      map.on('click', this.mapClick)
+      map.on('drag', this.mapDrag)
+      console.log('map-init')
+      console.log(map)
+    },
+    'map-style-change': function(newStyle){
+      let comds = diff(this.originStyle,newStyle)
+      console.log(comds)
+      for(var i=0,length=comds.length;i<length;i++){
+        switch(comds[i].command){
+          case 'setPaintProperty':
+            this.map.setPaintProperty.apply(this.map,comds[i].args)
+            break
+          case 'setLayoutProperty':
+            this.map.setLayoutProperty.apply(this.map,comds[i].args)
+            break
+          case 'setStyle':
+            this.map.setStyle.apply(this.map,comds[i].args)
+            break
+          case 'addLayer':
+            this.map.addLayer.apply(this.map,comds[i].args)
+            break
+          case 'removeLayer':
+            this.map.removeLayer.apply(this.map,comds[i].args)
+            break
+          case 'setFilter':
+            this.map.setFilter.apply(this.map,comds[i].args)
+            break
+          case 'addSource':
+            this.map.addSource.apply(this.map,comds[i].args)
+            break
+          case 'removeSource':
+            this.map.removeSource.apply(this.map,comds[i].args)
+            break
         }
-        this.originStyle = newStyle
-      },
-      'map-bounds-change': function(bounds){
-        if(Object.prototype.toString.call(bounds) === '[object Array]'){
-          this.map.fitBounds(bounds)
-        }else{
-          console.log('bounds must be Array')
-        }
+      }
+      this.originStyle = newStyle
+    },
+    'map-bounds-change': function(bounds){
+      if(Object.prototype.toString.call(bounds) === '[object Array]'){
+        this.map.fitBounds(bounds)
+      }else{
+        console.log('bounds must be Array')
+      }
 
-      }
-    },
-    data: function(){
-      return {
-        map: {},
-        originStyle: {},
-        queryFeatures: []
-      }
+    }
+  },
+  data: function(){
+    return {
+      map: {},
+      originStyle: {},
+      queryFeatures: []
     }
   }
+}
 </script>
 
 <style scoped>

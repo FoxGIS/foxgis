@@ -34,7 +34,7 @@
     </div>
     <div id="map-tool">
       <mdl-anchor-button accent raised v-mdl-ripple-effect>分享</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>打印</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="printMap">打印</mdl-anchor-button>
     </div>
     <div id="property-panel">
       <div id="property-header">{{curPanelLayer.id}}</div>
@@ -564,12 +564,15 @@ export default {
       console.log('leave')
     },
     sublayerMouseover: function(e){
-      if(e.currentTarget.className.indexOf('sublayer-over')===-1){
+      if(e.currentTarget.className.indexOf('sublayer-over') === -1){
         e.currentTarget.className += ' sublayer-over'
       }
     },
     sublayerMouseleave: function(e){
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','')
+    },
+    printMap: function(e){
+      window.location.href = "#!print"
     }
   },
   events: {

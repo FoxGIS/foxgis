@@ -11,7 +11,7 @@
           <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
           <a class="mdl-navigation__link" v-link="{ path: 'studio' }">制图</a>
           <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a>
-          <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==''">登录</a>
+          <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==null">登录</a>
           <a class="mdl-navigation__link" v-else>{{username}}</a>
         </nav>
       </div>
@@ -24,7 +24,7 @@
         <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
         <a class="mdl-navigation__link" v-link="{ path: 'studio' }">制图</a>
         <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==''">登录</a>
+        <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==null">登录</a>
         <a class="mdl-navigation__link" v-else>{{username}}</a>
       </nav>
     </div>
@@ -45,9 +45,14 @@ export default {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
   },
-  computed: {
-    username: function(){
-      return docCookie.getItem('username')?docCookie.getItem('username'):''
+  attached: function() {
+     //判断是否登陆
+    let username = docCookie.getItem('username')
+    this.username = username
+  },
+  data: function(){
+    return {
+      username: null
     }
   }
 }

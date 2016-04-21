@@ -4,8 +4,8 @@
     <div class="wrapper">
       <foxgis-card class="login">
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
-        <mdl-textfield floating-label="密码" type="password" id="password"></mdl-textfield>
-        <mdl-button v-mdl-ripple-effect accent raised v-on:click="login">登录</mdl-button>
+        <mdl-textfield floating-label="密码" type="password" id="password" ></mdl-textfield>
+        <mdl-button v-mdl-ripple-effect accent raised v-on:keyup.enter="login" v-on:click="login">登录</mdl-button>
         <div class="tips">
           <!-- <a href="" >注册</a> -->
           <a href="" >找回密码</a>

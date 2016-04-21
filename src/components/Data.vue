@@ -13,7 +13,23 @@
 
 
 <script>
+import docCookie from '../assets/cookie.js'
 export default {
+  attached() {
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    //this.username = username
+    let url = 'http://bygis.com/api/v1/uploads/' + username
+
+    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
+
+      if(response.data.length>0){
+        this.dataset = response.data
+      }
+    },function(response){
+      console.log(response)
+    })
+  },
   data() {
     return {
       dataset: [{

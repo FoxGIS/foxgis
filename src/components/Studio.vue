@@ -12,7 +12,7 @@
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>{{username}}</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/home' }"><i class="material-icons">exit_to_app</i>退出</a>
+        <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>退出</a>
       </nav>
     </div>
     <main class="mdl-layout__content">
@@ -27,34 +27,30 @@
 import docCookie from '../assets/cookie.js'
 
 export default {
-  init() {
-    //判断是否登陆
-    let username = docCookie.getItem('username')
-    if(username === null){
-      window.location.href = "#!/login"
+  methods: {
+    signout: function(e){
+      docCookie.removeItem('username')
+      docCookie.removeItem('access_token')
+      window.location.href = "home"
     }
   },
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
-    let username = docCookie.getItem('username')
-    let url = 'http://bygis.com/api/v1/uploads'
-    // this.$http.post(url,{'username':username,'password':password}).then(function(response){
-    //   let access_token = response.data.access_token
-    //   let username = response.data.username
-    //   let date = new Date()
-    //   let days = 7
-    //   date.setTime(date.getTime() + days*24*3600*1000)
-    //   docCookie.setItem('access_token',access_token,date)
-    //   docCookie.setItem('username',username,date)
-    //   window.location.href = "#!/studio"
-    // },function(response){
-    //   console.log(response)
-    // })
+
   },
-  computed: {
-    username: function(){
-      return docCookie.getItem('username')?docCookie.getItem('username'):''
+  attached: function() {
+     //判断是否登陆
+    let username = docCookie.getItem('username')
+    if(username === null){
+      window.location.href = "#!/login"
+    }else{
+      this.username = username
+    }
+  },
+  data: function(){
+    return {
+      username: ''
     }
   }
 }
@@ -69,6 +65,10 @@ export default {
 
 .mdl-navigation {
   border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.mdl-navigation a {
+  cursor: pointer;
 }
 
 .material-icons {
