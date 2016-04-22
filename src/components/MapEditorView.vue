@@ -14,8 +14,17 @@
       </div>
       <div id='info-tip'></div>
     </div>
+    <div id="location-control" style='display:none' v-on:mousewheel="boxZommChange" v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
+      <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-t" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-rt" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-l" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-r" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-lb" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-b" v-on:mousedown="dragresizedown"></div>
+      <div class="dragresize dragresize-rb" v-on:mousedown="dragresizedown"></div>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -36,13 +45,115 @@ export default {
       }
       this.queryFeatures = features
     },
-    mapDrag: function(){
-      let infoContainer = document.getElementById('info-container')
-      infoContainer.style.display = 'none'
-    },
     layerClick: function(e){
       let layerId = e.currentTarget.querySelector('span').textContent
       this.$dispatch('current-layer-change',layerId)
+    },
+    dragresizedown: function(e){
+      this.controlBound.dragButton = e.target.className
+      document.addEventListener('mousemove',this.dragresizemove,false)
+      document.addEventListener('mouseup',this.dragresizeup,false)
+    },
+    dragresizemove: function(e){
+      let controlBox = document.getElementById("location-control")
+      let mapBound = this.mapBound
+      let boxBound = controlBox.getBoundingClientRect()
+      let name = this.controlBound.dragButton
+      let map = this.map
+      if(name.indexOf("dragresize-lt")!=-1){
+
+        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top])
+
+      }else if(name.indexOf("dragresize-rt")!=-1){
+
+        this.controlBound.LT = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.RB = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+
+      }else if(name.indexOf("dragresize-lb")!=-1){
+
+        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
+        this.controlBound.RB = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top])
+
+      }else if(name.indexOf("dragresize-rb")!=-1){
+
+        this.controlBound.RB = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top])
+
+      }else if(name.indexOf("dragresize-t")!=-1){
+
+        this.controlBound.LT = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
+
+      }else if(name.indexOf("dragresize-b")!=-1){
+
+        this.controlBound.RB = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top])
+
+      }else if(name.indexOf("dragresize-r")!=-1){
+
+        this.controlBound.RB = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+
+      }else if(name.indexOf("dragresize-l")!=-1){
+
+        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
+      }
+    },
+    dragresizeup: function(e){
+      document.removeEventListener('mousemove',this.dragresizemove,false)
+    },
+    boxDragDown: function(e){
+      if(e.target.className.indexOf("dragresize")!=-1){
+        return
+      }
+      this.drag.dragstartx = e.layerX
+      this.drag.dragstarty = e.layerY
+      document.addEventListener('mousemove',this.boxDragMove,false)
+    },
+    boxDragMove: function(e){
+      var dx = e.layerX - this.drag.dragstartx
+      var dy = e.layerY - this.drag.dragstarty
+      let controlBox = document.getElementById("location-control")
+      let mapBound = this.mapBound
+      let boxBound = controlBox.getBoundingClientRect()
+      let newleft = boxBound.left - mapBound.left + dx
+      let newtop = boxBound.top - mapBound.top + dy
+      let newright = boxBound.left + boxBound.width - mapBound.left + dx
+      let newbottom = boxBound.top + boxBound.height - mapBound.top + dy
+      this.controlBound.LT = this.map.unproject([newleft, newtop])
+      this.controlBound.RB = this.map.unproject([newright,newbottom])
+    },
+    boxDragUp: function(e){
+      document.removeEventListener('mousemove',this.boxDragMove,false)
+    },
+    boxZommChange: function(e){
+      if(e.deltaY < 0){
+        this.map.zoomIn();
+      }else{
+        this.map.zoomOut();
+      }
+    },
+    mapZoomEnd: function(e){
+      //地图缩放后，重新计算框所在的位置
+      let controlBox = document.getElementById("location-control")
+      var plt = this.map.project(this.controlBound.LT)
+      var prb = this.map.project(this.controlBound.RB)
+      controlBox.style.left = plt.x + 'px'
+      controlBox.style.top = plt.y + 'px'
+      controlBox.style.width = prb.x - plt.x + 'px'
+      controlBox.style.height = prb.y - plt.y + 'px'
+    },
+    mapDragStart: function(e){
+      this.drag.dragstartx = e.originalEvent.offsetX - this.mapBound.left
+      this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top
+    },
+    mapDrag: function(e){
+      if(controlBox.style.display === 'block'){
+        let controlBox = document.getElementById("location-control")
+        var plt = this.map.project(this.controlBound.LT)
+        var prb = this.map.project(this.controlBound.RB)
+        controlBox.style.left = plt.x + 'px'
+        controlBox.style.top = plt.y + 'px'
+      }else{
+        let infoContainer = document.getElementById('info-container')
+        infoContainer.style.display = 'none'
+      }
     }
   },
   events: {
@@ -60,8 +171,6 @@ export default {
       this.map = map
       map.on('click', this.mapClick)
       map.on('drag', this.mapDrag)
-      console.log('map-init')
-      console.log(map)
     },
     'map-style-change': function(newStyle){
       let comds = diff(this.originStyle,newStyle)
@@ -102,14 +211,54 @@ export default {
       }else{
         console.log('bounds must be Array')
       }
-
+    },
+    'show-bounds-box': function(e){
+      let controlBox = document.getElementById("location-control")
+      controlBox.style.display = 'block'
+      let mapBound = this.mapBound
+      console.log(mapBound);
+      var boxBound = controlBox.getBoundingClientRect()
+      this.controlBound.LT = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
+      this.controlBound.RB = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
+      this.map.on('dragstart', this.mapDragStart)
+      this.map.on('zoomend',this.mapZoomEnd)
+    }
+  },
+  computed: {
+    mapBound: function(){
+      let mapcontainer = this.map.getContainer()
+      let bound = mapcontainer.getBoundingClientRect()
+      return bound
     }
   },
   data: function(){
     return {
       map: {},
       originStyle: {},
-      queryFeatures: []
+      queryFeatures: [],
+      drag: {
+        dragstartx:0,
+        dragstarty:0
+      },
+      controlBound: {
+        LT: [0,0],
+        RB: [0,0],
+        dragButton:''
+      }
+    }
+  },
+  watch: {
+    controlBound: {
+      handler:function(val,oldVal){
+        let controlBox = document.getElementById("location-control")
+        var plt = this.map.project(this.controlBound.LT)
+        var prb = this.map.project(this.controlBound.RB)
+        controlBox.style.left = plt.x + 'px'
+        controlBox.style.top = plt.y + 'px'
+        controlBox.style.width = prb.x - plt.x + 'px'
+        controlBox.style.height = prb.y - plt.y + 'px'
+      },
+      deep:true
     }
   }
 }
@@ -167,6 +316,73 @@ export default {
   border-right: 7px solid transparent;
   border-top: 7px solid #2061C6;
   margin: 0 auto;
+}
+
+/* box bounds */
+#location-control {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+  box-shadow:rgba(0, 0, 0, 0.298039) 0px 0px 0px 9999px;
+  z-index: 1;
+}
+
+.dragresize {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: #2061C6;
+}
+
+.dragresize-lt {
+  left: -8px;
+  top: -8px;
+  cursor: nw-resize;
+}
+
+.dragresize-t {
+  left: calc(50% - 10px);
+  top: -8px;
+  cursor: n-resize;
+}
+
+.dragresize-rt {
+  right: -8px;
+  top: -8px;
+  cursor: ne-resize;
+}
+
+.dragresize-r {
+  right: -8px;
+  top: calc(50% - 10px);
+  cursor: e-resize;
+}
+
+.dragresize-l {
+  left: -8px;
+  top: calc(50% - 10px);
+  cursor: e-resize;
+}
+
+.dragresize-lb {
+  left: -8px;
+  bottom: -8px;
+  cursor: ne-resize;
+}
+
+.dragresize-b {
+  right: calc(50% - 10px);
+  bottom: -8px;
+  cursor: n-resize;
+}
+
+.dragresize-rb {
+  right: -8px;
+  bottom: -8px;
+  cursor: nw-resize;
 }
 
 </style>

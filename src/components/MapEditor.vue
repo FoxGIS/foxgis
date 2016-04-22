@@ -12,7 +12,11 @@
     <div id="district-control">
       行政区划
     </div>
-    <foxgis-toc :style-obj='styleObj' v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
+    <foxgis-toc :style-obj='styleObj' v-on:show-bounds-box="" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
+    <div id="map-tool">
+      <mdl-anchor-button accent raised v-mdl-ripple-effect>分享</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="printMap">打印</mdl-anchor-button>
+    </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer'></foxgis-drafmap>
   </div>
 </template>
@@ -73,6 +77,13 @@ export default {
     },
     'setTocLayer': function(layerId){
       this.$broadcast('toc-layer-change',layerId)
+    },
+    printMap: function(e){
+      if(e.target.tagName === "SPAN"&&e.target.parentElement.textContent === "打印"){
+        //box
+        this.$broadcast('show-bounds-box')
+        e.target.parentElement.text = '预览'
+      }
     }
   },
   ready: function(){
@@ -162,6 +173,13 @@ export default {
   box-sizing: border-box;
   position: absolute;
   left: 30px;
+}
+
+#map-tool {
+  position: absolute;
+  bottom: 20px;
+  left: 33px;
+  margin: 0 auto;
 }
 
 </style>

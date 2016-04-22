@@ -32,10 +32,7 @@
         </div></a>
       </div>
     </div>
-    <div id="map-tool">
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>分享</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="printMap">打印</mdl-anchor-button>
-    </div>
+
     <div id="property-panel">
       <div id="property-header">{{curPanelLayer.id}}</div>
       <div v-if="curPanelLayer.type=='background'">
@@ -391,9 +388,6 @@ export default {
           }
         }
       }
-
-
-
       //visibility
       if(targetDom.type === 'checkbox' && targetDom.parentElement.dataset.name === 'visibility'){
         if(targetDom.checked){
@@ -570,9 +564,6 @@ export default {
     },
     sublayerMouseleave: function(e){
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','')
-    },
-    printMap: function(e){
-      window.location.href = "#!print"
     }
   },
   events: {
@@ -763,7 +754,6 @@ export default {
 
 #layer-control {
   padding-top: 5px;
-
   border:solid 1px rgba(0,0,0,0.5);
   border-top: none;
   border-left: none;
@@ -857,13 +847,6 @@ a {
 
 .sublayer-over {
   font-weight: bolder;
-}
-
-#map-tool {
-  position: absolute;
-  bottom: 20px;
-  left: 3px;
-  margin: 0 auto;
 }
 
 #property-panel {
