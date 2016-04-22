@@ -214,7 +214,9 @@
           </div>
         </div>
       </div>
+      <i class="material-icons" id="property-panel-close" v-on:click="closePanel">clear</i>
     </div>
+
   </div>
 </template>
 
@@ -289,7 +291,9 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(e){
-      console.log('showPropertyPanel')
+      let panel = this.$el.querySelector("#property-panel")
+      panel.style.display = 'block'
+      this.$dispatch("hide-mapbounds")
       let currentTarget = e.currentTarget
       let idname = currentTarget.querySelector('span')
       let styleObj = this.styleObj
@@ -564,6 +568,10 @@ export default {
     },
     sublayerMouseleave: function(e){
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','')
+    },
+    closePanel: function(e){
+      let panel = this.$el.querySelector("#property-panel")
+      panel.style.display = 'none'
     }
   },
   events: {
@@ -587,6 +595,8 @@ export default {
       this.fixType(this.currentLayer)
       //展示属性
       this.curPanelLayer = this.filterProperty(this.currentLayer)
+      let panel = this.$el.querySelector("#property-panel")
+      panel.style.display = 'block'
     }
   },
   data: function() {
@@ -927,6 +937,14 @@ a {
   border-radius: 2px;
   height: 30px;
   font-size: 16px;
+}
+
+#property-panel-close {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+  z-index: 1;
 }
 
 </style>

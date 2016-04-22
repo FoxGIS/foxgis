@@ -12,10 +12,10 @@
     <div id="district-control">
       行政区划
     </div>
-    <foxgis-toc :style-obj='styleObj' v-on:show-bounds-box="" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
+    <foxgis-toc :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <div id="map-tool">
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>分享</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="printMap">打印</mdl-anchor-button>
+      <button>分享</button>
+      <button v-on:click="printMap" id="print-button">打印</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer'></foxgis-drafmap>
   </div>
@@ -79,11 +79,16 @@ export default {
       this.$broadcast('toc-layer-change',layerId)
     },
     printMap: function(e){
-      if(e.target.tagName === "SPAN"&&e.target.parentElement.textContent === "打印"){
-        //box
+      if(e.target.textContent === '打印'){
         this.$broadcast('show-bounds-box')
-        e.target.parentElement.text = '预览'
+        console.log(e);
+        e.target.innerHTML = '预览'
       }
+    },
+    hideBoundsBox: function(e){
+      this.$broadcast('hide-bounds-box')
+      let printbutton = document.querySelector("#print-button")
+      printbutton.innerHTML = '打印'
     }
   },
   ready: function(){
@@ -180,6 +185,29 @@ export default {
   bottom: 20px;
   left: 33px;
   margin: 0 auto;
+  display: flex;
+  width: 194px;
+}
+
+#map-tool button {
+  flex:1;
+  color: #fff;
+  background-color: #ff4081;
+  border: none;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  border-radius: 2px;
+  height: 36px;
+  line-height: 36px;
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 64px;
+  padding: 0 16px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+#print-button {
+  margin-left: 5px;
 }
 
 </style>

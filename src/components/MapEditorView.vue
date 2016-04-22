@@ -11,8 +11,10 @@
           <i class='material-icons' v-if="feature.layer.type=='raster'">image</i>
           <span>{{feature.layer.id}}</span>
         </div>
+
       </div>
-      <div id='info-tip'></div>
+      <div id='info-tip' v-show="queryFeatures&&queryFeatures.length>0"></div>
+      <i class="material-icons" id="close-info" v-on:click="closeInfo">clear</i>
     </div>
     <div id="location-control" style='display:none' v-on:mousewheel="boxZommChange" v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
       <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
@@ -144,8 +146,8 @@ export default {
       this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top
     },
     mapDrag: function(e){
+      let controlBox = document.getElementById("location-control")
       if(controlBox.style.display === 'block'){
-        let controlBox = document.getElementById("location-control")
         var plt = this.map.project(this.controlBound.LT)
         var prb = this.map.project(this.controlBound.RB)
         controlBox.style.left = plt.x + 'px'
@@ -154,6 +156,17 @@ export default {
         let infoContainer = document.getElementById('info-container')
         infoContainer.style.display = 'none'
       }
+    },
+    hideBoundsBox: function(e){
+      this.map.off('dragstart', this.mapDragStart)
+      this.map.off('zoomend',this.mapZoomEnd)
+      this.map.on('click', this.mapClick)
+      var box = this.$el.querySelector("#location-control")
+      box.style.display = 'none'
+    },
+    closeInfo: function(e){
+      let info = this.$el.querySelector("#info-container")
+      info.style.display = 'none'
     }
   },
   events: {
@@ -222,6 +235,12 @@ export default {
       this.controlBound.RB = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
       this.map.on('dragstart', this.mapDragStart)
       this.map.on('zoomend',this.mapZoomEnd)
+      this.map.off('click', this.mapClick)
+      let infoContainer = document.getElementById('info-container')
+      infoContainer.style.display = 'none'
+    },
+    'hide-bounds-box': function(){
+      this.hideBoundsBox()
     }
   },
   computed: {
@@ -296,6 +315,7 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .layer i {
@@ -383,6 +403,14 @@ export default {
   right: -8px;
   bottom: -8px;
   cursor: nw-resize;
+}
+
+#close-info {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 </style>
