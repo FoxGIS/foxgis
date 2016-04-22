@@ -1,6 +1,6 @@
 <template>
 <div id="map">
-  <div id="location-control" v-on:mousewheel="zommChange">
+  <div id="location-control" v-on:mousewheel="boxZommChange" v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
     <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
     <div class="dragresize dragresize-t" v-on:mousedown="dragresizedown"></div>
     <div class="dragresize dragresize-rt" v-on:mousedown="dragresizedown"></div>
@@ -19,111 +19,102 @@ import mapboxgl from 'mapbox-gl'
 export default {
   methods: {
     dragresizedown: function(e){
-      this.resizedata.startx = e.pageX
-      this.resizedata.starty = e.pageY
-      this.resizedata.domcname = e.target.className
+      this.controlBound.dragButton = e.target.className
       document.addEventListener('mousemove',this.dragresizemove,false)
       document.addEventListener('mouseup',this.dragresizeup,false)
     },
     dragresizemove: function(e){
-      var dx = e.pageX - this.resizedata.startx
-      var dy = e.pageY - this.resizedata.starty
-      // console.log('dx'+dx);
-      // console.log('dy'+dy);
       let controlBox = document.getElementById("location-control")
       let boxBound = controlBox.getBoundingClientRect()
-      let name = this.resizedata.domcname
+      let name = this.controlBound.dragButton
       if(name.indexOf("dragresize-lt")!=-1){
-        controlBox.style.width = boxBound.width - dx + 'px'
-        controlBox.style.height = boxBound.height - dy + 'px'
-        controlBox.style.left = boxBound.left-30 + dx +  'px'
-        controlBox.style.top = boxBound.top-55 + dy + 'px'
-      }else if(name.indexOf("dragresize-rt")!=-1){
-        controlBox.style.width = boxBound.width + dx + 'px'
-        controlBox.style.height = boxBound.height - dy + 'px'
-        controlBox.style.top = boxBound.top-55 + dy + 'px'
-      }else if(name.indexOf("dragresize-lb")!=-1){
-        controlBox.style.width = boxBound.width - dx + 'px'
-        controlBox.style.height = boxBound.height + dy + 'px'
-        controlBox.style.left = boxBound.left-30 + dx +  'px'
-      }else if(name.indexOf("dragresize-rb")!=-1){
-        console.log(controlBox.style.height)
-        controlBox.style.width = boxBound.width + dx + 'px'
-        controlBox.style.height = boxBound.height + dy + 'px'
-        console.log(controlBox.style.height)
-      }else if(name.indexOf("dragresize-t")!=-1){
-        controlBox.style.height = boxBound.height - dy + 'px'
-        controlBox.style.top = boxBound.top-55 + dy + 'px'
-      }else if(name.indexOf("dragresize-b")!=-1){
-        controlBox.style.height = boxBound.height + dy + 'px'
-        controlBox.style.bottom = boxBound.bottom-55 + dy + 'px'
-      }else if(name.indexOf("dragresize-r")!=-1){
-        console.log(controlBox.style.height)
-        controlBox.style.width = boxBound.width + dx + 'px'
-      }else if(name.indexOf("dragresize-l")!=-1){
-        controlBox.style.width = boxBound.width - dx + 'px'
-        controlBox.style.left = boxBound.left-30 + dx +  'px'
-      }
 
-      this.resizedata.startx = e.pageX
-      this.resizedata.starty = e.pageY
+        this.controlBound.LT = this.map.unproject([e.pageX-30, e.pageY-55])
+
+      }else if(name.indexOf("dragresize-rt")!=-1){
+
+        this.controlBound.LT = this.map.unproject([boxBound.left - 30, e.pageY - 55])
+        this.controlBound.RB = this.map.unproject([e.pageX - 30, boxBound.top - 55 + boxBound.height])
+
+      }else if(name.indexOf("dragresize-lb")!=-1){
+
+        this.controlBound.LT = this.map.unproject([e.pageX - 30, boxBound.top - 55])
+        this.controlBound.RB = this.map.unproject([boxBound.left - 30 + boxBound.width, e.pageY-55])
+
+      }else if(name.indexOf("dragresize-rb")!=-1){
+
+        this.controlBound.RB = this.map.unproject([e.pageX - 30, e.pageY - 55])
+
+      }else if(name.indexOf("dragresize-t")!=-1){
+
+        this.controlBound.LT = this.map.unproject([boxBound.left - 30, e.pageY - 55])
+
+      }else if(name.indexOf("dragresize-b")!=-1){
+
+        this.controlBound.RB = this.map.unproject([boxBound.left - 30 + boxBound.width, e.pageY - 55])
+
+      }else if(name.indexOf("dragresize-r")!=-1){
+
+        this.controlBound.RB = this.map.unproject([e.pageX-30, boxBound.top - 55 + boxBound.height])
+
+      }else if(name.indexOf("dragresize-l")!=-1){
+
+        this.controlBound.LT = this.map.unproject([e.pageX - 30, boxBound.top - 55])
+      }
     },
     dragresizeup: function(e){
-      console.log(e)
       document.removeEventListener('mousemove',this.dragresizemove,false)
     },
-    zommChange: function(e){
-      this.maplevel = this.map.getZoom()
+    boxDragDown: function(e){
+      if(e.target.className.indexOf("dragresize")!=-1){
+        return
+      }
+      this.drag.dragstartx = e.layerX
+      this.drag.dragstarty = e.layerY
+      document.addEventListener('mousemove',this.boxDragMove,false)
+    },
+    boxDragMove: function(e){
+      var dx = e.layerX - this.drag.dragstartx
+      var dy = e.layerY - this.drag.dragstarty
+      let controlBox = document.getElementById("location-control")
+      let boxBound = controlBox.getBoundingClientRect()
+      let newleft = boxBound.left - 30 + dx
+      let newtop = boxBound.top - 55 + dy
+      let newright = boxBound.left + boxBound.width - 30 + dx
+      let newbottom = boxBound.top + boxBound.height - 55 + dy
+      this.controlBound.LT = this.map.unproject([newleft, newtop])
+      this.controlBound.RB = this.map.unproject([newright,newbottom])
+    },
+    boxDragUp: function(e){
+      document.removeEventListener('mousemove',this.boxDragMove,false)
+    },
+    boxZommChange: function(e){
       if(e.deltaY < 0){
         this.map.zoomIn();
       }else{
         this.map.zoomOut();
       }
     },
-    controlChange: function(x){
+    mapZoomEnd: function(e){
+      //地图缩放后，重新计算框所在的位置
       let controlBox = document.getElementById("location-control")
-      let boxBound = controlBox.getBoundingClientRect()
-      let mapcontainer = document.getElementById("map")
-      let mapbound = mapcontainer.getBoundingClientRect()
-      if(x > 0){
-        controlBox.style.width = boxBound.width*x + 'px'
-        controlBox.style.height = boxBound.height*x + 'px'
-        controlBox.style.left = (mapbound.width-boxBound.width*x)/2 + 'px'
-        controlBox.style.top = (mapbound.height-boxBound.height*x)/2 + 'px'
-      }else{
-        x = Math.abs(x)
-        controlBox.style.width = boxBound.width/x + 'px'
-        controlBox.style.height = boxBound.height/x + 'px'
-        controlBox.style.left = (mapbound.width-boxBound.width/x)/2 + 'px'
-        controlBox.style.top = (mapbound.height-boxBound.height/x)/2 + 'px'
-      }
-    },
-    zoomStart: function(e){
-      var dl = this.map.getZoom() - this.maplevel
-      dl = Math.round(dl)
-      this.controlChange(dl*2)
-      this.maplevel = this.map.getZoom()
-
-    },
-    zoomEnd: function(e){
-      let level = this.map.getZoom()
-      let dl = level - this.maplevel
-      dl = Math.round(dl)
-      this.controlChange(dl*2)
+      var plt = this.map.project(this.controlBound.LT)
+      var prb = this.map.project(this.controlBound.RB)
+      controlBox.style.left = plt.x + 'px'
+      controlBox.style.top = plt.y + 'px'
+      controlBox.style.width = prb.x - plt.x + 'px'
+      controlBox.style.height = prb.y - plt.y + 'px'
     },
     mapDragStart: function(e){
-      this.drag.dragstartx = e.originalEvent.offsetX -30
-      this.drag.dragstarty = e.originalEvent.offsetY -55
+      this.drag.dragstartx = e.originalEvent.offsetX - 30
+      this.drag.dragstarty = e.originalEvent.offsetY - 55
     },
     mapDrag: function(e){
-      var dx = e.originalEvent.offsetX - this.drag.dragstartx -30
-      var dy = e.originalEvent.offsetY - this.drag.dragstarty -55
-      this.drag.dragstartx = e.originalEvent.offsetX -30
-      this.drag.dragstarty = e.originalEvent.offsetY -55
-      var controlBox = document.getElementById("location-control")
-      var boxBound = controlBox.getBoundingClientRect()
-      controlBox.style.left = boxBound.left-30 + dx + 'px'
-      controlBox.style.top = boxBound.top-55 + dy + 'px'
+      let controlBox = document.getElementById("location-control")
+      var plt = this.map.project(this.controlBound.LT)
+      var prb = this.map.project(this.controlBound.RB)
+      controlBox.style.left = plt.x + 'px'
+      controlBox.style.top = plt.y + 'px'
     }
   },
   attached() {
@@ -137,10 +128,13 @@ export default {
     })
     map.addControl(new mapboxgl.Navigation())
     this.map = map
+    var controlBox = document.getElementById("location-control")
+    var boxBound = controlBox.getBoundingClientRect()
+    this.controlBound.LT = this.map.unproject([boxBound.left-30, boxBound.top-55])
+    this.controlBound.RB = this.map.unproject([boxBound.left+boxBound.width-30, boxBound.top+boxBound.height-55])
     map.on('dragstart', this.mapDragStart)
     map.on('drag', this.mapDrag)
-    map.on('zoomstart',this.zoomStart)
-    map.on('zoomend',this.zoomEnd)
+    map.on('zoomend',this.mapZoomEnd)
   },
   data: function(){
     return {
@@ -148,12 +142,25 @@ export default {
         dragstartx:0,
         dragstarty:0
       },
-      maplevel:0,
-      resizedata: {
-        startx:0,
-        starty:0,
-        domcname:''
+      controlBound: {
+        LT: [0,0],
+        RB: [0,0],
+        dragButton:''
       }
+    }
+  },
+  watch: {
+    controlBound: {
+      handler:function(val,oldVal){
+        let controlBox = document.getElementById("location-control")
+        var plt = this.map.project(this.controlBound.LT)
+        var prb = this.map.project(this.controlBound.RB)
+        controlBox.style.left = plt.x + 'px'
+        controlBox.style.top = plt.y + 'px'
+        controlBox.style.width = prb.x - plt.x + 'px'
+        controlBox.style.height = prb.y - plt.y + 'px'
+      },
+      deep:true
     }
   }
 }
