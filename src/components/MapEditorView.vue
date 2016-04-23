@@ -1,5 +1,5 @@
 <template>
-  <div id='map-container'>
+  <div id='map-editorview-container'>
     <div id='info-container'>
       <div id='layer-container'>
         <div v-for="feature in queryFeatures" class="layer" v-on:click='layerClick'>
@@ -174,7 +174,7 @@ export default {
       this.originStyle = style
       mapboxgl.accessToken = accessToken
       let map = new mapboxgl.Map({
-        container: 'map-container',
+        container: 'map-editorview-container',
         style: style,
         center: [-245.7129, 30.5354],
         zoom: 12,
@@ -284,7 +284,7 @@ export default {
 </script>
 
 <style scoped>
-#map-container {
+#map-editorview-container {
   flex:1;
   flex-grow:1;
   position: absolute;

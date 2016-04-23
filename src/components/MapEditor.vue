@@ -14,10 +14,11 @@
     </div>
     <foxgis-toc :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <div id="map-tool">
-      <button>分享</button>
+      <button>下载</button>
       <button v-on:click="printMap" id="print-button">打印</button>
     </div>
-    <foxgis-drafmap v-on:current-layer-change='setTocLayer'></foxgis-drafmap>
+    <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
+    <foxgis-layoutmap id="layout-map"></foxgis-layoutmap>
   </div>
 </template>
 
@@ -81,8 +82,10 @@ export default {
     printMap: function(e){
       if(e.target.textContent === '打印'){
         this.$broadcast('show-bounds-box')
-        console.log(e);
         e.target.innerHTML = '预览'
+      }else if(e.target.textContent === '预览'){
+        this.$broadcast('show-layout-map',this.originStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+        document.getElementById("map-editorview-container").style.display = 'none'
       }
     },
     hideBoundsBox: function(e){
@@ -96,6 +99,7 @@ export default {
     this.$http.get(url).then(function(res){
       let data = res.data
       let initStyle = JSON.parse(JSON.stringify(data))
+      this.originStyle = initStyle
       var tocdata = JSON.parse(JSON.stringify(data))
       this.$broadcast('toc-init', tocdata)
       this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')

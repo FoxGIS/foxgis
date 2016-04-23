@@ -36,6 +36,7 @@ import DataCards from './components/DataCards'
 import Post from './components/Post.vue'
 import TOC from './components/MapEditorToc.vue'
 import MapEditorView from './components/MapEditorView.vue'
+import MapLayoutView from './components/MapLayoutView.vue'
 
 
 Vue.config.debug = true
@@ -57,6 +58,7 @@ Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-post', Post)
 Vue.component('foxgis-toc', TOC)
 Vue.component('foxgis-drafmap',MapEditorView)
+Vue.component('foxgis-layoutmap',MapLayoutView)
 
 let router = new Router({
   history: false
