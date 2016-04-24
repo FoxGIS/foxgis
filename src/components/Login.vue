@@ -32,6 +32,8 @@ export default {
       let url = 'http://bygis.com/api/v1/users'
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
+      let registerbutton = e.target.parentElement
+      registerbutton.disabled = true
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
         let access_token = response.data.access_token
         let username = response.data.username
@@ -40,13 +42,17 @@ export default {
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
+        registerbutton.disabled = false
         window.location.href = "#!/studio"
       },function(response){
         console.log(response)
+        registerbutton.disabled = false
       })
     },
-    login: function(){
+    login: function(e){
       let url = 'http://bygis.com/api/v1/users'
+      let loginbutton = e.target.parentElement
+      loginbutton.disabled = true
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
       url += '/'+username
@@ -58,8 +64,10 @@ export default {
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
+        loginbutton.disabled = false
         window.location.href = "#!/studio"
       },function(response){
+        loginbutton.disabled = false
         console.log(response)
       })
     }
@@ -81,6 +89,12 @@ export default {
   width: 300px;
   height: 300px;
   padding: 20px;
+
+}
+
+.disable {
+  background-color: #AD9AA1;
+  pointer-events: none;
 }
 
 .mdl-button {

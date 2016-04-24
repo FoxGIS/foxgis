@@ -870,6 +870,7 @@ a {
   padding-right: 10px;
   overflow-x: hidden;
   overflow-y: auto;
+  display: none;
 }
 
 #property-panel::-webkit-scrollbar {

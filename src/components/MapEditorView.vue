@@ -2,7 +2,7 @@
   <div id='map-editorview-container'>
     <div id='info-container'>
       <div id='layer-container'>
-        <div v-for="feature in queryFeatures" class="layer" v-on:click='layerClick'>
+        <div v-for="feature in queryFeatures" class="layer" v-on:click='infoLayerClick'>
           <i class='material-icons' v-if="feature.layer.type=='symbol'">grade</i>
           <i class='material-icons' v-if="feature.layer.type=='line'">remove</i>
           <i class='material-icons' v-if="feature.layer.type=='background'">filter_hdr</i>
@@ -14,7 +14,7 @@
 
       </div>
       <div id='info-tip' v-show="queryFeatures&&queryFeatures.length>0"></div>
-      <i class="material-icons" id="close-info" v-on:click="closeInfo">clear</i>
+      <i class="material-icons" id="close-info" v-on:click="closeInfoContainer">clear</i>
     </div>
     <div id="location-control" style='display:none' v-on:mousewheel="boxZommChange" v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
       <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
@@ -35,9 +35,9 @@ import mapboxgl from 'mapbox-gl'
 import {diff} from 'mapbox-gl-style-spec'
 export default {
   methods: {
+    // 地图点击 弹出info
     mapClick: function(e){
       let infoContainer = document.getElementById('info-container')
-      console.log('click')
       let features = this.map.queryRenderedFeatures(e.point)
 
       if(features.length>0){
@@ -47,10 +47,13 @@ export default {
       }
       this.queryFeatures = features
     },
-    layerClick: function(e){
+    // info 中的layer click
+    infoLayerClick: function(e){
       let layerId = e.currentTarget.querySelector('span').textContent
+      // 公知父组件 改变图层属性窗口中展现的layer
       this.$dispatch('current-layer-change',layerId)
     },
+    // bounds operator
     dragresizedown: function(e){
       this.controlBound.dragButton = e.target.className
       document.addEventListener('mousemove',this.dragresizemove,false)
@@ -64,37 +67,37 @@ export default {
       let map = this.map
       if(name.indexOf("dragresize-lt")!=-1){
 
-        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top])
 
       }else if(name.indexOf("dragresize-rt")!=-1){
 
-        this.controlBound.LT = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
-        this.controlBound.RB = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.se = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height])
 
       }else if(name.indexOf("dragresize-lb")!=-1){
 
-        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
-        this.controlBound.RB = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
+        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top])
 
       }else if(name.indexOf("dragresize-rb")!=-1){
 
-        this.controlBound.RB = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.se = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top])
 
       }else if(name.indexOf("dragresize-t")!=-1){
 
-        this.controlBound.LT = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
 
       }else if(name.indexOf("dragresize-b")!=-1){
 
-        this.controlBound.RB = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top])
+        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top])
 
       }else if(name.indexOf("dragresize-r")!=-1){
 
-        this.controlBound.RB = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+        this.controlBound.se = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height])
 
       }else if(name.indexOf("dragresize-l")!=-1){
 
-        this.controlBound.LT = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
       }
     },
     dragresizeup: function(e){
@@ -118,8 +121,8 @@ export default {
       let newtop = boxBound.top - mapBound.top + dy
       let newright = boxBound.left + boxBound.width - mapBound.left + dx
       let newbottom = boxBound.top + boxBound.height - mapBound.top + dy
-      this.controlBound.LT = this.map.unproject([newleft, newtop])
-      this.controlBound.RB = this.map.unproject([newright,newbottom])
+      this.controlBound.nw = this.map.unproject([newleft, newtop])
+      this.controlBound.se = this.map.unproject([newright,newbottom])
     },
     boxDragUp: function(e){
       document.removeEventListener('mousemove',this.boxDragMove,false)
@@ -134,8 +137,8 @@ export default {
     mapZoomEnd: function(e){
       //地图缩放后，重新计算框所在的位置
       let controlBox = document.getElementById("location-control")
-      var plt = this.map.project(this.controlBound.LT)
-      var prb = this.map.project(this.controlBound.RB)
+      var plt = this.map.project(this.controlBound.nw)
+      var prb = this.map.project(this.controlBound.se)
       controlBox.style.left = plt.x + 'px'
       controlBox.style.top = plt.y + 'px'
       controlBox.style.width = prb.x - plt.x + 'px'
@@ -148,8 +151,8 @@ export default {
     mapDrag: function(e){
       let controlBox = document.getElementById("location-control")
       if(controlBox.style.display === 'block'){
-        var plt = this.map.project(this.controlBound.LT)
-        var prb = this.map.project(this.controlBound.RB)
+        var plt = this.map.project(this.controlBound.nw)
+        var prb = this.map.project(this.controlBound.se)
         controlBox.style.left = plt.x + 'px'
         controlBox.style.top = plt.y + 'px'
       }else{
@@ -164,7 +167,7 @@ export default {
       var box = this.$el.querySelector("#location-control")
       box.style.display = 'none'
     },
-    closeInfo: function(e){
+    closeInfoContainer: function(e){
       let info = this.$el.querySelector("#info-container")
       info.style.display = 'none'
     }
@@ -225,14 +228,22 @@ export default {
         console.log('bounds must be Array')
       }
     },
-    'show-bounds-box': function(e){
+    'show-bounds-box': function(bounds){
       let controlBox = document.getElementById("location-control")
       controlBox.style.display = 'block'
-      let mapBound = this.mapBound
-      console.log(mapBound);
-      var boxBound = controlBox.getBoundingClientRect()
-      this.controlBound.LT = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
-      this.controlBound.RB = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
+      //如果没有传入bounds，bounds的地理位置则有其css决定
+      if(bounds === undefined){
+        let mapBound = this.mapBound
+        console.log(mapBound);
+        var boxBound = controlBox.getBoundingClientRect()
+        this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
+        this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
+      }else{
+        this.controlBound.nw = bounds.nw
+        this.controlBound.se = bounds.se
+      }
+
+
       this.map.on('dragstart', this.mapDragStart)
       this.map.on('zoomend',this.mapZoomEnd)
       this.map.off('click', this.mapClick)
@@ -260,8 +271,8 @@ export default {
         dragstarty:0
       },
       controlBound: {
-        LT: [0,0],
-        RB: [0,0],
+        nw: [0,0],
+        se: [0,0],
         dragButton:''
       }
     }
@@ -269,9 +280,10 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
+        console.log('handle box')
         let controlBox = document.getElementById("location-control")
-        var plt = this.map.project(this.controlBound.LT)
-        var prb = this.map.project(this.controlBound.RB)
+        var plt = this.map.project(this.controlBound.nw)
+        var prb = this.map.project(this.controlBound.se)
         controlBox.style.left = plt.x + 'px'
         controlBox.style.top = plt.y + 'px'
         controlBox.style.width = prb.x - plt.x + 'px'

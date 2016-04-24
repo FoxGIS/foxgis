@@ -14,7 +14,7 @@
     </div>
     <foxgis-toc :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <div id="map-tool">
-      <button>下载</button>
+      <button v-on:click="backEditor" id="back-button"><i class="material-icons">keyboard_return</i></button>
       <button v-on:click="printMap" id="print-button">打印</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
@@ -28,6 +28,7 @@ require('jstree')
 require('jstree/dist/themes/default/style.min.css')
 export default {
   methods: {
+    //图层控制
     'layerControlClick': function(e){
       let toc = document.getElementById('toc-container')
       toc.style.display = 'block'
@@ -37,6 +38,7 @@ export default {
       let dislink = e.currentTarget.nextElementSibling
       dislink.className = dislink.className.replace(' control-active','')
     },
+    //行政区按钮 click
     'districtControlClick': function(e){
 
       let toc = document.getElementById('toc-container')
@@ -73,9 +75,11 @@ export default {
       e.currentTarget.className += ' control-active'
       laycontrol.className = laycontrol.className.replace(' control-active','')
     },
+    //style change broadcast to map
     'styleChange': function(style){
       this.$broadcast('map-style-change',style)
     },
+    //改变当前图层
     'setTocLayer': function(layerId){
       this.$broadcast('toc-layer-change',layerId)
     },
@@ -83,9 +87,30 @@ export default {
       if(e.target.textContent === '打印'){
         this.$broadcast('show-bounds-box')
         e.target.innerHTML = '预览'
+        document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '预览'){
         this.$broadcast('show-layout-map',this.originStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
         document.getElementById("map-editorview-container").style.display = 'none'
+        e.target.innerHTML = '下载'
+        document.getElementById("back-button").style.display = 'block'
+      }else if(e.target.textContent === '下载'){
+        let controlBound = this.$refs.drafmap.controlBound
+        console.log(controlBound);
+      }
+    },
+    backEditor: function(e){
+      var operator = document.getElementById("print-button")
+      if(operator.innerHTML === '下载'){
+        // return to bounds
+        this.$broadcast('show-bounds-box',this.$refs.drafmap.controlBound)
+        document.getElementById("map-layout-container").style.display = 'none'
+        document.getElementById("map-editorview-container").style.display = 'block'
+        operator.innerHTML = "预览"
+      }else if(operator.innerHTML === '预览'){
+        // return to editor
+        this.hideBoundsBox()
+        operator.innerHTML = "打印"
+        document.getElementById("back-button").style.display = 'none'
       }
     },
     hideBoundsBox: function(e){
@@ -210,8 +235,17 @@ export default {
   vertical-align: middle;
 }
 
+#back-button {
+  display: none;
+  margin-right: 5px;
+}
+
+#back-button i {
+  vertical-align: middle;
+}
+
 #print-button {
-  margin-left: 5px;
+
 }
 
 </style>
