@@ -8,13 +8,15 @@
       <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i></a>
+      <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick"><i class="material-icons">build</i></a>
     </nav>
-    <div id="district-control">
-      行政区划
+    <div id="district-control"></div>
+    <div id="style-editor">
+      <textarea id="style-code" v-on:input="styleCodeChange"></textarea>
     </div>
     <foxgis-toc :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
     <div id="map-tool">
-      <button v-on:click="backEditor" id="back-button"><i class="material-icons">keyboard_return</i></button>
+      <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
@@ -26,6 +28,7 @@
 var $ = require('jquery')
 require('jstree')
 require('jstree/dist/themes/default/style.min.css')
+
 export default {
   methods: {
     //图层控制
@@ -34,9 +37,11 @@ export default {
       toc.style.display = 'block'
       let discontrol = document.getElementById('district-control')
       discontrol.style.display = 'none'
+      let editorContainer = document.getElementById('style-editor')
+      editorContainer.style.display = 'none'
+      this.changeLayout()
       e.currentTarget.className += ' control-active'
-      let dislink = e.currentTarget.nextElementSibling
-      dislink.className = dislink.className.replace(' control-active','')
+
     },
     //行政区按钮 click
     'districtControlClick': function(e){
@@ -45,11 +50,11 @@ export default {
       toc.style.display = 'none'
       let discontrol = document.getElementById('district-control')
       discontrol.style.display = 'block'
+      let editorContainer = document.getElementById('style-editor')
+      editorContainer.style.display = 'none'
       let that = this
       $('#district-control')
       .on('changed.jstree',function(e,data){
-        console.log(e)
-        console.log(data)
         let bounds = [[116.111004,39.691665],[116.709188,40.194547]]
         that.$broadcast('map-bounds-change',bounds)
       })
@@ -71,9 +76,59 @@ export default {
           ]
         }
       })
-      let laycontrol = e.currentTarget.previousElementSibling
+      this.changeLayout()
       e.currentTarget.className += ' control-active'
-      laycontrol.className = laycontrol.className.replace(' control-active','')
+    },
+    //style 编辑
+    'styleEditorClick': function(e){
+      e.currentTarget.className += ' control-active'
+      let active = document.getElementsByClassName("control-active")
+      active[0].className = active[0].className.replace(' control-active','')
+
+      let toc = document.getElementById('toc-container')
+      toc.style.display = 'none'
+      let discontrol = document.getElementById('district-control')
+      discontrol.style.display = 'none'
+      let editorContainer = document.getElementById('style-editor')
+      editorContainer.style.display = 'block'
+      // 传入style 字符串到textarea
+      let stylecode = document.getElementById("style-code")
+      var styleValue = JSON.stringify(this.$refs.drafmap.map.getStyle(),null,2)
+      stylecode.value = styleValue
+
+      let mapContainer = document.getElementById("map-editorview-container")
+      if(mapContainer.style.display == 'none'){
+        mapContainer = document.getElementById("map-layout-container")
+      }
+      mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px"
+      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px"
+      document.getElementById("map-tool").style.display = 'none'
+      // var myCodeMirror = CodeMirror.fromTextArea(stylecode)
+      // var myCodeMirror = CodeMirror(editorContainer, {
+      //   value: styleValue,
+      //   mode: {
+      //     name: 'javascript',
+      //     json: true
+      //   },
+      //   lineNumbers: true
+      // });
+    },
+    'styleCodeChange': function(e){
+      this.$broadcast('map-style-change',JSON.parse(e.target.value))
+    },
+    changeLayout: function(){
+      let active = document.getElementsByClassName("control-active")
+      active[0].className = active[0].className.replace(' control-active','')
+      let mapContainer = document.getElementById("map-editorview-container")
+      if(mapContainer.style.display == 'none'){
+        mapContainer = document.getElementById("map-layout-container")
+      }
+      //之前改变过map时，还原map
+      if(mapContainer.style.left === "380px"){
+        mapContainer.style.width = mapContainer.getBoundingClientRect().width + 150 + "px"
+        mapContainer.style.left = "230px"
+      }
+      document.getElementById("map-tool").style.display = 'flex'
     },
     //style change broadcast to map
     'styleChange': function(style){
@@ -84,39 +139,43 @@ export default {
       this.$broadcast('toc-layer-change',layerId)
     },
     printMap: function(e){
+      document.getElementById("back-button").innerText = '返回'
       if(e.target.textContent === '打印'){
         this.$broadcast('show-bounds-box')
         e.target.innerHTML = '预览'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '预览'){
-        this.$broadcast('show-layout-map',this.originStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+        this.$broadcast('show-layout-map',this.$refs.drafmap.controlBound,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
         document.getElementById("map-editorview-container").style.display = 'none'
         e.target.innerHTML = '下载'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '下载'){
         let controlBound = this.$refs.drafmap.controlBound
-        console.log(controlBound);
       }
     },
     backEditor: function(e){
+
+      if(e.target.textContent === '分享'){
+        return
+      }
       var operator = document.getElementById("print-button")
-      if(operator.innerHTML === '下载'){
+      if(operator.innerText === '下载'){
         // return to bounds
         this.$broadcast('show-bounds-box',this.$refs.drafmap.controlBound)
         document.getElementById("map-layout-container").style.display = 'none'
         document.getElementById("map-editorview-container").style.display = 'block'
-        operator.innerHTML = "预览"
-      }else if(operator.innerHTML === '预览'){
+        operator.innerText = "预览"
+      }else if(operator.innerText === '预览'){
         // return to editor
         this.hideBoundsBox()
         operator.innerHTML = "打印"
-        document.getElementById("back-button").style.display = 'none'
+        document.getElementById("back-button").innerText = '分享'
       }
     },
     hideBoundsBox: function(e){
       this.$broadcast('hide-bounds-box')
       let printbutton = document.querySelector("#print-button")
-      printbutton.innerHTML = '打印'
+      printbutton.innerText = '打印'
     }
   },
   ready: function(){
@@ -136,7 +195,6 @@ export default {
   data: function(){
     return {
       layers: [],
-      map:{},
       currentLayer:{},
       originStyle:{}
     }
@@ -158,6 +216,7 @@ export default {
 #edit-wrap {
   display: flex;
   height: calc(100% - 50px);
+  flex-direction: column;
 }
 
 #main-control {
@@ -209,6 +268,25 @@ export default {
   left: 30px;
 }
 
+#style-editor {
+  width: 350px;
+  height: calc(100% - 55px);
+  padding: 0;
+  border: 0px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 30px;
+  display: none;
+}
+
+#style-code {
+  height: 99%;
+  width: 350px;
+  overflow: visible;
+  padding: 0;
+  border: 0px;
+}
+
 #map-tool {
   position: absolute;
   bottom: 20px;
@@ -236,7 +314,6 @@ export default {
 }
 
 #back-button {
-  display: none;
   margin-right: 5px;
 }
 

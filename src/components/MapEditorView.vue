@@ -33,6 +33,8 @@
 /*global mapboxgl */
 import mapboxgl from 'mapbox-gl'
 import {diff} from 'mapbox-gl-style-spec'
+import {validate} from 'mapbox-gl-style-spec'
+
 export default {
   methods: {
     // 地图点击 弹出info
@@ -50,15 +52,17 @@ export default {
     // info 中的layer click
     infoLayerClick: function(e){
       let layerId = e.currentTarget.querySelector('span').textContent
-      // 公知父组件 改变图层属性窗口中展现的layer
+      // 通知父组件 改变图层属性窗口中展现的layer
       this.$dispatch('current-layer-change',layerId)
     },
-    // bounds operator
+    // 点击时，绑定事件
     dragresizedown: function(e){
+      //标记点击的是哪个按钮
       this.controlBound.dragButton = e.target.className
       document.addEventListener('mousemove',this.dragresizemove,false)
       document.addEventListener('mouseup',this.dragresizeup,false)
     },
+    //拖动时 改变bound
     dragresizemove: function(e){
       let controlBox = document.getElementById("location-control")
       let mapBound = this.mapBound
@@ -100,9 +104,11 @@ export default {
         this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
       }
     },
+    //up时，释放事件
     dragresizeup: function(e){
       document.removeEventListener('mousemove',this.dragresizemove,false)
     },
+    //拖拽bound时 鼠标down事件
     boxDragDown: function(e){
       if(e.target.className.indexOf("dragresize")!=-1){
         return
@@ -111,6 +117,7 @@ export default {
       this.drag.dragstarty = e.layerY
       document.addEventListener('mousemove',this.boxDragMove,false)
     },
+    //移动
     boxDragMove: function(e){
       var dx = e.layerX - this.drag.dragstartx
       var dy = e.layerY - this.drag.dragstarty
@@ -124,9 +131,11 @@ export default {
       this.controlBound.nw = this.map.unproject([newleft, newtop])
       this.controlBound.se = this.map.unproject([newright,newbottom])
     },
+    //up 释放事件
     boxDragUp: function(e){
       document.removeEventListener('mousemove',this.boxDragMove,false)
     },
+    // 在bound上缩放时
     boxZommChange: function(e){
       if(e.deltaY < 0){
         this.map.zoomIn();
@@ -134,8 +143,9 @@ export default {
         this.map.zoomOut();
       }
     },
+    //地图缩放后，重新计算框所在的位置
     mapZoomEnd: function(e){
-      //地图缩放后，重新计算框所在的位置
+
       let controlBox = document.getElementById("location-control")
       var plt = this.map.project(this.controlBound.nw)
       var prb = this.map.project(this.controlBound.se)
@@ -189,6 +199,10 @@ export default {
       map.on('drag', this.mapDrag)
     },
     'map-style-change': function(newStyle){
+      var style_error = validate(newStyle)
+      if(style_error.length > 0){
+        return
+      }
       let comds = diff(this.originStyle,newStyle)
       console.log(comds)
       for(var i=0,length=comds.length;i<length;i++){
@@ -234,7 +248,7 @@ export default {
       //如果没有传入bounds，bounds的地理位置则有其css决定
       if(bounds === undefined){
         let mapBound = this.mapBound
-        console.log(mapBound);
+
         var boxBound = controlBox.getBoundingClientRect()
         this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
         this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
@@ -280,7 +294,7 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
-        console.log('handle box')
+
         let controlBox = document.getElementById("location-control")
         var plt = this.map.project(this.controlBound.nw)
         var prb = this.map.project(this.controlBound.se)

@@ -28,7 +28,7 @@ import docCookie from '../assets/cookie.js'
 
 export default {
   methods:{
-    register: function(){
+    register: function(e){
       let url = 'http://bygis.com/api/v1/users'
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
@@ -45,7 +45,7 @@ export default {
         registerbutton.disabled = false
         window.location.href = "#!/studio"
       },function(response){
-        console.log(response)
+        console.log(response.data.error)
         registerbutton.disabled = false
       })
     },

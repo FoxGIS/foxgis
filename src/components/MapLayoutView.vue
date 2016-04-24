@@ -9,39 +9,63 @@ import mapboxgl from 'mapbox-gl'
 import {diff} from 'mapbox-gl-style-spec'
 export default {
   events: {
-    'show-layout-map': function(style,accessToken){
-      this.originStyle = style
+    'show-layout-map': function(bound,accessToken){
       this.$el.style.display = 'block'
       mapboxgl.accessToken = accessToken
-      style.sources['layout-map'] = {
+      var coor = [
+        [bound.nw.lng+360,bound.nw.lat],
+        [bound.se.lng+360,bound.nw.lat],
+        [bound.se.lng+360,bound.se.lat],
+        [bound.nw.lng+360,bound.se.lat]
+      ]
+
+      var coor1 = [
+        [116.012,40.306],
+        [117.196,40.306],
+        [117.196,39.645],
+        [116.012,39.645]
+      ]
+
+      this.layoutStyle.sources['layout-map'] = {
         "type": "image",
         "url": "/static/chengdu.png",
-        "coordinates": [
-          [116.012,40.306],
-          [117.196,40.306],
-          [117.196,39.645],
-          [116.012,39.645]
-        ]
+        "coordinates": coor
       }
-      style.layers = []
-      style.layers.push({
+      this.layoutStyle.layers = []
+      this.layoutStyle.layers.push({
         id: "layoutmap",
         'type': "raster",
         source: "layout-map"
       })
-      let map = new mapboxgl.Map({
-        container: 'map-layout-container',
-        style: style,
-        center: [116.417,39.928],
-        zoom: 9,
-        attributionControl: false
-      })
-      this.map = map
+      if(this.init === false){
+        var center = [(bound.nw.lng + bound.se.lng)/2+360,(bound.nw.lat + bound.se.lat)/2]
+
+        let map = new mapboxgl.Map({
+          container: 'map-layout-container',
+          style: this.layoutStyle,
+          center: center,
+          zoom: 12,
+          attributionControl: false
+        })
+        this.init = true
+        this.map = map
+      }else{
+        this.map.setStyle(this.layoutStyle)
+      }
     }
   },
   data: function(){
     return {
-      map: {}
+      map: {},
+      layoutStyle: {
+        version: 8,
+        name: 'layoutmap',
+        sprite:"mapbox://sprites/mapbox/streets-v8",
+        sources: {},
+        glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+        layers: []
+      },
+      init: false
     }
   }
 }
