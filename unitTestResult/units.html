@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>前端测试</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/overwrite.css"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/c3.css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <span class="glyphicon glyphicon-list-alt navbar-brand"/>
+        </div>
+        <h3 class="navbar-text">前端测试</h3>
+        <h4 class="nav navbar-nav navbar-text ow-sub-title">false</h4>
+      </div>
+    </nav>
+    <div class="container-fluid position-offset">
+      <div class="row">
+        <div class="col-xs-2 sidebar-offcanvas" id="sidebar" role="navigation">
+          <ul class="nav nav-sidebar">
+            <li class="active top">
+              <a href="#">Overview</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-10 main">
+          <div id="chart"></div>
+          <ul class="nav nav-tabs" id="myTab">
+            
+            <li class="active">
+              
+              <a href="#Chrome" data-toggle="tab">Chrome 49.0.2623 (Windows 10 0.0.0)</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            
+            <div class="tab-pane fade" id="Chrome">
+              <table class="table table-bordered table-hover">
+                <caption class="">Test Results running in Chrome 49.0.2623 (Windows 10 0.0.0) Timestamp: 2016-04-25 20:02:58</caption>
+                <tr>
+                  <td colspan="3">
+                    2 tests / 
+                    0 errors / 
+                    0 failures / 
+                    0 skipped / 
+                    runtime: 0.003s
+                  </td>
+                </tr>
+                <tr class="header">
+                  <td>Status</td>
+                  <td>Spec</td>
+                  <td>Suite / Results</td>
+                </tr>
+                <tr class="success">
+                  <td>Passed in 0.003s</td>
+                  <td>should render correct contents</td>
+                  <td class="specs-def">
+                    <div class="">Data.vue test</div>
+                  </td>
+                </tr>
+                <tr class="success">
+                  <td>Passed in 0s</td>
+                  <td>should set correct default data</td>
+                  <td class="specs-def">
+                    <div class="">Data.vue test</div>
+                  </td>
+                </tr>
+                <tr class="system-out">
+                  <td colspan="3"><strong>System output:</strong><br />Chrome 49.0.2623 (Windows 10 0.0.0) LOG: 'Download the Vue Devtools for a better development experience:
+https://github.com/vuejs/vue-devtools'
+</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p class="pull-right"/>
+    </footer>
+    <script src="assets/js/d3.js"></script>
+    <script src="assets/js/c3.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/tab.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
