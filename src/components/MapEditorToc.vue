@@ -588,7 +588,7 @@ export default {
       let layers = styleObj.layers
       for(let i=0,length=layers.length;i<length;i++){
         if(layers[i].id == id){
-          this.currentLayer = JSON.parse(JSON.stringify(layers[i]))
+          this.currentLayer = layers[i]
           break
         }
       }
@@ -601,7 +601,13 @@ export default {
     // 高级模式修改了style，同步此处的style
     'map-style-change': function(style){
       this.styleObj = JSON.parse(JSON.stringify(style))
-      this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
+      let layers = this.styleObj.layers
+      for(let i=0,length=layers.length;i<length;i++){
+        if(layers[i].id == this.curPanelLayer.id){
+          this.currentLayer = layers[i]
+          break
+        }
+      }
       this.tocLayers = this.createTocLayer(style)
       this.fixType(this.currentLayer)
       //展示属性
