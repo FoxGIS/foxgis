@@ -36,22 +36,18 @@ export default {
       dataset: [{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       }]
     }

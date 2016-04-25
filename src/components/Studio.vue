@@ -75,4 +75,8 @@ export default {
   padding-right: 10px;
 }
 
+.v-link-active {
+  background-color: #e0e0e0;
+}
+
 </style>

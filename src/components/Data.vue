@@ -4,7 +4,8 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传数据</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect v-on:click="uploadFileClick">上传数据</mdl-button>
+    <input type="file" style="display:none" id="file">
   </div>
 
   <foxgis-data-cards-data :dataset="dataset"></foxgis-data-cards-data>
@@ -15,16 +16,49 @@
 <script>
 import docCookie from '../assets/cookie.js'
 export default {
+  methods: {
+    uploadFileClick: function(e){
+      var hidefile = document.getElementById("file")
+      hidefile.click()
+      hidefile.addEventListener("change",this.uploadFile)
+    },
+    uploadFile: function(e){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = 'http://bygis.com/api/v1/uploads/' + username
+      var formData = new FormData()
+      formData.append('file',e.target.files[0])
+      this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
+      .then(function(response){
+        var file = response.data
+        file.filesize = (file.filesize/1000).toFixed(2) + 'KB'
+        file.upload_at = file.upload_at.slice(0,10)
+        this.dataset.push(file)
+      },function(response){
+        if(response.data.error){
+          alert(response.data.error)
+        }else{
+          alert("未知错误，请稍后再试")
+        }
+      })
+    }
+  },
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
     //this.username = username
     let url = 'http://bygis.com/api/v1/uploads/' + username
-
+    var that = this
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
 
       if(response.data.length>0){
-        this.dataset = response.data
+        var data = response.data
+        data = data.map(function(d){
+          d.filesize = (d.filesize/1000).toFixed(2) + 'KB'
+          d.upload_at = d.upload_at.slice(0,10)
+          return d
+        })
+        this.dataset = data
       }
     },function(response){
       console.log(response)
@@ -33,25 +67,25 @@ export default {
   data() {
     return {
       dataset: [{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        type: 'geojson',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        type: 'geojson',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        type: 'geojson',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        type: 'geojson',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       }]
     }
   }
