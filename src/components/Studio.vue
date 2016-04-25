@@ -41,12 +41,12 @@ export default {
   },
   attached: function() {
      //判断是否登陆
-    // let username = docCookie.getItem('username')
-    // if(username === null){
-    //   window.location.href = "#!/login"
-    // }else{
-    //   this.username = username
-    // }
+    let username = docCookie.getItem('username')
+    if(username === null){
+      //window.location.href = "#!/login"
+    }else{
+      this.username = username
+    }
   },
   data: function(){
     return {

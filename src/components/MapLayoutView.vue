@@ -12,18 +12,19 @@ export default {
     'show-layout-map': function(bound,accessToken){
       this.$el.style.display = 'block'
       mapboxgl.accessToken = accessToken
+      console.log(bound);
       var coor = [
-        [bound.nw.lng+360,bound.nw.lat],
-        [bound.se.lng+360,bound.nw.lat],
-        [bound.se.lng+360,bound.se.lat],
-        [bound.nw.lng+360,bound.se.lat]
+        [bound.nw.lng,bound.nw.lat],
+        [bound.se.lng,bound.nw.lat],
+        [bound.se.lng,bound.se.lat],
+        [bound.nw.lng,bound.se.lat]
       ]
-
+      //成都
       var coor1 = [
-        [116.012,40.306],
-        [117.196,40.306],
-        [117.196,39.645],
-        [116.012,39.645]
+        [103.985,30.635],
+        [104.164,30.635],
+        [104.164,30.715],
+        [103.985,30.715]
       ]
 
       this.layoutStyle.sources['layout-map'] = {
@@ -38,7 +39,7 @@ export default {
         source: "layout-map"
       })
       if(this.init === false){
-        var center = [(bound.nw.lng + bound.se.lng)/2+360,(bound.nw.lat + bound.se.lat)/2]
+        var center = [(bound.nw.lng + bound.se.lng)/2,(bound.nw.lat + bound.se.lat)/2]
 
         let map = new mapboxgl.Map({
           container: 'map-layout-container',

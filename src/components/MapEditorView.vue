@@ -117,7 +117,7 @@ export default {
       this.drag.dragstarty = e.layerY
       document.addEventListener('mousemove',this.boxDragMove,false)
     },
-    //移动
+    //移动bound
     boxDragMove: function(e){
       var dx = e.layerX - this.drag.dragstartx
       var dy = e.layerY - this.drag.dragstarty
@@ -128,6 +128,7 @@ export default {
       let newtop = boxBound.top - mapBound.top + dy
       let newright = boxBound.left + boxBound.width - mapBound.left + dx
       let newbottom = boxBound.top + boxBound.height - mapBound.top + dy
+
       this.controlBound.nw = this.map.unproject([newleft, newtop])
       this.controlBound.se = this.map.unproject([newright,newbottom])
     },
@@ -189,7 +190,7 @@ export default {
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
-        center: [-245.7129, 30.5354],
+        center: [104.075, 30.6754],
         zoom: 12,
         attributionControl: false
       })
@@ -243,6 +244,7 @@ export default {
       }
     },
     'show-bounds-box': function(bounds){
+      console.log(bounds);
       let controlBox = document.getElementById("location-control")
       controlBox.style.display = 'block'
       //如果没有传入bounds，bounds的地理位置则有其css决定
@@ -294,7 +296,8 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
-
+        console.log('handler');
+        console.log(val);
         let controlBox = document.getElementById("location-control")
         var plt = this.map.project(this.controlBound.nw)
         var prb = this.map.project(this.controlBound.se)

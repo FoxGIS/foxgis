@@ -6,6 +6,22 @@
 
 
 <script>
+import docCookie from '../assets/cookie.js'
+export default {
+  attached() {
+    //刷新cookie
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    if(username !== null && access_token !== null){
+      this.username = username
+      let date = new Date()
+      let days = 7
+      date.setTime(date.getTime() + days*24*3600*1000)
+      docCookie.setItem('access_token',access_token,date)
+      docCookie.setItem('username',username,date)
+    }
+  }
+}
 
 </script>
 

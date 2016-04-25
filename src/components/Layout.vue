@@ -48,7 +48,10 @@ export default {
   attached: function() {
      //判断是否登陆
     let username = docCookie.getItem('username')
-    this.username = username
+    if(username !== null){
+      this.username = username
+    }
+
   },
   data: function(){
     return {

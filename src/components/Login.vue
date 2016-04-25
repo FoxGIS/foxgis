@@ -3,8 +3,9 @@
   <foxgis-layout>
     <div class="wrapper">
       <foxgis-card class="login">
+        <div id="error-info"></div>
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
-        <mdl-textfield floating-label="密码" type="password" id="password" ></mdl-textfield>
+        <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
         <mdl-button v-mdl-ripple-effect accent raised v-on:keyup.enter="login" v-on:click="login">登录</mdl-button>
         <div class="tips">
           <!-- <a href="" >注册</a> -->
@@ -32,6 +33,9 @@ export default {
       let url = 'http://bygis.com/api/v1/users'
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
+      if(password.length < 6){
+        this.showError("密码长度过短")
+      }
       let registerbutton = e.target.parentElement
       registerbutton.disabled = true
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
@@ -45,8 +49,10 @@ export default {
         registerbutton.disabled = false
         window.location.href = "#!/studio"
       },function(response){
-        console.log(response.data.error)
         registerbutton.disabled = false
+        if(response.data.error){
+          this.showError(response.data.error)
+        }
       })
     },
     login: function(e){
@@ -68,9 +74,19 @@ export default {
         window.location.href = "#!/studio"
       },function(response){
         loginbutton.disabled = false
-        console.log(response)
+        this.showError('用户名或密码错误')
       })
+    },
+    showError: function(msg){
+      let errorContainer = this.$el.querySelector("#error-info")
+      errorContainer.innerHTML = msg
+      errorContainer.style.display = 'block'
     }
+  },
+  attached() {
+    //隐藏error info
+    let errorContainer = this.$el.querySelector("#error-info")
+    errorContainer.style.display = 'none'
   }
 }
 
@@ -89,7 +105,7 @@ export default {
   width: 300px;
   height: 300px;
   padding: 20px;
-
+  position: relative;
 }
 
 .disable {
@@ -117,6 +133,15 @@ export default {
   margin-top: 10px;
   padding-top: 5px;
   text-align: center;
+}
+
+#error-info {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  color: red;
+  font-size: 12px;
+  display: none;
 }
 
 </style>

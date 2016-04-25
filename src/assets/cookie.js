@@ -15,7 +15,7 @@ export default {
           sExpires = "; expires=" + vEnd;
           break;
         case Date:
-          sExpires = "; expires=" + vEnd.toUTCString();
+          sExpires = "; expires=" + vEnd.toString();
           break;
       }
     }
