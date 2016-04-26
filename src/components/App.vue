@@ -6,7 +6,7 @@
 
 
 <script>
-import docCookie from '../assets/cookie.js'
+import docCookie from './cookie.js'
 export default {
   attached() {
     //刷新cookie

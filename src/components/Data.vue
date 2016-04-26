@@ -14,7 +14,8 @@
 
 
 <script>
-import docCookie from '../assets/cookie.js'
+import docCookie from './cookie.js'
+import api from './api.js'
 export default {
   methods: {
     uploadFileClick: function(){
@@ -25,7 +26,7 @@ export default {
     uploadFile: function(e){
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = 'http://bygis.com/api/v1/uploads/' + username
+      let url = api.uploads + '/' + username
       var formData = new FormData()
       formData.append('file',e.target.files[0])
       this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
@@ -52,7 +53,7 @@ export default {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
     //this.username = username
-    let url = 'http://bygis.com/api/v1/uploads/' + username
+    let url = api.uploads + '/' + username
     var that = this
     //获取数据列表
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
@@ -78,22 +79,18 @@ export default {
     return {
       dataset: [{
         filename: '全国人口分布数据',
-        type: 'geojson',
         filesize: '200 MB',
         upload_at: '2016-3-25'
       },{
         filename: '全国人口分布数据',
-        type: 'geojson',
         filesize: '200 MB',
         upload_at: '2016-3-25'
       },{
         filename: '全国人口分布数据',
-        type: 'geojson',
         filesize: '200 MB',
         upload_at: '2016-3-25'
       },{
         filename: '全国人口分布数据',
-        type: 'geojson',
         filesize: '200 MB',
         upload_at: '2016-3-25'
       }]

@@ -13,7 +13,7 @@
 
 
 <script>
-import docCookie from '../assets/cookie.js'
+import docCookie from './cookie.js'
 export default {
   attached() {
     let username = docCookie.getItem('username')

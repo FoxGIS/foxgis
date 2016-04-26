@@ -25,12 +25,12 @@
 
 <script>
 
-import docCookie from '../assets/cookie.js'
-
+import docCookie from './cookie.js'
+import api from './api.js'
 export default {
   methods:{
     register: function(e){
-      let url = 'http://bygis.com/api/v1/users'
+      let url = api.users
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
       if(password.length < 6){
@@ -56,7 +56,7 @@ export default {
       })
     },
     login: function(e){
-      let url = 'http://bygis.com/api/v1/users'
+      let url = api.users
       let loginbutton = e.target.parentElement
       loginbutton.disabled = true
       let username = this.$el.querySelector('#username').value

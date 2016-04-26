@@ -6,8 +6,12 @@
       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
     </div>
     <div class="meta">
-      <p>{{ data.type }} · {{ data.filesize }} · {{  data.upload_at }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile">删除</mdl-anchor-button>
+      <p>{{ data.filesize }} · {{  data.upload_at }}</p>
+      <div>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="downloadFile">下载</mdl-anchor-button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -15,7 +19,8 @@
 
 
 <script>
-import docCookie from '../assets/cookie.js'
+import docCookie from './cookie.js'
+import api from './api.js'
 export default {
   props: ['dataset'],
   methods: {
@@ -24,7 +29,7 @@ export default {
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
         var uploadid = e.target.parentElement.dataset.uploadid
-        let url = 'http://bygis.com/api/v1/uploads/' + username + "/" + uploadid
+        let url = api.uploads + '/' + username + "/" + uploadid
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -38,6 +43,22 @@ export default {
           alert("位置错误，请稍后再试")
         })
       }
+    },
+    downloadFile: function(e){
+      if(e.target.tagName === 'SPAN'){
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        var uploadid = e.target.parentElement.dataset.uploadid
+        let url = api.uploads + '/' + username + "/" + uploadid
+        this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            console.log(response)
+          }
+        },function(response){
+          alert("位置错误，请稍后再试")
+        })
+      }
     }
   }
 }
@@ -45,7 +66,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .card {
 /*  height: 120px;*/
   border-radius: 2px 2px 0 0;
@@ -131,5 +152,7 @@ export default {
 .meta .mdl-button {
   text-align: right;
   min-width: 0;
+  padding: 0 12px;
 }
+
 </style>
