@@ -1,4 +1,5 @@
 <template>
+<div>
   <div id="header"></div>
   <div id="edit-wrap">
     <nav class="mdl-navigation" id="main-control">
@@ -10,11 +11,9 @@
       <a class="mdl-navigation__link" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick"><i class="material-icons">build</i></a>
     </nav>
-    <div id="district-control"></div>
-    <div id="style-editor">
-      <textarea id="style-code" v-on:input="styleCodeChange"></textarea>
-    </div>
-    <foxgis-toc :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' id="toc-container"></foxgis-toc>
+    <foxgis-district-select id="district-control"></foxgis-district-select>
+    <foxgis-style-editor id="style-editor" v-on:style-change='styleChange'></foxgis-style-editor>
+    <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' ></foxgis-toc>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
@@ -22,13 +21,10 @@
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
     <foxgis-layoutmap id="layout-map"></foxgis-layoutmap>
   </div>
+</div>
 </template>
 
 <script>
-var $ = require('jquery')
-require('jstree')
-require('jstree/dist/themes/default/style.min.css')
-
 export default {
   methods: {
     //图层控制
@@ -53,29 +49,7 @@ export default {
       let editorContainer = document.getElementById('style-editor')
       editorContainer.style.display = 'none'
       let that = this
-      $('#district-control')
-      .on('changed.jstree',function(e,data){
-        let bounds = [[116.111004,39.691665],[116.709188,40.194547]]
-        that.$broadcast('map-bounds-change',bounds)
-      })
-      .jstree({
-        'plugins' : [ 'wholerow' ],
-        'core' : {
-          'themes':{
-            'icons':false
-          },
-          'data' : [
-            {'id' : 1, 'text' : '北京市','type':'root','children':[
-              {'id' : 2, 'text' : '海淀区'},
-              {'id' : 3, 'text' : '石景山区'},
-              {'id' : 4, 'text' : '东城区'},
-              {'id' : 5, 'text' : '西城区'},
-              {'id' : 6, 'text' : '丰台区'},
-              {'id' : 7, 'text' : '昌平区'}]
-            }
-          ]
-        }
-      })
+
       this.changeLayout()
       e.currentTarget.className += ' control-active'
     },
@@ -85,6 +59,7 @@ export default {
       let active = document.getElementsByClassName("control-active")
       active[0].className = active[0].className.replace(' control-active','')
 
+      //切换toc区域的内容
       let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
       let discontrol = document.getElementById('district-control')
@@ -92,10 +67,9 @@ export default {
       let editorContainer = document.getElementById('style-editor')
       editorContainer.style.display = 'block'
       // 传入style 字符串到textarea
-      let stylecode = document.getElementById("style-code")
-      var styleValue = JSON.stringify(this.$refs.drafmap.map.getStyle(),null,2)
-      stylecode.value = styleValue
+      this.$broadcast('editor-init',this.style)
 
+      //移动map，扩宽区域
       let mapContainer = document.getElementById("map-editorview-container")
       if(mapContainer.style.display == 'none'){
         mapContainer = document.getElementById("map-layout-container")
@@ -112,9 +86,6 @@ export default {
       //   },
       //   lineNumbers: true
       // });
-    },
-    'styleCodeChange': function(e){
-      this.$broadcast('map-style-change',JSON.parse(e.target.value))
     },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")
@@ -183,7 +154,7 @@ export default {
     this.$http.get(url).then(function(res){
       let data = res.data
       let initStyle = JSON.parse(JSON.stringify(data))
-      this.originStyle = initStyle
+      this.style = initStyle
       var tocdata = JSON.parse(JSON.stringify(data))
       this.$broadcast('toc-init', tocdata)
       this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
@@ -196,7 +167,7 @@ export default {
     return {
       layers: [],
       currentLayer:{},
-      originStyle:{}
+      style:{}
     }
   }
 }
@@ -252,14 +223,6 @@ export default {
   background-color: #E5E2D3;
 }
 
-#district-control {
-  width: 200px;
-  height: calc(100% - 55px);
-  box-sizing: border-box;
-  position: absolute;
-  left: 30px;
-}
-
 #toc-container {
   width: 200px;
   height: calc(100% - 55px);
@@ -277,14 +240,6 @@ export default {
   position: absolute;
   left: 30px;
   display: none;
-}
-
-#style-code {
-  height: 99%;
-  width: 350px;
-  overflow: visible;
-  padding: 0;
-  border: 0px;
 }
 
 #map-tool {
