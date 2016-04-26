@@ -5,7 +5,7 @@
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect v-on:click="uploadFileClick">上传数据</mdl-button>
-    <input type="file" style="display:none" id="file" accept="*,.json,.zip,.mbtiles">
+    <input type="file" style="display:none" id="file" accept="*.*,.json,.mbtiles,.zip">
   </div>
 
   <foxgis-data-cards-data :dataset="dataset"></foxgis-data-cards-data>
@@ -29,6 +29,12 @@ export default {
       let url = api.uploads + '/' + username
       var formData = new FormData()
       formData.append('file',e.target.files[0])
+      var reader = new FileReader()
+      reader.readAsBinaryString(e.target.files[0])
+      reader.onloadend = function () {
+        console.log(reader.result.length);
+      }
+
       this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
       .then(function(response){
         var file = response.data
