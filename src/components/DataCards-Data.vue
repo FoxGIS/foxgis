@@ -7,7 +7,7 @@
     </div>
     <div class="meta">
       <p>{{ data.type }} · {{ data.filesize }} · {{  data.upload_at }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile">删除</mdl-anchor-button>
     </div>
   </div>
 </div>
@@ -15,23 +15,29 @@
 
 
 <script>
+import docCookie from '../assets/cookie.js'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e) {
-      //移除之前的active
-      let activeCards = this.$el.querySelector('.active')
-      if(activeCards&&activeCards!==e.currentTarget){
-        activeCards.className = activeCards.className.replace(' active','')
+    deleteFile: function(e){
+      if(e.target.tagName === 'SPAN'){
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        var uploadid = e.target.parentElement.dataset.uploadid
+        let url = 'http://bygis.com/api/v1/uploads/' + username + "/" + uploadid
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.dataset.length;i++){
+              if(this.dataset[i].upload_id === uploadid){
+                this.dataset.splice(i,1)
+              }
+            }
+          }
+        },function(response){
+          alert("位置错误，请稍后再试")
+        })
       }
-      //给当前的dom添加active
-      let claName = e.currentTarget.className
-      if(claName.indexOf('active')!=-1){
-        claName = claName.replace(' active','')
-      }else{
-        claName += ' active'
-      }
-      e.currentTarget.className = claName
     }
   }
 }

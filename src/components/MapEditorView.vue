@@ -105,7 +105,7 @@ export default {
       }
     },
     //up时，释放事件
-    dragresizeup: function(e){
+    dragresizeup: function(){
       document.removeEventListener('mousemove',this.dragresizemove,false)
     },
     //拖拽bound时 鼠标down事件
@@ -171,14 +171,14 @@ export default {
         infoContainer.style.display = 'none'
       }
     },
-    hideBoundsBox: function(e){
+    hideBoundsBox: function(){
       this.map.off('dragstart', this.mapDragStart)
       this.map.off('zoomend',this.mapZoomEnd)
       this.map.on('click', this.mapClick)
       var box = this.$el.querySelector("#location-control")
       box.style.display = 'none'
     },
-    closeInfoContainer: function(e){
+    closeInfoContainer: function(){
       let info = this.$el.querySelector("#info-container")
       info.style.display = 'none'
     }

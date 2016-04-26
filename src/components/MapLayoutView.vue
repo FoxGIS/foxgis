@@ -6,13 +6,13 @@
 <script>
 /*global mapboxgl */
 import mapboxgl from 'mapbox-gl'
-import {diff} from 'mapbox-gl-style-spec'
+
 export default {
   events: {
     'show-layout-map': function(bound,accessToken){
       this.$el.style.display = 'block'
       mapboxgl.accessToken = accessToken
-      console.log(bound);
+
       var coor = [
         [bound.nw.lng,bound.nw.lat],
         [bound.se.lng,bound.nw.lat],
@@ -28,15 +28,15 @@ export default {
       ]
 
       this.layoutStyle.sources['layout-map'] = {
-        "type": "image",
-        "url": "/static/chengdu.png",
-        "coordinates": coor
+        'type': 'image',
+        'url': '/static/chengdu.png',
+        'coordinates': coor
       }
       this.layoutStyle.layers = []
       this.layoutStyle.layers.push({
-        id: "layoutmap",
-        'type': "raster",
-        source: "layout-map"
+        'id': 'layoutmap',
+        'type': 'raster',
+        'source': 'layout-map'
       })
       if(this.init === false){
         var center = [(bound.nw.lng + bound.se.lng)/2,(bound.nw.lat + bound.se.lat)/2]

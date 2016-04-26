@@ -28,10 +28,10 @@ import docCookie from '../assets/cookie.js'
 
 export default {
   methods: {
-    signout: function(e){
+    signout: function(){
       docCookie.removeItem('username')
       docCookie.removeItem('access_token')
-      window.location.href = "home"
+      window.location.href = '/'
     }
   },
   ready() {
@@ -50,7 +50,7 @@ export default {
   },
   data: function(){
     return {
-      username: ''
+      username: '用户'
     }
   }
 }

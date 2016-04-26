@@ -1,18 +1,19 @@
 var webpackConf = require('./webpack.config.js')
+delete webpackConf.entry
 module.exports = function (karma) {
     karma.set({
       // base path, that will be used to resolve files and exclude
       basePath: './',
       frameworks: ['mocha'],
       // list of files / patterns to load in the browser
-      files: ['test/*.js'],
+      files: ['test/*.test.js'],
       webpack: webpackConf,
-      reporters: ['mocha','htmlalt'],
+      reporters: ['spec','mocha','htmlalt'],
       mochaReporter: {
         output: 'autowatch'
       },
       preprocessors: {
-        'test/*.js': 'webpack'
+        'test/*.test.js': 'webpack'
       },
       htmlReporter: {
         outputFile: 'unitTestResult/units.html',

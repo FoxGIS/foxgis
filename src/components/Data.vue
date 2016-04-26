@@ -5,7 +5,7 @@
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect v-on:click="uploadFileClick">上传数据</mdl-button>
-    <input type="file" style="display:none" id="file">
+    <input type="file" style="display:none" id="file" accept="*,.json,.zip,.mbtiles">
   </div>
 
   <foxgis-data-cards-data :dataset="dataset"></foxgis-data-cards-data>
@@ -17,7 +17,7 @@
 import docCookie from '../assets/cookie.js'
 export default {
   methods: {
-    uploadFileClick: function(e){
+    uploadFileClick: function(){
       var hidefile = document.getElementById("file")
       hidefile.click()
       hidefile.addEventListener("change",this.uploadFile)
@@ -31,7 +31,12 @@ export default {
       this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
       .then(function(response){
         var file = response.data
-        file.filesize = (file.filesize/1000).toFixed(2) + 'KB'
+        if(file.filesize/1024 > 1024){
+          file.filesize = (file.filesize/1048576).toFixed(2) + 'MB'
+        }else{
+          file.filesize = (file.filesize/1024).toFixed(2) + 'KB'
+        }
+
         file.upload_at = file.upload_at.slice(0,10)
         this.dataset.push(file)
       },function(response){
@@ -49,12 +54,17 @@ export default {
     //this.username = username
     let url = 'http://bygis.com/api/v1/uploads/' + username
     var that = this
+    //获取数据列表
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
 
       if(response.data.length>0){
         var data = response.data
         data = data.map(function(d){
-          d.filesize = (d.filesize/1000).toFixed(2) + 'KB'
+          if(d.filesize/1024 > 1024){
+            d.filesize = (d.filesize/1048576).toFixed(2) + 'MB'
+          }else{
+            d.filesize = (d.filesize/1024).toFixed(2) + 'KB'
+          }
           d.upload_at = d.upload_at.slice(0,10)
           return d
         })
