@@ -16,6 +16,7 @@
 <script>
 import docCookie from './cookie.js'
 import api from './api.js'
+import util from './util.js'
 export default {
   methods: {
     uploadFileClick: function(){
@@ -44,7 +45,7 @@ export default {
           file.filesize = (file.filesize/1024).toFixed(2) + 'KB'
         }
 
-        file.upload_at = file.upload_at.slice(0,10)
+        file.upload_at = util.dateFormat(new Date(file.upload_at))
         this.dataset.push(file)
       },function(response){
         if(response.data.error){
@@ -72,7 +73,9 @@ export default {
           }else{
             d.filesize = (d.filesize/1024).toFixed(2) + 'KB'
           }
-          d.upload_at = d.upload_at.slice(0,10)
+
+          d.upload_at = util.dateFormat(new Date(d.upload_at))
+
           return d
         })
         this.dataset = data

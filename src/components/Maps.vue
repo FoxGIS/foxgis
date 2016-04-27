@@ -15,6 +15,7 @@
 <script>
 import api from './api.js'
 import docCookie from './cookie.js'
+import util from './util.js'
 export default {
   methods: {
     createMapClick: function(){
@@ -59,10 +60,8 @@ export default {
 
       if(response.data.length>0){
         this.dataset = response.data.map(function(d){
-          var modifydate = new Date(d.modify_at)
-          var formatetime = modifydate.getFullYear()+'-'+modifydate.getMonth()+'-'+modifydate.getDay()+'-'+modifydate.getHours()
-          d.modify_at =formatetime
-          d.create_at = d.create_at.slice(0,10)
+          d.modify_at = util.dateFormat(new Date(d.modify_at))
+          d.create_at = util.dateFormat(new Date(d.create_at))
           return d
         })
 
