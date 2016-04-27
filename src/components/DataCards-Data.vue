@@ -8,8 +8,8 @@
     <div class="meta">
       <p>{{ data.filesize }} · {{ data.upload_at }}</p>
       <div>
-        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="downloadFile">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile(data.upload_id)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-upload_id={{data.upload_id}} v-on:click="downloadFile(data.upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
   </div>
@@ -23,49 +23,43 @@ import api from './api.js'
 export default {
   props: ['dataset'],
   methods: {
-    deleteFile: function(e){
-      if(e.target.tagName === 'SPAN'){
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
-        var uploadid = e.target.parentElement.dataset.uploadid
-        let url = api.uploads + '/' + username + "/" + uploadid
-        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].upload_id === uploadid){
-                this.dataset.splice(i,1)
-              }
+    deleteFile: function(upload_id){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.uploads + '/' + username + "/" + upload_id
+      this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+          for(let i = 0;i<this.dataset.length;i++){
+            if(this.dataset[i].upload_id === upload_id){
+              this.dataset.splice(i,1)
             }
           }
-        },function(response){
-          alert("未知错误，请稍后再试")
-        })
-      }
+        }
+      },function(response){
+        alert("未知错误，请稍后再试")
+      })
     },
-    downloadFile: function(e){
-      if(e.target.tagName === 'SPAN'){
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
-        var uploadid = e.target.parentElement.dataset.uploadid
-        let url = api.uploads + '/' + username + "/" + uploadid
-        this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-        .then(function(response){
+    downloadFile: function(upload_id){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.uploads + '/' + username + "/" + upload_id
+      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+      .then(function(response){
 
-          if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].upload_id === uploadid){
-                let filename = this.dataset[i].filename
-                this.downloadAction(filename,response.data)
-                break
-              }
+        if(response.ok){
+          for(let i = 0;i<this.dataset.length;i++){
+            if(this.dataset[i].upload_id === upload_id){
+              let filename = this.dataset[i].filename
+              this.downloadAction(filename,response.data)
+              break
             }
-
           }
-        },function(response){
-          alert("未知错误，请稍后再试")
-        })
-      }
+
+        }
+      },function(response){
+        alert("未知错误，请稍后再试")
+      })
     },
     downloadAction: function(filename,content){
       var aLink = document.createElement('a')

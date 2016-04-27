@@ -39,6 +39,8 @@ import MapEditorView from './components/MapEditorView.vue'
 import MapLayoutView from './components/MapLayoutView.vue'
 import MapStyleEditor from './components/MapStyleEditor.vue'
 import MapDistrictSelect from './components/MapDistrictSelect'
+import ModalStyleTemplate from './components/ModalStyleTemplate'
+import Loading from './components/Loading'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -62,6 +64,8 @@ Vue.component('foxgis-drafmap',MapEditorView)
 Vue.component('foxgis-layoutmap',MapLayoutView)
 Vue.component('foxgis-style-editor',MapStyleEditor)
 Vue.component('foxgis-district-select',MapDistrictSelect)
+Vue.component('foxgis-style-template',ModalStyleTemplate)
+Vue.component('foxgis-loading',Loading)
 
 let router = new Router({
   history: false
@@ -109,7 +113,7 @@ router.map({
   '/mapview': {
     component: MapView
   },
-  '/mapeditor': {
+  '/mapeditor/*any': {
     component: MapEditor
   }
 })

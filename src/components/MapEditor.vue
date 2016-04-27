@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import api from './api.js'
+import docCookie from './cookie.js'
 export default {
   methods: {
     //图层控制
@@ -149,18 +151,39 @@ export default {
       printbutton.innerText = '打印'
     }
   },
-  ready: function(){
-    let url = './static/streets-v8.json'
-    this.$http.get(url).then(function(res){
-      let data = res.data
-      let initStyle = JSON.parse(JSON.stringify(data))
-      this.style = initStyle
-      var tocdata = JSON.parse(JSON.stringify(data))
-      this.$broadcast('toc-init', tocdata)
-      this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
-    },function(res){
-      console.log(res)
-    })
+  attached: function(){
+    let urlhash = window.location.hash
+    let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1');
+    if(styleId !== null){
+      var username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.styles + '/' + username + '/' + styleId
+      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+      .then(function(res){
+        let data = res.data
+        console.log(data)
+        let initStyle = JSON.parse(JSON.stringify(data))
+        this.style = initStyle
+        var tocdata = JSON.parse(JSON.stringify(data))
+        this.$broadcast('toc-init', tocdata)
+        this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+      },function(){
+        alert("style 信息错误")
+      })
+    }else{
+      let url = './static/streets-v8.json'
+      this.$http.get(url).then(function(res){
+        let data = res.data
+        let initStyle = JSON.parse(JSON.stringify(data))
+        this.style = initStyle
+        var tocdata = JSON.parse(JSON.stringify(data))
+        this.$broadcast('toc-init', tocdata)
+        this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+      },function(res){
+        console.log(res)
+      })
+    }
+
 
   },
   data: function(){
