@@ -2,12 +2,15 @@
 <div class="foxgis-data-cards">
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
-      <p>{{ data.name }}</p>
+      <p>{{ data.filename }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
     </div>
     <div class="meta">
-      <p>{{ data.layers }}个图层 · {{ data.size }} · {{  data.upload_time }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+      <p>{{ data.filesize }} · {{ data.upload_at }}</p>
+      <div>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="downloadFile">下载</mdl-anchor-button>
+      </div>
     </div>
   </div>
 </div>
@@ -15,23 +18,79 @@
 
 
 <script>
+import docCookie from './cookie.js'
+import api from './api.js'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e) {
-      //移除之前的active
-      let activeCards = this.$el.querySelector(".active")
-      if(activeCards&&activeCards!==e.currentTarget){
-        activeCards.className = activeCards.className.replace(" active","")
+    deleteFile: function(e){
+      if(e.target.tagName === 'SPAN'){
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        var uploadid = e.target.parentElement.dataset.uploadid
+        let url = api.uploads + '/' + username + "/" + uploadid
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.dataset.length;i++){
+              if(this.dataset[i].upload_id === uploadid){
+                this.dataset.splice(i,1)
+              }
+            }
+          }
+        },function(response){
+          alert("未知错误，请稍后再试")
+        })
       }
-      //给当前的dom添加active
-      let claName = e.currentTarget.className
-      if(claName.indexOf("active")!=-1){
-        claName = claName.replace(" active","")
+    },
+    downloadFile: function(e){
+      if(e.target.tagName === 'SPAN'){
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        var uploadid = e.target.parentElement.dataset.uploadid
+        let url = api.uploads + '/' + username + "/" + uploadid
+        this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+        .then(function(response){
+
+          if(response.ok){
+            for(let i = 0;i<this.dataset.length;i++){
+              if(this.dataset[i].upload_id === uploadid){
+                let filename = this.dataset[i].filename
+                this.downloadAction(filename,response.data)
+                break
+              }
+            }
+
+          }
+        },function(response){
+          alert("未知错误，请稍后再试")
+        })
+      }
+    },
+    downloadAction: function(filename,content){
+      var aLink = document.createElement('a')
+      var blob
+      if(filename.indexOf('.json')!=-1){
+        blob = new Blob([JSON.stringify(content,null,2)])
       }else{
-        claName += " active"
+        console.log(content.length)
+        blob = new Blob([this.str2bytes(content)], {type: "application/x-zip-compressed"})
+        //blob = new Blob([content], {type: "application/zip"})
+        var bytes = new Uint8Array(blob)
       }
-      e.currentTarget.className = claName
+      var evt = document.createEvent("HTMLEvents")
+      evt.initEvent("click", false, false)
+      aLink.download = filename
+      console.log(blob.size)
+      aLink.href = URL.createObjectURL(blob)
+      aLink.dispatchEvent(evt)
+    },
+    str2bytes: function(str) {
+      var bytes = new Uint8Array(str.length);
+      for (var i=0; i<str.length; i++) {
+          bytes[i] = str.charCodeAt(i);
+      }
+      return bytes
     }
   }
 }
@@ -39,7 +98,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .card {
 /*  height: 120px;*/
   border-radius: 2px 2px 0 0;
@@ -125,5 +184,7 @@ export default {
 .meta .mdl-button {
   text-align: right;
   min-width: 0;
+  padding: 0 12px;
 }
+
 </style>

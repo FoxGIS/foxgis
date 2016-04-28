@@ -20,16 +20,16 @@ export default {
   methods: {
     showDetails: function (e) {
       //移除之前的active
-      let activeCards = this.$el.querySelector(".active")
+      let activeCards = this.$el.querySelector('.active')
       if(activeCards&&activeCards!==e.currentTarget){
-        activeCards.className = activeCards.className.replace(" active","")
+        activeCards.className = activeCards.className.replace(' active','')
       }
       //给当前的dom添加active
       let claName = e.currentTarget.className
-      if(claName.indexOf("active")!=-1){
-        claName = claName.replace(" active","")
+      if(claName.indexOf('active')!=-1){
+        claName = claName.replace(' active','')
       }else{
-        claName += " active"
+        claName += ' active'
       }
       e.currentTarget.className = claName
     }
@@ -39,7 +39,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .card {
 /*  height: 120px;*/
   border-radius: 2px 2px 0 0;

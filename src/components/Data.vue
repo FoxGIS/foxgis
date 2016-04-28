@@ -4,7 +4,8 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传数据</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect v-on:click="uploadFileClick">上传数据</mdl-button>
+    <input type="file" style="display:none" id="file" accept="*.*,.json,.mbtiles,.zip">
   </div>
 
   <foxgis-data-cards-data :dataset="dataset"></foxgis-data-cards-data>
@@ -13,29 +14,91 @@
 
 
 <script>
+import docCookie from './cookie.js'
+import api from './api.js'
 export default {
+  methods: {
+    uploadFileClick: function(){
+      var hidefile = document.getElementById("file")
+      hidefile.click()
+      hidefile.addEventListener("change",this.uploadFile)
+    },
+    uploadFile: function(e){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.uploads + '/' + username
+      var formData = new FormData()
+      formData.append('file',e.target.files[0])
+      var reader = new FileReader()
+      reader.readAsBinaryString(e.target.files[0])
+      reader.onloadend = function () {
+        console.log(reader.result.length);
+      }
+
+      this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
+      .then(function(response){
+        var file = response.data
+        if(file.filesize/1024 > 1024){
+          file.filesize = (file.filesize/1048576).toFixed(2) + 'MB'
+        }else{
+          file.filesize = (file.filesize/1024).toFixed(2) + 'KB'
+        }
+
+        file.upload_at = file.upload_at.slice(0,10)
+        this.dataset.push(file)
+      },function(response){
+        if(response.data.error){
+          alert(response.data.error)
+        }else{
+          alert("未知错误，请稍后再试")
+        }
+      })
+    }
+  },
+  attached() {
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    //this.username = username
+    let url = api.uploads + '/' + username
+    var that = this
+    //获取数据列表
+    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
+
+      if(response.data.length>0){
+        var data = response.data
+        data = data.map(function(d){
+          if(d.filesize/1024 > 1024){
+            d.filesize = (d.filesize/1048576).toFixed(2) + 'MB'
+          }else{
+            d.filesize = (d.filesize/1024).toFixed(2) + 'KB'
+          }
+          d.upload_at = d.upload_at.slice(0,10)
+          return d
+        })
+        this.dataset = data
+      }
+    },function(response){
+      console.log(response)
+    })
+  },
   data() {
     return {
       dataset: [{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       },{
-        name: '全国人口分布数据',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
+        filename: '全国人口分布数据',
+        filesize: '200 MB',
+        upload_at: '2016-3-25'
       }]
     }
   }

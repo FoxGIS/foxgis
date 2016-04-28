@@ -11,8 +11,8 @@
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>jingsam</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/home' }"><i class="material-icons">exit_to_app</i>退出</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>{{username}}</a>
+        <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>退出</a>
       </nav>
     </div>
     <main class="mdl-layout__content">
@@ -24,9 +24,34 @@
 
 
 <script>
+import docCookie from './cookie.js'
+
 export default {
+  methods: {
+    signout: function(){
+      docCookie.removeItem('username')
+      docCookie.removeItem('access_token')
+      window.location.href = '/'
+    }
+  },
   ready() {
+    /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
+
+  },
+  attached: function() {
+     //判断是否登陆
+    let username = docCookie.getItem('username')
+    if(username === null){
+      //window.location.href = "#!/login"
+    }else{
+      this.username = username
+    }
+  },
+  data: function(){
+    return {
+      username: '用户'
+    }
   }
 }
 
@@ -42,8 +67,16 @@ export default {
   border-top: 1px solid rgba(0,0,0,.1);
 }
 
+.mdl-navigation a {
+  cursor: pointer;
+}
+
 .material-icons {
   padding-right: 10px;
+}
+
+.v-link-active {
+  background-color: #e0e0e0;
 }
 
 </style>

@@ -13,28 +13,41 @@
 
 
 <script>
+import docCookie from './cookie.js'
 export default {
+  attached() {
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    this.username = username
+    let url = 'http://bygis.com/api/v1/styles/' + username
+
+    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
+
+      if(response.data.length>0){
+        this.dataset = response.data
+        //TODO
+      }
+    },function(response){
+      console.log(response)
+    })
+  },
   data() {
     return {
       dataset: [{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       },{
         name: '全国人口分布地图',
         layers: 5,
-        size: '200 MB',
         upload_time: '2016-3-25'
       }]
     }
