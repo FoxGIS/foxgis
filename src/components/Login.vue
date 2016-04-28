@@ -73,7 +73,7 @@ export default {
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
         loginbutton.disabled = false
-        //window.location.href = "#!/studio"
+        window.location.href = "#!/studio"
       },function(response){
         loginbutton.disabled = false
         this.showError('用户名或密码错误')

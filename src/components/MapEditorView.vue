@@ -147,19 +147,29 @@ export default {
     //地图缩放后，重新计算框所在的位置
     mapZoomEnd: function(e){
 
-      let controlBox = document.getElementById("location-control")
-      var plt = this.map.project(this.controlBound.nw)
-      var prb = this.map.project(this.controlBound.se)
-      controlBox.style.left = plt.x + 'px'
-      controlBox.style.top = plt.y + 'px'
-      controlBox.style.width = prb.x - plt.x + 'px'
-      controlBox.style.height = prb.y - plt.y + 'px'
+      var controlBox = this.$el.querySelector("#location-control")
+      if(controlBox.style.display === 'block'){
+        var plt = this.map.project(this.controlBound.nw)
+        var prb = this.map.project(this.controlBound.se)
+        controlBox.style.left = plt.x + 'px'
+        controlBox.style.top = plt.y + 'px'
+        controlBox.style.width = prb.x - plt.x + 'px'
+        controlBox.style.height = prb.y - plt.y + 'px'
+      }
+
+      let center = this.map.getCenter()
+      let zoom = this.map.getZoom()
+      this.originStyle.center = [center.lng,center.lat]
+      this.originStyle.zoom = zoom
+      let data = JSON.parse(JSON.stringify(this.originStyle))
+      this.$dispatch('style-change',data)
+
     },
     mapDragStart: function(e){
       this.drag.dragstartx = e.originalEvent.offsetX - this.mapBound.left
       this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top
     },
-    mapDrag: function(e){
+    mapDrag: function(){
       let controlBox = document.getElementById("location-control")
       if(controlBox.style.display === 'block'){
         var plt = this.map.project(this.controlBound.nw)
@@ -170,6 +180,12 @@ export default {
         let infoContainer = document.getElementById('info-container')
         infoContainer.style.display = 'none'
       }
+    },
+    mapDragEnd: function(){
+      let center = this.map.getCenter()
+      this.originStyle.center = [center.lng,center.lat]
+      let data = JSON.parse(JSON.stringify(this.originStyle))
+      this.$dispatch('style-change',data)
     },
     hideBoundsBox: function(){
       this.map.off('dragstart', this.mapDragStart)
@@ -190,14 +206,14 @@ export default {
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
-        center: [104.075, 30.6754],
-        zoom: 12,
         attributionControl: false
       })
       map.addControl(new mapboxgl.Navigation())
       this.map = map
       map.on('click', this.mapClick)
       map.on('drag', this.mapDrag)
+      map.on('dragend', this.mapDragEnd)
+      map.on('zoomend',this.mapZoomEnd)
     },
     'map-style-change': function(newStyle){
 
@@ -258,7 +274,7 @@ export default {
 
 
       this.map.on('dragstart', this.mapDragStart)
-      this.map.on('zoomend',this.mapZoomEnd)
+
       this.map.off('click', this.mapClick)
       let infoContainer = document.getElementById('info-container')
       infoContainer.style.display = 'none'

@@ -73,11 +73,12 @@ export default {
       }
     }
   },
-  ready() {
+  attached() {
     let username = docCookie.getItem('username')
+    if(username === null){
+      return
+    }
     let access_token = docCookie.getItem('access_token')
-
-    this.username = username
     let url = 'http://bygis.com/api/v1/styles/' + username
 
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
@@ -93,6 +94,7 @@ export default {
     },function(response){
       console.log(response)
     })
+
   },
   data() {
     return {
@@ -115,7 +117,8 @@ export default {
       dialogcontent: {
         title: '确定删除吗？'
       },
-      deleteStyleId: ''
+      deleteStyleId: '',
+      username: ''
     }
   }
 }

@@ -18,7 +18,7 @@
       <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
     </div>
-    <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
+    <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-on:style-change='styleChange' v-ref:drafmap></foxgis-drafmap>
     <foxgis-layoutmap id="layout-map"></foxgis-layoutmap>
   </div>
 </div>
@@ -106,8 +106,10 @@ export default {
     },
     //style change broadcast to map
     'styleChange': function(style){
+
       var style_error = validate(style)
       if(style_error.length > 0){
+        console.log(style_error)
         return
       }
       this.$broadcast('map-style-change',style)
@@ -118,6 +120,7 @@ export default {
       this.$broadcast('toc-layer-change',layerId)
     },
     patchStyle: function(style){
+      console.log('patch-style')
       let style_id = style.style_id
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')

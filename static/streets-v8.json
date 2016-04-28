@@ -10282,5 +10282,7 @@
             },
             "source-layer": "country_label"
         }
-    ]
+    ],
+    "center": [104.075, 30.6754],
+    "zoom": 12
 }
