@@ -24,21 +24,7 @@ export default {
   props: ['dataset'],
   methods: {
     deleteFile: function(upload_id){
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username + "/" + upload_id
-      this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-      .then(function(response){
-        if(response.ok){
-          for(let i = 0;i<this.dataset.length;i++){
-            if(this.dataset[i].upload_id === upload_id){
-              this.dataset.splice(i,1)
-            }
-          }
-        }
-      },function(response){
-        alert("未知错误，请稍后再试")
-      })
+      this.$dispatch('delete-upload',upload_id)
     },
     downloadFile: function(upload_id){
       let username = docCookie.getItem('username')

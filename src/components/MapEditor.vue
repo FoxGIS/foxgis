@@ -161,7 +161,6 @@ export default {
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
         let data = res.data
-        console.log(data)
         let initStyle = JSON.parse(JSON.stringify(data))
         this.style = initStyle
         var tocdata = JSON.parse(JSON.stringify(data))
