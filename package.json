@@ -8,9 +8,11 @@
     "dev": "webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "copy": "mkdirp deploy && ncp index.html deploy/index.html && ncp static deploy/static && ncp dist deploy/dist",
-    "deploy": "npm run build && npm run copy && gh-pages -d deploy",
+    "deploy-github": "npm run build && npm run copy && gh-pages -d deploy",
+    "deploy": "npm run build && npm run copy && cd deploy && tar czf - * | ssh bygis@192.9.105.123 'tar xzf - -C ./projects/judy/public'",
     "lint": "eslint src/components/**",
-    "test": "karma start karma.conf.js"
+    "test-karma": "karma start karma.conf.js",
+    "test": "npm run build && npm run copy"
   },
   "dependencies": {
     "mapbox-gl": "^0.16.0",
