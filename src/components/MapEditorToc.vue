@@ -336,11 +336,9 @@ export default {
           if(metadata&&metadata['mapbox:groups']){
             var metadatagroup = metadata['mapbox:groups']
           }
-          console.log(ct)
           for(let index in metadatagroup){
             if(ct.id == metadatagroup[index].name){
               metadatagroup[index].collapsed = false
-              console.log('show')
               for(let i=0,length = this.tocLayers.length;i<length;i++){
                 if(this.tocLayers[i].id === ct.id){
                   this.tocLayers[i].collapsed = false
@@ -362,7 +360,6 @@ export default {
                   this.tocLayers[i].collapsed = true
                 }
               }
-              console.log('hide')
             }
           }
         }
