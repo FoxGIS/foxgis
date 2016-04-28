@@ -6,10 +6,10 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && npm run copy",
     "copy": "mkdirp deploy && ncp index.html deploy/index.html && ncp static deploy/static && ncp dist deploy/dist",
-    "deploy-github": "npm run build && npm run copy && gh-pages -d deploy",
-    "deploy": "npm run build && npm run copy && cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'",
+    "deploy-github": "npm run build && gh-pages -d deploy",
+    "deploy": "npm run build && cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'",
     "lint": "eslint src/components/**",
     "test-karma": "karma start karma.conf.js",
     "test": "exit 0"

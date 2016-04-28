@@ -9,4 +9,4 @@ before_install:
 after_success:
 - chmod 600 ~/.ssh/id_rsa.pub
 - echo -e "Host bygis.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'
+- npm run build && cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'
