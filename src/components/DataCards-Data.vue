@@ -27,50 +27,7 @@ export default {
       this.$dispatch('delete-upload',upload_id)
     },
     downloadFile: function(upload_id){
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username + "/" + upload_id
-      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-      .then(function(response){
-
-        if(response.ok){
-          for(let i = 0;i<this.dataset.length;i++){
-            if(this.dataset[i].upload_id === upload_id){
-              let filename = this.dataset[i].filename
-              this.downloadAction(filename,response.data)
-              break
-            }
-          }
-
-        }
-      },function(response){
-        alert("未知错误，请稍后再试")
-      })
-    },
-    downloadAction: function(filename,content){
-      var aLink = document.createElement('a')
-      var blob
-      if(filename.indexOf('.json')!=-1){
-        blob = new Blob([JSON.stringify(content,null,2)])
-      }else{
-        console.log(content.length)
-        blob = new Blob([this.str2bytes(content)], {type: "application/x-zip-compressed"})
-        //blob = new Blob([content], {type: "application/zip"})
-        var bytes = new Uint8Array(blob)
-      }
-      var evt = document.createEvent("HTMLEvents")
-      evt.initEvent("click", false, false)
-      aLink.download = filename
-      console.log(blob.size)
-      aLink.href = URL.createObjectURL(blob)
-      aLink.dispatchEvent(evt)
-    },
-    str2bytes: function(str) {
-      var bytes = new Uint8Array(str.length);
-      for (var i=0; i<str.length; i++) {
-          bytes[i] = str.charCodeAt(i);
-      }
-      return bytes
+      this.$dispatch('download-upload',upload_id)
     }
   }
 }

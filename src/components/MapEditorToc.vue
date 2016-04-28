@@ -4,32 +4,22 @@
       <span>{{styleObj.name}}</span><i class="material-icons">add</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-      <div class="layer" v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="show" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
-        <a><label for="{{$index}}" v-on:click="showPropertyPanel" title="{{layer.id}}">
-          <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
-          <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
-          <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='symbol'">grade</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='line'">remove</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='background'">filter_hdr</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='fill'">filter_b_and_w</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='circle'">lens</i>
-          <i class="material-icons" v-if="layer.items==undefined&&layer.type=='raster'">image</i>
-          <span>{{layer.id}}</span>
-        </label>
-        <input type="checkbox" id="{{$index}}" v-if="layer.collapsed==true" name="{{layer.id}}" >
-        <input type="checkbox" id="{{$index}}" v-else name="{{layer.id}}" checked>
-        <div v-if="layer.items!==undefined" class="sublayer">
-          <div v-for="item in layer.items" v-on:click="showPropertyPanel" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-            <i class="material-icons" v-if="item.type=='symbol'">grade</i>
-            <i class="material-icons" v-if="item.type=='line'">remove</i>
-            <i class="material-icons" v-if="item.type=='background'">filter_hdr</i>
-            <i class="material-icons" v-if="item.type=='fill'">filter_b_and_w</i>
-            <i class="material-icons" v-if="item.type=='circle'">lens</i>
-            <i class="material-icons" v-if="item.type=='raster'">image</i>
-            <span >{{item.id}}</span>
+      <div class="layer" v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
+        <a>
+          <label for="{{$index}}" v-on:click="showPropertyPanel(layer.id)" title="{{layer.id}}">
+            <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
+            <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
+            <i class="material-icons" v-if="layer.items!==undefined">folder</i>
+            <i class="material-icons" v-if="layer.items==undefined">{{typeIcon[layer.type]}}</i>
+            <span>{{layer.id}}</span>
+          </label>
+          <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
+            <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
+              <i class="material-icons">{{typeIcon[item.type]}}</i>
+              <span >{{item.id}}</span>
+            </div>
           </div>
-        </div></a>
+        </a>
       </div>
     </div>
 
@@ -39,17 +29,17 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
-            <input type="text" value="{{value}}" number v-on:change='change' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
+            <input type="text" value="{{value}}" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
         </div>
         <!-- layout -->
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -57,20 +47,20 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name.indexOf('color')==-1">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value  v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
         </div>
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='symbol-placement'&&name.indexOf('color')==-1&&name!=='visibility'">
-            <input type="text" value="{{value}}" name="{{name}}" v-on:change='change' data-type='layout'/>
+            <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
           </div>
           <div class="property-value" v-if="name=='symbol-placement'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
               <option value="point" v-if="value=='point'" selected>点</option>
               <option value="point"  v-else>点</option>
               <option value="line" v-if="value=='line'" selected>线</option>
@@ -78,12 +68,12 @@
             </select>
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout'/>
-            <input type="color" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
+            <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
           </div>
           <div class="property-value" v-if="name=='visibility'">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -91,11 +81,11 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='fill-translate-anchor'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
               <option value="map" v-if="value=='map'" selected>地图</option>
               <option value="map" v-else>地图</option>
               <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
@@ -103,16 +93,16 @@
             </select>
           </div>
           <div class="property-value" v-if="name=='fill-antialias'">
-            <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='change' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false" v-else v-on:change='change' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
           </div>
 
         </div>
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false" v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -120,11 +110,11 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='line-translate-anchor'">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='line-translate-anchor'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
               <option value="map" v-if="value=='map'" selected>地图</option>
               <option value="map" v-else>地图</option>
               <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
@@ -135,18 +125,18 @@
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' />
           </div>
           <div class="property-value" v-if="name.indexOf('color')!=-1">
-            <input type="text" value="{{value}}"  v-on:change='change' name="{{name}}" data-type='layout' />
-            <input type="color" value="{{value}}" v-model=value v-on:change='change' name="{{name}}" data-type='layout' />
+            <input type="text" value="{{value}}"  v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+            <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
           </div>
           <div class="property-value" v-if="name=='visibility'">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
           <div class="property-value" v-if="name=='line-cap'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
               <option value="butt" v-if="value=='butt'" selected>粗</option>
               <option value="butt" v-else>粗</option>
               <option value="round"  v-if="value=='round'" selected>圆</option>
@@ -156,7 +146,7 @@
             </select>
           </div>
           <div class="property-value" v-if="name=='line-join'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='layout'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
               <option value="bevel" v-if="value=='bevel'" selected>斜交叉</option>
               <option value="bevel" v-else>斜交叉</option>
               <option value="miter" v-if="value=='miter'" selected>切线交叉</option>
@@ -166,12 +156,12 @@
             </select>
           </div>
           <div class="property-value" v-if="name=='line-round-limit'">
-            <input type="text" value="{{value}}" v-on:change='change' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
-            <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
           </div>
           <div class="property-value" v-if="name=='line-miter-limit'">
-            <input type="text" value="{{value}}" v-on:change='change' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
-            <input type="text" value="{{value}}" v-on:change='change' v-else name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+            <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
           </div>
         </div>
       </div>
@@ -179,11 +169,11 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value" v-if="name!=='circle-translate-anchor'">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
           <div class="property-value" v-if="name=='circle-translate-anchor'">
-            <select v-model="selected" v-on:change='change' name="{{name}}" data-type='paint'>
+            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
               <option value="map" v-if="value=='map'" selected>地图</option>
               <option value="map" v-else>地图</option>
               <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
@@ -194,8 +184,8 @@
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -203,14 +193,14 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-on:change='change' name="{{name}}" data-type='paint' />
+            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
           </div>
         </div>
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='change' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -290,17 +280,13 @@ export default {
       }
       return mylayers
     },
-    showPropertyPanel:function(e){
-      let panel = this.$el.querySelector("#property-panel")
-      panel.style.display = 'block'
+    showPropertyPanel:function(layer_id){
+      this.$el.querySelector("#property-panel").style.display = 'block'
       this.$dispatch("hide-mapbounds")
-      let currentTarget = e.currentTarget
-      let idname = currentTarget.querySelector('span')
-      let styleObj = this.styleObj
-      let layers = styleObj.layers
+      let layers = this.styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
-        if(layers[i].id==idname.textContent){
+        if(layers[i].id === layer_id){
           clickLayer = layers[i]
           break
         }
@@ -311,61 +297,36 @@ export default {
         this.curPanelLayer = this.filterProperty(clickLayer)
       }
     },
-    show:function(e){
-      //防止触发两次
-      if(e.target.tagName!=='INPUT'){
-        return
-      }
-      let activeLayer = document.getElementById('layer-control').querySelector('.layer.active')
+    checkSublayer:function(layer_id,index,e){
+
+      //切换active
+      let activeLayer = this.$el.querySelector('.layer.active')
       if(activeLayer&&activeLayer.className.indexOf('active')!==-1){
         activeLayer.className = activeLayer.className.replace(' active','')
       }
-
       let ct = e.currentTarget
       if(ct.className.indexOf('active') === -1){
         ct.className += ' active'
       }
-      //show downicons
-      let is = ct.querySelectorAll('i')
-      if(is.length > 3){
-        let checkbox = ct.querySelector("input[type='checkbox']")
-        var metadata = this.styleObj['metadata']
-        if(checkbox.checked){
-          //change layer的collapse
 
-          if(metadata&&metadata['mapbox:groups']){
-            var metadatagroup = metadata['mapbox:groups']
-          }
-          for(let index in metadatagroup){
-            if(ct.id == metadatagroup[index].name){
-              metadatagroup[index].collapsed = false
-              for(let i=0,length = this.tocLayers.length;i<length;i++){
-                if(this.tocLayers[i].id === ct.id){
-                  this.tocLayers[i].collapsed = false
-                }
-              }
-              break
-            }
-          }
-        }else{
-          //change layer的collapse
-          if(metadata&&metadata['mapbox:groups']){
-            metadatagroup = metadata['mapbox:groups']
-          }
-          for(let index in metadatagroup){
-            if(ct.id == metadatagroup[index].name){
-              metadatagroup[index].collapsed = true
-              for(let i=0,length = this.tocLayers.length;i<length;i++){
-                if(this.tocLayers[i].id === ct.id){
-                  this.tocLayers[i].collapsed = true
-                }
-              }
-            }
+      let collapsed = this.tocLayers[index].collapsed
+
+      // 如果是group
+      if( collapsed !== undefined){
+        var metadata = this.styleObj['metadata']
+        //change metadata's collapsed
+        this.tocLayers[index].collapsed = !collapsed
+        if(metadata&&metadata['mapbox:groups']){
+          var metadatagroup = metadata['mapbox:groups']
+        }
+        for(let index in metadatagroup){
+          if(layer_id === metadatagroup[index].name){
+            metadatagroup[index].collapsed = !collapsed
           }
         }
       }
     },
-    change:function(e){
+    propertyChange:function(e){
       console.log('change')
       let currentLayer = this.currentLayer
       let layers = this.styleObj.layers
@@ -541,7 +502,7 @@ export default {
     },
     eledragenter: function(e){
       //先移除
-      let over = $('*[data-ref=1]')
+      let over = document.querySelectorAll("*[data-ref='1']")
       let currentTarget = e.currentTarget
 
       for(let i=0,length = over.length;i<length;i++){
@@ -649,6 +610,14 @@ export default {
         'join': '线交叉形式',
         'miter-limit': '切线交叉限制',
         'round-limit': '圆交叉限制'
+      },
+      typeIcon: {
+        symbol: 'grade',
+        line: 'remove',
+        background: 'filter_hdr',
+        fill: 'filter_b_and_w',
+        circle: 'lens',
+        raster: 'image'
       },
       defaultProperty: {
         'background': {
@@ -846,18 +815,12 @@ a {
   display: none;
 }
 
-.layer input:checked + .sublayer{
-/*  height: 100%;*/
-  display: block;
-  margin-left: 20px;
-}
-
 .layer.active {
   background-color: rgba(247, 223, 128, 0.55);
 }
 
-.layer .sublayer {
-  display: none;
+.sublayer {
+  margin-left: 20px;
 }
 
 .sublayer div {
