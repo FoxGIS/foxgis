@@ -6,8 +6,9 @@
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect v-on:click="createMapClick">新建地图</mdl-button>
   </div>
-  <foxgis-data-cards-map :dataset="dataset" v-on:map-editor="editorMap"></foxgis-data-cards-map>
+  <foxgis-data-cards-map :dataset="dataset"></foxgis-data-cards-map>
   <foxgis-style-template id="template-container" v-on:style-params="createStyle"></foxgis-style-template>
+  <foxgis-loading id="create-loading"></foxgis-loading>
 </div>
 </template>
 
@@ -25,6 +26,7 @@ export default {
       var name = data.name
       var templateId = data.templateId
       let url = './static/streets-v8.json'
+      this.$el.querySelector("#create-loading").style.display = 'block'
       this.$http.get(url).then(function(res){
         let data = res.data
         data.name = name
@@ -34,6 +36,7 @@ export default {
         let createURL = api.styles + '/' + username
         this.$http({'url':createURL,'method':'POST','data':style,headers:{'x-access-token':access_token}})
         .then(function(res){
+          this.$el.querySelector("#create-loading").style.display = 'none'
           let styleid = res.data.style_id
           window.location.href="#!mapeditor/"+styleid
         },function(res){
@@ -43,13 +46,9 @@ export default {
       },function(res){
         console.log(res)
       })
-    },
-    editorMap: function(id){
-      window.sessionStorage.setItem('styleId',id)
-      window.location.href="#!mapeditor"
     }
   },
-  attached() {
+  ready() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
 
@@ -130,6 +129,15 @@ span {
 }
 
 #template-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#create-loading {
   display: none;
   position: fixed;
   top: 0;
