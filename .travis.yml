@@ -8,5 +8,7 @@ before_install:
   -in id_rsa.pub.enc -out ~/.ssh/id_rsa.pub -d
 after_success:
 - chmod 600 ~/.ssh/id_rsa.pub
+- eval "$(ssh-agent -s)"
+- ssh-add ~/.ssh/id_rsa.pub
 - echo -e "Host bygis.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- npm run build && cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'
+- cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'
