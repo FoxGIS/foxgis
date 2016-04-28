@@ -27,6 +27,7 @@
 <script>
 import api from './api.js'
 import docCookie from './cookie.js'
+import {validate} from 'mapbox-gl-style-spec'
 export default {
   methods: {
     //图层控制
@@ -105,11 +106,31 @@ export default {
     },
     //style change broadcast to map
     'styleChange': function(style){
+      var style_error = validate(style)
+      if(style_error.length > 0){
+        return
+      }
       this.$broadcast('map-style-change',style)
+      this.patchStyle(style)
     },
     //改变当前图层
     'setTocLayer': function(layerId){
       this.$broadcast('toc-layer-change',layerId)
+    },
+    patchStyle: function(style){
+      let style_id = style.style_id
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.styles + '/' + username + '/' + style_id
+      let data = JSON.stringify(style)
+      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+
+          }
+        },function(response){
+          alert("未知错误")
+        })
     },
     printMap: function(e){
       document.getElementById("back-button").innerText = '返回'
@@ -161,7 +182,6 @@ export default {
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
         let data = res.data
-        console.log(data)
         let initStyle = JSON.parse(JSON.stringify(data))
         this.style = initStyle
         var tocdata = JSON.parse(JSON.stringify(data))

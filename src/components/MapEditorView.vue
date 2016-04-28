@@ -33,7 +33,7 @@
 /*global mapboxgl */
 import mapboxgl from 'mapbox-gl'
 import {diff} from 'mapbox-gl-style-spec'
-import {validate} from 'mapbox-gl-style-spec'
+
 
 export default {
   methods: {
@@ -200,10 +200,7 @@ export default {
       map.on('drag', this.mapDrag)
     },
     'map-style-change': function(newStyle){
-      var style_error = validate(newStyle)
-      if(style_error.length > 0){
-        return
-      }
+
       let comds = diff(this.originStyle,newStyle)
       console.log(comds)
       for(var i=0,length=comds.length;i<length;i++){

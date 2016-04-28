@@ -10,7 +10,6 @@
 export default {
   attached() {
     componentHandler.upgradeElement(document.getElementById("spiner"))
-    console.log(1);
   }
 }
 </script>
@@ -31,6 +30,8 @@ export default {
   left: 50%;
   right: 0px;
   top: 50%;
+  width: 40px;
+  height: 40px;
   bottom: 0px;
 }
 </style>

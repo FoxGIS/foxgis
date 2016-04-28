@@ -41,6 +41,7 @@ import MapStyleEditor from './components/MapStyleEditor.vue'
 import MapDistrictSelect from './components/MapDistrictSelect'
 import ModalStyleTemplate from './components/ModalStyleTemplate'
 import Loading from './components/Loading'
+import Dialog from './components/Dialog'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -66,6 +67,7 @@ Vue.component('foxgis-style-editor',MapStyleEditor)
 Vue.component('foxgis-district-select',MapDistrictSelect)
 Vue.component('foxgis-style-template',ModalStyleTemplate)
 Vue.component('foxgis-loading',Loading)
+Vue.component('foxgis-dialog',Dialog)
 
 let router = new Router({
   history: false

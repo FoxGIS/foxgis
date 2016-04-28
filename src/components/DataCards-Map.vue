@@ -20,23 +20,8 @@ import api from './api.js'
 export default {
   props: ['dataset'],
   methods: {
-    deleteStyle: function(styleid){
-      let style_id = styleid;
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = api.styles + '/' + username + "/" + style_id
-      this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-      .then(function(response){
-        if(response.ok){
-          for(let i = 0;i<this.dataset.length;i++){
-            if(this.dataset[i].style_id === style_id){
-              this.dataset.splice(i,1)
-            }
-          }
-        }
-      },function(response){
-        alert("未知错误，请稍后再试")
-      })
+    deleteStyle: function(style_id){
+      this.$dispatch('delete-style',style_id)
     }
   }
 }
