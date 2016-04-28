@@ -39,9 +39,10 @@ export default {
       let registerbutton = e.target.parentElement
       registerbutton.disabled = true
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
-        let access_token = response.data.access_token
-        let username = response.data.username
-        let date = new Date()
+        let data = response.data
+        let access_token = data.access_token
+        let username = data.username
+        let date = new Date(data.create_at)
         let days = 7
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
@@ -63,15 +64,16 @@ export default {
       let password = this.$el.querySelector('#password').value
       url += '/'+username
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
-        let access_token = response.data.access_token
-        let username = response.data.username
+        let data = response.data
+        let access_token = data.access_token
+        let username = data.username
         let date = new Date()
         let days = 7
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
         loginbutton.disabled = false
-        window.location.href = "#!/studio"
+        //window.location.href = "#!/studio"
       },function(response){
         loginbutton.disabled = false
         this.showError('用户名或密码错误')

@@ -3,35 +3,40 @@
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
       <p>{{ data.name }}</p>
-      <a v-link="{ path: '/mapeditor' }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
+      <a v-link="{ path: '/mapeditor/'+data.style_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
     </div>
     <div class="meta">
-      <p>{{ data.layers }}个图层  · {{  data.upload_time }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+      <p>创建于 : {{ data.create_at }}  · 最后一次编辑 : {{  data.modify_at }}</p>
+      <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(data.style_id)">删除</mdl-anchor-button>
     </div>
   </div>
 </div>
 </template>
 
-
 <script>
+import docCookie from './cookie.js'
+import api from './api.js'
+
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e) {
-      //移除之前的active
-      let activeCards = this.$el.querySelector('.active')
-      if(activeCards&&activeCards!==e.currentTarget){
-        activeCards.className = activeCards.className.replace(' active','')
-      }
-      //给当前的dom添加active
-      let claName = e.currentTarget.className
-      if(claName.indexOf('active')!=-1){
-        claName = claName.replace(' active','')
-      }else{
-        claName += ' active'
-      }
-      e.currentTarget.className = claName
+    deleteStyle: function(styleid){
+      let style_id = styleid;
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.styles + '/' + username + "/" + style_id
+      this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+          for(let i = 0;i<this.dataset.length;i++){
+            if(this.dataset[i].style_id === style_id){
+              this.dataset.splice(i,1)
+            }
+          }
+        }
+      },function(response){
+        alert("未知错误，请稍后再试")
+      })
     }
   }
 }
