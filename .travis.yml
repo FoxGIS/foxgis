@@ -5,11 +5,8 @@ script:
 - npm run test
 before_install:
 - openssl aes-256-cbc -K $encrypted_0851764f2c15_key -iv $encrypted_0851764f2c15_iv
-  -in deploy-key.enc -out deploy-key -d
+  -in id_rsa.pub.enc -out ~\/.ssh/id_rsa.pub -d
 after_success:
-- chmod 600 deploy-key
-- eval "$(ssh-agent -s)"
-- ssh-add deploy-key
+- chmod 600 ~/.ssh/id_rsa.pub
 - echo -e "Host bygis.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - cd deploy && tar czf - * | ssh bygis@bygis.com 'tar xzf - -C ./projects/judy/public'
-
