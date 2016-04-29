@@ -20,6 +20,7 @@ import Home from './components/Home'
 import Atlas from './components/Atlas'
 import Blog from './components/Blog'
 import Login from './components/Login'
+import Register from './components/Register'
 import Studio from './components/Studio'
 import Maps from './components/Maps'
 import Fonts from './components/Fonts'
@@ -88,6 +89,9 @@ router.map({
   },
   '/login': {
     component: Login
+  },
+  '/register': {
+    component: Register
   },
   '/studio': {
     component: Studio,

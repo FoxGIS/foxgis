@@ -6,15 +6,14 @@
         <div id="error-info"></div>
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
-        <mdl-button v-mdl-ripple-effect accent raised v-on:keyup.enter="login" v-on:click="login">登录</mdl-button>
+        <mdl-button class='login-button' v-mdl-ripple-effect accent raised v-on:keyup.enter="login" v-on:click="login">登录</mdl-button>
         <div class="tips">
           <!-- <a href="" >注册</a> -->
           <a href="" >找回密码</a>
         </div>
 
         <div class="sign-up">
-          <p>没有账号？</p>
-          <mdl-button v-mdl-ripple-effect raised v-on:click="register">注册</mdl-button>
+          <mdl-anchor-button colored v-mdl-ripple-effect href="#!/register">没有账号？去注册</mdl-anchor-button>
         </div>
       </foxgis-card>
     </div>
@@ -29,33 +28,6 @@ import docCookie from './cookie.js'
 import api from './api.js'
 export default {
   methods:{
-    register: function(e){
-      let url = api.users
-      let username = this.$el.querySelector('#username').value
-      let password = this.$el.querySelector('#password').value
-      if(password.length < 6){
-        this.showError("密码长度过短")
-      }
-      let registerbutton = e.target.parentElement
-      registerbutton.disabled = true
-      this.$http.post(url,{'username':username,'password':password}).then(function(response){
-        let data = response.data
-        let access_token = data.access_token
-        let username = data.username
-        let date = new Date(data.create_at)
-        let days = 7
-        date.setTime(date.getTime() + days*24*3600*1000)
-        docCookie.setItem('access_token',access_token,date)
-        docCookie.setItem('username',username,date)
-        registerbutton.disabled = false
-        window.location.href = "#!/studio"
-      },function(response){
-        registerbutton.disabled = false
-        if(response.data.error){
-          this.showError(response.data.error)
-        }
-      })
-    },
     login: function(e){
       let url = api.users
       let loginbutton = e.target.parentElement
@@ -105,7 +77,7 @@ export default {
 
 .login {
   width: 300px;
-  height: 300px;
+  height: 250px;
   padding: 20px;
   position: relative;
 }
@@ -115,7 +87,7 @@ export default {
   pointer-events: none;
 }
 
-.mdl-button {
+.login-button {
   width: 100%;
   font-size: 1em;
 }
@@ -134,7 +106,7 @@ export default {
   border-top: 1px solid rgba(0,0,0,.1);
   margin-top: 10px;
   padding-top: 5px;
-  text-align: center;
+  text-align: right;
 }
 
 #error-info {
