@@ -18,7 +18,16 @@
 import api from './api.js'
 import docCookie from './cookie.js'
 import util from './util.js'
+import { changeStyle } from '../vuex/actions'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     createMapClick: function(){
       document.getElementById("template-container").style.display = 'block'

@@ -12,13 +12,13 @@
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick"><i class="material-icons">build</i></a>
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
-    <foxgis-style-editor id="style-editor" v-on:style-change='styleChange'></foxgis-style-editor>
-    <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox" v-on:style-change='styleChange' ></foxgis-toc>
+    <foxgis-style-editor id="style-editor"></foxgis-style-editor>
+    <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
     </div>
-    <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-on:style-change='styleChange' v-ref:drafmap></foxgis-drafmap>
+    <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
     <foxgis-layoutmap id="layout-map"></foxgis-layoutmap>
   </div>
 </div>
@@ -27,8 +27,17 @@
 <script>
 import api from './api.js'
 import docCookie from './cookie.js'
-import {validate} from 'mapbox-gl-style-spec'
+import { validate } from 'mapbox-gl-style-spec'
+import { changeStyle } from '../vuex/actions'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.map.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     //图层控制
     'layerControlClick': function(e){
@@ -80,15 +89,6 @@ export default {
       mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px"
       mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px"
       document.getElementById("map-tool").style.display = 'none'
-      // var myCodeMirror = CodeMirror.fromTextArea(stylecode)
-      // var myCodeMirror = CodeMirror(editorContainer, {
-      //   value: styleValue,
-      //   mode: {
-      //     name: 'javascript',
-      //     json: true
-      //   },
-      //   lineNumbers: true
-      // });
     },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")
@@ -104,36 +104,9 @@ export default {
       }
       document.getElementById("map-tool").style.display = 'flex'
     },
-    //style change broadcast to map
-    'styleChange': function(style){
-
-      var style_error = validate(style)
-      if(style_error.length > 0){
-        console.log(style_error)
-        return
-      }
-      this.$broadcast('map-style-change',style)
-      this.patchStyle(style)
-    },
     //改变当前图层
     'setTocLayer': function(layerId){
       this.$broadcast('toc-layer-change',layerId)
-    },
-    patchStyle: function(style){
-      console.log('patch-style')
-      let style_id = style.style_id
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = api.styles + '/' + username + '/' + style_id
-      let data = JSON.stringify(style)
-      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-
-          }
-        },function(response){
-          alert("未知错误")
-        })
     },
     printMap: function(e){
       document.getElementById("back-button").innerText = '返回'
@@ -177,19 +150,21 @@ export default {
   },
   attached: function(){
     let urlhash = window.location.hash
-    let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1');
-    if(styleId !== null){
-      var username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+    let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1')
+    var username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    if(styleId !== null && access_token !== null){
+
       let url = api.styles + '/' + username + '/' + styleId
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
         let data = res.data
         let initStyle = JSON.parse(JSON.stringify(data))
-        this.style = initStyle
         var tocdata = JSON.parse(JSON.stringify(data))
         this.$broadcast('toc-init', tocdata)
-        this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+        console.log('mapeditor init')
+        this.changeStyle(initStyle)
+
       },function(){
         alert("style 信息错误")
       })
@@ -198,10 +173,9 @@ export default {
       this.$http.get(url).then(function(res){
         let data = res.data
         let initStyle = JSON.parse(JSON.stringify(data))
-        this.style = initStyle
         var tocdata = JSON.parse(JSON.stringify(data))
         this.$broadcast('toc-init', tocdata)
-        this.$broadcast('map-init', initStyle,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
+        this.changeStyle(initStyle)
       },function(res){
         console.log(res)
       })
@@ -212,8 +186,7 @@ export default {
   data: function(){
     return {
       layers: [],
-      currentLayer:{},
-      style:{}
+      currentLayer:{}
     }
   }
 }
@@ -320,10 +293,6 @@ export default {
 
 #back-button i {
   vertical-align: middle;
-}
-
-#print-button {
-
 }
 
 </style>

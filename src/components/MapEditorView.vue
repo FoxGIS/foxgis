@@ -32,10 +32,19 @@
 <script>
 /*global mapboxgl */
 import mapboxgl from 'mapbox-gl'
-import {diff} from 'mapbox-gl-style-spec'
-
-
+import { diff, validate} from 'mapbox-gl-style-spec'
+import { changeStyle } from '../vuex/actions'
+import api from './api.js'
+import docCookie from './cookie.js'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.map.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     // 地图点击 弹出info
     mapClick: function(e){
@@ -156,14 +165,13 @@ export default {
         controlBox.style.width = prb.x - plt.x + 'px'
         controlBox.style.height = prb.y - plt.y + 'px'
       }
-
       let center = this.map.getCenter()
       let zoom = this.map.getZoom()
-      this.originStyle.center = [center.lng,center.lat]
-      this.originStyle.zoom = zoom
-      let data = JSON.parse(JSON.stringify(this.originStyle))
-      this.$dispatch('style-change',data)
-
+      this.localStyle.center = [center.lng,center.lat]
+      this.localStyle.zoom = zoom
+      let data = JSON.parse(JSON.stringify(this.localStyle))
+      console.log('zoom change');
+      this.changeStyle(data)
     },
     mapDragStart: function(e){
       this.drag.dragstartx = e.originalEvent.offsetX - this.mapBound.left
@@ -183,9 +191,10 @@ export default {
     },
     mapDragEnd: function(){
       let center = this.map.getCenter()
-      this.originStyle.center = [center.lng,center.lat]
-      let data = JSON.parse(JSON.stringify(this.originStyle))
-      this.$dispatch('style-change',data)
+      this.localStyle.center = [center.lng,center.lat]
+      let data = JSON.parse(JSON.stringify(this.localStyle))
+      console.log('center change');
+      this.changeStyle(data)
     },
     hideBoundsBox: function(){
       this.map.off('dragstart', this.mapDragStart)
@@ -197,12 +206,10 @@ export default {
     closeInfoContainer: function(){
       let info = this.$el.querySelector("#info-container")
       info.style.display = 'none'
-    }
-  },
-  events: {
-    'map-init': function(style,accessToken){
-      this.originStyle = style
-      mapboxgl.accessToken = accessToken
+    },
+    'mapInit': function(style){
+      this.localStyle = JSON.parse(JSON.stringify(style))
+      mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
@@ -215,40 +222,24 @@ export default {
       map.on('dragend', this.mapDragEnd)
       map.on('zoomend',this.mapZoomEnd)
     },
-    'map-style-change': function(newStyle){
+    patchStyle: function(style){
+      let style_id = style.style_id
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.styles + '/' + username + '/' + style_id
+      let data = JSON.stringify(style)
+      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
 
-      let comds = diff(this.originStyle,newStyle)
-      console.log(comds)
-      for(var i=0,length=comds.length;i<length;i++){
-        switch(comds[i].command){
-          case 'setPaintProperty':
-            this.map.setPaintProperty.apply(this.map,comds[i].args)
-            break
-          case 'setLayoutProperty':
-            this.map.setLayoutProperty.apply(this.map,comds[i].args)
-            break
-          case 'setStyle':
-            this.map.setStyle.apply(this.map,comds[i].args)
-            break
-          case 'addLayer':
-            this.map.addLayer.apply(this.map,comds[i].args)
-            break
-          case 'removeLayer':
-            this.map.removeLayer.apply(this.map,comds[i].args)
-            break
-          case 'setFilter':
-            this.map.setFilter.apply(this.map,comds[i].args)
-            break
-          case 'addSource':
-            this.map.addSource.apply(this.map,comds[i].args)
-            break
-          case 'removeSource':
-            this.map.removeSource.apply(this.map,comds[i].args)
-            break
-        }
-      }
-      this.originStyle = newStyle
-    },
+          }
+        },function(response){
+          console.log(response);
+          alert("更新style发生未知错误")
+        })
+    }
+  },
+  events: {
     'map-bounds-change': function(bounds){
       if(Object.prototype.toString.call(bounds) === '[object Array]'){
         this.map.fitBounds(bounds)
@@ -293,7 +284,7 @@ export default {
   data: function(){
     return {
       map: {},
-      originStyle: {},
+      localStyle: {},
       queryFeatures: [],
       drag: {
         dragstartx:0,
@@ -309,8 +300,6 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
-        console.log('handler');
-        console.log(val);
         let controlBox = document.getElementById("location-control")
         var plt = this.map.project(this.controlBound.nw)
         var prb = this.map.project(this.controlBound.se)
@@ -318,6 +307,49 @@ export default {
         controlBox.style.top = plt.y + 'px'
         controlBox.style.width = prb.x - plt.x + 'px'
         controlBox.style.height = prb.y - plt.y + 'px'
+      },
+      deep:true
+    },
+    style: {
+      handler:function(style,oldStyle){
+        var style_error = validate(style)
+        if(style_error.length > 0){
+          return
+        }
+        let comds = diff(oldStyle,style)
+        for(var i=0,length=comds.length;i<length;i++){
+          switch(comds[i].command){
+            case 'setPaintProperty':
+              this.map.setPaintProperty.apply(this.map,comds[i].args)
+              break
+            case 'setLayoutProperty':
+              this.map.setLayoutProperty.apply(this.map,comds[i].args)
+              break
+            case 'setStyle':
+              if(this.map.setStyle === undefined){
+                this.mapInit(style)
+              }
+              this.map.setStyle.apply(this.map,comds[i].args)
+              break
+            case 'addLayer':
+              this.map.addLayer.apply(this.map,comds[i].args)
+              break
+            case 'removeLayer':
+              this.map.removeLayer.apply(this.map,comds[i].args)
+              break
+            case 'setFilter':
+              this.map.setFilter.apply(this.map,comds[i].args)
+              break
+            case 'addSource':
+              this.map.addSource.apply(this.map,comds[i].args)
+              break
+            case 'removeSource':
+              this.map.removeSource.apply(this.map,comds[i].args)
+              break
+          }
+        }
+        this.patchStyle(style)
+        this.localStyle = JSON.parse(JSON.stringify(style))
       },
       deep:true
     }

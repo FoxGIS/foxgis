@@ -5,20 +5,39 @@
 </template>
 
 <script>
-  export default {
-    methods: {
-      'styleCodeChange': function(e){
-        this.$dispatch('style-change',JSON.parse(e.target.value))
-      }
+import { changeStyle } from '../vuex/actions'
+import { validate } from 'mapbox-gl-style-spec'
+export default {
+  vuex: {
+    getters: {
+      style: state => state.map.style
     },
-    events: {
-      'editor-init': function(style){
+    actions: {
+      changeStyle
+    }
+  },
+  methods: {
+    'styleCodeChange': function(e){
+      var style = JSON.parse(e.target.value)
+      let styleError = validate(style)
+      if(styleError.length > 0){
+        return
+      }
+      console.log('code editor');
+      this.changeStyle(style)
+    }
+  },
+  watch: {
+    style: {
+      handler(style,oldStyle){
         let stylecode = this.$el.querySelector("#code")
         var styleValue = JSON.stringify(style,null,2)
         stylecode.value = styleValue
-      }
+      },
+      deep: true
     }
   }
+}
 </script>
 
 <style scoped>
