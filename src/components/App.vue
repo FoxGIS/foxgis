@@ -7,7 +7,10 @@
 
 <script>
 import docCookie from './cookie.js'
+import store from '../vuex/store'
+
 export default {
+  store: store,
   attached() {
     //刷新cookie
     // let username = docCookie.getItem('username')

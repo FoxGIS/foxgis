@@ -18,7 +18,16 @@
 import api from './api.js'
 import docCookie from './cookie.js'
 import util from './util.js'
+import { changeStyle } from '../vuex/actions'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     createMapClick: function(){
       document.getElementById("template-container").style.display = 'block'
@@ -73,11 +82,12 @@ export default {
       }
     }
   },
-  ready() {
+  attached() {
     let username = docCookie.getItem('username')
+    if(username === null){
+      return
+    }
     let access_token = docCookie.getItem('access_token')
-
-    this.username = username
     let url = 'http://bygis.com/api/v1/styles/' + username
 
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
@@ -93,6 +103,7 @@ export default {
     },function(response){
       console.log(response)
     })
+
   },
   data() {
     return {
@@ -115,7 +126,8 @@ export default {
       dialogcontent: {
         title: '确定删除吗？'
       },
-      deleteStyleId: ''
+      deleteStyleId: '',
+      username: ''
     }
   }
 }

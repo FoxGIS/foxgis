@@ -4,7 +4,7 @@
       <span>{{styleObj.name}}</span><i class="material-icons">add</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-      <div class="layer" v-for="layer in tocLayers" id="{{layer.id}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter" v-on:dragleave='eledragleave'>
+      <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
         <a>
           <label for="{{$index}}" v-on:click="showPropertyPanel(layer.id)" title="{{layer.id}}">
             <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
@@ -14,9 +14,9 @@
             <span>{{layer.id}}</span>
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
-            <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" v-on:dragleave='eledragleave' class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
+            <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
               <i class="material-icons">{{typeIcon[item.type]}}</i>
-              <span >{{item.id}}</span>
+              <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>
         </a>
@@ -211,8 +211,16 @@
 </template>
 
 <script>
-
+import { changeStyle } from '../vuex/actions'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.map.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     fixType: function(layer){
       //有的layer没有type属性，有ref属性,补充这个信息
@@ -298,14 +306,14 @@ export default {
       }
     },
     checkSublayer:function(layer_id,index,e){
-
       //切换active
       let activeLayer = this.$el.querySelector('.layer.active')
+      let ct = e.currentTarget
       if(activeLayer&&activeLayer.className.indexOf('active')!==-1){
         activeLayer.className = activeLayer.className.replace(' active','')
       }
-      let ct = e.currentTarget
-      if(ct.className.indexOf('active') === -1){
+
+      if(ct.className.indexOf('active') === -1&&activeLayer !== ct){
         ct.className += ' active'
       }
 
@@ -324,10 +332,11 @@ export default {
             metadatagroup[index].collapsed = !collapsed
           }
         }
+
       }
+
     },
     propertyChange:function(e){
-      console.log('change')
       let currentLayer = this.currentLayer
       let layers = this.styleObj.layers
       let targetDom = e.target
@@ -380,61 +389,69 @@ export default {
         }
       }
 
-
-
       //同时更新style
-      let styleObj = this.styleObj
-      for(let i=0,length=layers.length;i<length;i++){
-        if(layers[i].id==this.currentLayer.id){
-          layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
-        }
-      }
-      let data = JSON.parse(JSON.stringify(styleObj))
-      this.$dispatch('style-change',data)
-
+      // let styleObj = this.styleObj
+      // for(let i=0,length=layers.length;i<length;i++){
+      //   if(layers[i].id==this.currentLayer.id){
+      //     layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
+      //   }
+      // }
+      let data = JSON.parse(JSON.stringify(this.styleObj))
+      console.log('property change')
+      this.changeStyle(data)
     },
     eledragstart: function(e){
-      if(e.target.className.indexOf('sublayer-item')!=-1){
-        e.dataTransfer.setData('dragid',e.target.id)
-      }else {
-        e.target.id = e.target.querySelector("input[type='checkbox']").name
-        e.dataTransfer.setData('dragid',e.target.id)
-      }
+      e.dataTransfer.setData('dragid',e.target.id)
     },
     eledragover: function(){
       //just for preventDefault
     },
     eledrop: function(e){
-      var dragnode = document.getElementById(e.dataTransfer.getData('dragid'))
-      var refnode = document.querySelector("*[data-ref='1']")
-      if(refnode ==null){
+      var dragnode = this.$el.querySelector("#layer"+e.dataTransfer.getData('dragid').substr(5))
+      if(dragnode === null){
+        dragnode = this.$el.querySelector("#"+e.dataTransfer.getData('dragid'))
+      }
+      var refnode = this.$el.querySelector("*[data-ref='1']")
+      if(refnode == null){
         return
       }
-      let dragLayer
-      let dragLayerId=dragnode.id
-      let refLayerId = refnode.id
-      let dragLayerIndex,refLayerIndex
 
       //移除高亮
       refnode.setAttribute('data-ref','0')
       var lyindex = refnode.className.indexOf(' layerover')
-      if(lyindex!=-1){
+      if(lyindex !== -1){
         refnode.className = refnode.className.replace(' layerover','')
       }
+
+      let dragLayer = this.tocLayers[parseInt(e.dataTransfer.getData('dragid').substr(5))]
+      let refLayer = this.tocLayers[parseInt(refnode.id.substr(5))]
+
+      //如果是sublayer
+      let dragLayerId
+      if(dragLayer){
+        dragLayerId = dragLayer.id
+      }else{
+        dragLayerId = dragnode.id
+      }
+      //如果dragnode是group,则dragLayerId 是其子元素的最后一个的id
+      if(dragLayer&&dragLayer.items){
+        dragLayerId = dragLayer.items[dragLayer.items.length-1].id
+      }
+
+
+      let refLayerId
+      if(refLayer){
+        refLayerId= refLayer.id
+      }else{
+        refLayerId = refnode.id
+      }
+
+      let dragLayerIndex,refLayerIndex
 
       //如果refnode是group
       var refsublayer = refnode.querySelectorAll('div.sublayer-item')
       if(refsublayer && refsublayer.length>0){
         refLayerId = refsublayer[0].id
-      }
-
-      //如果dragnode是group,获得这个draggroup,用来插入
-      let dragGroup
-      var dragsublayer = dragnode.querySelectorAll('div.sublayer-item')
-      if(dragsublayer&&dragsublayer.length>0){
-        dragLayerId = dragsublayer[dragsublayer.length-1].id
-        let groupIndex = parseInt(dragnode.querySelector("input[type='checkbox']").id)
-        dragGroup = this.tocLayers[groupIndex]
       }
 
       var styleObj = this.styleObj
@@ -445,28 +462,28 @@ export default {
         let name = maplayers[i].id
         if(name === dragLayerId){
           dragLayerIndex = i
-          //判断是否是组
-          if(dragGroup&&dragGroup.items.length>0){
-            maplayers.splice(dragLayerIndex,dragGroup.items.length)
-          }else{
-            dragLayer = maplayers[i]            //用来插入
-            maplayers.splice(dragLayerIndex,1)
 
+          //判断是否是组，是组则移除整组
+          if(dragLayer.items&&dragLayer.items.length>0){
+
+            maplayers.splice(dragLayerIndex,dragLayer.items.length)
+            console.log(maplayers.length);
+          }else{
+            dragLayer = maplayers[i]
+            maplayers.splice(dragLayerIndex,1)
           }
           break
         }
       }
-
       //插入
       for(let i=0,length=maplayers.length;i<length;i++){
         let name = maplayers[i].id
         if(name === refLayerId){
           refLayerIndex = i
-
           //如果是组
-          if(dragGroup&&dragGroup.items.length>0){
-            for(let j=0,length = dragGroup.items.length;j<length;j++){
-              maplayers.splice(refLayerIndex+1,0,dragGroup.items[j])
+          if(dragLayer&&dragLayer.items){
+            for(let j=0,length = dragLayer.items.length;j<length;j++){
+              maplayers.splice(refLayerIndex+1,0,dragLayer.items[j])
             }
           }else{
             maplayers.splice(refLayerIndex+1,0,dragLayer)
@@ -483,11 +500,11 @@ export default {
       //如果refnode是sublayer
       if(refnode.className.indexOf('sublayer-item') !== -1){
         //如果dragnode是group
-        if(dragGroup&&dragGroup.items){
+        if(dragLayer.items&&dragLayer.items.length>0){
           //移动group
-          for(let j=dragGroup.items.length-1;j>=0;j--){
-            dragGroup.items[j]['metadata'] = {}
-            dragGroup.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+          for(let j=dragLayer.items.length-1;j>=0;j--){
+            dragLayer.items[j]['metadata'] = {}
+            dragLayer.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
           }
         }else{
           dragLayer['metadata'] = {}
@@ -498,7 +515,8 @@ export default {
       this.tocLayers = this.createTocLayer(styleObj)
 
       let data = JSON.parse(JSON.stringify(this.styleObj))
-      this.$dispatch('style-change',data)
+      console.log('layer change');
+      this.changeStyle(data)
     },
     eledragenter: function(e){
       //先移除
@@ -516,9 +534,6 @@ export default {
         currentTarget.className += ' layerover'
       }
     },
-    eledragleave: function(){
-      console.log('leave')
-    },
     sublayerMouseover: function(e){
       if(e.currentTarget.className.indexOf('sublayer-over') === -1){
         e.currentTarget.className += ' sublayer-over'
@@ -534,12 +549,12 @@ export default {
   },
   events: {
     'toc-init': function(style){
-        this.styleObj = JSON.parse(JSON.stringify(style))
-        this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
-        this.tocLayers = this.createTocLayer(style)
-        this.fixType(this.currentLayer)
-        //展示属性
-        this.curPanelLayer = this.filterProperty(this.currentLayer)
+      this.styleObj = JSON.parse(JSON.stringify(style))
+      this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
+      this.tocLayers = this.createTocLayer(style)
+      this.fixType(this.currentLayer)
+      //展示属性
+      this.curPanelLayer = this.filterProperty(this.currentLayer)
     },
     'toc-layer-change': function(id){
       let styleObj = this.styleObj
@@ -555,21 +570,6 @@ export default {
       this.curPanelLayer = this.filterProperty(this.currentLayer)
       let panel = this.$el.querySelector("#property-panel")
       panel.style.display = 'block'
-    },
-    // 高级模式修改了style，同步此处的style
-    'map-style-change': function(style){
-      this.styleObj = JSON.parse(JSON.stringify(style))
-      let layers = this.styleObj.layers
-      for(let i=0,length=layers.length;i<length;i++){
-        if(layers[i].id == this.curPanelLayer.id){
-          this.currentLayer = layers[i]
-          break
-        }
-      }
-      this.tocLayers = this.createTocLayer(style)
-      this.fixType(this.currentLayer)
-      //展示属性
-      this.curPanelLayer = this.filterProperty(this.currentLayer)
     }
   },
   data: function() {
@@ -712,6 +712,25 @@ export default {
         }
       }
     }
+  },
+  watch: {
+    style: {
+      handler: function(style,oldStyle){
+        console.log('style change to toc')
+        this.styleObj = JSON.parse(JSON.stringify(style))
+        let layers = this.styleObj.layers
+        for(let i=0,length=layers.length;i<length;i++){
+          if(layers[i].id === this.currentLayer.id){
+            this.currentLayer = layers[i]
+          }
+        }
+        this.tocLayers = this.createTocLayer(this.styleObj)
+        this.fixType(this.currentLayer)
+        //展示属性
+        this.curPanelLayer = this.filterProperty(this.currentLayer)
+      },
+      deep: true
+    }
   }
 }
 
@@ -809,10 +828,6 @@ a {
 .layer i {
   font-size: 16px;
   vertical-align: middle;
-}
-
-.layer input[type='checkbox'] {
-  display: none;
 }
 
 .layer.active {
