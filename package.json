@@ -53,6 +53,7 @@
     "stylus": "^0.54.2",
     "transform-loader": "^0.2.3",
     "url-loader": "^0.5.7",
+    "vue-color": "0.0.3",
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.2.1",
     "vue-resource": "^0.7.0",
