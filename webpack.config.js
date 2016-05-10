@@ -4,13 +4,13 @@ var webpack = require('webpack')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: 'dist/',
+    path: path.resolve(__dirname, './build'),
+    publicPath: 'build/',
     filename: 'bundle.js'
   },
   node: {
     console: true,
-    fs: "empty"
+    fs: 'empty'
   },
   resolve: {
     extensions: ['', '.js', '.vue', '.json'],
@@ -19,7 +19,7 @@ module.exports = {
     }
   },
   resolveLoader: {
-    root: path.join(__dirname, 'node_modules'),
+    root: path.join(__dirname, 'node_modules')
   },
   module: {
     loaders: [{

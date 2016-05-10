@@ -47,7 +47,7 @@ import Dialog from './components/Dialog'
 Vue.config.debug = true
 Vue.use(Router)
 Vue.use(VueMdl)
-Vue.use(Resource);
+Vue.use(Resource)
 
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-footer', Footer)
