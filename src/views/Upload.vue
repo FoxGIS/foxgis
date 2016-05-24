@@ -12,6 +12,14 @@
       <p>{{ upload.name }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
     </div>
+    <div class = "tag_box">
+      <span>标签:</span>
+      <span class="tag" v-for="tags in upload.tags" track-by="$index">
+        <span>{{tags}}</span>
+        <a title="删除标签" v-on:click="deleteTag($parent.$index,$index)">×</a>
+      </span>
+      <input type="text" maxlength="10" v-on:change="addTag">
+    </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
       <div class="action">
@@ -27,7 +35,18 @@
 <script>
 export default {
   methods:{
-
+    deleteTag:function(pId,tag_id){
+      //alert("你点击了删除,删除元素："+pId+","+tag_id);
+      this.uploads[pId].tags.splice(tag_id,1);
+    },
+    addTag:function(e){
+      //alert(index);
+      if(e.target.value!==""){
+        this.uploads[0].tags.push(e.target.value);
+        e.target.value="";
+      }
+      
+    }
   },
 
   data() {
@@ -35,7 +54,7 @@ export default {
       uploads: [{
         upload_id: 'wqeq',
         name: '山东省行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
+        tags: ['山东','决策用图','2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
@@ -43,7 +62,7 @@ export default {
         updatedAt: '2016-3-25'
       },{
         name: '沈阳市行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
+        tags: ['沈阳','决策用图','2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
@@ -51,7 +70,7 @@ export default {
         updatedAt: '2016-3-25'
       },{
         name: '营口市行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
+        tags: ['营口','决策用图','2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
@@ -59,7 +78,7 @@ export default {
         updatedAt: '2016-3-25'
       },{
         name: '东营市行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
+        tags: ['东营','决策用图','2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
@@ -116,7 +135,6 @@ span {
 
 .card {
   margin-top: 40px;
-  height: 120px;
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
@@ -166,6 +184,34 @@ span {
 .metadata .mdl-button {
   text-align: right;
   min-width: 0;
+}
+
+.card .tag_box{
+  margin-left:30px;
+}
+
+.tag_box input{
+  outline: none !important;
+  border: 0;
+  padding: 0 5px;
+}
+.tag{
+  background: #eee;
+  color: #333;
+  text-decoration: none;
+  font-size:12px;
+  cursor: pointer;
+  display: inline-table;
+  margin: 5px 3px;
+  vertical-align: middle;
+  padding: 0 10px 2px 10px;
+  border-radius: 12px;
+}
+
+.tag a{
+      text-decoration: none;
+    margin-left: 5px;
+    font: 18px/20px "times new roman";
 }
 
 </style>
