@@ -10,7 +10,7 @@
   <div class="card" v-for="upload in uploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="preview">预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="preview($event,$index)">预览</mdl-anchor-button>
     </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
@@ -22,7 +22,7 @@
   </div>
   <div class="modal" v-on:click="hidePreview">
     <div class="img-container" >
-       <img src="http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg">
+       <img id='thumbnail' src="http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg">
     </div>
   </div>
 </div>
@@ -32,8 +32,10 @@
 <script>
 export default {
   methods:{
-    preview: function(){
-      document.querySelector('.modal').style.display = 'block';
+    preview: function(e,index){
+      document.querySelector('.modal').style.display = 'block'
+      console.log(index)
+      document.querySelector('#thumbnail').src=this.uploads[index].thumbnail
     },
     hidePreview: function(e){
       if(e.target.className.indexOf('modal')!=-1){
@@ -51,6 +53,7 @@ export default {
         description: 5,
         size: '200 MB',
         format: 'png',
+        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       },{
@@ -59,6 +62,7 @@ export default {
         description: 5,
         size: '200 MB',
         format: 'png',
+        thumbnail:'http://r.mapbar.com/poi/images/china.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       },{
@@ -67,6 +71,7 @@ export default {
         description: 5,
         size: '200 MB',
         format: 'png',
+        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       },{
@@ -75,6 +80,7 @@ export default {
         description: 5,
         size: '200 MB',
         format: 'png',
+        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       }]
