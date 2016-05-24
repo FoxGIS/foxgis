@@ -10,7 +10,7 @@
   <div class="card" v-for="upload in uploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="preview">预览</mdl-anchor-button>
     </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
@@ -20,6 +20,11 @@
       </div>
     </div>
   </div>
+  <div class="modal" v-on:click="hidePreview">
+    <div class="img-container" >
+       <img src="http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg">
+    </div>
+  </div>
 </div>
 </template>
 
@@ -27,7 +32,14 @@
 <script>
 export default {
   methods:{
-
+    preview: function(){
+      document.querySelector('.modal').style.display = 'block';
+    },
+    hidePreview: function(e){
+      if(e.target.className.indexOf('modal')!=-1){
+        e.target.style.display = 'none'
+      }
+    }
   },
 
   data() {
@@ -166,6 +178,29 @@ span {
 .metadata .mdl-button {
   text-align: right;
   min-width: 0;
+}
+
+.modal {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: 0 auto;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 9999;
+}
+
+.img-container {
+  height: 720px;
+  width: 1280px;
+  margin: 100px auto 0 auto;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
 }
 
 </style>
