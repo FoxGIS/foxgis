@@ -1,10 +1,10 @@
 <template>
 <div class="data">
-  <h5><i class="material-icons">place</i><span>图标</span></h5>
+  <h5><i class="material-icons">place</i><span>符号</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传图标</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect>上传符号</mdl-button>
   </div>
 
   <foxgis-data-cards-icon :dataset="dataset"></foxgis-data-cards-icon>

@@ -3,7 +3,7 @@
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
       <p>{{ data.name }}</p>
-      <!-- <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button> -->
+      <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
     </div>
     <div class="meta">
       <p>{{ data.layers }}中字体 · {{ data.size }} · {{  data.upload_time }}</p>

@@ -26,7 +26,7 @@ import Maps from './components/Maps'
 import Fonts from './components/Fonts'
 import Data from './components/Data'
 import Icons from './components/Icons'
-import Pictures from './components/Pictures'
+import Upload from './views/Upload'
 import DataCardsMap from './components/DataCards-Map'
 import DataCardsData from './components/DataCards-Data'
 import DataCardsIcon from './components/DataCards-Icon'
@@ -57,8 +57,8 @@ Vue.component('foxgis-table', Table)
 Vue.component('foxgis-map', Map)
 Vue.component('foxgis-data-cards-map', DataCardsMap)
 Vue.component('foxgis-data-cards-data', DataCardsData)
-Vue.component('foxgis-data-cards-font', DataCardsIcon)
-Vue.component('foxgis-data-cards-icon', DataCardsFont)
+Vue.component('foxgis-data-cards-font', DataCardsFont)
+Vue.component('foxgis-data-cards-icon', DataCardsIcon)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-post', Post)
 Vue.component('foxgis-toc', TOC)
@@ -111,8 +111,8 @@ router.map({
       '/icons': {
         component: Icons
       },
-      '/pictures': {
-        component: Pictures
+      '/uploads': {
+        component: Upload
       }
     }
   },
