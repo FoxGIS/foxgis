@@ -18,7 +18,7 @@
         <span>{{tags}}</span>
         <a title="删除标签" v-on:click="deleteTag($parent.$index,$index)">×</a>
       </span>
-      <input type="text" maxlength="10" v-on:change="addTag">
+      <input type="text" maxlength="10" v-on:change="addTag($index,$event)">
     </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
@@ -39,10 +39,10 @@ export default {
       //alert("你点击了删除,删除元素："+pId+","+tag_id);
       this.uploads[pId].tags.splice(tag_id,1);
     },
-    addTag:function(e){
+    addTag:function(index,e){
       //alert(index);
       if(e.target.value!==""){
-        this.uploads[0].tags.push(e.target.value);
+        this.uploads[index].tags.push(e.target.value);
         e.target.value="";
       }
       
