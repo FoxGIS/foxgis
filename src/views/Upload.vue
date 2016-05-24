@@ -7,6 +7,37 @@
     <mdl-button raised colored v-mdl-ripple-effect>上传决策用图</mdl-button>
   </div>
 
+  <div class="filter">
+    <div class="tags">
+      <span>主题：</span>
+      <a href="#" :click.prevent='search'>社会</a>
+      <a href="#" :click.prevent='search'>经济</a>
+      <a href="#" :click.prevent='search'>人口</a>
+      <a href="#" :click.prevent='search'>旅游</a>
+      <a href="#" :click.prevent='search'>农业</a>
+      <a href="#" :click.prevent='search'>新闻用图</a>
+      <a href="#" :click.prevent='search'>决策用图</a>
+    </div>
+    <div class="tags">
+      <span>地区：</span>
+      <a href="#" :click.prevent='search'>全国</a>
+      <a href="#" :click.prevent='search'>北京</a>
+      <a href="#" :click.prevent='search'>天津</a>
+      <a href="#" :click.prevent='search'>山东</a>
+      <a href="#" :click.prevent='search'>四川</a>
+      <a href="#" :click.prevent='search'>黑龙江</a>
+    </div>
+    <div class="tags">
+      <span>年份：</span>
+      <a href="#" :click.prevent='search'>2010</a>
+      <a href="#" :click.prevent='search'>2011</a>
+      <a href="#" :click.prevent='search'>2012</a>
+      <a href="#" :click.prevent='search'>2013</a>
+      <a href="#" :click.prevent='search'>2014</a>
+      <a href="#" :click.prevent='search'>2015</a>
+    </div>
+  </div>
+
   <div class="card" v-for="upload in uploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
@@ -26,10 +57,6 @@
 
 <script>
 export default {
-  methods:{
-
-  },
-
   data() {
     return {
       uploads: [{
@@ -39,6 +66,7 @@ export default {
         description: 5,
         size: '200 MB',
         format: 'png',
+        thumbnail: 'http://foxgis.com/api/v1/uploads/foxgis/wqeq/thumbnail',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       },{
@@ -73,6 +101,9 @@ export default {
 
 
 <style scoped>
+/*.filter * {
+  border: 1px solid red;
+}*/
 .foxgis-upload {
   height: 100%;
   width: 83.3333%;
@@ -112,6 +143,25 @@ span {
 
 .foxgis-search + .mdl-button {
   height: 40px;
+}
+
+.filter {
+  margin-top: 20px;
+}
+
+.filter span {
+  font-size: 1em;
+}
+
+.filter .tags {
+  margin: 2px 0
+}
+
+.filter .tags a {
+  text-decoration: none;
+  margin-left: 15px;
+  font-size: .9em;
+  color: #666;
 }
 
 .card {
