@@ -11,32 +11,32 @@
   <div class="filter">
     <div class="condition" id="condition1">
       <span>主题：</span>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">社会</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">经济</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">人口</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">旅游</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">农业</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">新闻用图</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">决策用图</a>
+      <a href="#" @click="conditionClick($event,1)">社会</a>
+      <a href="#" @click="conditionClick($event,1)">经济</a>
+      <a href="#" @click="conditionClick($event,1)">人口</a>
+      <a href="#" @click="conditionClick($event,1)">旅游</a>
+      <a href="#" @click="conditionClick($event,1)">农业</a>
+      <a href="#" @click="conditionClick($event,1)">新闻用图</a>
+      <a href="#" @click="conditionClick($event,1)">决策用图</a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">全国</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">北京</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">天津</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">山东</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">四川</a>
-      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">黑龙江</a>
+      <a href="#" @click="conditionClick($event,2)">全国</a>
+      <a href="#" @click="conditionClick($event,2)">北京</a>
+      <a href="#" @click="conditionClick($event,2)">天津</a>
+      <a href="#" @click="conditionClick($event,2)">山东</a>
+      <a href="#" @click="conditionClick($event,2)">四川</a>
+      <a href="#" @click="conditionClick($event,2)">黑龙江</a>
     </div>
     <div class="condition">
       <span>年份：</span>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2010</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2011</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2012</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2013</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2014</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2015</a>
-      <a @click.prevent='search' @click="conditionClick($event,3)">2016</a>
+      <a href="#" @click="conditionClick($event,3)">2010</a>
+      <a href="#" @click="conditionClick($event,3)">2011</a>
+      <a href="#" @click="conditionClick($event,3)">2012</a>
+      <a href="#" @click="conditionClick($event,3)">2013</a>
+      <a href="#" @click="conditionClick($event,3)">2014</a>
+      <a href="#" @click="conditionClick($event,3)">2015</a>
+      <a href="#" @click="conditionClick($event,3)">2016</a>
     </div>
   </div>
 
@@ -79,7 +79,6 @@
 <script>
 import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
-import Vue from 'vue'
 export default {
   methods: {
     search: function() {
@@ -98,7 +97,7 @@ export default {
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username
       var formData = new FormData()
-      formData.append('file', e.target.files[0])
+      formData.append('upload', e.target.files[0])
       var reader = new FileReader()
       reader.readAsBinaryString(e.target.files[0])
       reader.onloadend = function() {
@@ -131,7 +130,7 @@ export default {
     showPreview: function(e, index) {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
+      let url = SERVER_API.uploads + '/' + username + '/' + this.uploads[index].upload_id + '/thumbnail?access_token=' + access_token
       document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
     },
@@ -142,20 +141,21 @@ export default {
       }
     },
 
-    patchUploadTags: function(index,tags){
+    patchUploadTags: function(index, tags) {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let upload_id = this.uploads[index].upload_id
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-           this.uploads[index].tags = response.data.tags
+      let url = SERVER_API.uploads + '/' + username + '/' + upload_id
+      this.$http({ url: url, method: 'PATCH', data: { 'tags': tags }, headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          if (response.ok) {
+            this.uploads[index].tags = response.data.tags
           }
         }, function(response) {
-          alert("网络错误")
-      })
+          alert('网络错误')
+        })
     },
+
     deleteTag: function(pId, tag_id) {
       console.log(pId)
       let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
@@ -270,8 +270,6 @@ export default {
   },
 
   attached() {
-
-
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
     //this.username = username
@@ -503,6 +501,7 @@ span {
 }
 
 .modal {
+  outline: 1px solid red;
   position: absolute;
   left: 0px;
   right: 0px;
@@ -516,22 +515,15 @@ span {
 
 .image-container {
   max-width: 1000px;
-  position: relative;
 }
 
 .image-container img {
-  clear: both;
-  display: block;
-  margin: 200px auto auto auto;
+  margin-top: 100px 0 auto 0;
 }
 
 .filter .condition .active{
   cursor: pointer;
   color: blue;
 }
-
-/*.card * {
-  outline: 1px solid red;
-}*/
 
 </style>
