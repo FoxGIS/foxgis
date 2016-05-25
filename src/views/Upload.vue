@@ -67,7 +67,9 @@
        <img id='thumbnail' src="">
     </div>
   </div>
+
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 </div>
 
@@ -80,7 +82,7 @@ import util from '../components/util.js'
 export default {
   methods: {
     search: function() {
-      
+
     },
 
     uploadClick: function() {
@@ -150,14 +152,14 @@ export default {
       }
     },
 
-    conditionClick: function(e,id){   
+    conditionClick: function(e,id){
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
       }else{
         e.target.className = 'filter condition active'
       }
     },
-      
+
     deleteUpload: function(upload_id) {
       this.$el.querySelector('#delete-dialog').style.display = 'block'
       this.deleteUploadId = upload_id

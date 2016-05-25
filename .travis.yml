@@ -14,4 +14,4 @@ after_success:
   - echo -e "Host bygis.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - cd deploy && tar -jcf foxgis.tar.bz2 *
   - scp foxgis.tar.bz2 bygis@bygis.com:~/
-  - ssh bygis@bygis.com 'tar -jxf judy.tar.bz2 -C ./judy/public'
+  - ssh bygis@bygis.com 'tar -jxf foxgis.tar.bz2 -C ./judy/public'
