@@ -88,53 +88,10 @@ export default {
     },
 
     downloadUpload: function(upload_id) {
-      this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username + "/" + upload_id
-      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-      .then(function(response){
-        console.log(response)
-        if(response.ok){
-          for(let i = 0;i<this.dataset.length;i++){
-            if(this.dataset[i].upload_id === upload_id){
-              let filename = this.dataset[i].filename
-              this.downloadAction(filename,response.data)
-              this.$el.querySelector("#create-loading").style.display = 'none'
-              break
-              }
-            }
-          }
-        }, function(response) {
-          this.$el.querySelector('#create-loading').style.display = 'none'
-          alert('未知错误，请稍后再试')
-        })
-    },
-
-    downloadAction: function(filename, content) {
-      var aLink = document.createElement('a')
-      var blob
-      if (filename.indexOf('.json') != -1) {
-        blob = new Blob([JSON.stringify(content, null, 2)])
-      } else {
-        console.log('zip length ' + content.length)
-        blob = new Blob([this.str2bytes(content)], { type: 'application/x-zip-compressed' })
-          //blob = new Blob([content], {type: 'application/zip'})
-        var bytes = new Uint8Array(blob)
-      }
-      var evt = document.createEvent('HTMLEvents')
-      evt.initEvent('click', false, false)
-      aLink.download = filename
-      console.log(blob.size)
-      aLink.href = URL.createObjectURL(blob)
-      aLink.dispatchEvent(evt)
-    },
-    str2bytes: function(str) {
-      var bytes = new Uint8Array(str.length)
-      for (var i = 0; i < str.length; i++) {
-        bytes[i] = str.charCodeAt(i)
-      }
-      return bytes
+      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
+      window.open(url)
     }
   },
   attached() {

@@ -163,6 +163,7 @@ export default {
       patchTags.splice(tag_id, 1)
       this.patchUploadTags(pId,patchTags)
     },
+
     addTag: function(e, index) {
       console.log(e);
       if (e.target.value) {
@@ -212,67 +213,18 @@ export default {
           })
       }
     },
+
     downloadUpload: function(upload_id) {
-      this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          console.log(response)
-          if(response.ok){
-            for(let i = 0;i<this.uploads.length;i++){
-              if(this.uploads[i].upload_id === upload_id){
-                let filename = this.uploads[i].filename
-                this.downloadAction(this.uploads[i],response.data)
-                this.$el.querySelector("#create-loading").style.display = 'none'
-                break
-              }
-            }
-          }
-        }, function(response) {
-            this.$el.querySelector('#create-loading').style.display = 'none'
-            alert('未知错误，请稍后再试')
-        })
-    },
-
-    downloadAction: function(upload, content) {
-      let filename = upload.name
-      var aLink = document.createElement('a')
-      aLink.download = filename
-
-      var blob = new Blob([content])
-      console.log(window.URL.createObjectURL(blob))
-
-      let upload_id = upload.upload_id
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-
-      var img = new Image()
-      img.crossOrigin = 'Anonymous'
-      img.onload = function(){
-          var canvas = document.createElement('CANVAS')
-          var ctx = canvas.getContext('2d')
-          var dataURL
-          canvas.height = this.height
-          canvas.width = this.width
-          ctx.drawImage(this, 0, 0)
-          dataURL = canvas.toDataURL('image'+upload.format).replace('image'+upload.format, "image/octet-stream;"+"fileName="+filename)
-          canvas = null
-          aLink.href = dataURL
-          var evt = document.createEvent('HTMLEvents')
-          evt.initEvent('click', false, false)
-          aLink.dispatchEvent(evt)
-      };
-      img.src = url;
+      window.open(url)
     }
   },
 
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
-    //this.username = username
     let url = SERVER_API.uploads + '/' + username
     var that = this
       //获取数据列表
@@ -306,14 +258,12 @@ export default {
       dialogcontent: {
         title: '确定删除吗？'
       },
-
       deleteUploadId: '',
       tagConditions: []
     }
   },
   watch: {
     'tagConditions': function(){
-      console.log('tagc')
       var temp = []
       if(this.tagConditions.length === 0){
         this.displayUploads = this.uploads
