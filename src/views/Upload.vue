@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <div class="card" v-for="upload in uploads" track-by="$index">
+  <div class="card" v-for="upload in displayUploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, $index)">预览</mdl-anchor-button>
@@ -79,6 +79,7 @@
 <script>
 import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
+import Vue from 'vue'
 export default {
   methods: {
     search: function() {
@@ -141,23 +142,49 @@ export default {
       }
     },
 
-    deleteTag: function(pId, tag_id) {
-      this.uploads[pId].tags.splice(tag_id, 1)
+    patchUploadTags: function(index,tags){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let upload_id = this.uploads[index].upload_id
+      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+           this.uploads[index].tags = response.data.tags
+          }
+        }, function(response) {
+          alert("网络错误")
+      })
     },
-
+    deleteTag: function(pId, tag_id) {
+      console.log(pId)
+      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
+      console.log(patchTags)
+      patchTags.splice(tag_id, 1)
+      this.patchUploadTags(pId,patchTags)
+    },
     addTag: function(e, index) {
+      console.log(e);
       if (e.target.value) {
-        this.uploads[index].tags.push(e.target.value)
+        var patchUpload = this.uploads[index]
+        patchUpload.tags.push(e.target.value)
         e.target.value = ''
+        this.patchUploadTags(index,patchUpload.tags)
       }
     },
 
     conditionClick: function(e,id){
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
+        var index = this.tagConditions.indexOf(e.target.textContent)
+        if(index != -1){
+          this.tagConditions.splice(index,1)
+        }
       }else{
         e.target.className = 'filter condition active'
+        this.tagConditions.push(e.target.textContent)
       }
+
     },
 
     deleteUpload: function(upload_id) {
@@ -243,6 +270,8 @@ export default {
   },
 
   attached() {
+
+
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
     //this.username = username
@@ -265,6 +294,7 @@ export default {
           return d
         })
         this.uploads = data
+        this.displayUploads = JSON.parse(JSON.stringify(data))
       }
     }, function(response) {
       console.log(response)
@@ -274,12 +304,54 @@ export default {
   data() {
     return {
       uploads: [] ,
-
+      displayUploads: [],
       dialogcontent: {
         title: '确定删除吗？'
       },
 
-      deleteUploadId: ''
+      deleteUploadId: '',
+      tagConditions: []
+    }
+  },
+  watch: {
+    'tagConditions': function(){
+      console.log('tagc')
+      var temp = []
+      if(this.tagConditions.length === 0){
+        this.displayUploads = this.uploads
+        return
+      }
+      var conditions = this.tagConditions.join()
+      for(var u=0,length=this.uploads.length;u<length;u++){
+        let upload = this.uploads[u]
+        for(var t=0,length=upload.tags.length;t<length;t++){
+          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
+            temp.push(upload)
+            break
+          }
+        }
+      }
+      this.displayUploads = temp
+    },
+
+    'uploads': function(){
+      console.log('upc');
+      var temp = []
+      if(this.tagConditions.length === 0){
+        this.displayUploads = this.uploads
+        return
+      }
+      var conditions = this.tagConditions.join()
+      for(var u=0,length=this.uploads.length;u<length;u++){
+        let upload = this.uploads[u]
+        for(var t=0,length=upload.tags.length;t<length;t++){
+          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
+            temp.push(upload)
+            break
+          }
+        }
+      }
+      this.displayUploads = temp
     }
   }
 }
