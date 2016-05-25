@@ -57,7 +57,7 @@
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
       <div class="action">
         <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(upload.upload_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(upload.upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
   </div>
@@ -139,16 +139,39 @@ export default {
       }
     },
 
+    patchUploadTags: function(index,tags){
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let upload_id = this.uploads[index].upload_id
+      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+           this.uploads[index].tags = response.data.tags
+          }
+        }, function(response) {
+          alert("网络错误")
+      })
+    },
+
     deleteTag: function(pId, tag_id) {
-      this.uploads[pId].tags.splice(tag_id, 1)
+      console.log(pId)
+      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
+      console.log(patchTags)
+      patchTags.splice(tag_id, 1)
+      this.patchUploadTags(pId,patchTags)
     },
 
     addTag: function(e, index) {
+      console.log(e);
       if (e.target.value) {
-        this.uploads[index].tags.push(e.target.value)
+        var patchUpload = this.uploads[index]
+        patchUpload.tags.push(e.target.value)
         e.target.value = ''
+        this.patchUploadTags(index,patchUpload.tags)
       }
     },
+
     deleteUpload: function(upload_id) {
       this.$el.querySelector('#delete-dialog').style.display = 'block'
       this.deleteUploadId = upload_id
@@ -173,6 +196,62 @@ export default {
             alert('未知错误，请稍后再试')
           })
       }
+    },
+
+    downloadUpload: function(upload_id) {
+      this.$el.querySelector('#create-loading').style.display = 'block'
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
+      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          console.log(response)
+          if(response.ok){
+            for(let i = 0;i<this.uploads.length;i++){
+              if(this.uploads[i].upload_id === upload_id){
+                let filename = this.uploads[i].filename
+                this.downloadAction(this.uploads[i],response.data)
+                this.$el.querySelector("#create-loading").style.display = 'none'
+                break
+              }
+            }
+          }
+        }, function(response) {
+            this.$el.querySelector('#create-loading').style.display = 'none'
+            alert('未知错误，请稍后再试')
+        })
+    },
+
+    downloadAction: function(upload, content) {
+      let filename = upload.name
+      var aLink = document.createElement('a')
+      aLink.download = filename
+
+      var blob = new Blob([content])
+      console.log(window.URL.createObjectURL(blob))
+
+      let upload_id = upload.upload_id
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
+
+      var img = new Image()
+      img.crossOrigin = 'Anonymous'
+      img.onload = function(){
+          var canvas = document.createElement('CANVAS')
+          var ctx = canvas.getContext('2d')
+          var dataURL
+          canvas.height = this.height
+          canvas.width = this.width
+          ctx.drawImage(this, 0, 0)
+          dataURL = canvas.toDataURL('image'+upload.format).replace('image'+upload.format, "image/octet-stream;"+"fileName="+filename)
+          canvas = null
+          aLink.href = dataURL
+          var evt = document.createEvent('HTMLEvents')
+          evt.initEvent('click', false, false)
+          aLink.dispatchEvent(evt)
+      };
+      img.src = url;
     }
   },
   attached() {
@@ -403,7 +482,7 @@ span {
   top:0px;
   bottom: 0px;
   margin: 0 auto;
-  background - color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: none;
   z-index: 9999;
 }
