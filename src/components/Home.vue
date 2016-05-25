@@ -20,10 +20,10 @@
       </ul>
   </div>
   <div id = "scrollDiv">
-  <div class="scrollText" >
-    <ul style="margin-top: 0px; ">
-      <li v-for="message in messages"><span>{{message.message}}</span></li>
-    </ul>
+    <div class="scrollText" >
+      <ul style="margin-top: 0px; ">
+       <li v-for="message in messages"><span>{{message.name}}已上传{{message.map_count}}幅地图</span></li>
+     </ul>
   </div></div>
   </foxgis-layout>
   
@@ -39,7 +39,7 @@ export default {
   },
 
   ready(){
-      $("#scrollDiv").textSlider({line:3,speed:500,timer:3000});//设置文字滚动
+      $("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
       $('.automatic-slider').unslider({
         autoplay: true,
         delay:3000
@@ -71,52 +71,29 @@ export default {
         title:'公路规划1米'
       }],
       messages:[{
-      id:1,
-      message:'第1条消息'
+        id:1,
+        name:'四川省',
+        map_count:'42'
       },
       {
-      id:2,
-      message:'第2条消息'
+        id:2,
+        name:'陕西省',
+        map_count:'37'
       },
       {
-      id:3,
-      message:'第3条消息'
+        id:3,
+        name:'黑龙江省',
+        map_count:'34'
       },
       {
-      id:4,
-      message:'第4条消息'
+        id:4,
+        name:'海南省',
+        map_count:'25'
       },
       {
-      id:5,
-      message:'第5条消息'
-      },
-      {
-      id:6,
-      message:'第6条消息'
-      },
-      {
-      id:7,
-      message:'第7条消息'
-      },
-      {
-      id:8,
-      message:'第8条消息'
-      },
-      {
-      id:9,
-      message:'第9条消息'
-      },
-      {
-      id:10,
-      message:'第10条消息'
-      },
-      {
-      id:11,
-      message:'第11条消息'
-      },
-      {
-      id:12,
-      message:'第12条消息'
+        id:5,
+        name:'云南省',
+        map_count:'21'
       }]
     }
   }
@@ -164,6 +141,7 @@ height:100%;
 }
 
 #scrollDiv{
+  text-align:center;
   position:absolute;
   width:100%;
   height:50px;
@@ -174,7 +152,7 @@ height:100%;
 .scrollText{
     min-height: 25px;
     line-height: 25px;
-    float: left;
+    margin:0px auto;
     overflow: hidden;
 }
 .scrollText li{
