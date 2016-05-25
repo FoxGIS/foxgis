@@ -216,10 +216,35 @@ export default {
     },
 
     downloadUpload: function(upload_id) {
+      // this.$el.querySelector('#create-loading').style.display = 'block'
+      // let username = docCookie.getItem('username')
+      // let access_token = docCookie.getItem('access_token')
+      // let url = SERVER_API.uploads + '/' + username + "/" + upload_id
+      // this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+      //     .then(function(response){
+      //       console.log(response)
+      //      if(response.ok){
+      //        for(let i = 0;i<this.dataset.length;i++){
+      //           if(this.dataset[i].upload_id === upload_id){
+      //            let filename = this.dataset[i].filename
+      //            this.downloadAction(filename,response.data)
+      //            this.$el.querySelector("#create-loading").style.display = 'none'
+      //             break
+      //            }
+      //           }
+      //         }
+      //       }, function(response) {
+      //         this.$el.querySelector('#create-loading').style.display = 'none'
+      //        alert('未知错误，请稍后再试')
+      //       })
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-      window.open(url)
+      var aLink = document.createElement('a')
+      var evt = document.createEvent("HTMLEvents")
+      evt.initEvent("click", false, false);
+      aLink.href = url
+      aLink.dispatchEvent(evt)
     }
   },
 
