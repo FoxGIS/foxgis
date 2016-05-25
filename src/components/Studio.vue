@@ -1,8 +1,9 @@
 <template>
 <div>
+  <foxgis-layout>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">制图工作室</span>
+      <!-- <span class="mdl-layout-title">制图工作室</span> -->
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
         <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
@@ -20,6 +21,7 @@
       <router-view></router-view>
     </main>
   </div>
+  </foxgis-layout>
 </div>
 </template>
 
@@ -60,6 +62,14 @@ export default {
 
 
 <style scoped>
+.mdl-layout {
+  height: calc(100% - 100px);
+}
+
+/*.mdl-layout__content {
+  height: calc(100% - 100px);
+}*/
+
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
 }

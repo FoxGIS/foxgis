@@ -9,7 +9,7 @@
       <mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
     </div>
 
-    <foxgis-footer></foxgis-footer>
+    <!-- <foxgis-footer></foxgis-footer> -->
 
   </foxgis-layout>
 </div>
@@ -23,9 +23,9 @@
 
 <style scoped>
 .intro1 {
-  background-image: url('../assets/intro1.jpg');
+  /*background-image: url('../assets/intro1.jpg');*/
   background-size: cover;
-  min-height: calc(100% - 64px);
+  min-height: calc(100% - 100px);
   display: flex;
   flex-direction: column;
   justify-content: center;

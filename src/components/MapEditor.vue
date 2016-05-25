@@ -195,7 +195,7 @@ export default {
 <style scoped>
 #header {
   height: 50px;
-  background-image: url('../assets/editor-header.jpg');
+  background-image: url('../assets/header.jpg');
   background-size: contain;
   background-repeat: no-repeat;
   background-color: #2061C6;
