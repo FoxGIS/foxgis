@@ -46,7 +46,7 @@ export default {
      //判断是否登陆
     let username = docCookie.getItem('username')
     if(username === null){
-      //window.location.href = "#!/login"
+      window.location.href = "#!/login"
     }else{
       this.username = username
     }
