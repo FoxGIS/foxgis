@@ -19,7 +19,6 @@
 
 <script>
 import docCookie from './cookie.js'
-import api from './api.js'
 export default {
   props: ['dataset'],
   methods: {

@@ -25,11 +25,10 @@
 <script>
 
 import docCookie from './cookie.js'
-import api from './api.js'
 export default {
   methods:{
     login: function(e){
-      let url = api.users
+      let url = SERVER_API.users
       let loginbutton = e.target.parentElement
       loginbutton.disabled = true
       let username = this.$el.querySelector('#username').value

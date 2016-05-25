@@ -17,7 +17,6 @@
 
 <script>
 import docCookie from './cookie.js'
-import api from './api.js'
 import util from './util.js'
 export default {
   methods: {
@@ -69,7 +68,7 @@ export default {
         let upload_id = this.deleteUploadId
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let url = api.uploads + '/' + username + "/" + upload_id
+        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -88,7 +87,7 @@ export default {
       this.$el.querySelector("#create-loading").style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username + "/" + upload_id
+      let url = SERVER_API.uploads + '/' + username + "/" + upload_id
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(response){
         console.log(response)
@@ -137,7 +136,7 @@ export default {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
     //this.username = username
-    let url = api.uploads + '/' + username
+    let url = SERVER_API.uploads + '/' + username
     var that = this
     //获取数据列表
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
