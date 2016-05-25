@@ -465,11 +465,13 @@ span {
 
 .image-container {
   max-width: 1000px;
+  margin: 100px auto 0 auto;
 }
 
-.image-container img {
-  margin-top: 100px 0 auto 0;
-}
+/*.image-container img {
+  width: 100%;
+  height: 100%;
+}*/
 
 .filter .condition .active{
   cursor: pointer;
