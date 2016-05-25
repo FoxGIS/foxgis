@@ -1,6 +1,6 @@
 <template>
 <div class="data">
-  <h5><i class="material-icons">map</i><span>地图</span></h5>
+  <h5><i class="material-icons">map</i><span>制图工程</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
