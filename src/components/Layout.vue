@@ -92,9 +92,9 @@ export default {
 }
 
 .mdl-layout--content {
-  height: inherit;
-  min-height: calc(100% - 100px);
-  background-color: #C4C4DC;
+  height: 100%;
+  /*min-height: calc(100% - 100px);*/
+  background-color: #e4e4e4;
   /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/
   display: flex;
   flex-flow: column;

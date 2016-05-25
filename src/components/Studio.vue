@@ -63,7 +63,7 @@ export default {
 
 <style scoped>
 .mdl-layout {
-  height: calc(100% - 100px);
+  /*height: calc(100% - 100px);*/
 }
 
 /*.mdl-layout__content {
@@ -71,7 +71,8 @@ export default {
 }*/
 
 .mdl-layout--fixed-drawer>.mdl-layout__content {
-  background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);
+  background-color: #e4e4e4;
+  /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/
 }
 
 .mdl-navigation {
@@ -91,3 +92,4 @@ export default {
 }
 
 </style>
+

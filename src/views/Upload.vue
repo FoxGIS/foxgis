@@ -9,34 +9,34 @@
   </div>
 
   <div class="filter">
-    <div class="condition">
+    <div class="condition" id="condition1">
       <span>主题：</span>
-      <a href="#" @click.prevent='search'>社会</a>
-      <a href="#" @click.prevent='search'>经济</a>
-      <a href="#" @click.prevent='search'>人口</a>
-      <a href="#" @click.prevent='search'>旅游</a>
-      <a href="#" @click.prevent='search'>农业</a>
-      <a href="#" @click.prevent='search'>新闻用图</a>
-      <a href="#" @click.prevent='search'>决策用图</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">社会</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">经济</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">人口</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">旅游</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">农业</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">新闻用图</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">决策用图</a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a href="#" @click.prevent='search'>全国</a>
-      <a href="#" @click.prevent='search'>北京</a>
-      <a href="#" @click.prevent='search'>天津</a>
-      <a href="#" @click.prevent='search'>山东</a>
-      <a href="#" @click.prevent='search'>四川</a>
-      <a href="#" @click.prevent='search'>黑龙江</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">全国</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">北京</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">天津</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">山东</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">四川</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">黑龙江</a>
     </div>
     <div class="condition">
       <span>年份：</span>
-      <a @click.prevent='search'>2010</a>
-      <a @click.prevent='search'>2011</a>
-      <a @click.prevent='search'>2012</a>
-      <a @click.prevent='search'>2013</a>
-      <a @click.prevent='search'>2014</a>
-      <a @click.prevent='search'>2015</a>
-      <a @click.prevent='search'>2016</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2010</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2011</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2012</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2013</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2014</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2015</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2016</a>
     </div>
   </div>
 
@@ -67,7 +67,9 @@
        <img id='thumbnail' src="">
     </div>
   </div>
+
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 </div>
 
@@ -103,7 +105,7 @@ export default {
       }
       this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
         .then(function(response) {
-          console.log(response);
+          console.log(response)
           var file = response.data
           if (file.filesize / 1024 > 1024) {
             file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
@@ -119,7 +121,7 @@ export default {
           if (response.data.error) {
             alert(response.data.error)
           } else {
-            console.log(response);
+            console.log(response)
             alert('未知错误，请稍后再试')
           }
         })
@@ -139,36 +141,22 @@ export default {
       }
     },
 
-    patchUploadTags: function(index,tags){
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let upload_id = this.uploads[index].upload_id
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-           this.uploads[index].tags = response.data.tags
-          }
-        }, function(response) {
-          alert("网络错误")
-      })
-    },
-
     deleteTag: function(pId, tag_id) {
-      console.log(pId)
-      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
-      console.log(patchTags)
-      patchTags.splice(tag_id, 1)
-      this.patchUploadTags(pId,patchTags)
+      this.uploads[pId].tags.splice(tag_id, 1)
     },
 
     addTag: function(e, index) {
-      console.log(e);
       if (e.target.value) {
-        var patchUpload = this.uploads[index]
-        patchUpload.tags.push(e.target.value)
+        this.uploads[index].tags.push(e.target.value)
         e.target.value = ''
-        this.patchUploadTags(index,patchUpload.tags)
+      }
+    },
+
+    conditionClick: function(e,id){
+      if(e.target.className == 'filter condition active'){
+        e.target.className = 'none'
+      }else{
+        e.target.className = 'filter condition active'
       }
     },
 
@@ -197,7 +185,6 @@ export default {
           })
       }
     },
-
     downloadUpload: function(upload_id) {
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
@@ -254,6 +241,7 @@ export default {
       img.src = url;
     }
   },
+
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
@@ -282,49 +270,15 @@ export default {
       console.log(response)
     })
   },
+
   data() {
     return {
-      uploads: [{
-        upload_id: 'wqeq',
-        name: '山东省行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '沈阳市行政区划用图',
-        tags: ['沈阳', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://r.mapbar.com/poi/images/china.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '营口市行政区划用图',
-        tags: ['营口', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '东营市行政区划用图',
-        tags: ['东营', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }] ,
+      uploads: [] ,
+
       dialogcontent: {
         title: '确定删除吗？'
       },
+
       deleteUploadId: ''
     }
   }
@@ -388,6 +342,7 @@ span {
 }
 
 .filter .condition a {
+  cursor: pointer;
   text-decoration: none;
   margin-left: 15px;
   font-size: .9em;
@@ -488,17 +443,20 @@ span {
 }
 
 .image-container {
-  height: 720px;
-  width: 1280px;
-  margin: 100px auto 0 auto;
+  max-width: 1000px;
+  position: relative;
 }
 
 .image-container img {
-  width: 100%;
-  height: 100%;
+  clear: both;
+  display: block;
+  margin: 200px auto auto auto;
 }
 
-
+.filter .condition .active{
+  cursor: pointer;
+  color: blue;
+}
 
 /*.card * {
   outline: 1px solid red;

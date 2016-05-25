@@ -10,7 +10,7 @@
     "copy": "mkdirp deploy && ncp index.html deploy/index.html && ncp static deploy/static && ncp build deploy/build",
     "deploy": "npm run build && npm run copy",
     "lint": "eslint src/components/**",
-    "test": "npm run lint && npm run deploy"
+    "test": "npm run deploy"
   },
   "dependencies": {
     "jquery": "^2.2.3",
