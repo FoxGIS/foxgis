@@ -389,12 +389,13 @@ span {
 
 .image-container {
   max-width: 1000px;
-  margin: 100px auto 0 auto;
+  position: relative;
 }
 
 .image-container img {
-  width: 100%;
-  height: 100%;
+  clear: both; 
+  display: block; 
+  margin: 200px auto auto auto; 
 }
 
 .filter .condition .active{
