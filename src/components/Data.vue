@@ -30,7 +30,7 @@ export default {
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username
+      let url = SERVER_API.uploads + '/' + username
       var formData = new FormData()
       formData.append('file', e.target.files[0])
       var reader = new FileReader()
@@ -137,7 +137,6 @@ export default {
       return bytes
     }
   },
-
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
