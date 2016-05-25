@@ -56,7 +56,7 @@
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
       <div class="action">
-        <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(upload.upload_id)">删除</mdl-anchor-button>
         <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
       </div>
     </div>
@@ -67,11 +67,16 @@
        <img id='thumbnail' src="">
     </div>
   </div>
+  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+  <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 </div>
+
 </template>
 
 
 <script>
+import docCookie from '../components/cookie.js'
+import util from '../components/util.js'
 export default {
   methods: {
     search: function() {
@@ -85,12 +90,47 @@ export default {
     },
 
     uploadFile: function(e) {
-      alert(e.toString())
+      this.$el.querySelector('#create-loading').style.display = 'block'
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username
+      var formData = new FormData()
+      formData.append('file', e.target.files[0])
+      var reader = new FileReader()
+      reader.readAsBinaryString(e.target.files[0])
+      reader.onloadend = function() {
+        console.log(reader.result.length)
+      }
+      this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          console.log(response);
+          var file = response.data
+          if (file.filesize / 1024 > 1024) {
+            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
+          }
+
+          file.upload_at = util.dateFormat(new Date(file.upload_at))
+          this.uploads.push(file)
+          this.$el.querySelector('#create-loading').style.display = 'none'
+        }, function(response) {
+          this.$el.querySelector('#create-loading').style.display = 'none'
+          if (response.data.error) {
+            alert(response.data.error)
+          } else {
+            console.log(response);
+            alert('未知错误，请稍后再试')
+          }
+        })
     },
 
     showPreview: function(e, index) {
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('.modal').style.display = 'block'
-      document.querySelector('#thumbnail').src = this.uploads[index].thumbnail
+      document.querySelector('#thumbnail').src = url
     },
 
     hidePreview: function(e) {
@@ -116,8 +156,62 @@ export default {
       }else{
         e.target.className = 'filter condition active'
       }
+    },
       
+    deleteUpload: function(upload_id) {
+      this.$el.querySelector('#delete-dialog').style.display = 'block'
+      this.deleteUploadId = upload_id
+    },
+
+    deleteAction: function(status) {
+      if (status === 'ok') {
+        let upload_id = this.deleteUploadId
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.uploads.length;i++){
+              if(this.uploads[i].upload_id === upload_id){
+                this.uploads.splice(i,1)
+              }
+            }
+          }
+        }, function(response) {
+            alert('未知错误，请稍后再试')
+          })
+      }
     }
+  },
+
+  attached() {
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    //this.username = username
+    let url = SERVER_API.uploads + '/' + username
+    var that = this
+      //获取数据列表
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+
+      if (response.data.length > 0) {
+        var data = response.data
+        data = data.map(function(d) {
+          if (d.filesize / 1024 > 1024) {
+            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
+          }
+
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
+
+          return d
+        })
+        this.uploads = data
+      }
+    }, function(response) {
+      console.log(response)
+    })
   },
 
   data() {
@@ -159,7 +253,11 @@ export default {
         thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
-      }]
+      }] ,
+      dialogcontent: {
+        title: '确定删除吗？'
+      },
+      deleteUploadId: ''
     }
   }
 }

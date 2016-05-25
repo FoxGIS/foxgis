@@ -1,6 +1,5 @@
-let baseURL = 'http://foxgis.com/api/v1'
-
-export default {
+let baseURL = 'http://bygis.com/api/v1'
+window.SERVER_API = {
   uploads: baseURL + '/uploads',
   users: baseURL + '/users',
   styles: baseURL + '/styles',

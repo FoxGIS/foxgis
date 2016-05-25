@@ -17,11 +17,10 @@
 <script>
 
 import docCookie from './cookie.js'
-import api from './api.js'
 export default {
   methods:{
     register: function(e){
-      let url = api.users
+      let url = SERVER_API.users
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
       if(password.length < 6){

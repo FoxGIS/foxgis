@@ -17,7 +17,6 @@
 
 <script>
 import docCookie from './cookie.js'
-import api from './api.js'
 import util from './util.js'
 export default {
   methods: {
@@ -31,7 +30,7 @@ export default {
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username
+      let url = SERVER_API.uploads + '/' + username
       var formData = new FormData()
       formData.append('file', e.target.files[0])
       var reader = new FileReader()
@@ -72,17 +71,17 @@ export default {
         let upload_id = this.deleteUploadId
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let url = api.uploads + '/' + username + '/' + upload_id
-        this.$http({ url: url, method: 'DELETE', headers: { 'x-access-token': access_token } })
-          .then(function(response) {
-            if (response.ok) {
-              for (let i = 0; i < this.dataset.length; i++) {
-                if (this.dataset[i].upload_id === upload_id) {
-                  this.dataset.splice(i, 1)
-                }
+        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.dataset.length;i++){
+              if(this.dataset[i].upload_id === upload_id){
+                this.dataset.splice(i,1)
               }
             }
-          }, function(response) {
+          }
+        }, function(response) {
             alert('未知错误，请稍后再试')
           })
       }
@@ -92,17 +91,17 @@ export default {
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username + '/' + upload_id
-      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
-        .then(function(response) {
-          console.log(response)
-          if (response.ok) {
-            for (let i = 0; i < this.dataset.length; i++) {
-              if (this.dataset[i].upload_id === upload_id) {
-                let filename = this.dataset[i].filename
-                this.downloadAction(filename, response.data)
-                this.$el.querySelector('#create-loading').style.display = 'none'
-                break
+      let url = SERVER_API.uploads + '/' + username + "/" + upload_id
+      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+      .then(function(response){
+        console.log(response)
+        if(response.ok){
+          for(let i = 0;i<this.dataset.length;i++){
+            if(this.dataset[i].upload_id === upload_id){
+              let filename = this.dataset[i].filename
+              this.downloadAction(filename,response.data)
+              this.$el.querySelector("#create-loading").style.display = 'none'
+              break
               }
             }
           }
@@ -138,12 +137,11 @@ export default {
       return bytes
     }
   },
-
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
-      //this.username = username
-    let url = api.uploads + '/' + username
+    //this.username = username
+    let url = SERVER_API.uploads + '/' + username
     var that = this
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
