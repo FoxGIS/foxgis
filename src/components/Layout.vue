@@ -93,6 +93,7 @@ export default {
 
 .mdl-layout--content {
   height: 100%;
+  position:relative;
   /*min-height: calc(100% - 100px);*/
   background-color: #e4e4e4;
   /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/

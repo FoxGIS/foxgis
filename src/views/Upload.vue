@@ -226,7 +226,8 @@ export default {
       aLink.dispatchEvent(evt)
     },
     uploadNameChange: function(e,index){
-      this.patchUpload(index,{'name':e.target.value})
+      var value = e.target.value
+      this.patchUpload(index,{'name':value})
     }
   },
 
@@ -410,6 +411,8 @@ span {
   font-size: 1em;
   margin: 0;
   border: none;
+  padding: 5px 5px 5px 0;
+  width: 50%;
 }
 
 .tags {
