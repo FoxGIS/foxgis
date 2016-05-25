@@ -6,7 +6,7 @@
         <div id="error-info"></div>
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
-        <mdl-button v-mdl-ripple-effect accent raised v-on:keyup.enter="register" v-on:click="register">注册</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
       </foxgis-card>
     </div>
   </foxgis-layout>
@@ -24,7 +24,7 @@ export default {
       let username = this.$el.querySelector('#username').value
       let password = this.$el.querySelector('#password').value
       if(password.length < 6){
-        this.showError("密码长度过短")
+        this.showError('密码长度过短')
       }
       let registerbutton = e.target.parentElement
       registerbutton.disabled = true
@@ -32,13 +32,13 @@ export default {
         let data = response.data
         let access_token = data.access_token
         let username = data.username
-        let date = new Date(data.create_at)
-        let days = 7
+        let date = new Date(data.createdAt)
+        let days = 30
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
         registerbutton.disabled = false
-        window.location.href = "#!/studio"
+        window.location.href = '#!/studio'
       },function(response){
         registerbutton.disabled = false
         if(response.data.error){
@@ -47,14 +47,14 @@ export default {
       })
     },
     showError: function(msg){
-      let errorContainer = this.$el.querySelector("#error-info")
+      let errorContainer = this.$el.querySelector('#error-info')
       errorContainer.innerHTML = msg
       errorContainer.style.display = 'block'
     }
   },
   attached() {
     //隐藏error info
-    let errorContainer = this.$el.querySelector("#error-info")
+    let errorContainer = this.$el.querySelector('#error-info')
     errorContainer.style.display = 'none'
   }
 }
