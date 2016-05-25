@@ -9,34 +9,34 @@
   </div>
 
   <div class="filter">
-    <div class="condition">
+    <div class="condition" id="condition1">
       <span>主题：</span>
-      <a href="#" @click.prevent='search'>社会</a>
-      <a href="#" @click.prevent='search'>经济</a>
-      <a href="#" @click.prevent='search'>人口</a>
-      <a href="#" @click.prevent='search'>旅游</a>
-      <a href="#" @click.prevent='search'>农业</a>
-      <a href="#" @click.prevent='search'>新闻用图</a>
-      <a href="#" @click.prevent='search'>决策用图</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">社会</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">经济</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">人口</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">旅游</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">农业</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">新闻用图</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">决策用图</a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a href="#" @click.prevent='search'>全国</a>
-      <a href="#" @click.prevent='search'>北京</a>
-      <a href="#" @click.prevent='search'>天津</a>
-      <a href="#" @click.prevent='search'>山东</a>
-      <a href="#" @click.prevent='search'>四川</a>
-      <a href="#" @click.prevent='search'>黑龙江</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">全国</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">北京</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">天津</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">山东</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">四川</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">黑龙江</a>
     </div>
     <div class="condition">
       <span>年份：</span>
-      <a @click.prevent='search'>2010</a>
-      <a @click.prevent='search'>2011</a>
-      <a @click.prevent='search'>2012</a>
-      <a @click.prevent='search'>2013</a>
-      <a @click.prevent='search'>2014</a>
-      <a @click.prevent='search'>2015</a>
-      <a @click.prevent='search'>2016</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2010</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2011</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2012</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2013</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2014</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2015</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2016</a>
     </div>
   </div>
 
@@ -75,7 +75,7 @@
 export default {
   methods: {
     search: function() {
-
+      
     },
 
     uploadClick: function() {
@@ -108,6 +108,15 @@ export default {
         this.uploads[index].tags.push(e.target.value)
         e.target.value = ''
       }
+    },
+
+    conditionClick: function(e,id){   
+      if(e.target.className == 'filter condition active'){
+        e.target.className = 'none'
+      }else{
+        e.target.className = 'filter condition active'
+      }
+      
     }
   },
 
@@ -213,6 +222,7 @@ span {
 }
 
 .filter .condition a {
+  cursor: pointer;
   text-decoration: none;
   margin-left: 15px;
   font-size: .9em;
@@ -323,7 +333,10 @@ span {
   height: 100%;
 }
 
-
+.filter .condition .active{
+  cursor: pointer;
+  color: blue;
+}
 
 /*.card * {
   outline: 1px solid red;
