@@ -4,7 +4,7 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
+    <mdl-button class="btn-upload" raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
     <input type="file" style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
 
@@ -89,6 +89,7 @@ export default {
       fileInput.addEventListener('change', this.uploadFile)
     },
     uploadFile: function(e) {
+      // this.$el.querySelector('.btn-upload').innerHtml = '正在上传..'
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
