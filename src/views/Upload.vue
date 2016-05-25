@@ -103,7 +103,7 @@ export default {
       }
       this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
         .then(function(response) {
-          console.log(response);
+          console.log(response)
           var file = response.data
           if (file.filesize / 1024 > 1024) {
             file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
@@ -119,7 +119,7 @@ export default {
           if (response.data.error) {
             alert(response.data.error)
           } else {
-            console.log(response);
+            console.log(response)
             alert('未知错误，请稍后再试')
           }
         })
@@ -205,47 +205,12 @@ export default {
   },
   data() {
     return {
-      uploads: [{
-        upload_id: 'wqeq',
-        name: '山东省行政区划用图',
-        tags: ['山东', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '沈阳市行政区划用图',
-        tags: ['沈阳', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://r.mapbar.com/poi/images/china.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '营口市行政区划用图',
-        tags: ['营口', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }, {
-        name: '东营市行政区划用图',
-        tags: ['东营', '决策用图', '2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }] ,
+      uploads: [] ,
+
       dialogcontent: {
         title: '确定删除吗？'
       },
+
       deleteUploadId: ''
     }
   }
@@ -403,14 +368,13 @@ span {
   top:0px;
   bottom: 0px;
   margin: 0 auto;
-  background - color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: none;
   z-index: 9999;
 }
 
 .image-container {
-  height: 720px;
-  width: 1280px;
+  max-width: 1000px;
   margin: 100px auto 0 auto;
 }
 

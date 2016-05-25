@@ -63,7 +63,7 @@ export default {
 
 <style scoped>
 .mdl-layout {
-  height: calc(100% - 100px);
+  /*height: calc(100% - 100px);*/
 }
 
 /*.mdl-layout__content {
