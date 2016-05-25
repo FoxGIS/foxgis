@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import api from './api.js'
 import docCookie from './cookie.js'
 import { validate } from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
@@ -155,7 +154,7 @@ export default {
     let access_token = docCookie.getItem('access_token')
     if(styleId !== null && access_token !== null){
 
-      let url = api.styles + '/' + username + '/' + styleId
+      let url = SERVER_API.styles + '/' + username + '/' + styleId
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
         let data = res.data
@@ -195,7 +194,7 @@ export default {
 <style scoped>
 #header {
   height: 50px;
-  background-image: url('../assets/editor-header.jpg');
+  background-image: url('../assets/header.jpg');
   background-size: contain;
   background-repeat: no-repeat;
   background-color: #2061C6;

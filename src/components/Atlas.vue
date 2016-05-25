@@ -11,7 +11,7 @@
       <div>
         <span>热门：</span>
         <a class="hotactive"  href="#" v-on:click.prevent='search'>经济</a>
-        <a href="#" v-on:click.prevent='search'>社会</a>
+        <a href="#" v-on:click.prevent='search(e, val)'>社会</a>
         <a href="#" v-on:click.prevent='search'>人口</a>
         <a href="#" v-on:click.prevent='search'>旅游</a>
         <a href="#" v-on:click.prevent='search'>农业</a>

@@ -1,5 +1,5 @@
 let baseURL = 'http://bygis.com/api/v1'
-export default {
+window.SERVER_API = {
   uploads: baseURL + '/uploads',
   users: baseURL + '/users',
   styles: baseURL + '/styles',

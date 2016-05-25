@@ -76,7 +76,7 @@ let router = new Router({
 
 router.map({
   '/': {
-    component: Home
+    component: Login
   },
   '/home': {
     component: Home

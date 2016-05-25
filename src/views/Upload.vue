@@ -3,90 +3,229 @@
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传决策用图</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
+    <input type="file" style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
+  </div>
+
+  <div class="filter">
+    <div class="condition" id="condition1">
+      <span>主题：</span>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">社会</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">经济</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">人口</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">旅游</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">农业</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">新闻用图</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,1)">决策用图</a>
+    </div>
+    <div class="condition">
+      <span>地区：</span>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">全国</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">北京</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">天津</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">山东</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">四川</a>
+      <a href="#" @click.prevent='search' @click="conditionClick($event,2)">黑龙江</a>
+    </div>
+    <div class="condition">
+      <span>年份：</span>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2010</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2011</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2012</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2013</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2014</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2015</a>
+      <a @click.prevent='search' @click="conditionClick($event,3)">2016</a>
+    </div>
   </div>
 
   <div class="card" v-for="upload in uploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, $index)">预览</mdl-anchor-button>
     </div>
-    <div class = "tag_box">
+    <div class = "tags">
       <span>标签:</span>
-      <span class="tag" v-for="tags in upload.tags" track-by="$index">
-        <span>{{tags}}</span>
-        <a title="删除标签" v-on:click="deleteTag($parent.$index,$index)">×</a>
+      <span class="tag" v-for="tag in upload.tags" track-by="$index">
+        <span>{{ tag }}</span>
+        <a title="删除标签" @click="deleteTag($parent.$index, $index)">×</a>
       </span>
-      <input type="text" maxlength="10" v-on:change="addTag($index,$event)">
+      <input type="text" maxlength="10" @change="addTag($event, $index)">
     </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
       <div class="action">
-        <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(upload.upload_id)">删除</mdl-anchor-button>
         <mdl-anchor-button colored v-mdl-ripple-effect>下载</mdl-anchor-button>
       </div>
     </div>
   </div>
+
+  <div class="modal" @click="hidePreview">
+    <div class="image-container" >
+       <img id='thumbnail' src="">
+    </div>
+  </div>
+  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+  <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 </div>
+
 </template>
 
 
 <script>
+import docCookie from '../components/cookie.js'
+import util from '../components/util.js'
 export default {
-  methods:{
-    deleteTag:function(pId,tag_id){
-      //alert("你点击了删除,删除元素："+pId+","+tag_id);
-      this.uploads[pId].tags.splice(tag_id,1);
-    },
-    addTag:function(index,e){
-      //alert(index);
-      if(e.target.value!==""){
-        this.uploads[index].tags.push(e.target.value);
-        e.target.value="";
-      }
+  methods: {
+    search: function() {
       
+    },
+
+    uploadClick: function() {
+      let fileInput = document.getElementById('file')
+      fileInput.click()
+      fileInput.addEventListener('change', this.uploadFile)
+    },
+
+    uploadFile: function(e) {
+      this.$el.querySelector('#create-loading').style.display = 'block'
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username
+      var formData = new FormData()
+      formData.append('file', e.target.files[0])
+      var reader = new FileReader()
+      reader.readAsBinaryString(e.target.files[0])
+      reader.onloadend = function() {
+        console.log(reader.result.length)
+      }
+      this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          console.log(response)
+          var file = response.data
+          if (file.filesize / 1024 > 1024) {
+            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
+          }
+
+          file.upload_at = util.dateFormat(new Date(file.upload_at))
+          this.uploads.push(file)
+          this.$el.querySelector('#create-loading').style.display = 'none'
+        }, function(response) {
+          this.$el.querySelector('#create-loading').style.display = 'none'
+          if (response.data.error) {
+            alert(response.data.error)
+          } else {
+            console.log(response)
+            alert('未知错误，请稍后再试')
+          }
+        })
+    },
+
+    showPreview: function(e, index) {
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
+      document.querySelector('.modal').style.display = 'block'
+      document.querySelector('#thumbnail').src = url
+    },
+
+    hidePreview: function(e) {
+      if (e.target.className.indexOf('modal') != -1) {
+        e.target.style.display = 'none'
+      }
+    },
+
+    deleteTag: function(pId, tag_id) {
+      this.uploads[pId].tags.splice(tag_id, 1)
+    },
+
+    addTag: function(e, index) {
+      if (e.target.value) {
+        this.uploads[index].tags.push(e.target.value)
+        e.target.value = ''
+      }
+    },
+
+    conditionClick: function(e,id){   
+      if(e.target.className == 'filter condition active'){
+        e.target.className = 'none'
+      }else{
+        e.target.className = 'filter condition active'
+      }
+    },
+      
+    deleteUpload: function(upload_id) {
+      this.$el.querySelector('#delete-dialog').style.display = 'block'
+      this.deleteUploadId = upload_id
+    },
+
+    deleteAction: function(status) {
+      if (status === 'ok') {
+        let upload_id = this.deleteUploadId
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.uploads.length;i++){
+              if(this.uploads[i].upload_id === upload_id){
+                this.uploads.splice(i,1)
+              }
+            }
+          }
+        }, function(response) {
+            alert('未知错误，请稍后再试')
+          })
+      }
     }
+  },
+
+  attached() {
+    let username = docCookie.getItem('username')
+    let access_token = docCookie.getItem('access_token')
+    //this.username = username
+    let url = SERVER_API.uploads + '/' + username
+    var that = this
+      //获取数据列表
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+
+      if (response.data.length > 0) {
+        var data = response.data
+        data = data.map(function(d) {
+          if (d.filesize / 1024 > 1024) {
+            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
+          }
+
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
+
+          return d
+        })
+        this.uploads = data
+      }
+    }, function(response) {
+      console.log(response)
+    })
   },
 
   data() {
     return {
-      uploads: [{
-        upload_id: 'wqeq',
-        name: '山东省行政区划用图',
-        tags: ['山东','决策用图','2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      },{
-        name: '沈阳市行政区划用图',
-        tags: ['沈阳','决策用图','2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      },{
-        name: '营口市行政区划用图',
-        tags: ['营口','决策用图','2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      },{
-        name: '东营市行政区划用图',
-        tags: ['东营','决策用图','2016'],
-        description: 5,
-        size: '200 MB',
-        format: 'png',
-        createdAt: '2016-3-25',
-        updatedAt: '2016-3-25'
-      }]
+      uploads: [] ,
+
+      dialogcontent: {
+        title: '确定删除吗？'
+      },
+
+      deleteUploadId: ''
     }
   }
 }
+
 </script>
 
 
@@ -132,6 +271,26 @@ span {
   height: 40px;
 }
 
+.filter {
+  margin-top: 20px;
+}
+
+.filter span {
+  font-size: 1em;
+}
+
+.filter .condition {
+  margin: 2px 0
+}
+
+.filter .condition a {
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 15px;
+  font-size: .9em;
+  color: #666;
+}
+
 .card {
   margin-top: 40px;
   border-radius: 2px 2px 0 0;
@@ -154,7 +313,7 @@ span {
 }
 
 .name {
-  margin: 24px 24px 0;
+  margin: 24px 24px 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -166,8 +325,36 @@ span {
   margin: 0;
 }
 
+.tags {
+  margin-left: 24px;
+  margin-right: 24px;
+  font-size: .8em;
+}
+
+.tags input {
+  outline: none;
+  border: 0;
+}
+
+.tag {
+  background: #eee;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 3px;
+  vertical-align: middle;
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.tag a {
+    text-decoration: none;
+    margin-left: 5px;
+    font: 14px "Times New Roman";
+}
+
 .metadata {
-  margin: 5px 24px;
+  margin: 0 24px 12px 24px;
   font-size: 1em;
   display: flex;
   justify-content: space-between;
@@ -185,32 +372,35 @@ span {
   min-width: 0;
 }
 
-.card .tag_box{
-  margin-left:30px;
+.modal {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9999;
 }
 
-.tag_box input{
-  outline: none !important;
-  border: 0;
-  padding: 0 5px;
+.image-container {
+  max-width: 1000px;
+  margin: 100px auto 0 auto;
 }
-.tag{
-  background: #eee;
-  color: #333;
-  text-decoration: none;
-  font-size:12px;
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+}
+
+.filter .condition .active{
   cursor: pointer;
-  display: inline-table;
-  margin: 5px 3px;
-  vertical-align: middle;
-  padding: 0 10px 2px 10px;
-  border-radius: 12px;
+  color: blue;
 }
 
-.tag a{
-      text-decoration: none;
-    margin-left: 5px;
-    font: 18px/20px "times new roman";
-}
+/*.card * {
+  outline: 1px solid red;
+}*/
 
 </style>
