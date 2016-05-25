@@ -8,8 +8,8 @@
     <div class="meta">
       <p>{{ data.filesize }} · {{ data.upload_at }}</p>
       <div>
-        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} v-on:click="deleteFile(data.upload_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect  data-upload_id={{data.upload_id}} v-on:click="downloadFile(data.upload_id)">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-uploadid={{data.upload_id}} @click="deleteFile(data.upload_id)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect  data-upload_id={{data.upload_id}} @click="downloadFile(data.upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
   </div>

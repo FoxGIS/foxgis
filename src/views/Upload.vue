@@ -4,52 +4,54 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传决策用图</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
+    <input type="file" style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
 
   <div class="filter">
-    <div class="tags">
+    <div class="condition">
       <span>主题：</span>
-      <a href="#" :click.prevent='search'>社会</a>
-      <a href="#" :click.prevent='search'>经济</a>
-      <a href="#" :click.prevent='search'>人口</a>
-      <a href="#" :click.prevent='search'>旅游</a>
-      <a href="#" :click.prevent='search'>农业</a>
-      <a href="#" :click.prevent='search'>新闻用图</a>
-      <a href="#" :click.prevent='search'>决策用图</a>
+      <a href="#" @click.prevent='search'>社会</a>
+      <a href="#" @click.prevent='search'>经济</a>
+      <a href="#" @click.prevent='search'>人口</a>
+      <a href="#" @click.prevent='search'>旅游</a>
+      <a href="#" @click.prevent='search'>农业</a>
+      <a href="#" @click.prevent='search'>新闻用图</a>
+      <a href="#" @click.prevent='search'>决策用图</a>
     </div>
-    <div class="tags">
+    <div class="condition">
       <span>地区：</span>
-      <a href="#" :click.prevent='search'>全国</a>
-      <a href="#" :click.prevent='search'>北京</a>
-      <a href="#" :click.prevent='search'>天津</a>
-      <a href="#" :click.prevent='search'>山东</a>
-      <a href="#" :click.prevent='search'>四川</a>
-      <a href="#" :click.prevent='search'>黑龙江</a>
+      <a href="#" @click.prevent='search'>全国</a>
+      <a href="#" @click.prevent='search'>北京</a>
+      <a href="#" @click.prevent='search'>天津</a>
+      <a href="#" @click.prevent='search'>山东</a>
+      <a href="#" @click.prevent='search'>四川</a>
+      <a href="#" @click.prevent='search'>黑龙江</a>
     </div>
-    <div class="tags">
+    <div class="condition">
       <span>年份：</span>
-      <a href="#" :click.prevent='search'>2010</a>
-      <a href="#" :click.prevent='search'>2011</a>
-      <a href="#" :click.prevent='search'>2012</a>
-      <a href="#" :click.prevent='search'>2013</a>
-      <a href="#" :click.prevent='search'>2014</a>
-      <a href="#" :click.prevent='search'>2015</a>
+      <a @click.prevent='search'>2010</a>
+      <a @click.prevent='search'>2011</a>
+      <a @click.prevent='search'>2012</a>
+      <a @click.prevent='search'>2013</a>
+      <a @click.prevent='search'>2014</a>
+      <a @click.prevent='search'>2015</a>
+      <a @click.prevent='search'>2016</a>
     </div>
   </div>
 
   <div class="card" v-for="upload in uploads" track-by="$index">
     <div class="name">
       <p>{{ upload.name }}</p>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect v-on:click="preview($event,$index)">预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, $index)">预览</mdl-anchor-button>
     </div>
-    <div class = "tag_box">
+    <div class = "tags">
       <span>标签:</span>
-      <span class="tag" v-for="tags in upload.tags" track-by="$index">
-        <span>{{tags}}</span>
-        <a title="删除标签" v-on:click="deleteTag($parent.$index,$index)">×</a>
+      <span class="tag" v-for="tag in upload.tags" track-by="$index">
+        <span>{{ tag }}</span>
+        <a title="删除标签" @click="deleteTag($parent.$index, $index)">×</a>
       </span>
-      <input type="text" maxlength="10" v-on:change="addTag($index,$event)">
+      <input type="text" maxlength="10" @change="addTag($event, $index)">
     </div>
     <div class="metadata">
       <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
@@ -59,9 +61,10 @@
       </div>
     </div>
   </div>
-  <div class="modal" v-on:click="hidePreview">
-    <div class="img-container" >
-       <img id='thumbnail' src="http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg">
+
+  <div class="modal" @click="hidePreview">
+    <div class="image-container" >
+       <img id='thumbnail' src="">
     </div>
   </div>
 </div>
@@ -70,24 +73,40 @@
 
 <script>
 export default {
-  methods:{
-    preview: function(e,index){
-      document.querySelector('.modal').style.display = 'block'
-      console.log(index)
-      document.querySelector('#thumbnail').src=this.uploads[index].thumbnail
+  methods: {
+    search: function() {
+
     },
-    hidePreview: function(e){
-      if(e.target.className.indexOf('modal')!=-1){
+
+    uploadClick: function() {
+      let fileInput = document.getElementById('file')
+      fileInput.click()
+      fileInput.addEventListener('change', this.uploadFile)
+    },
+
+    uploadFile: function(e) {
+      alert(e.toString())
+    },
+
+    showPreview: function(e, index) {
+      document.querySelector('.modal').style.display = 'block'
+      document.querySelector('#thumbnail').src = this.uploads[index].thumbnail
+    },
+
+    hidePreview: function(e) {
+      if (e.target.className.indexOf('modal') != -1) {
         e.target.style.display = 'none'
       }
     },
-    deleteTag:function(pId,tag_id){
-      this.uploads[pId].tags.splice(tag_id,1)
+
+    deleteTag: function(pId, tag_id) {
+      this.uploads[pId].tags.splice(tag_id, 1)
     },
-    addTag:function(index,e){
-      if(e.target.value){
+
+    addTag: function(e, index) {
+      if (e.target.value) {
         this.uploads[index].tags.push(e.target.value)
-        e.target.value=''
+        e.target.value = ''
       }
     }
   },
@@ -97,44 +116,45 @@ export default {
       uploads: [{
         upload_id: 'wqeq',
         name: '山东省行政区划用图',
-        tags: ['山东','决策用图','2016'],
+        tags: ['山东', '决策用图', '2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
-        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
+        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
-      },{
+      }, {
         name: '沈阳市行政区划用图',
-        tags: ['沈阳','决策用图','2016'],
+        tags: ['沈阳', '决策用图', '2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
-        thumbnail:'http://r.mapbar.com/poi/images/china.jpg',
+        thumbnail: 'http://r.mapbar.com/poi/images/china.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
-      },{
+      }, {
         name: '营口市行政区划用图',
-        tags: ['营口','决策用图','2016'],
+        tags: ['营口', '决策用图', '2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
-        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
+        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
-      },{
+      }, {
         name: '东营市行政区划用图',
-        tags: ['东营','决策用图','2016'],
+        tags: ['东营', '决策用图', '2016'],
         description: 5,
         size: '200 MB',
         format: 'png',
-        thumbnail:'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
+        thumbnail: 'http://image1.8264.com/plugin/201603/17/f8ece7ef614369075bc0e495f64df085.jpg',
         createdAt: '2016-3-25',
         updatedAt: '2016-3-25'
       }]
     }
   }
 }
+
 </script>
 
 
@@ -188,11 +208,11 @@ span {
   font-size: 1em;
 }
 
-.filter .tags {
+.filter .condition {
   margin: 2px 0
 }
 
-.filter .tags a {
+.filter .condition a {
   text-decoration: none;
   margin-left: 15px;
   font-size: .9em;
@@ -221,7 +241,7 @@ span {
 }
 
 .name {
-  margin: 24px 24px 0;
+  margin: 24px 24px 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -233,8 +253,36 @@ span {
   margin: 0;
 }
 
+.tags {
+  margin-left: 24px;
+  margin-right: 24px;
+  font-size: .8em;
+}
+
+.tags input {
+  outline: none;
+  border: 0;
+}
+
+.tag {
+  background: #eee;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 3px;
+  vertical-align: middle;
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.tag a {
+    text-decoration: none;
+    margin-left: 5px;
+    font: 14px "Times New Roman";
+}
+
 .metadata {
-  margin: 5px 24px;
+  margin: 0 24px 12px 24px;
   font-size: 1em;
   display: flex;
   justify-content: space-between;
@@ -259,49 +307,26 @@ span {
   top:0px;
   bottom: 0px;
   margin: 0 auto;
-  background-color: rgba(0,0,0,0.5);
+  background - color: rgba(0, 0, 0, 0.5);
   display: none;
   z-index: 9999;
 }
 
-.img-container {
+.image-container {
   height: 720px;
   width: 1280px;
   margin: 100px auto 0 auto;
 }
 
-.img-container img {
+.image-container img {
   width: 100%;
   height: 100%;
 }
 
-.card .tag_box {
-  margin-left:30px;
-}
 
-.tag_box input {
-  outline: none !important;
-  border: 0;
-  padding: 0 5px;
-}
 
-.tag {
-  background: #eee;
-  color: #333;
-  text-decoration: none;
-  font-size:12px;
-  cursor: pointer;
-  display: inline-table;
-  margin: 5px 3px;
-  vertical-align: middle;
-  padding: 0 10px 2px 10px;
-  border-radius: 12px;
-}
-
-.tag a {
-    text-decoration: none;
-    margin-left: 5px;
-    font: 18px/20px "times new roman";
-}
+/*.card * {
+  outline: 1px solid red;
+}*/
 
 </style>

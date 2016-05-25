@@ -4,12 +4,12 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect v-on:click="uploadFileClick">上传数据</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect @click="uploadFileClick">上传数据</mdl-button>
     <input type="file" style="display:none" id="file" accept="*.*,.json,.mbtiles,.zip">
   </div>
 
-  <foxgis-data-cards-data :dataset="dataset" v-on:delete-upload="deleteUpload" v-on:download-upload="downloadUpload"></foxgis-data-cards-data>
-  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
+  <foxgis-data-cards-data :dataset="dataset" @delete-upload="deleteUpload" @download-upload="downloadUpload"></foxgis-data-cards-data>
+  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 </div>
 </template>
@@ -21,143 +21,149 @@ import api from './api.js'
 import util from './util.js'
 export default {
   methods: {
-    uploadFileClick: function(){
-      var hidefile = document.getElementById("file")
+    uploadFileClick: function() {
+      let hidefile = document.getElementById('file')
       hidefile.click()
-      hidefile.addEventListener("change",this.uploadFile)
+      hidefile.addEventListener('change', this.uploadFile)
     },
-    uploadFile: function(e){
-      this.$el.querySelector("#create-loading").style.display = 'block'
+
+    uploadFile: function(e) {
+      this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = api.uploads + '/' + username
       var formData = new FormData()
-      formData.append('file',e.target.files[0])
+      formData.append('file', e.target.files[0])
       var reader = new FileReader()
       reader.readAsBinaryString(e.target.files[0])
-      reader.onloadend = function () {
-        console.log(reader.result.length);
+      reader.onloadend = function() {
+        console.log(reader.result.length)
       }
 
-      this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
-      .then(function(response){
-        var file = response.data
-        if(file.filesize/1024 > 1024){
-          file.filesize = (file.filesize/1048576).toFixed(2) + 'MB'
-        }else{
-          file.filesize = (file.filesize/1024).toFixed(2) + 'KB'
-        }
+      this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          var file = response.data
+          if (file.filesize / 1024 > 1024) {
+            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
+          }
 
-        file.upload_at = util.dateFormat(new Date(file.upload_at))
-        this.dataset.push(file)
-        this.$el.querySelector("#create-loading").style.display = 'none'
-      },function(response){
-        this.$el.querySelector("#create-loading").style.display = 'none'
-        if(response.data.error){
-          alert(response.data.error)
-        }else{
-          alert("未知错误，请稍后再试")
-        }
-      })
+          file.upload_at = util.dateFormat(new Date(file.upload_at))
+          this.dataset.push(file)
+          this.$el.querySelector('#create-loading').style.display = 'none'
+        }, function(response) {
+          this.$el.querySelector('#create-loading').style.display = 'none'
+          if (response.data.error) {
+            alert(response.data.error)
+          } else {
+            alert('未知错误，请稍后再试')
+          }
+        })
     },
-    deleteUpload: function(upload_id){
-      this.$el.querySelector("#delete-dialog").style.display = 'block'
+
+    deleteUpload: function(upload_id) {
+      this.$el.querySelector('#delete-dialog').style.display = 'block'
       this.deleteUploadId = upload_id
     },
-    deleteAction: function(status){
-      if(status === 'ok'){
+
+    deleteAction: function(status) {
+      if (status === 'ok') {
         let upload_id = this.deleteUploadId
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let url = api.uploads + '/' + username + "/" + upload_id
-        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].upload_id === upload_id){
-                this.dataset.splice(i,1)
+        let url = api.uploads + '/' + username + '/' + upload_id
+        this.$http({ url: url, method: 'DELETE', headers: { 'x-access-token': access_token } })
+          .then(function(response) {
+            if (response.ok) {
+              for (let i = 0; i < this.dataset.length; i++) {
+                if (this.dataset[i].upload_id === upload_id) {
+                  this.dataset.splice(i, 1)
+                }
+              }
+            }
+          }, function(response) {
+            alert('未知错误，请稍后再试')
+          })
+      }
+    },
+
+    downloadUpload: function(upload_id) {
+      this.$el.querySelector('#create-loading').style.display = 'block'
+      let username = docCookie.getItem('username')
+      let access_token = docCookie.getItem('access_token')
+      let url = api.uploads + '/' + username + '/' + upload_id
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          console.log(response)
+          if (response.ok) {
+            for (let i = 0; i < this.dataset.length; i++) {
+              if (this.dataset[i].upload_id === upload_id) {
+                let filename = this.dataset[i].filename
+                this.downloadAction(filename, response.data)
+                this.$el.querySelector('#create-loading').style.display = 'none'
+                break
               }
             }
           }
-        },function(response){
-          alert("未知错误，请稍后再试")
+        }, function(response) {
+          this.$el.querySelector('#create-loading').style.display = 'none'
+          alert('未知错误，请稍后再试')
         })
-      }
     },
-    downloadUpload: function(upload_id){
-      this.$el.querySelector("#create-loading").style.display = 'block'
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
-      let url = api.uploads + '/' + username + "/" + upload_id
-      this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-      .then(function(response){
-        console.log(response)
-        if(response.ok){
-          for(let i = 0;i<this.dataset.length;i++){
-            if(this.dataset[i].upload_id === upload_id){
-              let filename = this.dataset[i].filename
-              this.downloadAction(filename,response.data)
-              this.$el.querySelector("#create-loading").style.display = 'none'
-              break
-            }
-          }
-        }
-      },function(response){
-        this.$el.querySelector("#create-loading").style.display = 'none'
-        alert("未知错误，请稍后再试")
-      })
-    },
-    downloadAction: function(filename,content){
+
+    downloadAction: function(filename, content) {
       var aLink = document.createElement('a')
       var blob
-      if(filename.indexOf('.json')!=-1){
-        blob = new Blob([JSON.stringify(content,null,2)])
-      }else{
-        console.log('zip length '+content.length)
-        blob = new Blob([this.str2bytes(content)], {type: "application/x-zip-compressed"})
-        //blob = new Blob([content], {type: "application/zip"})
+      if (filename.indexOf('.json') != -1) {
+        blob = new Blob([JSON.stringify(content, null, 2)])
+      } else {
+        console.log('zip length ' + content.length)
+        blob = new Blob([this.str2bytes(content)], { type: 'application/x-zip-compressed' })
+          //blob = new Blob([content], {type: 'application/zip'})
         var bytes = new Uint8Array(blob)
       }
-      var evt = document.createEvent("HTMLEvents")
-      evt.initEvent("click", false, false)
+      var evt = document.createEvent('HTMLEvents')
+      evt.initEvent('click', false, false)
       aLink.download = filename
       console.log(blob.size)
       aLink.href = URL.createObjectURL(blob)
       aLink.dispatchEvent(evt)
     },
     str2bytes: function(str) {
-      var bytes = new Uint8Array(str.length);
-      for (var i=0; i<str.length; i++) {
-          bytes[i] = str.charCodeAt(i);
+      var bytes = new Uint8Array(str.length)
+      for (var i = 0; i < str.length; i++) {
+        bytes[i] = str.charCodeAt(i)
       }
       return bytes
     }
   },
+
   attached() {
     let username = docCookie.getItem('username')
     let access_token = docCookie.getItem('access_token')
-    //this.username = username
+      //this.username = username
     let url = api.uploads + '/' + username
     var that = this
-    //获取数据列表
-    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
+      //获取数据列表
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
 
-      if(response.data.length>0){
+      if (response.data.length > 0) {
         var data = response.data
-        data = data.map(function(d){
-          if(d.filesize/1024 > 1024){
-            d.filesize = (d.filesize/1048576).toFixed(2) + 'MB'
-          }else{
-            d.filesize = (d.filesize/1024).toFixed(2) + 'KB'
+        data = data.map(function(d) {
+          if (d.filesize / 1024 > 1024) {
+            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
+          } else {
+            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
           }
 
-          d.upload_at = util.dateFormat(new Date(d.upload_at))
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
 
           return d
         })
         this.dataset = data
       }
-    },function(response){
+    }, function(response) {
       console.log(response)
     })
   },
@@ -167,15 +173,15 @@ export default {
         filename: '全国人口分布数据',
         filesize: '200 MB',
         upload_at: '2016-3-25'
-      },{
+      }, {
         filename: '全国人口分布数据',
         filesize: '200 MB',
         upload_at: '2016-3-25'
-      },{
+      }, {
         filename: '全国人口分布数据',
         filesize: '200 MB',
         upload_at: '2016-3-25'
-      },{
+      }, {
         filename: '全国人口分布数据',
         filesize: '200 MB',
         upload_at: '2016-3-25'
@@ -187,7 +193,6 @@ export default {
     }
   }
 }
-
 </script>
 
 
