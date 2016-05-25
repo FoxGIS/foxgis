@@ -101,7 +101,7 @@ export default {
   overflow: hidden;
   margin: 40px auto;
   float: none;
-  top: 0;
+  top: 110px;
   right: 0;
   left: 0;
   width: 600px;
