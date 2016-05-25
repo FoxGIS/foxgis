@@ -1,7 +1,6 @@
 <template>
 <div class="foxgis-upload">
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
-
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect>上传决策用图</mdl-button>
