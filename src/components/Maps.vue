@@ -15,7 +15,7 @@
 
 
 <script>
-import api from './api.js'
+
 import docCookie from './cookie.js'
 import util from './util.js'
 import { changeStyle } from '../vuex/actions'
@@ -43,7 +43,7 @@ export default {
         let style = JSON.stringify(data)
         var username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let createURL = api.styles + '/' + username
+        let createURL = SERVER_API.styles + '/' + username
         this.$http({'url':createURL,'method':'POST','data':style,headers:{'x-access-token':access_token}})
         .then(function(res){
           this.$el.querySelector("#create-loading").style.display = 'none'
@@ -66,7 +66,7 @@ export default {
         let style_id = this.deleteStyleId
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let url = api.styles + '/' + username + "/" + style_id
+        let url = SERVER_API.styles + '/' + username + "/" + style_id
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -88,7 +88,7 @@ export default {
       return
     }
     let access_token = docCookie.getItem('access_token')
-    let url = 'http://bygis.com/api/v1/styles/' + username
+    let url = SERVER_API.styles+'/' + username
 
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
 
