@@ -22,7 +22,7 @@
   <div id = "scrollDiv">
     <div class="scrollText" >
       <ul style="margin-top: 0px; ">
-       <li v-for="message in messages"><span>{{message.name}}已上传{{message.map_count}}幅地图</span></li>
+       <li v-for="message in messages"><b>{{message.name}}已上传{{message.map_count}}幅地图</b></li>
      </ul>
   </div></div>
   </foxgis-layout>
@@ -144,7 +144,7 @@ height:100%;
   text-align:center;
   position:absolute;
   width:100%;
-  height:50px;
+  height:100px;
   background-color: white;
   overflow:hidden;
   bottom:0px;
@@ -157,5 +157,8 @@ height:100%;
 }
 .scrollText li{
   list-style:none;
+  font-size:25px;
+  line-height:33px;
+  letter-spacing:3px;
 }
 </style>
