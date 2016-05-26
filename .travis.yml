@@ -1,17 +1,18 @@
 language: node_js
 node_js:
-- '5'
+- '4.4.4'
 cache:
   directories:
   - node_modules
-script:
-- npm run test
 before_install:
 - openssl aes-256-cbc -K $encrypted_0851764f2c15_key -iv $encrypted_0851764f2c15_iv
   -in id_rsa.enc -out ~/.ssh/id_rsa -d
+script:
+  - npm run test
 after_success:
   - chmod 600 ~/.ssh/id_rsa
   - echo -e "Host bygis.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - cd deploy && tar -jcf foxgis.tar.bz2 *
+  - cd deploy
+  - tar -jcf foxgis.tar.bz2 *
   - scp foxgis.tar.bz2 bygis@bygis.com:~/
   - ssh bygis@bygis.com 'tar -jxf foxgis.tar.bz2 -C ./judy/public'

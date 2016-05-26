@@ -4,7 +4,6 @@ require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
 
 
-
 import Vue from 'vue'
 import Router from 'vue-router'
 import Resource from 'vue-resource'
@@ -124,11 +123,5 @@ router.map({
   }
 })
 
-// router.alias({
-//   '/studio':'/studio/Maps'
-// })
-// router.redirect({
-//   '*': '/'
-// })
 
 router.start(App, '#app')
