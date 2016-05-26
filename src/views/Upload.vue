@@ -11,22 +11,22 @@
   <div class="filter">
     <div class="condition" id="condition1">
       <span>主题：</span>
-      <a href="#" @click="conditionClick($event,1)">社会</a>
-      <a href="#" @click="conditionClick($event,1)">经济</a>
-      <a href="#" @click="conditionClick($event,1)">人口</a>
-      <a href="#" @click="conditionClick($event,1)">旅游</a>
-      <a href="#" @click="conditionClick($event,1)">农业</a>
-      <a href="#" @click="conditionClick($event,1)">新闻用图</a>
-      <a href="#" @click="conditionClick($event,1)">决策用图</a>
+      <a @click="conditionClick($event,1)">社会</a>
+      <a @click="conditionClick($event,1)">经济</a>
+      <a @click="conditionClick($event,1)">人口</a>
+      <a @click="conditionClick($event,1)">旅游</a>
+      <a @click="conditionClick($event,1)">农业</a>
+      <a @click="conditionClick($event,1)">新闻用图</a>
+      <a @click="conditionClick($event,1)">决策用图</a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a href="#" @click="conditionClick($event,2)">全国</a>
-      <a href="#" @click="conditionClick($event,2)">北京</a>
-      <a href="#" @click="conditionClick($event,2)">天津</a>
-      <a href="#" @click="conditionClick($event,2)">山东</a>
-      <a href="#" @click="conditionClick($event,2)">四川</a>
-      <a href="#" @click="conditionClick($event,2)">黑龙江</a>
+      <a @click="conditionClick($event,2)">全国</a>
+      <a @click="conditionClick($event,2)">北京</a>
+      <a @click="conditionClick($event,2)">天津</a>
+      <a @click="conditionClick($event,2)">山东</a>
+      <a @click="conditionClick($event,2)">四川</a>
+      <a @click="conditionClick($event,2)">黑龙江</a>
     </div>
     <div class="condition">
       <span>年份：</span>
@@ -79,7 +79,6 @@
 <script>
 import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
-import Vue from 'vue'
 export default {
   methods: {
     uploadClick: function() {
