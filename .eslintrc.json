@@ -1,5 +1,5 @@
 {
-  "plugins": ["html"],
+  "plugins": ["html", "vue"],
   "env": {
     "node": true,
     "mocha": true,

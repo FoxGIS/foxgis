@@ -39,6 +39,7 @@
     "css-loader": "^0.23.0",
     "eslint": "^2.8.0",
     "eslint-plugin-html": "^1.4.0",
+    "eslint-plugin-vue": "^0.1.1",
     "file-loader": "^0.8.4",
     "json-loader": "^0.5.4",
     "mkdirp": "^0.5.1",
