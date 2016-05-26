@@ -466,7 +466,7 @@ span {
 
 .modal {
   position: fixed;
-  left: 0px;
+  left: 240px;
   right: 0px;
   top:0px;
   bottom: 0px;
@@ -478,13 +478,12 @@ span {
 
 .image-container {
   max-width: 1000px;
-  margin: 100px auto 0 auto;
+  margin: 200px auto 0 auto;
 }
 
 .image-container img {
   clear: both;
   display: block;
-  margin: 200px auto auto auto;
 }
 
 .filter .condition .active{
