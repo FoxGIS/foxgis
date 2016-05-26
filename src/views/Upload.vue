@@ -132,7 +132,7 @@ export default {
     showPreview: function(e, index) {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
+      let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
     },
@@ -146,12 +146,12 @@ export default {
     patchUpload: function(index,data){
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let upload_id = this.uploads[index].upload_id
+      let upload_id = this.displayUploads[index].upload_id
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-           this.uploads[index].tags = response.data.tags
+           this.displayUploads[index].tags = response.data.tags
           }
         }, function(response) {
           alert("网络错误")
@@ -160,7 +160,7 @@ export default {
 
     deleteTag: function(pId, tag_id) {
       console.log(pId)
-      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
+      let patchTags = JSON.parse(JSON.stringify(this.displayUploads[pId].tags))
       console.log(patchTags)
       patchTags.splice(tag_id, 1)
       this.patchUpload(pId,{'tags':patchTags})
@@ -169,7 +169,7 @@ export default {
     addTag: function(e, index) {
       console.log(e);
       if (e.target.value) {
-        var patchUpload = this.uploads[index]
+        var patchUpload = this.displayUploads[index]
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
         this.patchUpload(index,{'tags':patchUpload.tags})
