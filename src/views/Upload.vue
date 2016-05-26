@@ -457,7 +457,7 @@ span {
 }
 
 .modal {
-  position: absolute;
+  position: fixed;
   left: 0px;
   right: 0px;
   top:0px;
