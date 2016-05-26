@@ -16,17 +16,22 @@
       <a @click="conditionClick($event,1)">人口</a>
       <a @click="conditionClick($event,1)">旅游</a>
       <a @click="conditionClick($event,1)">农业</a>
+      <a @click="conditionClick($event,1)">交通</a>
       <a @click="conditionClick($event,1)">新闻用图</a>
       <a @click="conditionClick($event,1)">决策用图</a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a @click="conditionClick($event,2)">全国</a>
+      <a @click="conditionClick($event,2)">中国</a>
       <a @click="conditionClick($event,2)">北京</a>
-      <a @click="conditionClick($event,2)">天津</a>
+      <a @click="conditionClick($event,2)">甘肃</a>
+      <a @click="conditionClick($event,2)">杭州</a>
+      <a @click="conditionClick($event,2)">湖北</a>
+      <a @click="conditionClick($event,2)">湖南</a>
       <a @click="conditionClick($event,2)">山东</a>
-      <a @click="conditionClick($event,2)">四川</a>
-      <a @click="conditionClick($event,2)">黑龙江</a>
+      <a @click="conditionClick($event,2)">深圳</a>
+      <a @click="conditionClick($event,2)">云南</a>
+      <a @click="conditionClick($event,2)">世界</a>
     </div>
     <div class="condition">
       <span>年份：</span>
@@ -273,9 +278,12 @@ export default {
         return
       }
       var conditions = this.tagConditions.join()
+      console.log(conditions)
+      console.log(this.uploads.length)
+
       for(var u=0,length=this.uploads.length;u<length;u++){
         let upload = this.uploads[u]
-        for(var t=0,length=upload.tags.length;t<length;t++){
+        for(var t=0,length1=upload.tags.length;t<length1;t++){
           if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
             temp.push(upload)
             break
@@ -295,7 +303,7 @@ export default {
       var conditions = this.tagConditions.join()
       for(var u=0,length=this.uploads.length;u<length;u++){
         let upload = this.uploads[u]
-        for(var t=0,length=upload.tags.length;t<length;t++){
+        for(var t=0,length1=upload.tags.length;t<length1;t++){
           if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
             temp.push(upload)
             break
