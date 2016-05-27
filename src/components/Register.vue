@@ -6,6 +6,11 @@
         <div id="error-info"></div>
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
+        <mdl-textfield floating-label="姓名" id="name"></mdl-textfield>
+        <mdl-textfield floating-label="邮箱" id="email"></mdl-textfield>
+        <mdl-textfield floating-label="电话" id="phone"></mdl-textfield>
+        <mdl-textfield floating-label="位置" id="location"></mdl-textfield>
+        <mdl-textfield floating-label="组织" id="organization"></mdl-textfield>
         <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
       </foxgis-card>
     </div>
@@ -26,17 +31,41 @@ export default {
       if(password.length < 6){
         this.showError('密码长度过短')
       }
+      let name = this.$el.querySelector('#name').value
+      let email = this.$el.querySelector('#email').value
+      let phone = this.$el.querySelector('#phone').value
+      let location = this.$el.querySelector('#location').value
+      let organization = this.$el.querySelector('#organization').value
       let registerbutton = e.target.parentElement
       registerbutton.disabled = true
-      this.$http.post(url,{'username':username,'password':password}).then(function(response){
+      let options = {
+        'username':username,
+        'password':password,
+        'name':name,
+        'email':email,
+        'phone':phone,
+        'location':location,
+        'organization':organization
+      }
+      this.$http.post(url,options).then(function(response){
         let data = response.data
         let access_token = data.access_token
         let username = data.username
         let date = new Date(data.createdAt)
         let days = 30
+        let name = data.name
+        let email = data.email
+        let phone = data.phone
+        let location = data.location
+        let organization = data.organization
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
+        docCookie.setItem('name',name,date)
+        docCookie.setItem('email',email,date)
+        docCookie.setItem('phone',phone,date)
+        docCookie.setItem('location',location,date)
+        docCookie.setItem('organization',organization,date)
         registerbutton.disabled = false
         window.location.href = '#!/studio'
       },function(response){
@@ -72,7 +101,7 @@ export default {
 
 .register {
   width: 300px;
-  height: 200px;
+  height: 500px;
   padding: 20px;
   position: relative;
 }
