@@ -50,25 +50,25 @@ export default {
 		return {
 			images: [{
 				image_id: 'pic1',
-				path:'/static/Home_image/规划a3.jpg',
-				title:'基础设施规划'
+				path:'/static/Home_image/china1.jpg',
+				title:'中国全图'
 			},{
 				image_id: 'pic2',
-				path:'/static/Home_image/陆上战略通道1米.jpg',
-				title:'陆上战略通道1米'
+				path:'/static/Home_image/北京市.jpg',
+				title:'北京市'
 			},{
 				image_id: 'pic3',
-				path:'/static/Home_image/海上战略通道.jpg',
-				title:'海上战略通道'
+				path:'/static/Home_image/三亚市三维.jpg',
+				title:'三亚市三维'
 			},{
 				image_id: 'pic4',
-				path:'/static/Home_image/铁路规划1mi.jpg',
-				title:'铁路规划1米'
+				path:'/static/Home_image/一带一路.jpg',
+				title:'一带一路'
 			},
 			{
 				image_id: 'pic5',
-				path:'/static/Home_image/公路规划1mi.jpg',
-				title:'公路规划1米'
+				path:'/static/Home_image/中国世界遗产.jpg',
+				title:'中国世界遗产'
 			}],
 			messages:[{
 				id:1,

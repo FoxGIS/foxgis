@@ -152,16 +152,18 @@ export default {
       for(let i=0;i<e.target.files.length;i++){
         var formData = new FormData()
         formData.append('upload', e.target.files[i])
-        var reader = new FileReader()
-        reader.readAsBinaryString(e.target.files[i])
-        reader.onloadend = function() {
-          console.log(reader.result.length)
-        }
+        //var reader = new FileReader()
+        //reader.readAsBinaryString(e.target.files[i])
+        //reader.onloadend = function() {
+         // console.log(reader.result.length)
+        //}
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
             fileCount++;
             console.log(response)
             var file = response.data
+            file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
+            file.location = docCookie.getItem('location');//设置上传地图的默认制图地区
             if (file.filesize / 1024 > 1024) {
               file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
             } else {
@@ -475,7 +477,7 @@ span {
 }
 
 .name input {
-  font-size: 1em;
+  font-size: 16px;
   margin: 0;
   border: none;
   padding: 5px 5px 5px 0;
@@ -512,7 +514,7 @@ span {
 
 .metadata {
   margin: 0 24px 12px 24px;
-  font-size: 1em;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -520,7 +522,7 @@ span {
 
 .metadata p {
   color: #9E9E9E;
-  font-size: .5em;
+  font-size: 12px;
   margin: 0;
 }
 
@@ -528,7 +530,7 @@ span {
     border: 0;
     width: 50px;
     color: #9E9E9E;
-    font-size: .5em;
+    font-size: 12px;
     margin: 0;
 }
 
@@ -536,7 +538,7 @@ span {
     border: 0;
     width: 50px;
     color: #9E9E9E;
-    font-size: .5em;
+    font-size: 12px;
     margin: 0;
     display: inline-block;
 }
