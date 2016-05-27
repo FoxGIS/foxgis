@@ -60,8 +60,8 @@
     </div>
     <div class="metadata">
       <p>
-        制图地区:<input type="text" maxlength="10" @change="editLocation($event, $index)"/>
-        制图时间:<input type="text" maxlength="10" @change="editTime($event, $index)"/>
+        制图地区:<input type="text" value="{{ upload.location }}" @change="editLocation($event, $index)"/>
+        制图时间:<input type="text" value="{{ upload.year }}" @change="editTime($event, $index)"/>
         文件大小:<span>{{ calculation(upload.size) }}</span>
         文件格式:<span>{{ upload.format }}</span>
       </p>
@@ -94,14 +94,36 @@ export default {
     editLocation: function(e, index) {
       if (e.target.value) {
         let location = e.target.value
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let upload_id = this.displayUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         this.displayUploads[index].location = location
+        this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let location = data.location
+            docCookie.setItem('location',location,date)
+          },function(response){
+            alert("编辑错误")
+          })
       }
     },
 
     editTime: function(e, index) {
       if (e.target.value) {
-        let time = e.target.value
-        this.displayUploads[index].year = time
+        let year = e.target.value
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let upload_id = this.displayUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        this.displayUploads[index].year = year
+        this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let year = data.year
+            docCookie.setItem('year',year,date)
+          },function(response){
+            alert("编辑错误")
+          })
       }
     },
 
