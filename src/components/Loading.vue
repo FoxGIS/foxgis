@@ -11,6 +11,7 @@ export default {
   attached() {
     componentHandler.upgradeElement(document.getElementById("spiner"))
   }
+
 }
 </script>
 

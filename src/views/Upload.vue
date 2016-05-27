@@ -5,7 +5,7 @@
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
-    <input type="file" style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
+    <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
 
   <div class="filter">
@@ -93,40 +93,47 @@ export default {
     },
 
     uploadFile: function(e) {
-
+      var fileCount=0;//记录上传的文件数目
       this.$el.querySelector('#create-loading').style.display = 'block'
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username
-      var formData = new FormData()
-      formData.append('upload', e.target.files[0])
-      var reader = new FileReader()
-      reader.readAsBinaryString(e.target.files[0])
-      reader.onloadend = function() {
-        console.log(reader.result.length)
-      }
-      this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
-        .then(function(response) {
-          console.log(response)
-          var file = response.data
-          if (file.filesize / 1024 > 1024) {
-            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
-          } else {
-            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
-          }
-
-          file.upload_at = util.dateFormat(new Date(file.upload_at))
-          this.uploads.push(file)
-          this.$el.querySelector('#create-loading').style.display = 'none'
-        }, function(response) {
-          this.$el.querySelector('#create-loading').style.display = 'none'
-          if (response.data.error) {
-            alert(response.data.error)
-          } else {
+      for(let i=0;i<e.target.files.length;i++){
+        var formData = new FormData()
+        formData.append('upload', e.target.files[i])
+        var reader = new FileReader()
+        reader.readAsBinaryString(e.target.files[i])
+        reader.onloadend = function() {
+          console.log(reader.result.length)
+        }
+        this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+         .then(function(response) {
+            fileCount++;
             console.log(response)
+            var file = response.data
+            if (file.filesize / 1024 > 1024) {
+              file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
+            } else {
+             file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
+           }
+
+            file.upload_at = util.dateFormat(new Date(file.upload_at))
+            this.uploads.push(file)
+            if(fileCount===e.target.files.length){
+              alert("上传完毕！");
+            this.$el.querySelector('#create-loading').style.display = 'none';
+          }    
+         }, function(response) { 
+           this.$el.querySelector('#create-loading').style.display = 'none'
+           if (response.data.error) {
+             alert(response.data.error)
+            } else {
+              console.log(response)
             alert('未知错误，请稍后再试')
           }
-        })
+        });
+      }
+      
     },
 
     showPreview: function(e, index) {
