@@ -300,6 +300,9 @@ export default {
 
   attached() {
     let username = docCookie.getItem('username')
+    if(username === null){
+      return 
+    }
     let access_token = docCookie.getItem('access_token')
     let url = SERVER_API.uploads + '/' + username
     var that = this
