@@ -59,7 +59,12 @@
       <input type="text" maxlength="10" @change="addTag($event, $index)">
     </div>
     <div class="metadata">
-      <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
+      <p>
+        制图地区:<input type="text" maxlength="10" @change="editLocation($event, $index)"/>
+        制图时间:<input type="text" maxlength="10" @change="editTime($event, $index)"/>
+        文件大小:<span>{{ calculation(upload.size) }}</span>
+        文件格式:<span>{{ upload.format }}</span>
+      </p>
       <div class="action">
         <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(upload.upload_id)">删除</mdl-anchor-button>
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(upload.upload_id)">下载</mdl-anchor-button>
@@ -86,6 +91,30 @@ import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
 export default {
   methods: {
+    editLocation: function(e, index) {
+      if (e.target.value) {
+        let location = e.target.value
+        this.displayUploads[index].location = location
+      }
+    },
+
+    editTime: function(e, index) {
+      if (e.target.value) {
+        let time = e.target.value
+        this.displayUploads[index].year = time
+      }
+    },
+
+    calculation:function(size){
+      let s = size/1024
+      if (s>=1024) {
+        s=s/1024
+        return s.toFixed(2)+"Mb"
+      }else{
+        return s.toFixed(2)+"Kb"
+      }
+    },
+
     uploadClick: function() {
       let fileInput = document.getElementById('file')
       fileInput.click()
@@ -457,6 +486,23 @@ span {
   color: #9E9E9E;
   font-size: .5em;
   margin: 0;
+}
+
+.metadata input{
+    border: 0;
+    width: 50px;
+    color: #9E9E9E;
+    font-size: .5em;
+    margin: 0;
+}
+
+.metadata span{
+    border: 0;
+    width: 50px;
+    color: #9E9E9E;
+    font-size: .5em;
+    margin: 0;
+    display: inline-block;
 }
 
 .metadata .mdl-button {
