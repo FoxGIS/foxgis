@@ -47,7 +47,7 @@
 
   <div class="card" v-for="upload in displayUploads" track-by="$index">
     <div class="name">
-      <input type="text" value="{{upload.name}}" @change="uploadNameChange($event, $index)"/>
+      <input type="text" v-model="upload.name" @change="uploadNameChange($event, $index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, $index)">预览</mdl-anchor-button>
     </div>
     <div class = "tags">
@@ -144,6 +144,12 @@ export default {
     },
 
     patchUpload: function(index,data){
+      for(let attr in data){ 
+        if(this.displayUploads[index].hasOwnProperty(attr))
+        {
+          this.displayUploads[index][attr] = data[attr];
+        } 
+      }
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let upload_id = this.displayUploads[index].upload_id
@@ -151,7 +157,8 @@ export default {
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-           this.displayUploads[index].tags = response.data.tags
+           //this.displayUploads[index].tags = response.data.tags;
+           //this.displayUploads[index].name = response.data.name;
           }
         }, function(response) {
           alert("网络错误")
