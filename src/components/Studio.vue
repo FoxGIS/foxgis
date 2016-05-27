@@ -5,10 +5,10 @@
     <div class="mdl-layout__drawer">
       <!-- <span class="mdl-layout-title">制图工作室</span> -->
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i>符号</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i>符号</a>
         <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图</a>
       </nav>
       <div class="mdl-layout-spacer"></div>

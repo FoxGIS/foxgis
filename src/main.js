@@ -96,7 +96,7 @@ router.map({
     component: Studio,
     subRoutes: {
       '/': {
-        component: Maps
+        component: Upload
       },
       '/maps': {
         component: Maps
