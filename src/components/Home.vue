@@ -7,8 +7,8 @@
 				<h2>欣赏地图之美，探索地图魅力</h2>
 			</div>
 			<mdl-anchor-button class="explore" v-link="{path:'/atlas'}" v-mdl-ripple-effect accent raised>开启地图之旅</mdl-anchor-button>
-			
-			
+
+
 		</div>-->
 
 	 <!-- <foxgis-footer></foxgis-footer>-->
@@ -26,26 +26,39 @@
 		 </ul>
 	</div></div>
 	</foxgis-layout>
-	
- 
+
+
 </div>
 </template>
 
 
 <script>
+import docCookie from './cookie.js'
 export default {
 	methods:{
-		
-	},
 
+	},
+	
+  attached() {
+     //判断是否登陆
+    let username = docCookie.getItem('username')
+		console.log(username)
+    if(username === null){
+      window.location.href = "#!/login"
+    }else{
+      this.username = username
+    }
+  },
+	
 	ready(){
 			$("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
 			$('.automatic-slider').unslider({
 				autoplay: true,
 				delay:3000
 			});//设置图片滚动
-			
+
 	},
+
 	data() {
 		return {
 			images: [{
@@ -134,10 +147,9 @@ export default {
 	border-radius: 30px;
 }
 
-
 li img{
-width:100%;
-height:100%;
+	width:100%;
+	height:100%;
 }
 
 #scrollDiv{
@@ -149,12 +161,14 @@ height:100%;
 	overflow:hidden;
 	bottom:0px;
 }
+
 .scrollText{
-		min-height: 25px;
-		line-height: 25px;
-		margin:0px auto;
-		overflow: hidden;
+	min-height: 25px;
+	line-height: 25px;
+	margin:0px auto;
+	overflow: hidden;
 }
+
 .scrollText li{
 	list-style:none;
 	font-size:25px;

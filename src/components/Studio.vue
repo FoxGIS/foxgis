@@ -34,6 +34,12 @@ export default {
     signout: function(){
       docCookie.removeItem('username')
       docCookie.removeItem('access_token')
+      docCookie.removeItem('name')
+      docCookie.removeItem('phone')
+      docCookie.removeItem('email')
+      docCookie.removeItem('location')
+      docCookie.removeItem('organization')
+      
       window.location.href = '/'
     }
   },

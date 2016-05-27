@@ -38,13 +38,25 @@ export default {
         let data = response.data
         let access_token = data.access_token
         let username = data.username
+        let name = data.name
+        let email = data.email
+        let phone = data.phone
+        let organization = data.organization
+        let location = data.location
+        
         let date = new Date()
         let days = 30
         date.setTime(date.getTime() + days*24*3600*1000)
         docCookie.setItem('access_token',access_token,date)
         docCookie.setItem('username',username,date)
+        docCookie.setItem('name',name,date)
+        docCookie.setItem('email',email,date)
+        docCookie.setItem('phone',phone,date)
+        docCookie.setItem('location',location,date)
+        docCookie.setItem('organization',location,date)
         loginbutton.disabled = false
-        window.location.href = '#!/studio'
+        //跳转不好处理，所以统一跳转到首页
+        window.location.href = '#!/home'
       },function(response){
         loginbutton.disabled = false
         this.showError('用户名或密码错误')
@@ -60,6 +72,14 @@ export default {
     //隐藏error info
     let errorContainer = this.$el.querySelector('#error-info')
     errorContainer.style.display = 'none'
+     //判断是否登录,已登录就跳转到home
+    let username = docCookie.getItem('username')
+		console.log(username)
+    if(username !== null){
+      window.location.href = "#!/home"
+    }else{
+      this.username = username
+    }
   }
 }
 
