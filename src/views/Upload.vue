@@ -59,7 +59,12 @@
       <input type="text" maxlength="10" @change="addTag($event, $index)">
     </div>
     <div class="metadata">
-      <p>{{ upload.createdAt }} · {{ upload.size }} · {{ upload.format }}</p>
+      <p>
+        制图地区:<input type="text" value="{{ upload.location }}" @change="editLocation($event, $index)"/>
+        制图时间:<input type="text" value="{{ upload.year }}" @change="editTime($event, $index)"/>
+        文件大小:<span>{{ calculation(upload.size) }}</span>
+        文件格式:<span>{{ upload.format }}</span>
+      </p>
       <div class="action">
         <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(upload.upload_id)">删除</mdl-anchor-button>
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(upload.upload_id)">下载</mdl-anchor-button>
@@ -86,6 +91,52 @@ import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
 export default {
   methods: {
+    editLocation: function(e, index) {
+      if (e.target.value) {
+        let location = e.target.value
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let upload_id = this.displayUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        this.displayUploads[index].location = location
+        this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let location = data.location
+            docCookie.setItem('location',location,date)
+          },function(response){
+            alert("编辑错误")
+          })
+      }
+    },
+
+    editTime: function(e, index) {
+      if (e.target.value) {
+        let year = e.target.value
+        let username = docCookie.getItem('username')
+        let access_token = docCookie.getItem('access_token')
+        let upload_id = this.displayUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        this.displayUploads[index].year = year
+        this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let year = data.year
+            docCookie.setItem('year',year,date)
+          },function(response){
+            alert("编辑错误")
+          })
+      }
+    },
+
+    calculation:function(size){
+      let s = size/1024
+      if (s>=1024) {
+        s=s/1024
+        return s.toFixed(2)+"Mb"
+      }else{
+        return s.toFixed(2)+"Kb"
+      }
+    },
+
     uploadClick: function() {
       let fileInput = document.getElementById('file')
       fileInput.click()
@@ -471,6 +522,23 @@ span {
   color: #9E9E9E;
   font-size: .5em;
   margin: 0;
+}
+
+.metadata input{
+    border: 0;
+    width: 50px;
+    color: #9E9E9E;
+    font-size: .5em;
+    margin: 0;
+}
+
+.metadata span{
+    border: 0;
+    width: 50px;
+    color: #9E9E9E;
+    font-size: .5em;
+    margin: 0;
+    display: inline-block;
 }
 
 .metadata .mdl-button {
