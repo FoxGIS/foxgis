@@ -35,6 +35,9 @@
   </div>
 
   <div class="card" v-for="upload in displayUploads" track-by="$index">
+    <div class="small-pic pin-left">
+       <img id='mini-thumbnail' v-bind:src = "parseImgURL(upload)">
+    </div>
     <div class="name">
       <input type="text" v-model="upload.name" @change="uploadNameChange($event, $index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, $index)">预览</mdl-anchor-button>
@@ -124,6 +127,12 @@ export default {
       }else{
         return s.toFixed(2)+"Kb"
       }
+    },  
+    
+    parseImgURL:function(upload) {
+      ///uploads/{username}/{upload_id}/mini_thumbnail
+      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' 
+      return url
     },
 
     uploadClick: function() {
@@ -319,8 +328,7 @@ export default {
             d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
           }
 
-          d.createdAt = util.dateFormat(new Date(d.createdAt))
-
+          d.createdAt = util.dateFormat(new Date(d.createdAt))        
           return d
         })
         this.uploads = data
@@ -341,7 +349,7 @@ export default {
       deleteUploadId: '',
       tagConditions: [],
       year: [],
-      location: []
+      location: [],     
     }
   },
   watch: {
@@ -672,5 +680,21 @@ span {
 .filter .condition .active{
   cursor: pointer;
   color: blue;
+}
+
+.small-pic {
+  float: left;
+  height: 100px;
+  width: 100px;
+  margin: 15px 10px;
+  transition: all 0.5s;  
+}
+
+.small-pic:hover {
+  opacity: 0.7;  
+}
+
+.small-pic img {
+  border-radius: 5px;
 }
 </style>
