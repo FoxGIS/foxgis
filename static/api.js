@@ -1,4 +1,4 @@
-let baseURL = 'http://foxgis.com/api/v1';
+var baseURL = 'http://foxgis.com/api/v1'
 window.SERVER_API = {
   users: baseURL + '/users',
   styles: baseURL + '/styles',
