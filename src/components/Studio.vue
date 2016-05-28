@@ -9,7 +9,7 @@
         <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
         <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
         <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i>符号</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i><span  v-mdl-badge.number="upload_nums" >决策用图</span></a>
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
@@ -56,10 +56,18 @@ export default {
     }else{
       this.username = username
     }
+
+    console.log(this.$children[0].$children[0].uploads)
   },
   data: function(){
     return {
-      username: '用户'
+      username: '用户',
+      upload_nums:0
+    }
+  },
+  events: {
+    "upload_nums":function(msg) {
+      this.upload_nums = parseInt(msg)
     }
   }
 }

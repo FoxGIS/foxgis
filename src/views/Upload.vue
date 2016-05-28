@@ -376,6 +376,7 @@ export default {
     }, function(response) {
       console.log(response)
     })
+    console.log(this.$parent)
   },
   
   computed: {
@@ -389,6 +390,7 @@ export default {
      
      total_items: function (){
       let count = this.displayUploads.length;
+      this.$dispatch("upload_nums", count);
       return count;
      }
   },
