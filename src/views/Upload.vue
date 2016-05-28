@@ -352,10 +352,14 @@ export default {
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
       var aLink = document.createElement('a')
-      var evt = document.createEvent("HTMLEvents")
-      evt.initEvent("click", false, false);
+      aLink.className = 'download_link'
+      var text = document.createTextNode('&nbsp;')
+      aLink.appendChild(text)
+      // var evt = document.createEvent("HTMLEvents")
+      // evt.initEvent("click", false, false);
       aLink.href = url
-      aLink.dispatchEvent(evt)
+      aLink.click()
+      // aLink.dispatchEvent(evt)     
     },
     
     uploadNameChange: function(e,index){
@@ -831,4 +835,10 @@ span {
   margin-left: 10px;
   vertical-align: middle;
 }
+
+.download_link {
+  display: block; 
+  background: url("../../static/BtnNew.png") 0 0 repeat; 
+}
+
 </style>
