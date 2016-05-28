@@ -21,25 +21,20 @@
   <div class="filter">
     <div class="condition">
       <span>主题：</span>
-      <a @click="conditionClick($event,1)">社会</a>
-      <a @click="conditionClick($event,1)">经济</a>
-      <a @click="conditionClick($event,1)">人口</a>
-      <a @click="conditionClick($event,1)">旅游</a>
-      <a @click="conditionClick($event,1)">农业</a>
-      <a @click="conditionClick($event,1)">交通</a>
-      <a @click="conditionClick($event,1)">新闻用图</a>
-      <a @click="conditionClick($event,1)">决策用图</a>
+      <a v-for="tag in theme_tags" v-if="$index<10"
+          @click="conditionClick($event,1)">{{ tag }}
+      </a>
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a v-for="upload in uploads" 
-          @click="conditionClick($event,2)">{{ upload.location }}
+      <a v-for="location in location_tags" v-if="$index<10"
+          @click="conditionClick($event,2)">{{ location }}
       </a>
     </div>
     <div class="condition">
       <span>年份：</span>
-      <a v-for="upload in uploads | orderBy 'year'" 
-          @click="conditionClick($event,3)">{{ upload.year }}
+      <a v-for="year in year_tags | orderBy" v-if="$index<10"
+          @click="conditionClick($event,3)">{{ year }}
       </a>
     </div>
   </div>  
@@ -79,9 +74,13 @@
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
     <ul>
-      <li id="page-pre" v-on:click="prePage" v-if="pageConfig.current_page > 1"><span><i class="material-icons">navigate_before</i></span></li>
-      <li v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-      <li id="page-next" v-on:click="nextPage" v-if="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)"><span><i class="material-icons">navigate_next</i></span></li>
+      <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
+        <span><i class="material-icons">navigate_before</i></span>
+      </li>
+      <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
+      <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
+        <span><i class="material-icons">navigate_next</i></span>
+      </li>
     </ul>
   </div>
   
@@ -100,6 +99,7 @@
 
 
 <script>
+import _ from 'lodash'
 import docCookie from '../components/cookie.js'
 import util from '../components/util.js'
 export default {
@@ -121,7 +121,14 @@ export default {
             docCookie.setItem('location',location,date)
           },function(response){
             alert("编辑错误")
-          })
+          }
+        )
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            this.location_tags[i] = this.uploads[i].location
+          }
+          this.location_tags = _.uniq(this.location_tags)
+        }
       }
     },
 
@@ -142,7 +149,14 @@ export default {
             docCookie.setItem('year',year,date)
           },function(response){
             alert("编辑错误")
-          })
+          }
+        )
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            this.year_tags[i] = this.uploads[i].year
+          }
+          this.year_tags = _.uniq(this.year_tags)
+        }
       }
     },
 
@@ -231,8 +245,9 @@ export default {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
-      document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
+      document.querySelector('.modal').style.display = 'block'
+      
     },
 
     hidePreview: function(e) {
@@ -288,27 +303,33 @@ export default {
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
         if(type == 3){
-          var index = this.year.indexOf(e.target.textContent)
+          var index = this.selected_year_tags.indexOf(e.target.textContent.trim())
           if(index != -1){
-            this.year.splice(index,1)
+            this.selected_year_tags.splice(index,1)
           }
         }else if(type == 2){
-          var index = this.location.indexOf(e.target.textContent)
+          var index = this.selected_location_tags.indexOf(e.target.textContent.trim())
           if(index != -1){
-            this.location.splice(index,1)
+            this.selected_location_tags.splice(index,1)
           }
         }else if(type === 1){
-          this.tagConditions.splice(index,1)
+          var index = this.selected_theme_tags.indexOf(e.target.textContent.trim())
+          if(index != -1){
+            this.selected_theme_tags.splice(index,1)
+          }
         }
         
       }else{
         e.target.className = 'filter condition active'
         if(type == 3){
-          this.year.push(e.target.textContent)
+          this.selected_year_tags.push(e.target.textContent.trim())
+          this.selected_year_tags = _.uniq(this.selected_year_tags)
         }else if(type == 2){
-          this.location.push(e.target.textContent)
+          this.selected_location_tags.push(e.target.textContent.trim())
+          this.selected_location_tags = _.uniq(this.selected_location_tags)
         }else if(type ===1){
-          this.tagConditions.push(e.target.textContent)
+          this.selected_theme_tags.push(e.target.textContent.trim())
+          this.selected_theme_tags = _.uniq(this.selected_theme_tags)
         }
         
       }
@@ -358,13 +379,21 @@ export default {
     },
     
     nextPage: function (event) {
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      if(this.pageConfig.current_page === allPages){
+        return
+      }
       this.pageConfig.current_page += 1;
+      
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
     },
     
     prePage: function (event) {
+      if(this.pageConfig.current_page === 1){
+        return
+      }
       this.pageConfig.current_page -= 1;
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
@@ -372,7 +401,6 @@ export default {
     },
     
     setPage: function (page) {
-      console.log(page);
       this.pageConfig.current_page = page+1;
     }
   },
@@ -396,11 +424,25 @@ export default {
             d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
           }
           d.createdAt = util.dateFormat(new Date(d.createdAt))
-          //d['visible'] = true
           return d
         })
         this.uploads = data
-        //this.displayUploads = this.uploads.slice(0)
+        if(this.uploads.length>0){
+          let k=0
+          for(let i=0;i<this.uploads.length;i++){
+            this.year_tags[i] = this.uploads[i].year
+            this.location_tags[i] = this.uploads[i].location
+            if(this.uploads[i].tags.length>0){
+              for(let j=0;j<this.uploads[i].tags.length;j++){
+                this.theme_tags[k]=this.uploads[i].tags[j]
+                k++
+              }
+            }
+          }
+          this.year_tags = _.uniq(this.year_tags)
+          this.location_tags = _.uniq(this.location_tags)
+          this.theme_tags = _.uniq(this.theme_tags)
+        }
       }
     }, function(response) {
       console.log(response)
@@ -409,7 +451,7 @@ export default {
   },
   
   computed: {
-    show_page_num: function (){
+     show_page_num: function (){
         let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
         if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
           this.pageConfig.current_page = cop_page_num
@@ -425,39 +467,75 @@ export default {
      },
      
      displayUploads: function(){
-       console.log('displayUploads computed by condition')
-       if(this.tagConditions.length===0&&this.year.length===0&&this.location.length===0){
+      console.log('displayUploads computed by condition')
+      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0){
         return this.uploads.slice(0)
-       }
-       var temp = []
-       var conditions = this.tagConditions.join()
-       for(var u=0,length=this.uploads.length;u<length;u++){
-         let upload = this.uploads[u]
-         //upload.visible = false
-         // tag filter
-         for(var t=0,length1=upload.tags.length;t<length1;t++){
-           if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
-             temp.push(upload)
-             //upload.visible = true
-             break
-           }
-         }
-         
-         //year filter
-         let yearConditions = this.year.join()
-         if(yearConditions.indexOf(upload.year)!=-1&&temp.indexOf(upload)==-1){
-           temp.push(upload)
-         }
-         
-         //location filter
-         let locationConditions = this.location.join()
-         if(locationConditions.indexOf(upload.location)!=-1&&temp.indexOf(upload)==-1){
-           temp.push(upload)
-         }
-       }
-       return temp
+      }
 
-     }
+      var temp1 = []
+      var temp2 = []
+      var temp3 = []
+      if(this.selected_theme_tags.length>0){
+        var conditions = this.selected_theme_tags.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          if(upload.tags.length>0){
+            for(var i=0;i<upload.tags.length;i++){
+              if(conditions.indexOf(upload.tags[i])!=-1&&temp1.indexOf(upload) === -1){
+                temp1.push(upload)
+                break
+              }
+            }
+          }  
+        }
+      }
+      if(this.selected_year_tags.length>0){
+        var conditions = this.selected_year_tags.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          if(conditions.indexOf(upload.year)!=-1&&temp2.indexOf(upload) === -1){
+            temp2.push(upload)
+          }
+        }
+      }
+      if(this.selected_location_tags.length>0){
+        var conditions = this.selected_location_tags.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          if(conditions.indexOf(upload.location)!=-1&&temp3.indexOf(upload) === -1){
+            temp3.push(upload)
+          }
+        }
+      }
+
+      let temp = []
+      if(temp1.length == 0){
+        if(temp2.length == 0){
+          temp = temp3
+        }else{
+          if(temp3.length == 0){
+            temp = temp2
+          }else{
+            temp = _.intersection(temp2,temp3)
+          }
+        }
+      }else{
+        if(temp2.length == 0){
+          if(temp3.length == 0){
+            temp = temp1
+          }else{
+            temp = _.intersection(temp1,temp3)
+          }
+        }else{
+          if(temp3.length == 0){
+            temp = _.intersection(temp1,temp2)
+          }else{
+            temp = _.intersection(temp1,temp2,temp3)
+          }
+        }
+      }
+      return temp
+    }
   },
 
   data() {
@@ -473,148 +551,13 @@ export default {
         current_page: 1,
         first_page: 1,
       },
-      year: [],
-      location: [],     
+      theme_tags: [], 
+      year_tags: [],
+      location_tags: [], 
+      selected_year_tags: [],
+      selected_location_tags: [], 
+      selected_theme_tags: []
     }
-  },
-  watch: {
-    // 'tagConditions': function(){
-    //   console.log(this.tagConditions.length)
-    //   if(this.tagConditions.length === 0){
-    //     this.displayUploads = this.uploads.slice(0)
-    //     return
-    //   }
-    //   var temp = []
-    //   var conditions = this.tagConditions.join()
-    //   for(var u=0,length=this.uploads.length;u<length;u++){
-    //     let upload = this.uploads[u]
-    //     upload.visible = false
-    //     for(var t=0,length1=upload.tags.length;t<length1;t++){
-    //       if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
-    //         temp.push(upload)
-    //         //upload.visible = true
-    //         break
-    //       }
-    //     }
-    //   }
-    //   this.displayUploads = temp
-    // },
-    
-    // 'uploads': {
-    //   handler: function(){
-    //     console.log('uploads-change')
-    //     if(this.tagConditions.length === 0){
-    //       this.displayUploads = this.uploads.slice(0)
-    //       return
-    //     }
-    //     var temp = []
-    //     var conditions = this.tagConditions.join()
-    //     for(var u=0,length=this.uploads.length;u<length;u++){
-    //       let upload = this.uploads[u]
-    //       upload.visible = false
-    //       for(var t=0,length1=upload.tags.length;t<length1;t++){
-    //         if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
-    //           temp.push(upload)
-    //           //upload.visible = true
-    //           break
-    //         }
-    //       }
-    //     }
-    //     this.displayUploads = temp
-    //   },
-    //   deep: true
-    // },
-
-    // 'year': function(){
-    //   var temp1 = []
-    //   var temp2 = []
-    //   if(this.year.length === 0&&this.location.length === 0){
-    //     this.displayUploads = this.uploads
-    //     return
-    //   }
-      
-    //   if(this.year.length>0){
-    //     var conditions = this.year.join()
-    //     for(var u=0,length=this.uploads.length;u<length;u++){
-    //       let upload = this.uploads[u]
-    //       if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
-    //         temp1.push(upload)
-    //       }
-    //     }
-    //   }
-    //   if(this.location.length>0){
-    //     var conditions2 = this.location.join()
-    //     if(temp1.length>0){
-    //       for(var j=0,length=temp1.length;j<length;j++){
-    //         let upload2 = temp1[j]
-    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-    //           temp2.push(upload2)
-    //         }
-    //       }
-    //     }else{
-    //       for(var j=0,length=this.uploads.length;j<length;j++){
-    //         let upload2 = this.uploads[j]
-    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-    //           temp2.push(upload2)
-    //         }
-    //       }
-    //     }
-        
-    //   }
-    //   if(this.year.length > 0&&this.location.length === 0){
-    //     this.displayUploads = temp1
-    //   }else if(this.year.length === 0&&this.location.length > 0){
-    //     this.displayUploads = temp2
-    //   }else if(this.year.length > 0&&this.location.length > 0){
-    //     this.displayUploads = temp2
-    //   }
-      
-    // },
-
-    // 'location': function(){
-    //   var temp1 = []
-    //   var temp2 = []
-    //   if(this.year.length === 0&&this.location.length === 0){
-    //     this.displayUploads = this.uploads
-    //     return
-    //   }
-      
-    //   if(this.year.length>0){
-    //     var conditions = this.year.join()
-    //     for(var u=0,length=this.uploads.length;u<length;u++){
-    //       let upload = this.uploads[u]
-    //       if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
-    //         temp1.push(upload)
-    //       }
-    //     }
-    //   }
-    //   if(this.location.length>0){
-    //     var conditions2 = this.location.join()
-    //     if(temp1.length>0){
-    //       for(var j=0,length=temp1.length;j<length;j++){
-    //         let upload2 = temp1[j]
-    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-    //           temp2.push(upload2)
-    //         }
-    //       }
-    //     }else{
-    //       for(var j=0,length=this.uploads.length;j<length;j++){
-    //         let upload2 = this.uploads[j]
-    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-    //           temp2.push(upload2)
-    //         }
-    //       }
-    //     }
-        
-    //   }
-    //   if(this.year.length > 0&&this.location.length === 0){
-    //     this.displayUploads = temp1
-    //   }else if(this.year.length === 0&&this.location.length > 0){
-    //     this.displayUploads = temp2
-    //   }else if(this.year.length > 0&&this.location.length > 0){
-    //     this.displayUploads = temp2
-    //   }
-    // }
   }
 }
 
@@ -798,12 +741,14 @@ span {
 
 .image-container {
   max-width: 1000px;
+  max-height: 667px;
   margin: 200px auto 0 auto;
 }
 
 .image-container img {
   clear: both;
   display: block;
+  margin: 0 auto;
 }
 
 .filter .condition .active{
@@ -836,7 +781,10 @@ span {
 #pagination {
   text-align: center;
   display: block;
-  width: 80%;
+}
+
+#pagination li.disabled {
+  color: #9c9696;
 }
 
 #pagination .material-icons {
@@ -845,30 +793,31 @@ span {
 
 #pagination ul {
   padding: 10px;
-  border: 1px solid  rgba(0, 0, 0, 0.09902);
-  border-radius: 10px;
   display: inline-block;
 }
 
 #pagination li {
   display: inline-block;
+  margin: 0 10px;
   list-style-type: disc;
+  cursor: pointer;
+  width: 30px;
 }
 
 #pagination li:not(.page-active):hover {
-  background-color: rgba(0, 0, 0, 0.09902);
+  background-color: #eaa5bd;
   font-weight: bold;
 }
 
 #pagination li.page-active {
-  background-color: rgba(0, 0, 0, 0.49902);
+  background-color: #ff4081;
   font-weight: bolder;
 }
 
 #pagination li span {
-  border: 1px solid  rgba(0, 0, 0, 0.09902);
-  padding: 6px 12px;
+  padding: 6px;
   line-height: 30px;
+  font-size: 1.2em;
 }
 
 #page-pre {
