@@ -260,9 +260,9 @@ export default {
 
     patchUpload: function(index,data){
       for(let attr in data){ 
-        if(this.uploads[index].hasOwnProperty(attr))
+        if(this.displayUploads[index].hasOwnProperty(attr))
         {
-          this.uploads[index][attr] = data[attr];
+          this.displayUploads[index][attr] = data[attr];
         } 
       }
       let username = docCookie.getItem('username')
