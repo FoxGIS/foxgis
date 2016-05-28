@@ -9,7 +9,7 @@
   </div>
 
   <div class="filter">
-    <div class="condition" id="condition1">
+    <div class="condition">
       <span>主题：</span>
       <a @click="conditionClick($event,1)">社会</a>
       <a @click="conditionClick($event,1)">经济</a>
@@ -22,26 +22,15 @@
     </div>
     <div class="condition">
       <span>地区：</span>
-      <a @click="conditionClick($event,2)">中国</a>
-      <a @click="conditionClick($event,2)">北京</a>
-      <a @click="conditionClick($event,2)">甘肃</a>
-      <a @click="conditionClick($event,2)">杭州</a>
-      <a @click="conditionClick($event,2)">湖北</a>
-      <a @click="conditionClick($event,2)">湖南</a>
-      <a @click="conditionClick($event,2)">山东</a>
-      <a @click="conditionClick($event,2)">深圳</a>
-      <a @click="conditionClick($event,2)">云南</a>
-      <a @click="conditionClick($event,2)">世界</a>
+      <a v-for="upload in uploads" 
+          @click="conditionClick($event,2)">{{ upload.location }}
+      </a>
     </div>
     <div class="condition">
       <span>年份：</span>
-      <a @click="conditionClick($event,3)">2010</a>
-      <a @click="conditionClick($event,3)">2011</a>
-      <a @click="conditionClick($event,3)">2012</a>
-      <a @click="conditionClick($event,3)">2013</a>
-      <a @click="conditionClick($event,3)">2014</a>
-      <a @click="conditionClick($event,3)">2015</a>
-      <a @click="conditionClick($event,3)">2016</a>
+      <a v-for="upload in uploads | orderBy 'year'" 
+          @click="conditionClick($event,3)">{{ upload.year }}
+      </a>
     </div>
   </div>
 
@@ -255,16 +244,33 @@ export default {
       }
     },
 
-    conditionClick: function(e,id){
+    conditionClick: function(e,type){
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
-        var index = this.tagConditions.indexOf(e.target.textContent)
-        if(index != -1){
+        if(type == 3){
+          var index = this.year.indexOf(e.target.textContent)
+          if(index != -1){
+            this.year.splice(index,1)
+          }
+        }else if(type == 2){
+          var index = this.location.indexOf(e.target.textContent)
+          if(index != -1){
+            this.location.splice(index,1)
+          }
+        }else if(type === 1){
           this.tagConditions.splice(index,1)
         }
+        
       }else{
         e.target.className = 'filter condition active'
-        this.tagConditions.push(e.target.textContent)
+        if(type == 3){
+          this.year.push(e.target.textContent)
+        }else if(type == 2){
+          this.location.push(e.target.textContent)
+        }else if(type ===1){
+          this.tagConditions.push(e.target.textContent)
+        }
+        
       }
     },
 
@@ -389,7 +395,9 @@ export default {
         page_item_num: 10,         //每页显示的条数
         current_page: 1,
         first_page: 1,
-      }
+      },
+      year: [],
+      location: []
     }
   },
   watch: {
@@ -437,8 +445,98 @@ export default {
         this.displayUploads = temp
       },
       deep: true
+    },
+
+    'year': function(){
+      var temp1 = []
+      var temp2 = []
+      if(this.year.length === 0&&this.location.length === 0){
+        this.displayUploads = this.uploads
+        return
+      }
+      
+      if(this.year.length>0){
+        var conditions = this.year.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
+            temp1.push(upload)
+          }
+        }
+      }
+      if(this.location.length>0){
+        var conditions2 = this.location.join()
+        if(temp1.length>0){
+          for(var j=0,length=temp1.length;j<length;j++){
+            let upload2 = temp1[j]
+            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+              temp2.push(upload2)
+            }
+          }
+        }else{
+          for(var j=0,length=this.uploads.length;j<length;j++){
+            let upload2 = this.uploads[j]
+            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+              temp2.push(upload2)
+            }
+          }
+        }
+        
+      }
+      if(this.year.length > 0&&this.location.length === 0){
+        this.displayUploads = temp1
+      }else if(this.year.length === 0&&this.location.length > 0){
+        this.displayUploads = temp2
+      }else if(this.year.length > 0&&this.location.length > 0){
+        this.displayUploads = temp2
+      }
+      
+    },
+
+    'location': function(){
+      var temp1 = []
+      var temp2 = []
+      if(this.year.length === 0&&this.location.length === 0){
+        this.displayUploads = this.uploads
+        return
+      }
+      
+      if(this.year.length>0){
+        var conditions = this.year.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
+            temp1.push(upload)
+          }
+        }
+      }
+      if(this.location.length>0){
+        var conditions2 = this.location.join()
+        if(temp1.length>0){
+          for(var j=0,length=temp1.length;j<length;j++){
+            let upload2 = temp1[j]
+            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+              temp2.push(upload2)
+            }
+          }
+        }else{
+          for(var j=0,length=this.uploads.length;j<length;j++){
+            let upload2 = this.uploads[j]
+            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+              temp2.push(upload2)
+            }
+          }
+        }
+        
+      }
+      if(this.year.length > 0&&this.location.length === 0){
+        this.displayUploads = temp1
+      }else if(this.year.length === 0&&this.location.length > 0){
+        this.displayUploads = temp2
+      }else if(this.year.length > 0&&this.location.length > 0){
+        this.displayUploads = temp2
+      }
     }
-   
   }
 }
 
