@@ -2,12 +2,22 @@
 <div class="foxgis-upload">
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
 
+  <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+  </div>
+
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
-
+  <div class='progress-bar' style="display:none">
+    <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
+    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
+    
+  </div>
+  
   <div class="filter">
     <div class="condition">
       <span>主题：</span>
@@ -158,7 +168,8 @@ export default {
     
     parseImgURL:function(upload) {
       ///uploads/{username}/{upload_id}/mini_thumbnail
-      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' 
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
     },
 
@@ -170,7 +181,9 @@ export default {
 
     uploadFile: function(e) {
       var fileCount=0;//记录上传的文件数目
-      this.$el.querySelector('#create-loading').style.display = 'block'
+      //this.$el.querySelector('#create-loading').style.display = 'block'
+      this.$el.querySelector('.progress-bar').style.display = 'block'
+      
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username
@@ -188,7 +201,9 @@ export default {
             console.log(response)
             var file = response.data
             file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
-            file.location = docCookie.getItem('location');//设置上传地图的默认制图地区
+            if(docCookie.getItem('location')){
+              file.location = docCookie.getItem('location');//设置上传地图的默认制图地区
+            }
             if (file.filesize / 1024 > 1024) {
               file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
             } else {
@@ -198,11 +213,16 @@ export default {
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
-              alert("上传完毕！");
-              this.$el.querySelector('#create-loading').style.display = 'none';
-            }    
+              var snackbarContainer = document.querySelector('#demo-toast-example');
+              var data = {message: '上传完成！'};
+              snackbarContainer.MaterialSnackbar.showSnackbar(data);
+              //this.$el.querySelector('#create-loading').style.display = 'none';
+              this.$el.querySelector('.progress-bar').style.display = 'none';
+          }    
+
          }, function(response) { 
            this.$el.querySelector('#create-loading').style.display = 'none'
+           this.$el.querySelector('.progress-bar').style.display = 'none';
            if (response.data.error) {
              alert(response.data.error)
             } else {
@@ -425,9 +445,10 @@ export default {
      },
      
      total_items: function (){
-      let count = this.displayUploads.length;
-      this.$dispatch("upload_nums", count);
-      return count;
+      let count = this.displayUploads.length
+      let allCount = this.uploads.length
+      this.$dispatch("upload_nums", allCount)      
+      return count
      },
      
      displayUploads: function(){
@@ -499,7 +520,7 @@ export default {
         }
       }
       return temp
-     }
+    }
   },
 
   data() {
@@ -718,7 +739,12 @@ span {
   color: blue;
 }
 
-
+#upload-progress{
+  width:calc(100% - 130px);;
+}
+.demo-toast-example{
+  text-align:center;
+}
 .small-pic {
   float: left;
   height: 100px;
