@@ -17,7 +17,7 @@
       </div>
     </header>
 
-    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+<!--     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
       <span class="mdl-layout-title">辅助决策用图系统</span>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-link="{ path: 'home' }">首页</a>
@@ -27,7 +27,7 @@
         <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==null">登录</a>
         <a class="mdl-navigation__link" v-else>{{username}}</a>
       </nav>
-    </div>
+    </div> -->
 
     <div class="mdl-layout--content">
       <slot>Layout content</slot>
