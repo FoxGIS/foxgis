@@ -1,11 +1,7 @@
 <template>
 <div class="foxgis-upload">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
-
-  <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-    <div class="mdl-snackbar__text"></div>
-    <button class="mdl-snackbar__action" type="button"></button>
-  </div>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
@@ -28,7 +24,7 @@
     <div class="condition">
       <span>地区：</span>
       <a v-for="location in location_tags" v-if="$index<10"
-          @click="conditionClick($event,2)">{{ location }}
+          @click="conditionClick($event,2)" track-by="$index">{{ location }}
       </a>
     </div>
     <div class="condition">
@@ -123,12 +119,6 @@ export default {
             alert("编辑错误")
           }
         )
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            this.location_tags[i] = this.uploads[i].location
-          }
-          this.location_tags = _.uniq(this.location_tags)
-        }
       }
     },
 
@@ -151,12 +141,6 @@ export default {
             alert("编辑错误")
           }
         )
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            this.year_tags[i] = this.uploads[i].year
-          }
-          this.year_tags = _.uniq(this.year_tags)
-        }
       }
     },
 
@@ -210,7 +194,6 @@ export default {
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
             fileCount++;
-            console.log(response)
             var file = response.data
             
             if (file.filesize / 1024 > 1024) {
@@ -221,22 +204,22 @@ export default {
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
-              var snackbarContainer = document.querySelector('#demo-toast-example');
-              var data = {message: '上传完成！'};
-              snackbarContainer.MaterialSnackbar.showSnackbar(data);
-              //this.$el.querySelector('#create-loading').style.display = 'none';
               this.$el.querySelector('.progress-bar').style.display = 'none';
-              this.$el.querySelector('#upload-button').disabled =""
+              this.$el.querySelector('#upload-button').disabled ="";
+              this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });            
           }    
 
          }, function(response) { 
-           this.$el.querySelector('#create-loading').style.display = 'none'
            this.$el.querySelector('.progress-bar').style.display = 'none';
            if (response.data.error) {
-             alert(response.data.error)
+             this.$el.querySelector('.progress-bar').style.display = 'none';
+             this.$el.querySelector('#upload-button').disabled ="";
+             var snackbarContainer = document.querySelector('#demo-toast-example');
+             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
             } else {
-              console.log(response)
-            alert('未知错误，请稍后再试')
+            this.$el.querySelector('.progress-bar').style.display = 'none';
+            this.$el.querySelector('#upload-button').disabled ="";
+            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
           }
         });
       }
@@ -260,9 +243,9 @@ export default {
 
     patchUpload: function(index,data){
       for(let attr in data){ 
-        if(this.uploads[index].hasOwnProperty(attr))
+        if(this.displayUploads[index].hasOwnProperty(attr))
         {
-          this.uploads[index][attr] = data[attr];
+          this.displayUploads[index][attr] = data[attr];
         } 
       }
       let username = docCookie.getItem('username')
@@ -433,22 +416,6 @@ export default {
           return d
         })
         this.uploads = data
-        if(this.uploads.length>0){
-          let k=0
-          for(let i=0;i<this.uploads.length;i++){
-            this.year_tags[i] = this.uploads[i].year
-            this.location_tags[i] = this.uploads[i].location
-            if(this.uploads[i].tags.length>0){
-              for(let j=0;j<this.uploads[i].tags.length;j++){
-                this.theme_tags[k]=this.uploads[i].tags[j]
-                k++
-              }
-            }
-          }
-          this.year_tags = _.uniq(this.year_tags)
-          this.location_tags = _.uniq(this.location_tags)
-          this.theme_tags = _.uniq(this.theme_tags)
-        }
       }
     }, function(response) {
       console.log(response)
@@ -541,7 +508,47 @@ export default {
         }
       }
       return temp
-    }
+    },
+
+    theme_tags: function(){
+        let theme = []
+        if(this.uploads.length>0){
+          let k=0
+          for(let i=0;i<this.uploads.length;i++){
+            if(this.uploads[i].tags.length>0){
+              for(let j=0;j<this.uploads[i].tags.length;j++){
+                theme[k]=this.uploads[i].tags[j]
+                k++
+              }
+            }
+          }
+          theme = _.uniq(theme)
+        }
+        return theme
+    }, 
+
+    year_tags: function(){
+        let year = []
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            year[i] = this.uploads[i].year
+          }
+          year = _.uniq(year).sort()
+        }
+        return year
+    }, 
+
+    location_tags: function(){
+        let location = []
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            location[i] = this.uploads[i].location
+          }
+          location = _.uniq(location)
+        }
+        return location
+    } 
+
   },
 
   data() {
@@ -557,9 +564,6 @@ export default {
         current_page: 1,
         first_page: 1,
       },
-      theme_tags: [], 
-      year_tags: [],
-      location_tags: [], 
       selected_year_tags: [],
       selected_location_tags: [], 
       selected_theme_tags: []
@@ -764,9 +768,6 @@ span {
 
 #upload-progress{
   width:calc(100% - 130px);;
-}
-#demo-toast-example{
-  text-align:center;
 }
 .small-pic {
   float: left;
