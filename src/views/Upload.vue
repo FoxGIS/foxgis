@@ -93,12 +93,15 @@ export default {
         let location = e.target.value
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let upload_id = this.uploads[index].upload_id
+        let upload_id = this.displayUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.uploads[index].location = location
+        this.displayUploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let location = data.location
+            let date = new Date()
+            let days = 30
+            date.setTime(date.getTime() + days*24*3600*1000)
             docCookie.setItem('location',location,date)
           },function(response){
             alert("编辑错误")
@@ -111,12 +114,15 @@ export default {
         let year = e.target.value
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let upload_id = this.uploads[index].upload_id
+        let upload_id = this.displayUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.uploads[index].year = year
+        this.displayUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
+            let date = new Date()
+            let days = 30
+            date.setTime(date.getTime() + days*24*3600*1000)
             docCookie.setItem('year',year,date)
           },function(response){
             alert("编辑错误")
@@ -168,11 +174,11 @@ export default {
            }
 
             file.upload_at = util.dateFormat(new Date(file.upload_at))
-            this.uploads.push(file)
+            this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
               alert("上传完毕！");
-            this.$el.querySelector('#create-loading').style.display = 'none';
-          }    
+              this.$el.querySelector('#create-loading').style.display = 'none';
+            }    
          }, function(response) { 
            this.$el.querySelector('#create-loading').style.display = 'none'
            if (response.data.error) {
@@ -189,7 +195,7 @@ export default {
     showPreview: function(e, index) {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
+      let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
     },
@@ -209,7 +215,7 @@ export default {
       }
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let upload_id = this.uploads[index].upload_id
+      let upload_id = this.displayUploads[index].upload_id
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -224,8 +230,7 @@ export default {
 
     deleteTag: function(pId, tag_id) {
       console.log(pId)
-      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
-      console.log(patchTags)
+      let patchTags = this.displayUploads[pId].tags
       patchTags.splice(tag_id, 1)
       this.patchUpload(pId,{'tags':patchTags})
     },
@@ -233,7 +238,7 @@ export default {
     addTag: function(e, index) {
       if (e.target.value) {
         
-        var patchUpload = this.uploads[index]
+        var patchUpload = this.displayUploads[index]
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
           alert('该标签已存在')
           return
@@ -290,6 +295,7 @@ export default {
           if(response.ok){
             for(let i = 0;i<this.uploads.length;i++){
               if(this.uploads[i].upload_id === upload_id){
+                console.log('delete uploads')
                 this.uploads.splice(i,1)
               }
             }
@@ -360,7 +366,7 @@ export default {
           return d
         })
         this.uploads = data
-        this.displayUploads = this.uploads.slice(0)
+        //this.displayUploads = this.uploads.slice(0)
       }
     }, function(response) {
       console.log(response)
@@ -379,13 +385,46 @@ export default {
      total_items: function (){
       let count = this.displayUploads.length;
       return count;
+     },
+     
+     displayUploads: function(){
+       console.log('displayUploads computed by condition')
+       if(this.tagConditions.length===0&&this.year.length===0&&this.location.length===0){
+        return this.uploads.slice(0)
+       }
+       var temp = []
+       var conditions = this.tagConditions.join()
+       for(var u=0,length=this.uploads.length;u<length;u++){
+         let upload = this.uploads[u]
+         //upload.visible = false
+         // tag filter
+         for(var t=0,length1=upload.tags.length;t<length1;t++){
+           if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
+             temp.push(upload)
+             //upload.visible = true
+             break
+           }
+         }
+         
+         //year filter
+         let yearConditions = this.year.join()
+         if(yearConditions.indexOf(upload.year)!=-1&&temp.indexOf(upload)==-1){
+           temp.push(upload)
+         }
+         
+         //location filter
+         let locationConditions = this.location.join()
+         if(locationConditions.indexOf(upload.location)!=-1&&temp.indexOf(upload)==-1){
+           temp.push(upload)
+         }
+       }
+       return temp
      }
   },
 
   data() {
     return {
       uploads: [] ,
-      displayUploads: [],
       dialogcontent: {
         title: '确定删除吗？'
       },
@@ -401,142 +440,143 @@ export default {
     }
   },
   watch: {
-    'tagConditions': function(){
-      console.log(this.tagConditions.length)
-      if(this.tagConditions.length === 0){
-        this.displayUploads = this.uploads.slice(0)
-        return
-      }
-      var temp = []
-      var conditions = this.tagConditions.join()
-      for(var u=0,length=this.uploads.length;u<length;u++){
-        let upload = this.uploads[u]
-        upload.visible = false
-        for(var t=0,length1=upload.tags.length;t<length1;t++){
-          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
-            temp.push(upload)
-            //upload.visible = true
-            break
-          }
-        }
-      }
-      this.displayUploads = temp
-    },
+    // 'tagConditions': function(){
+    //   console.log(this.tagConditions.length)
+    //   if(this.tagConditions.length === 0){
+    //     this.displayUploads = this.uploads.slice(0)
+    //     return
+    //   }
+    //   var temp = []
+    //   var conditions = this.tagConditions.join()
+    //   for(var u=0,length=this.uploads.length;u<length;u++){
+    //     let upload = this.uploads[u]
+    //     upload.visible = false
+    //     for(var t=0,length1=upload.tags.length;t<length1;t++){
+    //       if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
+    //         temp.push(upload)
+    //         //upload.visible = true
+    //         break
+    //       }
+    //     }
+    //   }
+    //   this.displayUploads = temp
+    // },
     
-    'uploads': {
-      handler: function(){
-        if(this.tagConditions.length === 0){
-          this.displayUploads = this.uploads.slice(0)
-          return
-        }
-        var temp = []
-        var conditions = this.tagConditions.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
-          upload.visible = false
-          for(var t=0,length1=upload.tags.length;t<length1;t++){
-            if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
-              temp.push(upload)
-              //upload.visible = true
-              break
-            }
-          }
-        }
-        this.displayUploads = temp
-      },
-      deep: true
-    },
+    // 'uploads': {
+    //   handler: function(){
+    //     console.log('uploads-change')
+    //     if(this.tagConditions.length === 0){
+    //       this.displayUploads = this.uploads.slice(0)
+    //       return
+    //     }
+    //     var temp = []
+    //     var conditions = this.tagConditions.join()
+    //     for(var u=0,length=this.uploads.length;u<length;u++){
+    //       let upload = this.uploads[u]
+    //       upload.visible = false
+    //       for(var t=0,length1=upload.tags.length;t<length1;t++){
+    //         if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
+    //           temp.push(upload)
+    //           //upload.visible = true
+    //           break
+    //         }
+    //       }
+    //     }
+    //     this.displayUploads = temp
+    //   },
+    //   deep: true
+    // },
 
-    'year': function(){
-      var temp1 = []
-      var temp2 = []
-      if(this.year.length === 0&&this.location.length === 0){
-        this.displayUploads = this.uploads
-        return
-      }
+    // 'year': function(){
+    //   var temp1 = []
+    //   var temp2 = []
+    //   if(this.year.length === 0&&this.location.length === 0){
+    //     this.displayUploads = this.uploads
+    //     return
+    //   }
       
-      if(this.year.length>0){
-        var conditions = this.year.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
-          if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
-            temp1.push(upload)
-          }
-        }
-      }
-      if(this.location.length>0){
-        var conditions2 = this.location.join()
-        if(temp1.length>0){
-          for(var j=0,length=temp1.length;j<length;j++){
-            let upload2 = temp1[j]
-            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-              temp2.push(upload2)
-            }
-          }
-        }else{
-          for(var j=0,length=this.uploads.length;j<length;j++){
-            let upload2 = this.uploads[j]
-            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-              temp2.push(upload2)
-            }
-          }
-        }
+    //   if(this.year.length>0){
+    //     var conditions = this.year.join()
+    //     for(var u=0,length=this.uploads.length;u<length;u++){
+    //       let upload = this.uploads[u]
+    //       if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
+    //         temp1.push(upload)
+    //       }
+    //     }
+    //   }
+    //   if(this.location.length>0){
+    //     var conditions2 = this.location.join()
+    //     if(temp1.length>0){
+    //       for(var j=0,length=temp1.length;j<length;j++){
+    //         let upload2 = temp1[j]
+    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+    //           temp2.push(upload2)
+    //         }
+    //       }
+    //     }else{
+    //       for(var j=0,length=this.uploads.length;j<length;j++){
+    //         let upload2 = this.uploads[j]
+    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+    //           temp2.push(upload2)
+    //         }
+    //       }
+    //     }
         
-      }
-      if(this.year.length > 0&&this.location.length === 0){
-        this.displayUploads = temp1
-      }else if(this.year.length === 0&&this.location.length > 0){
-        this.displayUploads = temp2
-      }else if(this.year.length > 0&&this.location.length > 0){
-        this.displayUploads = temp2
-      }
+    //   }
+    //   if(this.year.length > 0&&this.location.length === 0){
+    //     this.displayUploads = temp1
+    //   }else if(this.year.length === 0&&this.location.length > 0){
+    //     this.displayUploads = temp2
+    //   }else if(this.year.length > 0&&this.location.length > 0){
+    //     this.displayUploads = temp2
+    //   }
       
-    },
+    // },
 
-    'location': function(){
-      var temp1 = []
-      var temp2 = []
-      if(this.year.length === 0&&this.location.length === 0){
-        this.displayUploads = this.uploads
-        return
-      }
+    // 'location': function(){
+    //   var temp1 = []
+    //   var temp2 = []
+    //   if(this.year.length === 0&&this.location.length === 0){
+    //     this.displayUploads = this.uploads
+    //     return
+    //   }
       
-      if(this.year.length>0){
-        var conditions = this.year.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
-          if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
-            temp1.push(upload)
-          }
-        }
-      }
-      if(this.location.length>0){
-        var conditions2 = this.location.join()
-        if(temp1.length>0){
-          for(var j=0,length=temp1.length;j<length;j++){
-            let upload2 = temp1[j]
-            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-              temp2.push(upload2)
-            }
-          }
-        }else{
-          for(var j=0,length=this.uploads.length;j<length;j++){
-            let upload2 = this.uploads[j]
-            if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
-              temp2.push(upload2)
-            }
-          }
-        }
+    //   if(this.year.length>0){
+    //     var conditions = this.year.join()
+    //     for(var u=0,length=this.uploads.length;u<length;u++){
+    //       let upload = this.uploads[u]
+    //       if(conditions.indexOf(upload.year)!=-1&&temp1.indexOf(upload) === -1){
+    //         temp1.push(upload)
+    //       }
+    //     }
+    //   }
+    //   if(this.location.length>0){
+    //     var conditions2 = this.location.join()
+    //     if(temp1.length>0){
+    //       for(var j=0,length=temp1.length;j<length;j++){
+    //         let upload2 = temp1[j]
+    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+    //           temp2.push(upload2)
+    //         }
+    //       }
+    //     }else{
+    //       for(var j=0,length=this.uploads.length;j<length;j++){
+    //         let upload2 = this.uploads[j]
+    //         if(conditions2.indexOf(upload2.location)!=-1&&temp2.indexOf(upload2) === -1){
+    //           temp2.push(upload2)
+    //         }
+    //       }
+    //     }
         
-      }
-      if(this.year.length > 0&&this.location.length === 0){
-        this.displayUploads = temp1
-      }else if(this.year.length === 0&&this.location.length > 0){
-        this.displayUploads = temp2
-      }else if(this.year.length > 0&&this.location.length > 0){
-        this.displayUploads = temp2
-      }
-    }
+    //   }
+    //   if(this.year.length > 0&&this.location.length === 0){
+    //     this.displayUploads = temp1
+    //   }else if(this.year.length === 0&&this.location.length > 0){
+    //     this.displayUploads = temp2
+    //   }else if(this.year.length > 0&&this.location.length > 0){
+    //     this.displayUploads = temp2
+    //   }
+    // }
   }
 }
 
