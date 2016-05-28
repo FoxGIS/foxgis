@@ -45,34 +45,34 @@
     </div>
   </div>
 
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < uploads.length" track-by="$index">
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
     <div class="name">
-      <input type="text" v-model="uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
     <div class = "tags">
       <span>标签:</span>
-      <span class="tag" v-for="tag in uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
+      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
       </span>
-      <input type="text" maxlength="10" @change="addTag($event, $index)">
+      <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
     <div class="metadata">
       <p>
-        制图地区:<input type="text" value="{{ uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, $index)"/>
-        制图时间:<input type="text" value="{{ uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, $index)"/>
-        文件大小:<span>{{ calculation(uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
-        文件格式:<span>{{ uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
+        制图地区:<input type="text" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图时间:<input type="text" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        文件大小:<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
+        文件格式:<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
       <div class="action">
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(uploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
   </div>
   
-  <div id="pagination" v-show="uploads.length>0?true:false">
+  <div id="pagination" v-show="displayUploads.length>0?true:false">
     <ul>
       <li id="page-pre" v-on:click="prePage" v-if="pageConfig.current_page > 1"><span><i class="material-icons">navigate_before</i></span></li>
       <li v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
@@ -104,9 +104,9 @@ export default {
         let location = e.target.value
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = this.uploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].location = location
+        this.uploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let location = data.location
@@ -122,9 +122,9 @@ export default {
         let year = e.target.value
         let username = docCookie.getItem('username')
         let access_token = docCookie.getItem('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = this.uploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].year = year
+        this.uploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
@@ -200,7 +200,7 @@ export default {
     showPreview: function(e, index) {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
+      let url = SERVER_API.uploads + '/' + username+'/'+this.uploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
     },
@@ -213,20 +213,20 @@ export default {
 
     patchUpload: function(index,data){
       for(let attr in data){ 
-        if(this.displayUploads[index].hasOwnProperty(attr))
+        if(this.uploads[index].hasOwnProperty(attr))
         {
-          this.displayUploads[index][attr] = data[attr];
+          this.uploads[index][attr] = data[attr];
         } 
       }
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
-      let upload_id = this.displayUploads[index].upload_id
+      let upload_id = this.uploads[index].upload_id
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-           //this.displayUploads[index].tags = response.data.tags;
-           //this.displayUploads[index].name = response.data.name;
+           //this.uploads[index].tags = response.data.tags;
+           //this.uploads[index].name = response.data.name;
           }
         }, function(response) {
           alert("网络错误")
@@ -235,16 +235,20 @@ export default {
 
     deleteTag: function(pId, tag_id) {
       console.log(pId)
-      let patchTags = JSON.parse(JSON.stringify(this.displayUploads[pId].tags))
+      let patchTags = JSON.parse(JSON.stringify(this.uploads[pId].tags))
       console.log(patchTags)
       patchTags.splice(tag_id, 1)
       this.patchUpload(pId,{'tags':patchTags})
     },
 
     addTag: function(e, index) {
-      console.log(e);
       if (e.target.value) {
-        var patchUpload = this.displayUploads[index]
+        
+        var patchUpload = this.uploads[index]
+        if(patchUpload.tags.indexOf(e.target.value)!=-1){
+          alert('该标签已存在')
+          return
+        }
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
         this.patchUpload(index,{'tags':patchUpload.tags})
@@ -346,11 +350,11 @@ export default {
           }
 
           d.createdAt = util.dateFormat(new Date(d.createdAt))
-
+          //d['visible'] = true
           return d
         })
         this.uploads = data
-        this.displayUploads = JSON.parse(JSON.stringify(data))
+        this.displayUploads = this.uploads.slice(0)
       }
     }, function(response) {
       console.log(response)
@@ -360,14 +364,14 @@ export default {
   computed: {
     show_page_num: function (){
         let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
-        if(this.pageConfig.current_page > cop_page_num){
+        if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
           this.pageConfig.current_page = cop_page_num
         }
         return cop_page_num > 5 ? 5 : cop_page_num
      },
      
      total_items: function (){
-      let count = this.uploads.length;
+      let count = this.displayUploads.length;
       return count;
      }
   },
@@ -390,46 +394,51 @@ export default {
   },
   watch: {
     'tagConditions': function(){
-      var temp = []
+      console.log(this.tagConditions.length)
       if(this.tagConditions.length === 0){
-        this.displayUploads = this.uploads
+        this.displayUploads = this.uploads.slice(0)
         return
       }
+      var temp = []
       var conditions = this.tagConditions.join()
-      console.log(conditions)
-      console.log(this.uploads.length)
-
       for(var u=0,length=this.uploads.length;u<length;u++){
         let upload = this.uploads[u]
+        upload.visible = false
         for(var t=0,length1=upload.tags.length;t<length1;t++){
-          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
+          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
             temp.push(upload)
+            //upload.visible = true
             break
           }
         }
       }
       this.displayUploads = temp
     },
-
-    'uploads': function(){
-      console.log('upc');
-      var temp = []
-      if(this.tagConditions.length === 0){
-        this.displayUploads = this.uploads
-        return
-      }
-      var conditions = this.tagConditions.join()
-      for(var u=0,length=this.uploads.length;u<length;u++){
-        let upload = this.uploads[u]
-        for(var t=0,length1=upload.tags.length;t<length1;t++){
-          if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload) === -1){
-            temp.push(upload)
-            break
+    
+    'uploads': {
+      handler: function(){
+        if(this.tagConditions.length === 0){
+          this.displayUploads = this.uploads.slice(0)
+          return
+        }
+        var temp = []
+        var conditions = this.tagConditions.join()
+        for(var u=0,length=this.uploads.length;u<length;u++){
+          let upload = this.uploads[u]
+          upload.visible = false
+          for(var t=0,length1=upload.tags.length;t<length1;t++){
+            if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
+              temp.push(upload)
+              //upload.visible = true
+              break
+            }
           }
         }
-      }
-      this.displayUploads = temp
+        this.displayUploads = temp
+      },
+      deep: true
     }
+   
   }
 }
 
