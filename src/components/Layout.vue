@@ -29,9 +29,9 @@
       </nav>
     </div>
 
-    <main class="mdl-layout--content">
+    <div class="mdl-layout--content">
       <slot>Layout content</slot>
-    </main>
+    </div>
 
   </div>
 </div>

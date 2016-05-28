@@ -53,7 +53,7 @@ module.exports = {
       include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
       loader: 'worker'
     }]
-  },
+  },  
   devServer: {
     historyApiFallback: true,
     noInfo: true

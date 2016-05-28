@@ -5,11 +5,11 @@
     <div class="mdl-layout__drawer">
       <!-- <span class="mdl-layout-title">制图工作室</span> -->
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i>符号</a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
+        <a class="mdl-navigation__link" style="display: none;" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i>符号</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图<span  v-mdl-badge.number="upload_nums" ></span></a>
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
@@ -17,9 +17,9 @@
         <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>退出</a>
       </nav>
     </div>
-    <main class="mdl-layout__content">
+    <div class="mdl-layout__content">
       <router-view></router-view>
-    </main>
+    </div>
   </div>
   </foxgis-layout>
 </div>
@@ -34,6 +34,12 @@ export default {
     signout: function(){
       docCookie.removeItem('username')
       docCookie.removeItem('access_token')
+      docCookie.removeItem('name')
+      docCookie.removeItem('phone')
+      docCookie.removeItem('email')
+      docCookie.removeItem('location')
+      docCookie.removeItem('organization')
+      
       window.location.href = '/'
     }
   },
@@ -50,10 +56,18 @@ export default {
     }else{
       this.username = username
     }
+
+    console.log(this.$children[0].$children[0].uploads)
   },
   data: function(){
     return {
-      username: '用户'
+      username: '用户',
+      upload_nums:0
+    }
+  },
+  events: {
+    "upload_nums":function(msg) {
+      this.upload_nums = parseInt(msg)
     }
   }
 }
@@ -89,6 +103,11 @@ export default {
 
 .v-link-active {
   background-color: #e0e0e0;
+}
+
+.mdl-badge:after {
+  top: -3px!important;  
+  right: -70px!important;
 }
 
 </style>
