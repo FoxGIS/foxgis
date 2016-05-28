@@ -32,13 +32,19 @@
           @click="conditionClick($event,3)">{{ upload.year }}
       </a>
     </div>
-  </div>
+  </div>  
 
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
+
+    <div class="small-pic">
+       <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
+    </div>
+
     <div class="name">
       <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
+
     <div class = "tags">
       <span>标签:</span>
       <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
@@ -78,7 +84,7 @@
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
 
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
-</div>
+
 
 </template>
 
@@ -138,6 +144,12 @@ export default {
       }else{
         return s.toFixed(2)+"Kb"
       }
+    },  
+    
+    parseImgURL:function(upload) {
+      ///uploads/{username}/{upload_id}/mini_thumbnail
+      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' 
+      return url
     },
 
     uploadClick: function() {
@@ -360,7 +372,6 @@ export default {
           } else {
             d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
           }
-
           d.createdAt = util.dateFormat(new Date(d.createdAt))
           //d['visible'] = true
           return d
@@ -371,6 +382,7 @@ export default {
     }, function(response) {
       console.log(response)
     })
+    console.log(this.$parent)
   },
   
   computed: {
@@ -384,6 +396,7 @@ export default {
      
      total_items: function (){
       let count = this.displayUploads.length;
+      this.$dispatch("upload_nums", count);
       return count;
      },
      
@@ -436,7 +449,7 @@ export default {
         first_page: 1,
       },
       year: [],
-      location: []
+      location: [],     
     }
   },
   watch: {
@@ -771,6 +784,23 @@ span {
 .filter .condition .active{
   cursor: pointer;
   color: blue;
+}
+
+
+.small-pic {
+  float: left;
+  height: 100px;
+  width: 100px;
+  margin: 15px 10px;
+  transition: all 0.5s;  
+}
+
+.small-pic:hover {
+  opacity: 0.7;  
+}
+
+.small-pic img {
+  border-radius: 5px;
 }
 
 #pagination {
