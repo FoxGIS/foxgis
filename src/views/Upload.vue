@@ -82,7 +82,7 @@
   
   <div class="modal" @click="hidePreview">
     <div class="image-container" >
-       <img id='thumbnail' src="">
+       <img id='thumbnail'>
     </div>
   </div>
 
