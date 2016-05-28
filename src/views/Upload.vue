@@ -198,7 +198,9 @@ export default {
         formData.append('year', new Date().getFullYear());       
         file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
         if(docCookie.getItem('location')){
-            formData.append('location', docCookie.getItem('location'));
+          formData.append('location', docCookie.getItem('location'));
+        }else{
+          formData.append('location', '');
         }
         //var reader = new FileReader()
         //reader.readAsBinaryString(e.target.files[i])
