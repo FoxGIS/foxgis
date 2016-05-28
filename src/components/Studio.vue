@@ -17,9 +17,9 @@
         <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>退出</a>
       </nav>
     </div>
-    <main class="mdl-layout__content">
+    <div class="mdl-layout__content">
       <router-view></router-view>
-    </main>
+    </div>
   </div>
   </foxgis-layout>
 </div>
