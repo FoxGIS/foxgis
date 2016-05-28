@@ -1,11 +1,7 @@
 <template>
 <div class="foxgis-upload">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
-
-  <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-    <div class="mdl-snackbar__text"></div>
-    <button class="mdl-snackbar__action" type="button"></button>
-  </div>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
@@ -208,11 +204,9 @@ export default {
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
-              var snackbarContainer = document.querySelector('#demo-toast-example');
-              var data = {message: '上传完成！'};
-              snackbarContainer.MaterialSnackbar.showSnackbar(data);
               this.$el.querySelector('.progress-bar').style.display = 'none';
               this.$el.querySelector('#upload-button').disabled ="";
+              this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });            
           }    
 
          }, function(response) { 
@@ -220,11 +214,12 @@ export default {
            if (response.data.error) {
              this.$el.querySelector('.progress-bar').style.display = 'none';
              this.$el.querySelector('#upload-button').disabled ="";
-             alert(response.data.error);
+             var snackbarContainer = document.querySelector('#demo-toast-example');
+             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
             } else {
             this.$el.querySelector('.progress-bar').style.display = 'none';
             this.$el.querySelector('#upload-button').disabled ="";
-            alert('未知错误，请稍后再试')
+            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
           }
         });
       }
@@ -769,9 +764,6 @@ span {
 
 #upload-progress{
   width:calc(100% - 130px);;
-}
-#demo-toast-example{
-  text-align:center;
 }
 .small-pic {
   float: left;
