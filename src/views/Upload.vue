@@ -73,9 +73,13 @@
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
     <ul>
-      <li id="page-pre" v-on:click="prePage" v-if="pageConfig.current_page > 1"><span><i class="material-icons">navigate_before</i></span></li>
-      <li v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-      <li id="page-next" v-on:click="nextPage" v-if="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)"><span><i class="material-icons">navigate_next</i></span></li>
+      <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
+        <span><i class="material-icons">navigate_before</i></span>
+      </li>
+      <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
+      <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
+        <span><i class="material-icons">navigate_next</i></span>
+      </li>
     </ul>
   </div>
   
@@ -217,8 +221,9 @@ export default {
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
-      document.querySelector('.modal').style.display = 'block'
       document.querySelector('#thumbnail').src = url
+      document.querySelector('.modal').style.display = 'block'
+      
     },
 
     hidePreview: function(e) {
@@ -344,13 +349,21 @@ export default {
     },
     
     nextPage: function (event) {
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      if(this.pageConfig.current_page === allPages){
+        return
+      }
       this.pageConfig.current_page += 1;
+      
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
     },
     
     prePage: function (event) {
+      if(this.pageConfig.current_page === 1){
+        return
+      }
       this.pageConfig.current_page -= 1;
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
@@ -358,7 +371,6 @@ export default {
     },
     
     setPage: function (page) {
-      console.log(page);
       this.pageConfig.current_page = page+1;
     }
   },
@@ -416,13 +428,13 @@ export default {
         return this.uploads.slice(0)
        }
        var temp = []
-       var conditions = this.tagConditions.join()
        for(var u=0,length=this.uploads.length;u<length;u++){
          let upload = this.uploads[u]
          //upload.visible = false
          // tag filter
+         var tagConditions = this.tagConditions
          for(var t=0,length1=upload.tags.length;t<length1;t++){
-           if(conditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
+           if(tagConditions.indexOf(upload.tags[t])!=-1&&temp.indexOf(upload)==-1){
              temp.push(upload)
              //upload.visible = true
              break
@@ -430,13 +442,13 @@ export default {
          }
          
          //year filter
-         let yearConditions = this.year.join()
+         let yearConditions = this.year
          if(yearConditions.indexOf(upload.year)!=-1&&temp.indexOf(upload)==-1){
            temp.push(upload)
          }
          
          //location filter
-         let locationConditions = this.location.join()
+         let locationConditions = this.location
          if(locationConditions.indexOf(upload.location)!=-1&&temp.indexOf(upload)==-1){
            temp.push(upload)
          }
@@ -784,12 +796,14 @@ span {
 
 .image-container {
   max-width: 1000px;
+  max-height: 667px;
   margin: 200px auto 0 auto;
 }
 
 .image-container img {
   clear: both;
   display: block;
+  margin: 0 auto;
 }
 
 .filter .condition .active{
@@ -817,7 +831,10 @@ span {
 #pagination {
   text-align: center;
   display: block;
-  width: 80%;
+}
+
+#pagination li.disabled {
+  color: #9c9696;
 }
 
 #pagination .material-icons {
@@ -826,30 +843,31 @@ span {
 
 #pagination ul {
   padding: 10px;
-  border: 1px solid  rgba(0, 0, 0, 0.09902);
-  border-radius: 10px;
   display: inline-block;
 }
 
 #pagination li {
   display: inline-block;
+  margin: 0 10px;
   list-style-type: disc;
+  cursor: pointer;
+  width: 30px;
 }
 
 #pagination li:not(.page-active):hover {
-  background-color: rgba(0, 0, 0, 0.09902);
+  background-color: #eaa5bd;
   font-weight: bold;
 }
 
 #pagination li.page-active {
-  background-color: rgba(0, 0, 0, 0.49902);
+  background-color: #ff4081;
   font-weight: bolder;
 }
 
 #pagination li span {
-  border: 1px solid  rgba(0, 0, 0, 0.09902);
-  padding: 6px 12px;
+  padding: 6px;
   line-height: 30px;
+  font-size: 1.2em;
 }
 
 #page-pre {
