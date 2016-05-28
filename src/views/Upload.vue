@@ -7,7 +7,11 @@
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
-
+  <div class='progress-bar' style="display:none">
+    <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
+    <span id='uplate-status'>正在上传···</span>
+  </div>
+  
   <div class="filter">
     <div class="condition" id="condition1">
       <span>主题：</span>
@@ -145,7 +149,9 @@ export default {
 
     uploadFile: function(e) {
       var fileCount=0;//记录上传的文件数目
-      this.$el.querySelector('#create-loading').style.display = 'block'
+      //this.$el.querySelector('#create-loading').style.display = 'block'
+      this.$el.querySelector('.progress-bar').style.display = 'block'
+      
       let username = docCookie.getItem('username')
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username
@@ -173,8 +179,8 @@ export default {
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.push(file)
             if(fileCount===e.target.files.length){
-              alert("上传完毕！");
-            this.$el.querySelector('#create-loading').style.display = 'none';
+            //this.$el.querySelector('#create-loading').style.display = 'none';
+            this.$el.querySelector('.progress-bar').style.display = 'none';
           }    
          }, function(response) { 
            this.$el.querySelector('#create-loading').style.display = 'none'
