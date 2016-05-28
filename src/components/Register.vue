@@ -10,7 +10,7 @@
         <mdl-textfield floating-label="邮箱" id="email"></mdl-textfield>
         <mdl-textfield floating-label="电话" id="phone"></mdl-textfield>
         <mdl-textfield floating-label="位置" id="location"></mdl-textfield>
-        <mdl-textfield floating-label="组织" id="organization"></mdl-textfield>
+        <mdl-textfield floating-label="单位" id="organization"></mdl-textfield>
         <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
       </foxgis-card>
     </div>
