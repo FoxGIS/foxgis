@@ -123,12 +123,6 @@ export default {
             alert("编辑错误")
           }
         )
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            this.location_tags[i] = this.uploads[i].location
-          }
-          this.location_tags = _.uniq(this.location_tags)
-        }
       }
     },
 
@@ -151,12 +145,6 @@ export default {
             alert("编辑错误")
           }
         )
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            this.year_tags[i] = this.uploads[i].year
-          }
-          this.year_tags = _.uniq(this.year_tags)
-        }
       }
     },
 
@@ -429,22 +417,6 @@ export default {
           return d
         })
         this.uploads = data
-        if(this.uploads.length>0){
-          let k=0
-          for(let i=0;i<this.uploads.length;i++){
-            this.year_tags[i] = this.uploads[i].year
-            this.location_tags[i] = this.uploads[i].location
-            if(this.uploads[i].tags.length>0){
-              for(let j=0;j<this.uploads[i].tags.length;j++){
-                this.theme_tags[k]=this.uploads[i].tags[j]
-                k++
-              }
-            }
-          }
-          this.year_tags = _.uniq(this.year_tags)
-          this.location_tags = _.uniq(this.location_tags)
-          this.theme_tags = _.uniq(this.theme_tags)
-        }
       }
     }, function(response) {
       console.log(response)
@@ -537,7 +509,47 @@ export default {
         }
       }
       return temp
-    }
+    },
+
+    theme_tags: function(){
+        let theme = []
+        if(this.uploads.length>0){
+          let k=0
+          for(let i=0;i<this.uploads.length;i++){
+            if(this.uploads[i].tags.length>0){
+              for(let j=0;j<this.uploads[i].tags.length;j++){
+                theme[k]=this.uploads[i].tags[j]
+                k++
+              }
+            }
+          }
+          theme = _.uniq(theme)
+        }
+        return theme
+    }, 
+
+    year_tags: function(){
+        let year = []
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            year[i] = this.uploads[i].year
+          }
+          year = _.uniq(year).sort()
+        }
+        return year
+    }, 
+
+    location_tags: function(){
+        let location = []
+        if(this.uploads.length>0){
+          for(let i=0;i<this.uploads.length;i++){
+            location[i] = this.uploads[i].location
+          }
+          location = _.uniq(location)
+        }
+        return location
+    } 
+
   },
 
   data() {
@@ -553,9 +565,6 @@ export default {
         current_page: 1,
         first_page: 1,
       },
-      theme_tags: [], 
-      year_tags: [],
-      location_tags: [], 
       selected_year_tags: [],
       selected_location_tags: [], 
       selected_theme_tags: []
