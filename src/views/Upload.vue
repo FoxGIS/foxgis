@@ -28,7 +28,7 @@
     <div class="condition">
       <span>地区：</span>
       <a v-for="location in location_tags" v-if="$index<10"
-          @click="conditionClick($event,2)">{{ location }}
+          @click="conditionClick($event,2)" track-by="$index">{{ location }}
       </a>
     </div>
     <div class="condition">
@@ -198,7 +198,6 @@ export default {
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
             fileCount++;
-            console.log(response)
             var file = response.data
             
             if (file.filesize / 1024 > 1024) {
@@ -212,18 +211,19 @@ export default {
               var snackbarContainer = document.querySelector('#demo-toast-example');
               var data = {message: '上传完成！'};
               snackbarContainer.MaterialSnackbar.showSnackbar(data);
-              //this.$el.querySelector('#create-loading').style.display = 'none';
               this.$el.querySelector('.progress-bar').style.display = 'none';
-              this.$el.querySelector('#upload-button').disabled =""
+              this.$el.querySelector('#upload-button').disabled ="";
           }    
 
          }, function(response) { 
-           this.$el.querySelector('#create-loading').style.display = 'none'
            this.$el.querySelector('.progress-bar').style.display = 'none';
            if (response.data.error) {
-             alert(response.data.error)
+             this.$el.querySelector('.progress-bar').style.display = 'none';
+             this.$el.querySelector('#upload-button').disabled ="";
+             alert(response.data.error);
             } else {
-              console.log(response)
+            this.$el.querySelector('.progress-bar').style.display = 'none';
+            this.$el.querySelector('#upload-button').disabled ="";
             alert('未知错误，请稍后再试')
           }
         });
