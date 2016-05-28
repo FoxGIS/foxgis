@@ -32,20 +32,19 @@
           @click="conditionClick($event,3)">{{ upload.year }}
       </a>
     </div>
-  </div>
-
-
-  <div class="card" v-for="upload in displayUploads" track-by="$index">
-    <div class="small-pic pin-left">
-       <img id='mini-thumbnail' v-bind:src = "parseImgURL(upload)">
-    </div>
+  </div>  
 
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
->>>>>>> d6681813f7ea91daa7818f1ec068252fcc970af8
+
+    <div class="small-pic">
+       <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
+    </div>
+
     <div class="name">
       <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
+
     <div class = "tags">
       <span>标签:</span>
       <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
@@ -85,7 +84,7 @@
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
 
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
-</div>
+
 
 </template>
 
@@ -745,7 +744,7 @@ span {
   color: blue;
 }
 
-<<<<<<< HEAD
+
 .small-pic {
   float: left;
   height: 100px;
@@ -760,7 +759,8 @@ span {
 
 .small-pic img {
   border-radius: 5px;
-=======
+}
+
 #pagination {
   text-align: center;
   display: block;
@@ -806,6 +806,5 @@ span {
 #page-next {
   margin-left: 10px;
   vertical-align: middle;
->>>>>>> d6681813f7ea91daa7818f1ec068252fcc970af8
 }
 </style>
