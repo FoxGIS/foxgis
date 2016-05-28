@@ -9,7 +9,7 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick">上传决策用图</mdl-button>
+    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
   <div class='progress-bar' style="display:none">
@@ -165,13 +165,14 @@ export default {
 
     uploadClick: function() {
       let fileInput = document.getElementById('file')
-      fileInput.click()
+      fileInput.click();
       fileInput.addEventListener('change', this.uploadFile)
     },
 
     uploadFile: function(e) {
+      if(document.getElementById('file').value==="") return;
       var fileCount=0;//记录上传的文件数目
-      //this.$el.querySelector('#create-loading').style.display = 'block'
+      this.$el.querySelector('#upload-button').disabled = "disabled"
       this.$el.querySelector('.progress-bar').style.display = 'block'
       
       let username = docCookie.getItem('username')
@@ -179,7 +180,12 @@ export default {
       let url = SERVER_API.uploads + '/' + username
       for(let i=0;i<e.target.files.length;i++){
         var formData = new FormData()
-        formData.append('upload', e.target.files[i])
+        formData.append('upload', e.target.files[i]);
+        formData.append('year', new Date().getFullYear());       
+        file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
+        if(docCookie.getItem('location')){
+            formData.append('location', docCookie.getItem('location'));
+        }
         //var reader = new FileReader()
         //reader.readAsBinaryString(e.target.files[i])
         //reader.onloadend = function() {
@@ -190,16 +196,12 @@ export default {
             fileCount++;
             console.log(response)
             var file = response.data
-            file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
-            if(docCookie.getItem('location')){
-              file.location = docCookie.getItem('location');//设置上传地图的默认制图地区
-            }
+            
             if (file.filesize / 1024 > 1024) {
               file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
             } else {
              file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
            }
-
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
@@ -208,6 +210,7 @@ export default {
               snackbarContainer.MaterialSnackbar.showSnackbar(data);
               //this.$el.querySelector('#create-loading').style.display = 'none';
               this.$el.querySelector('.progress-bar').style.display = 'none';
+              this.$el.querySelector('#upload-button').disabled =""
           }    
 
          }, function(response) { 
@@ -811,7 +814,7 @@ span {
 #upload-progress{
   width:calc(100% - 130px);;
 }
-.demo-toast-example{
+#demo-toast-example{
   text-align:center;
 }
 .small-pic {
