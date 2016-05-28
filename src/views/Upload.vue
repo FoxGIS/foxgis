@@ -142,7 +142,8 @@ export default {
     
     parseImgURL:function(upload) {
       ///uploads/{username}/{upload_id}/mini_thumbnail
-      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' 
+      let access_token = docCookie.getItem('access_token')
+      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
     },
 
@@ -389,9 +390,10 @@ export default {
      },
      
      total_items: function (){
-      let count = this.displayUploads.length;
-      this.$dispatch("upload_nums", count);
-      return count;
+      let count = this.displayUploads.length
+      let allCount = this.uploads.length
+      this.$dispatch("upload_nums", allCount)      
+      return count
      }
   },
 
