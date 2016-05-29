@@ -33,17 +33,18 @@
 
 
 <script>
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 export default {
 	methods:{
 
 	},
 	
   attached() {
-     //判断是否登陆
-    let username = docCookie.getItem('username')
+		//自动登录
+    //判断是否登陆
+    let username = Cookies.get('username')
 		console.log(username)
-    if(username === null){
+    if(username === undefined){
       window.location.href = "#!/login"
     }else{
       this.username = username
@@ -51,12 +52,12 @@ export default {
   },
 	
 	ready(){
-			$("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
-			$('.automatic-slider').unslider({
-				autoplay: true,
-				delay:3000
-			});//设置图片滚动
-
+		console.log('ready')
+		$("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
+		$('.automatic-slider').unslider({
+			autoplay: true,
+			delay:3000
+		});//设置图片滚动
 	},
 
 	data() {

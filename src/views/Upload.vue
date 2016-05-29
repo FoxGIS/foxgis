@@ -97,7 +97,7 @@
 
 <script>
 import _ from 'lodash'
-import docCookie from '../components/cookie.js'
+import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
   methods: {
@@ -114,8 +114,8 @@ export default {
     editLocation: function(e, index) {
       if (e.target.value) {
         let location = e.target.value
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let upload_id = this.displayUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         this.displayUploads[index].location = location
@@ -124,8 +124,7 @@ export default {
             let location = data.location
             let date = new Date()
             let days = 30
-            date.setTime(date.getTime() + days*24*3600*1000)
-            docCookie.setItem('location',location,date)
+            Cookies.set('location',location,{ expires: days })
           },function(response){
             alert("编辑错误")
           }
@@ -136,18 +135,16 @@ export default {
     editTime: function(e, index) {
       if (e.target.value) {
         let year = e.target.value
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let upload_id = this.displayUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         this.displayUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
-            let date = new Date()
             let days = 30
-            date.setTime(date.getTime() + days*24*3600*1000)
-            docCookie.setItem('year',year,date)
+            Cookies.set('year',year,{ expires: days })
           },function(response){
             alert("编辑错误")
           }
@@ -167,7 +164,7 @@ export default {
     
     parseImgURL:function(upload) {
       ///uploads/{username}/{upload_id}/mini_thumbnail
-      let access_token = docCookie.getItem('access_token')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
     },
@@ -184,16 +181,16 @@ export default {
       this.$el.querySelector('#upload-button').disabled = "disabled"
       this.$el.querySelector('.progress-bar').style.display = 'block'
       
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username
       for(let i=0;i<e.target.files.length;i++){
         var formData = new FormData()
         formData.append('upload', e.target.files[i]);
         formData.append('year', new Date().getFullYear());       
         file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
-        if(docCookie.getItem('location')){
-          formData.append('location', docCookie.getItem('location'));
+        if(Cookies.get('location')){
+          formData.append('location', Cookies.get('location'));
         }else{
           formData.append('location', '');
         }
@@ -238,8 +235,8 @@ export default {
     },
 
     showPreview: function(e, index) {
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('#thumbnail').src = url
       document.querySelector('.modal').style.display = 'block'
@@ -259,8 +256,8 @@ export default {
           this.displayUploads[index][attr] = data[attr];
         } 
       }
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let upload_id = this.displayUploads[index].upload_id
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
@@ -339,8 +336,8 @@ export default {
     deleteAction: function(status) {
       if (status === 'ok') {
         let upload_id = this.deleteUploadId
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let url = SERVER_API.uploads + '/' + username + "/" + upload_id
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -359,8 +356,8 @@ export default {
     },
 
     downloadUpload: function(upload_id) {
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
       var aLink = document.createElement('a')
       aLink.className = 'download_link'
@@ -406,11 +403,11 @@ export default {
   },
 
   attached() {
-    let username = docCookie.getItem('username')
-    if(username === null){
+    let username = Cookies.get('username')
+    if(username === undefined){
       return 
     }
-    let access_token = docCookie.getItem('access_token')
+    let access_token = Cookies.get('access_token')
     let url = SERVER_API.uploads + '/' + username
     var that = this
       //获取数据列表
@@ -842,14 +839,15 @@ span {
   top:0px;
   bottom: 0px;
   margin: 0 auto;
+  padding-bottom: 20px;
   background-color: rgba(0, 0, 0, 0.5);
   display: none;
   z-index: 9999;
+  overflow: auto;
 }
 
 .image-container {
   max-width: 1000px;
-  max-height: 667px;
   margin: 200px auto 0 auto;
 }
 

@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import docCookie from './cookie.js'
-
 export default {
   props: ['dataset'],
   methods: {

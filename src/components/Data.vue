@@ -16,7 +16,7 @@
 
 
 <script>
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 import util from './util.js'
 export default {
   methods: {
@@ -28,8 +28,8 @@ export default {
 
     uploadFile: function(e) {
       this.$el.querySelector('#create-loading').style.display = 'block'
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username
       var formData = new FormData()
       formData.append('file', e.target.files[0])
@@ -69,8 +69,8 @@ export default {
     deleteAction: function(status) {
       if (status === 'ok') {
         let upload_id = this.deleteUploadId
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let url = SERVER_API.uploads + '/' + username + "/" + upload_id
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -88,15 +88,15 @@ export default {
     },
 
     downloadUpload: function(upload_id) {
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
       window.open(url)
     }
   },
   attached() {
-    let username = docCookie.getItem('username')
-    let access_token = docCookie.getItem('access_token')
+    let username = Cookies.get('username')
+    let access_token = Cookies.get('access_token')
     //this.username = username
     let url = SERVER_API.uploads + '/' + username
     var that = this

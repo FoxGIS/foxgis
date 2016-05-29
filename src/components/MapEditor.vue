@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 import { validate } from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
 export default {
@@ -150,9 +150,9 @@ export default {
   attached: function(){
     let urlhash = window.location.hash
     let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1')
-    var username = docCookie.getItem('username')
-    let access_token = docCookie.getItem('access_token')
-    if(styleId !== null && access_token !== null){
+    var username = Cookies.get('username')
+    let access_token = Cookies.get('access_token')
+    if(styleId !== null && access_token !== undefined){
 
       let url = SERVER_API.styles + '/' + username + '/' + styleId
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})

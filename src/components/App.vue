@@ -6,7 +6,6 @@
 
 
 <script>
-import docCookie from './cookie.js'
 import store from '../vuex/store'
 
 export default {
