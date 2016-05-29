@@ -813,14 +813,15 @@ span {
   top:0px;
   bottom: 0px;
   margin: 0 auto;
+  padding-bottom: 20px;
   background-color: rgba(0, 0, 0, 0.5);
   display: none;
   z-index: 9999;
+  overflow: auto;
 }
 
 .image-container {
   max-width: 1000px;
-  max-height: 667px;
   margin: 200px auto 0 auto;
 }
 
