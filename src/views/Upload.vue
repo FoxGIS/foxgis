@@ -4,7 +4,8 @@
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
+    <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords"></foxgis-search> -->
+    <input type="text" style="width:700px;" :placeholder="'搜索'" v-model="searchKeyWords">
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
@@ -56,8 +57,8 @@
     </div>
     <div class="metadata">
       <p>
-        制图地区:<input type="text" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-        制图时间:<input type="text" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图地区:<input class="location" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图时间:<input class="year" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
         文件大小:<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
         文件格式:<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
@@ -100,6 +101,16 @@ import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
   methods: {
+    bindInput : function(){
+     /* $(".location").autocomplete({
+        source:[this.location_tags]
+      }) 
+
+      $(".year").autocomplete({
+        source:[this.year_tags]
+      }) */
+    },
+
     editLocation: function(e, index) {
       if (e.target.value) {
         let location = e.target.value
@@ -437,18 +448,23 @@ export default {
      },
      
      displayUploads: function(){
-      console.log('displayUploads computed by condition')
-      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0){
-        return this.uploads.slice(0)
+      let temp = []
+      let temp1 = []
+      let temp2 = []
+      let temp3 = []
+      let tempUploads = this.uploads
+      if(this.searchUploads.length>0){
+        tempUploads = this.searchUploads
       }
 
-      var temp1 = []
-      var temp2 = []
-      var temp3 = []
+      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
+        return tempUploads.slice(0)
+      }
+
       if(this.selected_theme_tags.length>0){
         var conditions = this.selected_theme_tags.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
+        for(var u=0,length=tempUploads.length;u<length;u++){
+          let upload = tempUploads[u]
           if(upload.tags.length>0){
             for(var i=0;i<upload.tags.length;i++){
               if(conditions.indexOf(upload.tags[i])!=-1&&temp1.indexOf(upload) === -1){
@@ -461,8 +477,8 @@ export default {
       }
       if(this.selected_year_tags.length>0){
         var conditions = this.selected_year_tags.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
+        for(var u=0,length=tempUploads.length;u<length;u++){
+          let upload = tempUploads[u]
           if(conditions.indexOf(upload.year)!=-1&&temp2.indexOf(upload) === -1){
             temp2.push(upload)
           }
@@ -470,15 +486,14 @@ export default {
       }
       if(this.selected_location_tags.length>0){
         var conditions = this.selected_location_tags.join()
-        for(var u=0,length=this.uploads.length;u<length;u++){
-          let upload = this.uploads[u]
+        for(var u=0,length=tempUploads.length;u<length;u++){
+          let upload = tempUploads[u]
           if(conditions.indexOf(upload.location)!=-1&&temp3.indexOf(upload) === -1){
             temp3.push(upload)
           }
         }
       }
 
-      let temp = []
       if(temp1.length == 0){
         if(temp2.length == 0){
           temp = temp3
@@ -504,47 +519,103 @@ export default {
           }
         }
       }
+      if(temp.length == 0){
+        temp = tempUploads
+      }
+      if(this.searchKeyWords.trim().length>0 && this.searchUploads.length==0){
+        temp = []
+      }
       return temp
     },
 
     theme_tags: function(){
         let theme = []
-        if(this.uploads.length>0){
-          let k=0
-          for(let i=0;i<this.uploads.length;i++){
-            if(this.uploads[i].tags.length>0){
-              for(let j=0;j<this.uploads[i].tags.length;j++){
-                theme[k]=this.uploads[i].tags[j]
-                k++
-              }
+        let k=0
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }else{
+            return theme
+          }
+        }
+        for(let i=0;i<tempUploads.length;i++){
+          if(tempUploads[i].tags.length>0){
+            for(let j=0;j<tempUploads[i].tags.length;j++){
+              theme[k]=tempUploads[i].tags[j]
+              k++
             }
           }
-          theme = _.uniq(theme)
         }
+        theme = _.uniq(theme)
         return theme
     }, 
 
     year_tags: function(){
         let year = []
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            year[i] = this.uploads[i].year
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }else{
+            return year
           }
-          year = _.uniq(year).sort()
         }
+        for(let i=0;i<tempUploads.length;i++){
+          year[i] = tempUploads[i].year
+        }
+        year = _.uniq(year).sort()
         return year
     }, 
 
     location_tags: function(){
         let location = []
-        if(this.uploads.length>0){
-          for(let i=0;i<this.uploads.length;i++){
-            location[i] = this.uploads[i].location
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }else{
+            return location
           }
-          location = _.uniq(location)
         }
+        for(let i=0;i<tempUploads.length;i++){
+          location[i] = tempUploads[i].location
+        }
+        location = _.uniq(location)
         return location
-    } 
+    },
+
+    searchUploads: function(){
+      let temp = []
+      if(this.searchKeyWords != ''){
+        let keyWords = this.searchKeyWords.trim().split(' ')
+        keyWords = _.uniq(keyWords)
+        for(let u=0;u<this.uploads.length;u++){
+          let upload = this.uploads[u]
+          let num = 0
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w]
+            if(keyWord.indexOf(' ')==-1){
+              if(upload.name.indexOf(keyWord)!=-1 || upload.location.indexOf(keyWord)!=-1 || upload.year.toString().indexOf(keyWord)!=-1){
+                  num++
+              }else{
+                for(let k=0;k<upload.tags.length;k++){
+                  if(upload.tags[k].indexOf(keyWord)!=-1){
+                    num++
+                  }
+                }
+              }
+            }else{
+              num++
+            }
+          }
+          if(num == keyWords.length){
+            temp.push(upload)
+          }
+        }
+      }
+      return temp
+    }
 
   },
 
@@ -563,7 +634,8 @@ export default {
       },
       selected_year_tags: [],
       selected_location_tags: [], 
-      selected_theme_tags: []
+      selected_theme_tags: [],
+      searchKeyWords: ''
     }
   }
 }
