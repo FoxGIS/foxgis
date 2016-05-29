@@ -68,9 +68,6 @@ export default {
           Cookies.set('organization',location)
         }
         
-        
-        this.bindRemoveCookie()
-        
         //跳转不好处理，所以统一跳转到首页
         window.location.href = '#!/home'
       },function(response){
@@ -83,33 +80,12 @@ export default {
       let errorContainer = this.$el.querySelector('#error-info')
       errorContainer.innerHTML = msg
       errorContainer.style.display = 'block'
-    },
-    
-    bindRemoveCookie: function(){
-      //关闭页面就清除cookie
-      window.onbeforeunload = function(){
-        Cookies.remove('access_token')
-        Cookies.remove('username')
-        Cookies.remove('name')
-        Cookies.remove('email')
-        Cookies.remove('phone')
-        Cookies.remove('location')
-        Cookies.remove('organization')
-      }
     }
   },
   attached() {
     //隐藏error info
     let errorContainer = this.$el.querySelector('#error-info')
     errorContainer.style.display = 'none'
-    //自动登录
-    //  //判断是否登录,已登录就跳转到home
-    // let username = Cookies.get('username')
-    // if(username !== undefined){
-    //   window.location.href = "#!/home"
-    // }else{
-    //   this.username = username
-    // }
   }
 }
 

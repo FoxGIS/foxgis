@@ -14,7 +14,7 @@
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-link="{ path: '/login' }"><i class="material-icons">account_circle</i>{{username}}</a>
-        <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>退出</a>
+        <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>注销</a>
       </nav>
     </div>
     <div class="mdl-layout__content">
