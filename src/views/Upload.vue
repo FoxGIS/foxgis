@@ -1,11 +1,7 @@
 <template>
 <div class="foxgis-upload">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
-
-  <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-    <div class="mdl-snackbar__text"></div>
-    <button class="mdl-snackbar__action" type="button"></button>
-  </div>
 
   <div class="search">
     <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords"></foxgis-search> -->
@@ -87,7 +83,7 @@
   
   <div class="modal" @click="hidePreview">
     <div class="image-container" >
-       <img id='thumbnail' src="">
+       <img id='thumbnail'>
     </div>
   </div>
 
@@ -219,11 +215,9 @@ export default {
             file.upload_at = util.dateFormat(new Date(file.upload_at))
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
-              var snackbarContainer = document.querySelector('#demo-toast-example');
-              var data = {message: '上传完成！'};
-              snackbarContainer.MaterialSnackbar.showSnackbar(data);
               this.$el.querySelector('.progress-bar').style.display = 'none';
               this.$el.querySelector('#upload-button').disabled ="";
+              this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });            
           }    
 
          }, function(response) { 
@@ -231,11 +225,12 @@ export default {
            if (response.data.error) {
              this.$el.querySelector('.progress-bar').style.display = 'none';
              this.$el.querySelector('#upload-button').disabled ="";
-             alert(response.data.error);
+             var snackbarContainer = document.querySelector('#demo-toast-example');
+             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
             } else {
             this.$el.querySelector('.progress-bar').style.display = 'none';
             this.$el.querySelector('#upload-button').disabled ="";
-            alert('未知错误，请稍后再试')
+            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
           }
         });
       }
@@ -259,9 +254,9 @@ export default {
 
     patchUpload: function(index,data){
       for(let attr in data){ 
-        if(this.uploads[index].hasOwnProperty(attr))
+        if(this.displayUploads[index].hasOwnProperty(attr))
         {
-          this.uploads[index][attr] = data[attr];
+          this.displayUploads[index][attr] = data[attr];
         } 
       }
       let username = docCookie.getItem('username')
@@ -368,10 +363,14 @@ export default {
       let access_token = docCookie.getItem('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
       var aLink = document.createElement('a')
-      var evt = document.createEvent("HTMLEvents")
-      evt.initEvent("click", false, false);
+      aLink.className = 'download_link'
+      var text = document.createTextNode('&nbsp;')
+      aLink.appendChild(text)
+      // var evt = document.createEvent("HTMLEvents")
+      // evt.initEvent("click", false, false);
       aLink.href = url
-      aLink.dispatchEvent(evt)
+      aLink.click()
+      // aLink.dispatchEvent(evt)     
     },
     
     uploadNameChange: function(e,index){
@@ -842,9 +841,6 @@ span {
 #upload-progress{
   width:calc(100% - 130px);;
 }
-#demo-toast-example{
-  text-align:center;
-}
 .small-pic {
   float: left;
   height: 100px;
@@ -911,4 +907,10 @@ span {
   margin-left: 10px;
   vertical-align: middle;
 }
+
+.download_link {
+  display: block; 
+  background: url("../../static/BtnNew.png") 0 0 repeat; 
+}
+
 </style>

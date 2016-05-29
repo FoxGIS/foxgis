@@ -4,7 +4,7 @@
     <header class="mdl-layout__header mdl-layout__header--seamed">
       <!-- <img class="mdl-layout-icon" src="../assets/logo.png"></img> -->
       <div class="mdl-layout__header-row">
-        <!-- <span class="mdl-layout-title">辅助决策用图定制与服务系统</span> -->
+        <!-- <span class="mdl-layout-title">辅助决策用图系统</span> -->
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/home' }">首页</a>
@@ -17,8 +17,8 @@
       </div>
     </header>
 
-    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
-      <span class="mdl-layout-title">辅助决策用图定制与服务系统</span>
+<!--     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+      <span class="mdl-layout-title">辅助决策用图系统</span>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-link="{ path: 'home' }">首页</a>
         <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
@@ -27,7 +27,7 @@
         <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==null">登录</a>
         <a class="mdl-navigation__link" v-else>{{username}}</a>
       </nav>
-    </div>
+    </div> -->
 
     <div class="mdl-layout--content">
       <slot>Layout content</slot>
