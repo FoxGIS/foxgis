@@ -1,14 +1,14 @@
 <template>
 <div class="foxgis-search">
   <i class="material-icons">search</i>
-  <input type="text" placeholder="{{ placeholder }}"/>
+  <input type="text" placeholder="{{ placeholder }}" v-model="searchKeyWords"/>
 </div>
 </template>
 
 
 <script>
 export default {
-  props: ['placeholder']
+  props: ['placeholder','searchKeyWords']
 }
 </script>
 

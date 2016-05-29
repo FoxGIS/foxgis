@@ -4,8 +4,8 @@
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
 
   <div class="search">
-    <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords"></foxgis-search> -->
-    <input type="text" style="width:700px;" :placeholder="'搜索'" v-model="searchKeyWords">
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+    <!--<input type="text" style="width:700px;" :placeholder="'搜索'" v-model="searchKeyWords">-->
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
@@ -622,7 +622,7 @@ export default {
           for(let w=0;w<keyWords.length;w++){
             let keyWord = keyWords[w]
             if(keyWord.indexOf(' ')==-1){
-              if(upload.name.indexOf(keyWord)!=-1 || upload.location.indexOf(keyWord)!=-1 || upload.year.toString().indexOf(keyWord)!=-1){
+              if(upload.name&&upload.name.indexOf(keyWord)!=-1 || upload.location&&upload.location.indexOf(keyWord)!=-1 || upload.year&&upload.year.toString().indexOf(keyWord)!=-1){
                   num++
               }else{
                 for(let k=0;k<upload.tags.length;k++){
