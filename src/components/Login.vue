@@ -38,7 +38,7 @@ export default {
         loginbutton.disabled = false
         let data = response.data
         if(!data.is_verified){
-          this.showError('未认证')
+          this.showError('用户未认证，请联系管理员')
           return
         }
         let access_token = data.access_token

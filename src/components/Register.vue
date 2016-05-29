@@ -77,7 +77,15 @@ export default {
         'organization':organization
       }
       this.$http.post(url,options).then(function(response){
+        
         let data = response.data
+        registerbutton.disabled = false
+        
+        if(!data.is_verified){
+          this.showError("注册成功,请联系管理员进行认证")
+          return
+        }
+        
         let access_token = data.access_token
         let username = data.username
         let name = data.name
@@ -87,14 +95,14 @@ export default {
         let organization = data.organization
         let days = 30
         
-        Cookies.set('access_token',access_token,{ expires: days })
-        Cookies.set('username',username,{ expires: days })
-        Cookies.set('name',name,{ expires: days })
-        Cookies.set('email',email,{ expires: days })
-        Cookies.set('phone',phone,{ expires: days })
-        Cookies.set('location',location,{ expires: days })
-        Cookies.set('organization',location,{ expires: days })
-        registerbutton.disabled = false
+        Cookies.set('access_token',access_token)
+        Cookies.set('username',username)
+        Cookies.set('name',name)
+        Cookies.set('email',email)
+        Cookies.set('phone',phone)
+        Cookies.set('location',location)
+        Cookies.set('organization',organization)
+        
         window.location.href = '#!/studio'
       },function(response){
         registerbutton.disabled = false
