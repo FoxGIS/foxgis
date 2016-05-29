@@ -499,34 +499,60 @@ export default {
 
       if(temp1.length == 0){
         if(temp2.length == 0){
-          temp = temp3
+          if(temp3.length == 0){
+            temp=this.searchUploads
+          }else{
+            if(this.searchUploads.length == 0){
+              temp =temp3
+            }else{
+              temp = _.intersection(temp3,this.searchUploads)
+            }
+          } 
         }else{
           if(temp3.length == 0){
-            temp = temp2
+            if(this.searchUploads.length == 0){
+              temp =temp2
+            }else{
+              temp = _.intersection(temp2,this.searchUploads)
+            }
           }else{
-            temp = _.intersection(temp2,temp3)
+            if(this.searchUploads.length == 0){
+              temp = _.intersection(temp2,temp3)
+            }else{
+              temp = _.intersection(temp2,temp3,this.searchUploads)
+            }
           }
         }
       }else{
         if(temp2.length == 0){
           if(temp3.length == 0){
-            temp = temp1
+            if(this.searchUploads.length == 0){
+              temp = temp1
+            }else{
+              temp = _.intersection(temp1,this.searchUploads)
+            }  
           }else{
-            temp = _.intersection(temp1,temp3)
+            if(this.searchUploads.length == 0){
+              temp = _.intersection(temp1,temp3)
+            }else{
+              temp = _.intersection(temp1,temp3,this.searchUploads)
+            }  
           }
         }else{
           if(temp3.length == 0){
-            temp = _.intersection(temp1,temp2)
+            if(this.searchUploads.length == 0){
+              temp = _.intersection(temp1,temp2)
+            }else{
+              temp = _.intersection(temp1,temp2,this.searchUploads)
+            } 
           }else{
-            temp = _.intersection(temp1,temp2,temp3)
+            if(this.searchUploads.length == 0){
+              temp = _.intersection(temp1,temp2,temp3)
+            }else{
+              temp = _.intersection(temp1,temp2,temp3,this.searchUploads)
+            } 
           }
         }
-      }
-      if(temp.length == 0){
-        temp = tempUploads
-      }
-      if(this.searchKeyWords.trim().length>0 && this.searchUploads.length==0){
-        temp = []
       }
       return temp
     },
