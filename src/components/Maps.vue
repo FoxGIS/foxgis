@@ -16,7 +16,7 @@
 
 <script>
 
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 import util from './util.js'
 import { changeStyle } from '../vuex/actions'
 export default {
@@ -41,8 +41,8 @@ export default {
         let data = res.data
         data.name = name
         let style = JSON.stringify(data)
-        var username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        var username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let createURL = SERVER_API.styles + '/' + username
         this.$http({'url':createURL,'method':'POST','data':style,headers:{'x-access-token':access_token}})
         .then(function(res){
@@ -64,8 +64,8 @@ export default {
     deleteAction: function(status){
       if(status === 'ok'){
         let style_id = this.deleteStyleId
-        let username = docCookie.getItem('username')
-        let access_token = docCookie.getItem('access_token')
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
         let url = SERVER_API.styles + '/' + username + "/" + style_id
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -83,11 +83,11 @@ export default {
     }
   },
   attached() {
-    let username = docCookie.getItem('username')
-    if(username === null){
+    let username = Cookies.get('username')
+    if(username === undefined){
       return
     }
-    let access_token = docCookie.getItem('access_token')
+    let access_token = Cookies.get('access_token')
     let url = SERVER_API.styles+'/' + username
 
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){

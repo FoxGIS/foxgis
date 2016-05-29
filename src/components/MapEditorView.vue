@@ -34,7 +34,7 @@
 import mapboxgl from 'mapbox-gl'
 import { diff, validate} from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 export default {
   vuex: {
     getters: {
@@ -223,8 +223,8 @@ export default {
     },
     patchStyle: function(style){
       let style_id = style.style_id
-      let username = docCookie.getItem('username')
-      let access_token = docCookie.getItem('access_token')
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
       let url = SERVER_API.styles + '/' + username + '/' + style_id
       let data = JSON.stringify(style)
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})

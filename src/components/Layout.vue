@@ -7,11 +7,11 @@
         <!-- <span class="mdl-layout-title">辅助决策用图系统</span> -->
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" v-link="{ path: '/home' }">首页</a>
+          <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a> -->
-          <a class="mdl-navigation__link" v-link="{ path: '/studio' }">制图</a>
+          <a class="mdl-navigation__link" v-link="{ path: '/studio' }" v-bind:class="username==undefined?'disabled':''">制图</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a> -->
-          <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==null">登录</a>
+          <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==undefined">登录</a>
           <a class="mdl-navigation__link" v-else>{{username}}</a>
         </nav>
       </div>
@@ -39,23 +39,22 @@
 
 
 <script>
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 export default {
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
   },
   attached: function() {
-     //判断是否登陆
-    let username = docCookie.getItem('username')
-    if(username !== null){
+    //判断是否登陆
+    let username = Cookies.get('username')
+    if(username !== undefined){
       this.username = username
     }
-
   },
   data: function(){
     return {
-      username: null
+      username: undefined
     }
   }
 }
@@ -99,6 +98,11 @@ export default {
   /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/
   display: flex;
   flex-flow: column;
+}
+
+a.disabled {
+   pointer-events: none;
+   cursor: default;
 }
 
 </style>

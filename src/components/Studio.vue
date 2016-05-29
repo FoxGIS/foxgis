@@ -27,31 +27,29 @@
 
 
 <script>
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 
 export default {
   methods: {
     signout: function(){
-      docCookie.removeItem('username')
-      docCookie.removeItem('access_token')
-      docCookie.removeItem('name')
-      docCookie.removeItem('phone')
-      docCookie.removeItem('email')
-      docCookie.removeItem('location')
-      docCookie.removeItem('organization')
-      
+      Cookies.remove('username')
+      Cookies.remove('access_token')
+      Cookies.remove('name')
+      Cookies.remove('phone')
+      Cookies.remove('email')
+      Cookies.remove('location')
+      Cookies.remove('organization')
       window.location.href = '/'
     }
   },
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
-
   },
   attached: function() {
      //判断是否登陆
-    let username = docCookie.getItem('username')
-    if(username === null){
+    let username = Cookies.get('username')
+    if(username === undefined){
       window.location.href = "#!/login"
     }else{
       this.username = username

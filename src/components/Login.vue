@@ -24,7 +24,7 @@
 
 <script>
 
-import docCookie from './cookie.js'
+import Cookies from 'js-cookie'
 export default {
   methods:{
     login: function(e){
@@ -35,7 +35,12 @@ export default {
       let password = this.$el.querySelector('#password').value
       url += '/'+username
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
+        loginbutton.disabled = false
         let data = response.data
+        if(!data.is_verified){
+          this.showError('未认证')
+          return
+        }
         let access_token = data.access_token
         let username = data.username
         let name = data.name
@@ -43,18 +48,29 @@ export default {
         let phone = data.phone
         let organization = data.organization
         let location = data.location
+        let days = 0
+
+        Cookies.set('access_token',access_token)
+        Cookies.set('username',username)
+        if(name!=undefined){
+          Cookies.set('name',name)
+        }
+        if(email!=undefined){
+          Cookies.set('email',email)
+        }
+        if(phone!=undefined){
+          Cookies.set('phone',phone)
+        }
+        if(location!=undefined){
+          Cookies.set('location',location)
+        }
+        if(organization!=undefined){
+          Cookies.set('organization',location)
+        }
         
-        let date = new Date()
-        let days = 30
-        date.setTime(date.getTime() + days*24*3600*1000)
-        docCookie.setItem('access_token',access_token,date)
-        docCookie.setItem('username',username,date)
-        docCookie.setItem('name',name,date)
-        docCookie.setItem('email',email,date)
-        docCookie.setItem('phone',phone,date)
-        docCookie.setItem('location',location,date)
-        docCookie.setItem('organization',location,date)
-        loginbutton.disabled = false
+        
+        this.bindRemoveCookie()
+        
         //跳转不好处理，所以统一跳转到首页
         window.location.href = '#!/home'
       },function(response){
@@ -62,24 +78,38 @@ export default {
         this.showError('用户名或密码错误')
       })
     },
+    
     showError: function(msg){
       let errorContainer = this.$el.querySelector('#error-info')
       errorContainer.innerHTML = msg
       errorContainer.style.display = 'block'
+    },
+    
+    bindRemoveCookie: function(){
+      //关闭页面就清除cookie
+      window.onbeforeunload = function(){
+        Cookies.remove('access_token')
+        Cookies.remove('username')
+        Cookies.remove('name')
+        Cookies.remove('email')
+        Cookies.remove('phone')
+        Cookies.remove('location')
+        Cookies.remove('organization')
+      }
     }
   },
   attached() {
     //隐藏error info
     let errorContainer = this.$el.querySelector('#error-info')
     errorContainer.style.display = 'none'
-     //判断是否登录,已登录就跳转到home
-    let username = docCookie.getItem('username')
-		console.log(username)
-    if(username !== null){
-      window.location.href = "#!/home"
-    }else{
-      this.username = username
-    }
+    //自动登录
+    //  //判断是否登录,已登录就跳转到home
+    // let username = Cookies.get('username')
+    // if(username !== undefined){
+    //   window.location.href = "#!/home"
+    // }else{
+    //   this.username = username
+    // }
   }
 }
 
