@@ -86,27 +86,27 @@ export default {
 			}],
 			messages:[{
 				id:1,
-				name:'四川省',
+				name:'四川省测绘地理信息局',
 				map_count:'42'
 			},
 			{
 				id:2,
-				name:'陕西省',
+				name:'陕西省测绘地理信息局',
 				map_count:'37'
 			},
 			{
 				id:3,
-				name:'黑龙江省',
+				name:'黑龙江省测绘地理信息局',
 				map_count:'34'
 			},
 			{
 				id:4,
-				name:'海南省',
+				name:'海南省测绘地理信息局',
 				map_count:'25'
 			},
 			{
 				id:5,
-				name:'云南省',
+				name:'云南省测绘地理信息局',
 				map_count:'21'
 			}]
 		}

@@ -5,7 +5,7 @@ export default {
     var day = date.getDate()
     var hours = date.getHours()
     var minutes = date.getMinutes()
-    var seconds = date.getSeconds()
+    var seconds = date.getSeconds();
     if (month < 9) {
       month = '0' + month
     }

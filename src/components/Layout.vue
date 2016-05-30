@@ -86,8 +86,15 @@ export default {
   font-size: 1.5em;
 }
 
+.mdl-navigation{
+  line-height: 30px;
+  position: relative;
+  top: 34px;
+  left: 40px;
+}
 .mdl-navigation__link {
   font-size: 1em;
+  line-height: 30px;
 }
 
 .mdl-layout--content {
