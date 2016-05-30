@@ -16,11 +16,15 @@
           <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>
         </div>
       </foxgis-card>
+      <div class="footer">
+        <div>主管部门：国家测绘地理信息局</div>
+        <div>建设单位：国家基础地理信息中心</div>
+        <div>技术支持：北京吉威数源信息技术有限公司</div>
+      </div>
     </div>
   </foxgis-layout>
 </div>
 </template>
-
 
 <script>
 
@@ -96,8 +100,9 @@ export default {
 .wrapper {
   height: calc(100% - 64px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .login {
@@ -105,6 +110,7 @@ export default {
   height: 250px;
   padding: 20px;
   position: relative;
+  margin:auto;
 }
 
 .disable {
@@ -141,6 +147,15 @@ export default {
   color: red;
   font-size: 12px;
   display: none;
+}
+
+.footer{
+  position: relative;
+  margin: 0 auto 30px auto;
+  width: 230px;
+  height: 90px;
+  color: #3f51b5;
+  font: normal 12px/30px "SimSun";
 }
 
 </style>

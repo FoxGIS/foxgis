@@ -12,24 +12,23 @@
   <div class='progress-bar' style="display:none">
     <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
-    
   </div>
   
   <div class="filter">
     <div class="condition">
-      <span>主题：</span>
+      <span>主题词：</span>
       <a v-for="tag in theme_tags" v-if="$index<10"
           @click="conditionClick($event,1)">{{ tag }}
       </a>
     </div>
     <div class="condition">
-      <span>地区：</span>
+      <span>制图地区：</span>
       <a v-for="location in location_tags" v-if="$index<10"
           @click="conditionClick($event,2)" track-by="$index">{{ location }}
       </a>
     </div>
     <div class="condition">
-      <span>年份：</span>
+      <span>制图年份：</span>
       <a v-for="year in year_tags | orderBy" v-if="$index<10"
           @click="conditionClick($event,3)">{{ year }}
       </a>
@@ -44,11 +43,11 @@
 
     <div class="name">
       <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
     <div class = "tags">
-      <span>标签:</span>
+      <span>主题词:</span>
       <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
@@ -57,10 +56,10 @@
     </div>
     <div class="metadata">
       <p>
-        制图地区:<input class="location" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-        制图时间:<input class="year" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-        文件大小:<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
-        文件格式:<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
+        制图地区：<input class="location" type="text" style="width:130px;" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图年份：<input class="year" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
+        文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
       <div class="action">
         <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
@@ -717,6 +716,8 @@ span {
 
 .filter span {
   font-size: 1em;
+  width: 80px;
+  display: inline-block;
 }
 
 .filter .condition {
@@ -812,15 +813,14 @@ span {
 
 .metadata input{
     border: 0;
-    width: 50px;
-    color: #9E9E9E;
+    width: 40px;
     font-size: 12px;
     margin: 0;
 }
 
 .metadata span{
     border: 0;
-    width: 50px;
+    width: 70px;
     color: #9E9E9E;
     font-size: 12px;
     margin: 0;
