@@ -34,8 +34,10 @@
           @click="conditionClick($event,3)">{{ year }}
       </a>
     </div>
-  </div>  
-
+  </div> 
+  <input type="text" @change="addMutiTags"> 
+  <mdl-anchor-button accent raised v-mdl-ripple-effect @click="cardSelect">选择</mdl-anchor-button>
+  <mdl-anchor-button accent raised v-mdl-ripple-effect @click="selectAll">全选</mdl-anchor-button>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
 
     <div class="small-pic">
@@ -55,6 +57,7 @@
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
+    <input type="checkbox" value='' class = "card-checkbox" @change="calValue($event,$index)" style="display:none">
     <div class="metadata">
       <p>
         制图地区:<input class="location" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -67,6 +70,7 @@
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
+
   </div>
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
@@ -290,6 +294,40 @@ export default {
         e.target.value = ''
         this.patchUpload(index,{'tags':patchUpload.tags})
       }
+    },
+
+    addMutiTags:function(e){
+      var elStr = $(".card-checkbox");
+      var tagName = e.target.value;
+      for(let i=0;i<elStr.length;i++){
+        if(elStr[i].checked == true){
+          var index = elStr[i].value;         
+          if(tagName){
+            var patchUpload = this.displayUploads[index];
+        patchUpload.tags.push(tagName);
+        e.target.value = '';
+        this.patchUpload(index,{'tags':patchUpload.tags});
+          }
+        }
+      }
+      
+    },
+
+    calValue:function(e,index){
+      if(e.target.checked == true){
+        e.target.value=index;
+      }else{
+        e.target.value="";
+      }
+    },//当选中checkbox时给checkbox赋value值，值等于index
+
+    cardSelect:function(){
+      $(".card-checkbox").css("display","block");
+    },
+
+    selectAll:function(){
+      $(".card-checkbox").attr('checked',true);
+      $(".card-checkbox").each(trigger('change'));
     },
 
     conditionClick: function(e,type){
