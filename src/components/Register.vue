@@ -9,8 +9,13 @@
         <mdl-textfield floating-label="姓名" id="name"></mdl-textfield>
         <mdl-textfield floating-label="邮箱" id="email" pattern="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></mdl-textfield>
         <mdl-textfield floating-label="手机" id="phone" pattern="^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"></mdl-textfield>
-        <mdl-textfield floating-label="位置" id="location"></mdl-textfield>
         <mdl-textfield floating-label="单位" id="organization"></mdl-textfield>
+        <div class="location">
+          <span>位置</span>
+          <select id="location" style="width:100%;">
+              <option v-for="province in provinces" value="{{province}}">{{province}}</option>
+          </select>
+        </div>
         <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
       </foxgis-card>
     </div>
@@ -55,7 +60,8 @@ export default {
         this.showError('请输入正确的电话格式')
         return
       }
-      let location = this.$el.querySelector('#location').value
+      /*let location = this.$el.querySelector('#location').value*/
+      let location = document.getElementById('location').selectedOptions[0].value
       if(location === ''){
         this.showError('位置不能为空')
         return 
@@ -121,6 +127,45 @@ export default {
     //隐藏error info
     let errorContainer = this.$el.querySelector('#error-info')
     errorContainer.style.display = 'none'
+  },
+  data() {
+    return {
+      provinces: [
+        '北京市',
+        '天津市',
+        '河北省',
+        '山西省',
+        '内蒙古自治区',
+        '上海市',
+        '重庆市',
+        '河南省',
+        '云南省',
+        '辽宁省',
+        '黑龙江省',
+        '湖南省',
+        '安徽省',
+        '山东省',
+        '新疆维吾尔自治区',
+        '江苏省',
+        '浙江省',
+        '江西省',
+        '湖北省',
+        '广西壮族自治区',
+        '甘肃省',
+        '陕西省',
+        '吉林省',
+        '福建省',
+        '贵州省',
+        '广东省',
+        '青海省',
+        '西藏自治区',
+        '四川省',
+        '宁夏回族自治区',
+        '海南省',
+        '香港特别行政区',
+        '澳门特别行政区',
+        '台湾省']
+    }
   }
 }
 
@@ -176,6 +221,23 @@ export default {
   color: red;
   font-size: 12px;
   display: none;
+}
+
+.location{
+  position: relative;
+  font-size: 16px;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0px 0 20px 0;
+}
+
+.location span{
+  color: #3f51b5;
+  font-size: 12px;
+  margin: 0 20px 0 0;
 }
 
 </style>
