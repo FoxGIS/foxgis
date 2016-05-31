@@ -454,7 +454,8 @@ export default {
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
         return tempUploads.slice(0)
       }
-      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length!==0){
+      if(this.searchUploads.length === 0 && this.searchKeyWords.trim().length!==0){
+      //用户进行了搜索，但结果为空
         return this.searchUploads;
       }
 
