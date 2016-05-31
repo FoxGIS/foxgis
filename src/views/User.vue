@@ -6,36 +6,38 @@
           <tbody>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
-              <td><div contenteditable="false">{{userInfo.username}}</div></td>
+              <td style="color:#989898;">{{userInfo.username}}</td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
-              <td><div contenteditable="false">{{userInfo.is_verified}}</div></td>
+              <td style="color:#989898;">{{userInfo.is_verified}}</td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>真实姓名：</b></td>
-              <td><div contenteditable="false">{{userInfo.name}}</div></td>
+              <td style="color:#989898;">{{userInfo.name}}</td>
             </tr>
             <tr id="tr-email">
               <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td><div contenteditable="false" id="td-email">{{userInfo.email}}</div></td>
+              <td><input @change="emailChange" value="{{userInfo.email}}"></td>
             </tr>
             <tr id="tr-phone">
               <td class="mdl-data-table__cell--non-numeric"><b>电话：</b></td>
-              <td><div contenteditable="false" id="td-phone">{{userInfo.phone}}</div></td>
+              <td><input @change="phoneChange" value="{{userInfo.phone}}"></td>
+            </tr>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
+              <td style="color:#989898;">{{userInfo.location}}</td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-              <td><div contenteditable="false">{{userInfo.organization}}</div></td>
+              <td style="color:#989898;">{{userInfo.organization}}</td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
-              <td><div contenteditable="false">{{userInfo.createdAt}}</div></td>
+              <td style="color:#989898;">{{userInfo.createdAt}}</td>
             </tr>
           </tbody>
         </table>
-        <mdl-button raised colored v-mdl-ripple-effect @click="editInfo" style="min-width: 88px;margin-right:44px;margin-top:5px;">修改</mdl-button>
-        <mdl-button raised colored v-mdl-ripple-effect @click="saveInfo" style="min-width: 88px;margin-left:44px;margin-top:5px;" id="save-button">保存</mdl-button>
   </div>
 </template>
 
@@ -45,21 +47,8 @@
 import Cookies from 'js-cookie'
 export default {
   methods:{
-    editInfo:function(){
-      document.getElementById('save-button').removeAttribute("disabled");
-      var table = document.getElementById('user-info-table');
-      for(let i=0;i<table.rows.length;i++){
-        table.rows[i].style = "background-color:rgb(230, 234, 234);";
-      }
-      document.getElementById('tr-email').style = "background-color:#ffffff;";
-      document.getElementById('tr-phone').style = "background-color:#ffffff;";
-      document.getElementById('td-email').setAttribute('contenteditable',true);
-      document.getElementById('td-phone').setAttribute('contenteditable',true);
-      
-    },
-    saveInfo:function(){
-      var newEmail = document.getElementById('td-email').innerHTML;
-      var newPhone = document.getElementById('td-phone').innerHTML;
+    emailChange:function(e){
+      var newEmail = e.target.value;
       if (newEmail != "") {
          let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
          let isok= reg.test(newEmail);
@@ -70,8 +59,21 @@ export default {
        }else{
         alert("邮箱地址不能为空！");
         return;
-       }
-       if(newPhone!=""){
+       }      
+       let username = Cookies.get('username');
+       let access_token = Cookies.get('access_token');
+       let url = SERVER_API.users + '/' + username;
+       this.$http({url:url,method:'PATCH',data:{"email":newEmail},headers:{'x-access-token':access_token}}).then(function(response){
+          if(response.ok){
+            this.$broadcast('mailSent', { message: '邮箱修改成功！',timeout:3000 });
+          }
+        }, function(response) {
+          alert("网络错误");
+      });
+    },
+    phoneChange:function(e){
+      var newPhone = e.target.value;
+      if(newPhone!=""){
         let reg = /^1[3,5,8]\d{9}$/;
         let reg2 = /^0(([1,2]\d)|([3-9]\d{2}))\d{7,8}$/;
         let isok = reg.test(newPhone)||reg2.test(newPhone);
@@ -83,29 +85,20 @@ export default {
         alert("电话不能为空！");
         return;
        }
-       let username = Cookies.get('username')
-       let access_token = Cookies.get('access_token')
-       let url = SERVER_API.users + '/' + username
-       this.$http({url:url,method:'PATCH',data:{"email":newEmail,"phone":newPhone},headers:{'x-access-token':access_token}})
-        .then(function(response){
+       let username = Cookies.get('username');
+       let access_token = Cookies.get('access_token');
+       let url = SERVER_API.users + '/' + username;
+       this.$http({url:url,method:'PATCH',data:{"phone":newPhone},headers:{'x-access-token':access_token}}).then(function(response){
           if(response.ok){
-            document.getElementById('save-button').setAttribute("disabled",true);
-            var table = document.getElementById('user-info-table');
-            for(let i=0;i<table.rows.length;i++){
-               table.rows[i].style = "background-color:#ffffff;";
-            }
-            document.getElementById('td-email').setAttribute('contenteditable',false);
-            document.getElementById('td-phone').setAttribute('contenteditable',false);
-            this.$broadcast('mailSent', { message: '信息修改成功！',timeout:3000 });
+            this.$broadcast('mailSent', { message: '电话修改成功！',timeout:3000 });
           }
         }, function(response) {
-          alert("网络错误")
+          alert("网络错误");
       });
     }
   
   },
   attached() {
-    document.getElementById('save-button').setAttribute("disabled",true);
     let username = Cookies.get('username')
     if(username === undefined){
       return 
@@ -159,5 +152,11 @@ export default {
 #user-info table{
   width:350px;
   height:400px;
+}
+
+#user-info input{
+  outline:none;
+  border:0;
+  text-align:right;
 }
 </style>
