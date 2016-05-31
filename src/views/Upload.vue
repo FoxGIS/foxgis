@@ -454,6 +454,9 @@ export default {
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
         return tempUploads.slice(0)
       }
+      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length!==0){
+        return this.searchUploads;
+      }
 
       if(this.selected_theme_tags.length>0){
         var conditions = this.selected_theme_tags.join()
@@ -544,6 +547,9 @@ export default {
             } 
           }
         }
+      }
+      if(temp.length===0){
+        temp=this.uploads;
       }
       return temp
     },
