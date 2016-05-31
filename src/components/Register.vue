@@ -12,11 +12,14 @@
         <mdl-textfield floating-label="单位" id="organization"></mdl-textfield>
         <div class="location">
           <span>位置</span>
-          <select id="location" style="width:100%;">
+          <select id="location">
               <option v-for="province in provinces" value="{{province}}">{{province}}</option>
           </select>
         </div>
-        <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
+        <div class="registerButton">
+          <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
+          <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
+        </div>
       </foxgis-card>
     </div>
   </foxgis-layout>
@@ -32,6 +35,13 @@ export default {
     register: function(e){
       let url = SERVER_API.users
       let username = this.$el.querySelector('#username').value
+      if(username === ''){
+        this.showError('用户名不能为空')
+        return 
+      }else if(username.length>20){
+        this.showError('用户名过长')
+        return 
+      }
       let password = this.$el.querySelector('#password').value
       if(password.length < 6){
         this.showError('密码长度过短')
@@ -117,6 +127,9 @@ export default {
         }
       })
     },
+    cancel: function(e){
+      window.location.href = '#!/'
+    },
     showError: function(msg){
       let errorContainer = this.$el.querySelector('#error-info')
       errorContainer.innerHTML = msg
@@ -195,6 +208,7 @@ export default {
 .mdl-button {
   width: 100%;
   font-size: 1em;
+  margin: 0 20px;
 }
 
 .tips {
@@ -238,6 +252,14 @@ export default {
   color: #3f51b5;
   font-size: 12px;
   margin: 0 20px 0 0;
+}
+
+.location select{
+  width:100%;
+}
+
+.registerButton{
+  display: flex;
 }
 
 </style>
