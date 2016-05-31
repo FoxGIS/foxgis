@@ -24,7 +24,7 @@
     <div class="condition">
       <span>制图地区：</span>
       <a v-for="location in location_tags" v-if="$index<10"
-          @click="conditionClick($event,2)" track-by="$index">{{ location }}
+          @click="conditionClick($event,2)">{{ location }}
       </a>
     </div>
     <div class="condition">
@@ -42,7 +42,7 @@
     </div>
 
     <div class="name">
-      <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
@@ -56,7 +56,7 @@
     </div>
     <div class="metadata">
       <p>
-        制图地区：<input class="location" type="text" style="width:130px;" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图地区：<input class="location" type="text" maxlength="10" style="width:130px;"    @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
         制图年份：<input class="year" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
         文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
@@ -111,12 +111,18 @@ export default {
     },
 
     editLocation: function(e, index) {
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
         let location = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].location = location
+        tempUploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let location = data.location
@@ -130,12 +136,22 @@ export default {
     },
 
     editTime: function(e, index) {
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
         let year = e.target.value
+        if(e.target.value.length == 0){
+          let today=new Date()
+          let year=today.getFullYear()
+        }
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].year = year
+        tempUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
@@ -591,7 +607,7 @@ export default {
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          year.push(tempUploads[i].year)
+          year.push(tempUploads[i].year.toString())
         }
         year = _.uniq(year).sort()
         return year
