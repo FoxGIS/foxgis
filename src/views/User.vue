@@ -158,5 +158,10 @@ export default {
   outline:none;
   border:0;
   text-align:right;
+  background-color:transparent;
+}
+
+input:hover{
+  background-color:transparent;
 }
 </style>
