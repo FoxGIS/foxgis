@@ -173,6 +173,13 @@ export default {
     uploadFile: function(e) {
       if(document.getElementById('file').value==="") return;
       var fileCount=0;//记录上传的文件数目
+      for(let i=0;i<e.target.files.length;i++){
+        if(e.target.files[i].size/1048576>200){
+          console.log(e.target.files[i].size/1048576);
+          this.$broadcast('mailSent', { message: '出现错误！单个文件不能超过200MB！',timeout:5000 });
+          return;
+        }
+      }
       this.$el.querySelector('#upload-button').disabled = "disabled"
       this.$el.querySelector('.progress-bar').style.display = 'block'
       
@@ -450,6 +457,10 @@ export default {
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
         return tempUploads.slice(0)
       }
+      if(this.searchUploads.length === 0 && this.searchKeyWords.trim().length!==0){
+      //用户进行了搜索，但结果为空
+        return this.searchUploads;
+      }
 
       if(this.selected_theme_tags.length>0){
         let conditions = this.selected_theme_tags.join()
@@ -540,6 +551,9 @@ export default {
             } 
           }
         }
+      }
+      if(temp.length===0){
+        temp=this.uploads;
       }
       return temp
     },

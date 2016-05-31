@@ -68,7 +68,7 @@ export default {
   background-image: url('../assets/header.jpg');
   background-size: contain;
   background-repeat: no-repeat;
-  background-color: #2061C6;
+  background-color: #3861CB;
 }
 
 .mdl-layout.has-drawer .mdl-layout__header > .mdl-layout-icon {
