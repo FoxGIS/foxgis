@@ -248,16 +248,9 @@ export default {
       }
     },
 
-    patchUpload: function(index,data){
-      for(let attr in data){ 
-        if(this.displayUploads[index].hasOwnProperty(attr))
-        {
-          this.displayUploads[index][attr] = data[attr];
-        } 
-      }
+    patchUpload: function(upload_id,data){
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
-      let upload_id = this.displayUploads[index].upload_id
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -271,23 +264,24 @@ export default {
     },
 
     deleteTag: function(pId, tag_id) {
-      console.log(pId)
       let patchTags = this.displayUploads[pId].tags
+      let upload_id = this.displayUploads[pId].upload_id
       patchTags.splice(tag_id, 1)
-      this.patchUpload(pId,{'tags':patchTags})
+      this.patchUpload(upload_id,{'tags':patchTags})
     },
 
     addTag: function(e, index) {
       if (e.target.value) {
         
-        var patchUpload = this.displayUploads[index]
+        let patchUpload = this.displayUploads[index]
+        let upload_id = this.displayUploads[index].upload_id
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
           alert('该标签已存在')
           return
         }
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
-        this.patchUpload(index,{'tags':patchUpload.tags})
+        this.patchUpload(upload_id,{'tags':patchUpload.tags})
       }
     },
 
@@ -370,8 +364,9 @@ export default {
     },
     
     uploadNameChange: function(e,index){
-      var value = e.target.value
-      this.patchUpload(index,{'name':value})
+      let value = e.target.value
+      let upload_id = this.displayUploads[index].upload_id
+      this.patchUpload(upload_id,{'name':value})
     },
     
     nextPage: function (event) {
