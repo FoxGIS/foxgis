@@ -111,7 +111,6 @@ export default {
     },
 
     editLocation: function(e, index) {
-      if (e.target.value) {
         let location = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -128,11 +127,9 @@ export default {
             alert("编辑错误")
           }
         )
-      }
     },
 
     editTime: function(e, index) {
-      if (e.target.value) {
         let year = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -148,7 +145,6 @@ export default {
             alert("编辑错误")
           }
         )
-      }
     },
 
     calculation:function(size){
@@ -456,11 +452,11 @@ export default {
       }
 
       if(this.selected_theme_tags.length>0){
-        var conditions = this.selected_theme_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_theme_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(upload.tags.length>0){
-            for(var i=0;i<upload.tags.length;i++){
+            for(let i=0;i<upload.tags.length;i++){
               if(conditions.indexOf(upload.tags[i])!=-1&&temp1.indexOf(upload) === -1){
                 temp1.push(upload)
                 break
@@ -470,8 +466,8 @@ export default {
         }
       }
       if(this.selected_year_tags.length>0){
-        var conditions = this.selected_year_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_year_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(conditions.indexOf(upload.year)!=-1&&temp2.indexOf(upload) === -1){
             temp2.push(upload)
@@ -479,8 +475,8 @@ export default {
         }
       }
       if(this.selected_location_tags.length>0){
-        var conditions = this.selected_location_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_location_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(conditions.indexOf(upload.location)!=-1&&temp3.indexOf(upload) === -1){
             temp3.push(upload)
@@ -562,7 +558,7 @@ export default {
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].tags.length>0){
             for(let j=0;j<tempUploads[i].tags.length;j++){
-              theme[k]=tempUploads[i].tags[j]
+              theme.push(tempUploads[i].tags[j])
               k++
             }
           }
@@ -582,7 +578,7 @@ export default {
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          year[i] = tempUploads[i].year
+          year.push(tempUploads[i].year)
         }
         year = _.uniq(year).sort()
         return year
@@ -599,7 +595,9 @@ export default {
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          location[i] = tempUploads[i].location
+          if(tempUploads[i].location.length > 0){
+            location.push(tempUploads[i].location)
+          }
         }
         location = _.uniq(location)
         return location
@@ -761,7 +759,7 @@ span {
   margin: 0;
   border: none;
   padding: 5px 5px 5px 0;
-  width: 50%;
+  width: 70%;
 }
 
 .tags {
