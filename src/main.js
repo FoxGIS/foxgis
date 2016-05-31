@@ -42,6 +42,7 @@ import MapDistrictSelect from './components/MapDistrictSelect'
 import ModalStyleTemplate from './components/ModalStyleTemplate'
 import Loading from './components/Loading'
 import Dialog from './components/Dialog'
+import User from './views/User'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -112,6 +113,9 @@ router.map({
       },
       '/uploads': {
         component: Upload
+      },
+      '/user':{
+        component:User
       }
     }
   },
