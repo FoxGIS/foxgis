@@ -177,6 +177,13 @@ export default {
     uploadFile: function(e) {
       if(document.getElementById('file').value==="") return;
       var fileCount=0;//记录上传的文件数目
+      for(let i=0;i<e.target.files.length;i++){
+        if(e.target.files[i].size/1048576>200){
+          console.log(e.target.files[i].size/1048576);
+          this.$broadcast('mailSent', { message: '出现错误！单个文件不能超过200MB！',timeout:5000 });
+          return;
+        }
+      }
       this.$el.querySelector('#upload-button').disabled = "disabled"
       this.$el.querySelector('.progress-bar').style.display = 'block'
       
