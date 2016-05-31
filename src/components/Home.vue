@@ -56,7 +56,8 @@ export default {
 		$("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
 		$('.automatic-slider').unslider({
 			autoplay: true,
-			delay:3000
+			delay:3000,
+			infinite: true
 		});//设置图片滚动
 	},
 
