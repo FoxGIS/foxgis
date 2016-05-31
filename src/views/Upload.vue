@@ -33,20 +33,9 @@
           @click="conditionClick($event,3)">{{ year }}
       </a>
     </div>
-  </div> 
+  </div>  
 
-   
-  <div>
-    <div>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="addMutiTags" class="select-btn">批量加标签</mdl-anchor-button>
-    </div>
-    <div id="select-button">
-    <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
-    <mdl-anchor-button accent raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
-    <mdl-anchor-button accent raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
-  </div>
-  </div>
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" >
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
 
     <div class="small-pic">
        <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
@@ -59,13 +48,12 @@
 
     <div class = "tags">
       <span>主题词:</span>
-      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" >
+      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
-    <input type="checkbox" class = "card-checkbox" v-bind:checked="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" @change="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     <div class="metadata">
       <p>
         制图地区：<input class="location" type="text" style="width:130px;" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -78,7 +66,6 @@
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
-
   </div>
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
@@ -100,16 +87,6 @@
   </div>
 
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
-  <div id="add-tag-dialog">
-    <mdl-dialog v-ref:multiple full-width title="添加标签">
-    <p>提示：多个标签请用空格隔开</p>
-    <input type="text" id="muti-tags-input">
-    <template slot="actions">
-      <mdl-button primary @click="addTagDialogOK">确定</mdl-button>
-      <mdl-button @click="$refs.multiple.close">取消</mdl-button>
-    </template>
-   </mdl-dialog>
-  </div>
 
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 
@@ -295,6 +272,7 @@ export default {
 
     addTag: function(e, index) {
       if (e.target.value) {
+        
         let patchUpload = this.displayUploads[index]
         let upload_id = this.displayUploads[index].upload_id
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
@@ -303,74 +281,6 @@ export default {
         }
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
-        this.patchUpload(u_id,{'tags':patchUpload.tags})
-      }
-    },
-
-    addMutiTags:function(e){
-      this.$refs.multiple.open();//打开添加标签对话框
-      
-    },
-    addTagDialogOK:function(){
-      var tagName = this.$el.querySelector('#muti-tags-input').value.split(/\s+/);
-      for(let i=0;i<this.displayUploads.length;i++){
-        if(this.displayUploads[i].checked == true&&tagName){        
-         this.displayUploads[i].tags=this.displayUploads[i].tags.concat(tagName);
-         let u_id = this.displayUploads[i].upload_id;
-          this.$el.querySelector('#muti-tags-input').value = '';
-          this.patchUpload(u_id,{'tags':this.displayUploads[i].tags});
-        }
-      }
-      this.$refs.multiple.close();
-    },
-
-    selectChange:function(e,index){//复选框被选中或取消选中
-      if(this.displayUploads[index].checked){
-        this.displayUploads[index].checked=false;
-      }else{
-        this.displayUploads[index].checked=true;
-      }
-    },
-
-    cardSelect:function(){
-
-      $(".card-checkbox").css("display","block");
-      this.$el.querySelector('#select-all').disabled="";
-    },
-
-    selectAll:function(){//全选
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items-1;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
-        this.displayUploads[i].checked=true;
-      }
-    },
-
-    inverseSelect:function(){
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items-1;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
-        if(this.displayUploads[i].checked==true){
-          this.displayUploads[i].checked=false;
-        }else{
-          this.displayUploads[i].checked=true;
-        }
         this.patchUpload(upload_id,{'tags':patchUpload.tags})
       }
     },
@@ -537,9 +447,6 @@ export default {
       let temp2 = []
       let temp3 = []
       let tempUploads = this.uploads
-      for(let i=0;i<tempUploads.length;i++){
-        tempUploads[i].checked = false;//增加checked属性，标记卡片是否被选中
-      }
       if(this.searchUploads.length>0){
         tempUploads = this.searchUploads
       }
@@ -885,13 +792,6 @@ span {
     font: 14px "Times New Roman";
 }
 
-.card-checkbox{
-    position: absolute;
-    right: 0px;
-    top: calc(50% - 8px);
-    width: 16px;
-    height: 16px;
-}
 .metadata {
   margin: 0 24px 12px 24px;
   font-size: 12px;
@@ -1032,8 +932,4 @@ span {
   background: url("../../static/BtnNew.png") 0 0 repeat; 
 }
 
-#select-button{
-  position: absolute;
-  right:8.2%;
-}
 </style>
