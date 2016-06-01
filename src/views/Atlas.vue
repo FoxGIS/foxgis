@@ -30,7 +30,7 @@
     </div> 
 
     <div class="search-results mdl-grid">
-      <div style="margin: 8px;" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
+      <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
         <foxgis-card>
           <a>
             <div class="header-info">
@@ -511,17 +511,15 @@ export default {
 }
 
 .search-results {
-  /* margin-top: 20px; */
   background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%);
   display: flex;
-  /*justify-content: center;*/
   flex-wrap: wrap;
 }
 
 .foxgis-card {
   width: 300px;
   height: 300px;
-  margin: 0 auto;
+  margin: 8px;
 }
 
 .foxgis-card a {
