@@ -570,7 +570,7 @@ export default {
 }
 
 .meta-info .preView p{
-  width: 100px;
+  width: 140px;
   height: 18px;
   overflow: hidden;
 }
