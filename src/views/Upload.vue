@@ -5,7 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!--<input type="text" style="width:700px;" :placeholder="'搜索'" v-model="searchKeyWords">-->
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
@@ -68,9 +67,17 @@
     <input type="checkbox" class = "card-checkbox" id="{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id}}" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked">
     <div class="metadata">
       <p>
-        制图地区：<input class="location" type="text" maxlength="10" style="width:130px;"    @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图地区：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+
         制图年份：<input class="year" type="text" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+
+        共享范围：<select id="scope" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+          <option value="private">私有</option>
+          <option value="public">公开</option>
+        </select>
+
         文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
+
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
       <div class="action">
@@ -187,6 +194,30 @@ export default {
         )
     },
 
+    editScope: function(e,index){
+        let tempUploads = this.displayUploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
+        let scope = document.getElementById('scope').selectedOptions[0].value
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
+        let upload_id = tempUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        tempUploads[index].scope = scope
+        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let scope = data.scope
+            let days = 30
+            Cookies.set('scope',scope,{ expires: days })
+          },function(response){
+            alert("编辑错误")
+          }
+        )
+    },
+
     calculation:function(size){
       let s = size/1024
       if (s>=1024) {
@@ -198,7 +229,6 @@ export default {
     },  
     
     parseImgURL:function(upload) {
-      ///uploads/{username}/{upload_id}/mini_thumbnail
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
@@ -556,7 +586,7 @@ export default {
       return count
      },
      
-     displayUploads: function(){
+    displayUploads: function(){
       let temp = []
       let temp1 = []
       let temp2 = []
@@ -665,7 +695,9 @@ export default {
         }
       }
       if(temp.length===0){
-        temp=this.uploads;
+        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 &&         _.intersection(this.year_tags,this.selected_year_tags).length === 0 &&            _.intersection(this.location_tags,this.selected_location_tags).length === 0){
+          temp=this.uploads;
+        }
       }
       return temp
     },
@@ -834,9 +866,9 @@ span {
 }
 
 .filter span {
-  font-size: 1em;
   width: 80px;
   display: inline-block;
+  font: normal 14px/5px "SimSun";
 }
 
 .filter .condition {
