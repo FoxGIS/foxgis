@@ -43,7 +43,7 @@
             
               <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
 
-              <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+              <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
             </div>
             <div>
               <p>制图地区：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
@@ -460,8 +460,8 @@ export default {
 }
 
 .content {
-  float: left;
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .search-bar {
@@ -519,7 +519,7 @@ export default {
 }
 
 .foxgis-card {
-  width: 100%;
+  width: 300px;
   height: 300px;
   margin: 0 auto;
 }
@@ -549,13 +549,12 @@ export default {
   font-weight: bolder;
   margin-left: 8px;
   margin-bottom: 8px;
-  max-width: 160px;
 }
 
 .meta-info div p {
   display: inline;
   font-size: 12px;
-  font-weight: bold;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 .meta-info i {
@@ -564,12 +563,18 @@ export default {
 }
 
 .meta-info .preView {
-  margin: 24px 24px 0 24px;
+  margin: 0 5px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
   padding:0;
+}
+
+.meta-info .preView p{
+  width: 100px;
+  height: 18px;
+  overflow: hidden;
 }
 
 .modal {
