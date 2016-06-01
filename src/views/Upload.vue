@@ -56,9 +56,17 @@
     </div>
     <div class="metadata">
       <p>
-        制图地区：<input class="location" type="text" maxlength="10" style="width:130px;"    @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图地区：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+
         制图年份：<input class="year" type="text" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+
+        共享范围：<select id="scope" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+          <option value="private">私有</option>
+          <option value="public">公开</option>
+        </select>
+
         文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
+
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
       <div class="action">
@@ -151,13 +159,36 @@ export default {
         let access_token = Cookies.get('access_token')
         let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.uploads[index].year = year
         tempUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
             let days = 30
             Cookies.set('year',year,{ expires: days })
+          },function(response){
+            alert("编辑错误")
+          }
+        )
+    },
+
+    editScope: function(e,index){
+        let tempUploads = this.displayUploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
+        let scope = document.getElementById('scope').selectedOptions[0].value
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
+        let upload_id = tempUploads[index].upload_id
+        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        tempUploads[index].scope = scope
+        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let scope = data.scope
+            let days = 30
+            Cookies.set('scope',scope,{ expires: days })
           },function(response){
             alert("编辑错误")
           }
@@ -738,9 +769,9 @@ span {
 }
 
 .filter span {
-  font-size: 1em;
   width: 80px;
   display: inline-block;
+  font: normal 14px/5px "SimSun";
 }
 
 .filter .condition {
