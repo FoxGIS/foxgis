@@ -10,19 +10,19 @@
       <div class="filter">
         <div class="condition">
           <span>主题词：</span>
-          <a v-for="tag in theme_tags" v-if="$index<10"
+          <a v-for="tag in theme_tags" v-if="$index<7"
               @click="conditionClick($event,1)">{{ tag }}
           </a>
         </div>
         <div class="condition">
           <span>制图地区：</span>
-          <a v-for="location in location_tags" v-if="$index<10"
+          <a v-for="location in location_tags" v-if="$index<7"
               @click="conditionClick($event,2)">{{ location }}
           </a>
         </div>
         <div class="condition">
           <span>制图年份：</span>
-          <a v-for="year in year_tags | orderBy" v-if="$index<10"
+          <a v-for="year in year_tags | orderBy" v-if="$index<7"
               @click="conditionClick($event,3)">{{ year }}
           </a>
         </div>
@@ -30,7 +30,7 @@
     </div> 
 
     <div class="search-results mdl-grid">
-      <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
+      <div style="margin: 8px;" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
         <foxgis-card>
           <a>
             <div class="header-info">
