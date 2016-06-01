@@ -35,6 +35,17 @@
     </div>
   </div>  
 
+
+  <div>
+    <div>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="addMutiTags" class="select-btn">批量加标签</mdl-anchor-button>
+    </div>
+    <div id="select-button">
+      <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
+    </div>
+  </div>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
 
     <div class="small-pic">
@@ -54,6 +65,7 @@
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
+    <input type="checkbox" class = "card-checkbox" id="{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id}}" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked">
     <div class="metadata">
       <p>
         制图地区：<input class="location" type="text" maxlength="10" style="width:130px;"    @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -66,6 +78,7 @@
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
+
   </div>
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
@@ -87,6 +100,16 @@
   </div>
 
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+  <div id="add-tag-dialog">
+    <mdl-dialog v-ref:multiple full-width title="添加标签">
+    <p>提示：多个标签请用空格隔开</p>
+    <input type="text" id="muti-tags-input">
+    <template slot="actions">
+      <mdl-button primary @click="addTagDialogOK">确定</mdl-button>
+      <mdl-button @click="$refs.multiple.close">取消</mdl-button>
+    </template>
+   </mdl-dialog>
+  </div>
 
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 
@@ -95,6 +118,7 @@
 
 
 <script>
+import Vue from 'vue'
 import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
@@ -226,7 +250,8 @@ export default {
             } else {
              file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
            }
-            file.upload_at = util.dateFormat(new Date(file.upload_at))
+            file.upload_at = util.dateFormat(new Date(file.upload_at));
+            file.checked = false;//为新增加的文件添加checked属性
             this.uploads.unshift(file)
             if(fileCount===e.target.files.length){
               this.$el.querySelector('.progress-bar').style.display = 'none';
@@ -300,6 +325,74 @@ export default {
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
         this.patchUpload(upload_id,{'tags':patchUpload.tags})
+      }
+    },
+
+     addMutiTags:function(e){
+      this.$refs.multiple.open();//打开添加标签对话框
+      
+    },
+    addTagDialogOK:function(){
+      var tagName = this.$el.querySelector('#muti-tags-input').value.replace(/^\s+|\s+$/g,"").split(/\s+/);
+      for(let i=0;i<this.displayUploads.length;i++){
+        if(this.displayUploads[i].checked == true&&tagName){        
+         this.displayUploads[i].tags=this.displayUploads[i].tags.concat(tagName);
+         let u_id = this.displayUploads[i].upload_id;
+          this.$el.querySelector('#muti-tags-input').value = '';
+          this.patchUpload(u_id,{'tags':this.displayUploads[i].tags});
+        }
+      }
+      this.$refs.multiple.close();
+    },
+
+    selectChange:function(e,index){//复选框被选中或取消选中
+      if(this.displayUploads[index].checked){
+        this.displayUploads[index].checked=false;
+      }else{
+        this.displayUploads[index].checked=true;
+      }
+    },
+
+    cardSelect:function(){
+
+      $(".card-checkbox").css("display","block");
+      this.$el.querySelector('#select-all').disabled="";
+    },
+
+    selectAll:function(){//全选
+      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
+      var minIndex = 0;var maxIndex=0;
+      if(this.pageConfig.current_page<totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
+      }
+      if(this.pageConfig.current_page==totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.total_items;
+      }
+      for(let i = minIndex;i<maxIndex;i++){
+        this.displayUploads[i].checked=true;
+        //document.getElementById(this.displayUploads[i].upload_id).checked=true;
+      }
+    },
+
+    inverseSelect:function(){
+      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
+      var minIndex = 0;var maxIndex=0;
+      if(this.pageConfig.current_page<totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
+      }
+      if(this.pageConfig.current_page==totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.total_items;
+      }
+      for(let i = minIndex;i<maxIndex;i++){
+        if(this.displayUploads[i].checked==true){
+          this.displayUploads[i].checked=false;
+        }else{
+          this.displayUploads[i].checked=true;
+        }
       }
     },
 
@@ -434,8 +527,12 @@ export default {
           }
           d.createdAt = util.dateFormat(new Date(d.createdAt))
           return d
-        })
-        this.uploads = data
+        });
+        for(let i=0;i<data.length;i++){
+          data[i].checked = false;//增加checked属性，标记卡片是否被选中
+        }
+        this.uploads = data;
+        
       }
     }, function(response) {
       console.log(response)
@@ -818,6 +915,13 @@ span {
     margin-left: 5px;
     font: 14px "Times New Roman";
 }
+.card-checkbox{
+    position: absolute;
+    right: 0px;
+    top: calc(50% - 8px);
+    width: 16px;
+    height: 16px;
+}
 
 .metadata {
   margin: 0 24px 12px 24px;
@@ -958,5 +1062,8 @@ span {
   display: block; 
   background: url("../../static/BtnNew.png") 0 0 repeat; 
 }
-
+#select-button{
+  position: absolute;
+  right:8.2%;
+}
 </style>
