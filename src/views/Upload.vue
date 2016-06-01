@@ -5,7 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!--<input type="text" style="width:700px;" :placeholder="'搜索'" v-model="searchKeyWords">-->
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
   </div>
@@ -206,7 +205,6 @@ export default {
     },  
     
     parseImgURL:function(upload) {
-      ///uploads/{username}/{upload_id}/mini_thumbnail
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
@@ -491,7 +489,7 @@ export default {
       return count
      },
      
-     displayUploads: function(){
+    displayUploads: function(){
       let temp = []
       let temp1 = []
       let temp2 = []
@@ -600,7 +598,9 @@ export default {
         }
       }
       if(temp.length===0){
-        temp=this.uploads;
+        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 &&         _.intersection(this.year_tags,this.selected_year_tags).length === 0 &&            _.intersection(this.location_tags,this.selected_location_tags).length === 0){
+          temp=this.uploads;
+        }
       }
       return temp
     },
