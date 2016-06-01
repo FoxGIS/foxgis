@@ -24,7 +24,7 @@
     <div class="condition">
       <span>制图地区：</span>
       <a v-for="location in location_tags" v-if="$index<10"
-          @click="conditionClick($event,2)" track-by="$index">{{ location }}
+          @click="conditionClick($event,2)">{{ location }}
       </a>
     </div>
     <div class="condition">
@@ -33,43 +33,31 @@
           @click="conditionClick($event,3)">{{ year }}
       </a>
     </div>
-  </div> 
+  </div>  
 
-   
-  <div>
-    <div>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="addMutiTags" class="select-btn">批量加标签</mdl-anchor-button>
-    </div>
-    <div id="select-button">
-    <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
-    <mdl-anchor-button accent raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
-    <mdl-anchor-button accent raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
-  </div>
-  </div>
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" >
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
 
     <div class="small-pic">
        <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
     </div>
 
     <div class="name">
-      <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
     <div class = "tags">
       <span>主题词:</span>
-      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" >
+      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
-    <input type="checkbox" class = "card-checkbox" v-bind:checked="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" @change="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     <div class="metadata">
       <p>
-        制图地区：<input class="location" type="text" style="width:130px;" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location }}" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-        制图年份：<input class="year" type="text" @click="bindInput()" value="{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year }}" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图地区：<input class="location" type="text" maxlength="10" style="width:130px;"    @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图年份：<input class="year" type="text" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
         文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
@@ -78,7 +66,6 @@
         <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
-
   </div>
   
   <div id="pagination" v-show="displayUploads.length>0?true:false">
@@ -100,16 +87,6 @@
   </div>
 
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
-  <div id="add-tag-dialog">
-    <mdl-dialog v-ref:multiple full-width title="添加标签">
-    <p>提示：多个标签请用空格隔开</p>
-    <input type="text" id="muti-tags-input">
-    <template slot="actions">
-      <mdl-button primary @click="addTagDialogOK">确定</mdl-button>
-      <mdl-button @click="$refs.multiple.close">取消</mdl-button>
-    </template>
-   </mdl-dialog>
-  </div>
 
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
 
@@ -134,13 +111,18 @@ export default {
     },
 
     editLocation: function(e, index) {
-      if (e.target.value) {
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
         let location = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].location = location
+        tempUploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let location = data.location
@@ -151,17 +133,25 @@ export default {
             alert("编辑错误")
           }
         )
-      }
     },
 
     editTime: function(e, index) {
-      if (e.target.value) {
+        let tempUploads = this.uploads
+        if(this.searchKeyWords.trim().length>0){
+          if(this.searchUploads.length>0){
+            tempUploads = this.searchUploads
+          }
+        }
         let year = e.target.value
+        if(e.target.value.length == 0){
+          let today=new Date()
+          let year=today.getFullYear()
+        }
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let upload_id = this.displayUploads[index].upload_id
+        let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        this.displayUploads[index].year = year
+        tempUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let year = data.year
@@ -171,7 +161,6 @@ export default {
             alert("编辑错误")
           }
         )
-      }
     },
 
     calculation:function(size){
@@ -200,6 +189,12 @@ export default {
     uploadFile: function(e) {
       if(document.getElementById('file').value==="") return;
       var fileCount=0;//记录上传的文件数目
+      for(let i=0;i<e.target.files.length;i++){
+        if(e.target.files[i].size/1048576>200){
+          this.$broadcast('mailSent', { message: '出现错误！单个文件不能超过200MB！',timeout:5000 });
+          return;
+        }
+      }
       this.$el.querySelector('#upload-button').disabled = "disabled"
       this.$el.querySelector('.progress-bar').style.display = 'block'
       
@@ -295,6 +290,7 @@ export default {
 
     addTag: function(e, index) {
       if (e.target.value) {
+        
         let patchUpload = this.displayUploads[index]
         let upload_id = this.displayUploads[index].upload_id
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
@@ -303,74 +299,6 @@ export default {
         }
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
-        this.patchUpload(u_id,{'tags':patchUpload.tags})
-      }
-    },
-
-    addMutiTags:function(e){
-      this.$refs.multiple.open();//打开添加标签对话框
-      
-    },
-    addTagDialogOK:function(){
-      var tagName = this.$el.querySelector('#muti-tags-input').value.split(/\s+/);
-      for(let i=0;i<this.displayUploads.length;i++){
-        if(this.displayUploads[i].checked == true&&tagName){        
-         this.displayUploads[i].tags=this.displayUploads[i].tags.concat(tagName);
-         let u_id = this.displayUploads[i].upload_id;
-          this.$el.querySelector('#muti-tags-input').value = '';
-          this.patchUpload(u_id,{'tags':this.displayUploads[i].tags});
-        }
-      }
-      this.$refs.multiple.close();
-    },
-
-    selectChange:function(e,index){//复选框被选中或取消选中
-      if(this.displayUploads[index].checked){
-        this.displayUploads[index].checked=false;
-      }else{
-        this.displayUploads[index].checked=true;
-      }
-    },
-
-    cardSelect:function(){
-
-      $(".card-checkbox").css("display","block");
-      this.$el.querySelector('#select-all').disabled="";
-    },
-
-    selectAll:function(){//全选
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items-1;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
-        this.displayUploads[i].checked=true;
-      }
-    },
-
-    inverseSelect:function(){
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items-1;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
-        if(this.displayUploads[i].checked==true){
-          this.displayUploads[i].checked=false;
-        }else{
-          this.displayUploads[i].checked=true;
-        }
         this.patchUpload(upload_id,{'tags':patchUpload.tags})
       }
     },
@@ -537,9 +465,6 @@ export default {
       let temp2 = []
       let temp3 = []
       let tempUploads = this.uploads
-      for(let i=0;i<tempUploads.length;i++){
-        tempUploads[i].checked = false;//增加checked属性，标记卡片是否被选中
-      }
       if(this.searchUploads.length>0){
         tempUploads = this.searchUploads
       }
@@ -547,13 +472,17 @@ export default {
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
         return tempUploads.slice(0)
       }
+      if(this.searchUploads.length === 0 && this.searchKeyWords.trim().length!==0){
+      //用户进行了搜索，但结果为空
+        return this.searchUploads;
+      }
 
       if(this.selected_theme_tags.length>0){
-        var conditions = this.selected_theme_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_theme_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(upload.tags.length>0){
-            for(var i=0;i<upload.tags.length;i++){
+            for(let i=0;i<upload.tags.length;i++){
               if(conditions.indexOf(upload.tags[i])!=-1&&temp1.indexOf(upload) === -1){
                 temp1.push(upload)
                 break
@@ -563,8 +492,8 @@ export default {
         }
       }
       if(this.selected_year_tags.length>0){
-        var conditions = this.selected_year_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_year_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(conditions.indexOf(upload.year)!=-1&&temp2.indexOf(upload) === -1){
             temp2.push(upload)
@@ -572,8 +501,8 @@ export default {
         }
       }
       if(this.selected_location_tags.length>0){
-        var conditions = this.selected_location_tags.join()
-        for(var u=0,length=tempUploads.length;u<length;u++){
+        let conditions = this.selected_location_tags.join()
+        for(let u=0,length=tempUploads.length;u<length;u++){
           let upload = tempUploads[u]
           if(conditions.indexOf(upload.location)!=-1&&temp3.indexOf(upload) === -1){
             temp3.push(upload)
@@ -638,6 +567,9 @@ export default {
           }
         }
       }
+      if(temp.length===0){
+        temp=this.uploads;
+      }
       return temp
     },
 
@@ -655,7 +587,7 @@ export default {
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].tags.length>0){
             for(let j=0;j<tempUploads[i].tags.length;j++){
-              theme[k]=tempUploads[i].tags[j]
+              theme.push(tempUploads[i].tags[j])
               k++
             }
           }
@@ -675,7 +607,7 @@ export default {
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          year[i] = tempUploads[i].year
+          year.push(tempUploads[i].year.toString())
         }
         year = _.uniq(year).sort()
         return year
@@ -692,7 +624,9 @@ export default {
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          location[i] = tempUploads[i].location
+          if(tempUploads[i].location.length > 0){
+            location.push(tempUploads[i].location)
+          }
         }
         location = _.uniq(location)
         return location
@@ -854,7 +788,7 @@ span {
   margin: 0;
   border: none;
   padding: 5px 5px 5px 0;
-  width: 50%;
+  width: 70%;
 }
 
 .tags {
@@ -885,13 +819,6 @@ span {
     font: 14px "Times New Roman";
 }
 
-.card-checkbox{
-    position: absolute;
-    right: 0px;
-    top: calc(50% - 8px);
-    width: 16px;
-    height: 16px;
-}
 .metadata {
   margin: 0 24px 12px 24px;
   font-size: 12px;
@@ -1032,8 +959,4 @@ span {
   background: url("../../static/BtnNew.png") 0 0 repeat; 
 }
 
-#select-button{
-  position: absolute;
-  right:8.2%;
-}
 </style>
