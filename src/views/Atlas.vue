@@ -603,6 +603,7 @@ export default {
 #pagination {
   text-align: center;
   display: block;
+  margin-top: auto;
 }
 
 #pagination li.disabled {
