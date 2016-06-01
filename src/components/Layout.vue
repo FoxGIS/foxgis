@@ -10,6 +10,7 @@
           <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a> -->
           <a class="mdl-navigation__link" v-link="{ path: '/studio' }" v-bind:class="username==undefined?'disabled':''">制图</a>
+          <a class="mdl-navigation__link" href="/static/用户手册.docx" v-bind:class="username==undefined?'disabled':''">帮助</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a> -->
           <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==undefined">登录</a>
           <a class="mdl-navigation__link" v-else>{{username}}</a>
@@ -92,9 +93,10 @@ export default {
   top: 34px;
   left: 40px;
 }
-.mdl-navigation__link {
+.mdl-layout__header-row .mdl-navigation__link {
   font-size: 1em;
   line-height: 30px;
+  padding: 0 10px;
 }
 
 .mdl-layout--content {
@@ -110,6 +112,10 @@ export default {
 a.disabled {
    pointer-events: none;
    cursor: default;
+}
+
+.download_link{
+  cursor: pointer;
 }
 
 </style>

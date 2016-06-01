@@ -111,7 +111,7 @@ export default {
     },
 
     editLocation: function(e, index) {
-        let tempUploads = this.uploads
+        let tempUploads = this.displayUploads
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
             tempUploads = this.searchUploads
@@ -136,7 +136,7 @@ export default {
     },
 
     editTime: function(e, index) {
-        let tempUploads = this.uploads
+        let tempUploads = this.displayUploads
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
             tempUploads = this.searchUploads
@@ -151,6 +151,7 @@ export default {
         let access_token = Cookies.get('access_token')
         let upload_id = tempUploads[index].upload_id
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
+        this.uploads[index].year = year
         tempUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
