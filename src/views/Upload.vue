@@ -365,8 +365,18 @@ export default {
     addTagDialogOK:function(){
       var tagName = this.$el.querySelector('#muti-tags-input').value.replace(/^\s+|\s+$/g,"").split(/\s+/);
       for(let i=0;i<this.displayUploads.length;i++){
-        if(this.displayUploads[i].checked == true&&tagName){        
-         this.displayUploads[i].tags=this.displayUploads[i].tags.concat(tagName);
+        if(this.displayUploads[i].checked == true&&tagName){ 
+        var tags = this.displayUploads[i].tags.concat(tagName);
+        var newTags = [];
+        for(let j = 0; j < tags.length; j++) {
+          if (tags.indexOf(tags[j]) === j){
+            newTags.push(tags[j]);
+          }
+        } 
+        if(newTags.length !== tags.length){
+           this.$broadcast('mailSent', {message: '已为您自动删除重复主题！',timeout:3000});
+        }      
+         this.displayUploads[i].tags = newTags;
          let u_id = this.displayUploads[i].upload_id;
           this.$el.querySelector('#muti-tags-input').value = '';
           this.patchUpload(u_id,{'tags':this.displayUploads[i].tags});
@@ -695,7 +705,7 @@ export default {
         }
       }
       if(temp.length===0){
-        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 &&         _.intersection(this.year_tags,this.selected_year_tags).length === 0 &&            _.intersection(this.location_tags,this.selected_location_tags).length === 0){
+        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 &&_.intersection(this.year_tags,this.selected_year_tags).length === 0 &&_.intersection(this.location_tags,this.selected_location_tags).length === 0){
           temp=this.uploads;
         }
       }
