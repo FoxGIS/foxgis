@@ -4,7 +4,7 @@
     <div class="content">
       <div class="search-bar">
         <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-        <mdl-button raised accent v-mdl-ripple-effect>搜索</mdl-button>
+        <mdl-button raised accent v-mdl-ripple-effect class="search-button">搜索</mdl-button>
       </div>
 
       <div class="filter">
@@ -471,6 +471,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.search-bar .search-button{
+  width: 60px;
+  height: 40px;
+  margin-left: 10px;
 }
 
 .hotactive {
