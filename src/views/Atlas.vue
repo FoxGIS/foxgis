@@ -513,6 +513,7 @@ export default {
 .filter .condition .active{
   cursor: pointer;
   color: blue;
+  display: initial;
 }
 
 .search-results {
