@@ -38,6 +38,7 @@
   <div>
     <div>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="addMutiTags" class="select-btn">批量加标签</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="deleteUploadBatch" class="select-btn">批量删除</mdl-anchor-button>
     </div>
     <div id="select-button">
       <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
@@ -64,7 +65,7 @@
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
-    <input type="checkbox" class = "card-checkbox" id="{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id}}" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked">
+    <input type="checkbox" class = "card-checkbox" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
       <p>
         制图地区：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -108,12 +109,12 @@
 
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <div id="add-tag-dialog">
-    <mdl-dialog v-ref:multiple full-width title="添加标签">
-    <p>提示：多个标签请用空格隔开</p>
-    <input type="text" id="muti-tags-input">
+    <mdl-dialog v-ref:multiple title="添加主题词">
+    <p>提示：多个主题请用空格隔开</p>
+    <mdl-textfield label="输入主题" id="muti-tags-input"></mdl-textfield>
     <template slot="actions">
-      <mdl-button primary @click="addTagDialogOK">确定</mdl-button>
-      <mdl-button @click="$refs.multiple.close">取消</mdl-button>
+      <mdl-button raised colored v-mdl-ripple-effect @click="$refs.multiple.close" style="margin-right:50px;">取消</mdl-button>
+      <mdl-button accent raised primary v-mdl-ripple-effect @click="addTagDialogOK" style="margin-right:100px;">确定</mdl-button>   
     </template>
    </mdl-dialog>
   </div>
@@ -332,8 +333,8 @@ export default {
            //this.uploads[index].name = response.data.name;
           }
         }, function(response) {
-          alert("网络错误")
-      })
+          alert("网络错误");
+      });
     },
 
     deleteTag: function(pId, tag_id) {
@@ -474,17 +475,44 @@ export default {
 
     deleteUpload: function(upload_id) {
       this.$el.querySelector('#delete-dialog').style.display = 'block'
-      this.deleteUploadId = upload_id
+      this.deleteUploadId.push(upload_id);
     },
 
+    deleteUploadBatch:function(){
+      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
+      var minIndex = 0;var maxIndex=0;
+      if(this.pageConfig.current_page<totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
+      }
+      if(this.pageConfig.current_page==totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.total_items;
+      }
+      var t = 0;
+      var deleteIds = [];
+      for(var i = minIndex;i<maxIndex;i++){
+        if(this.displayUploads[i].checked === true){
+          deleteIds.push(this.displayUploads[i].upload_id);         
+          t++;
+        }
+      }
+      if(t===0){
+        this.$broadcast("mailSent",{message:"未选择任何选项！",timeout:3000});
+      }else{
+        this.$el.querySelector('#delete-dialog').style.display = 'block';
+        this.deleteUploadId = deleteIds;
+      }
+    },
     deleteAction: function(status) {
       if (status === 'ok') {
-        let upload_id = this.deleteUploadId
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
-        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
+        var username = Cookies.get('username')
+        var access_token = Cookies.get('access_token')       
+        for(let i=0;i<this.deleteUploadId.length;i++){
+          let upload_id = this.deleteUploadId[i];
+          let url = SERVER_API.uploads + '/' + username + "/" + upload_id;
+          this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+          .then(function(response){
           if(response.ok){
             for(let i = 0;i<this.uploads.length;i++){
               if(this.uploads[i].upload_id === upload_id){
@@ -493,9 +521,11 @@ export default {
               }
             }
           }
-        }, function(response) {
+          }, function(response) {
             alert('未知错误，请稍后再试')
-          })
+          });
+        }
+        
       }
     },
 
@@ -811,7 +841,7 @@ export default {
       dialogcontent: {
         title: '确定删除吗？'
       },
-      deleteUploadId: '',
+      deleteUploadId: [],
       tagConditions: [],
       pageConfig: {
         page_item_num: 10,         //每页显示的条数
@@ -1107,5 +1137,13 @@ span {
 #select-button{
   position: absolute;
   right:8.2%;
+}
+
+.mdl-dialog__content{
+  padding:6px 27px 3px;
+}
+
+.mdl-dialog{
+  padding:0;
 }
 </style>
