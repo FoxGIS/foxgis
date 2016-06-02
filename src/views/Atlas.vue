@@ -18,13 +18,13 @@
           <div class="condition">
             <span>制图区域：</span>
             <a v-for="location in location_tags" v-if="$index<7"
-                  @click="conditionClick($event,2)">{{ location }}
+                  @click="conditionClick($event,2)">{{ location.data }}({{location.num}})
             </a>
           </div>
           <div class="condition">
             <span>制图年份：</span>
             <a v-for="year in year_tags | orderBy" v-if="$index<7"
-                  @click="conditionClick($event,3)">{{ year }}
+                  @click="conditionClick($event,3)">{{ year.data }}({{year.num}})
             </a>
           </div>
         </div>
@@ -101,15 +101,17 @@ export default {
     },
 
     conditionClick: function(e,type){
+      let str = e.target.textContent.trim()
+      str = str.substr(0, str.indexOf('('));
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
         if(type == 3){
-          var index = this.selected_year_tags.indexOf(e.target.textContent.trim())
+          var index = this.selected_year_tags.indexOf(str)
           if(index != -1){
             this.selected_year_tags.splice(index,1)
           }
         }else if(type == 2){
-          var index = this.selected_location_tags.indexOf(e.target.textContent.trim())
+          var index = this.selected_location_tags.indexOf(str)
           if(index != -1){
             this.selected_location_tags.splice(index,1)
           }
@@ -123,10 +125,10 @@ export default {
       }else{
         e.target.className = 'filter condition active'
         if(type == 3){
-          this.selected_year_tags.push(e.target.textContent.trim())
+          this.selected_year_tags.push(str)
           this.selected_year_tags = _.uniq(this.selected_year_tags)
         }else if(type == 2){
-          this.selected_location_tags.push(e.target.textContent.trim())
+          this.selected_location_tags.push(str)
           this.selected_location_tags = _.uniq(this.selected_location_tags)
         }else if(type ===1){
           this.selected_theme_tags.push(e.target.textContent.trim())
@@ -338,7 +340,15 @@ export default {
         }
       }
       if(temp.length===0){
-        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 &&         _.intersection(this.year_tags,this.selected_year_tags).length === 0 &&            _.intersection(this.location_tags,this.selected_location_tags).length === 0){
+        let data1 = []
+        let data2 = []
+        for(let i=0;i<this.location_tags.length;i++){
+          data1.push(this.location_tags[i].data)
+        }
+        for(let j=0;j<this.year_tags.length;j++){
+          data2.push(this.year_tags[j].data)
+        }
+        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 && _.intersection(data2,this.selected_year_tags).length === 0 &&  _.intersection(data1,this.selected_location_tags).length === 0){
           temp=this.uploads;
         }
       }
@@ -370,6 +380,7 @@ export default {
 
     year_tags: function(){
         let year = []
+        let data = []
         let tempUploads = this.uploads
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
@@ -381,12 +392,24 @@ export default {
         for(let i=0;i<tempUploads.length;i++){
           year.push(tempUploads[i].year.toString())
         }
+        let tempYear = year
         year = _.uniq(year).sort()
-        return year
+        for(let j=0;j<year.length;j++){
+          let temp = year[j]
+          let num = 0
+          for(let k=0;k<tempYear.length;k++){
+            if(temp === tempYear[k]){
+              num++
+            }
+          }
+          data.push({'data':temp,'num':num})
+        }
+        return data
     }, 
 
     location_tags: function(){
         let location = []
+        let data = []
         let tempUploads = this.uploads
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
@@ -400,8 +423,19 @@ export default {
             location.push(tempUploads[i].location)
           }
         }
+        let tempLocation = location
         location = _.uniq(location)
-        return location
+        for(let j=0;j<location.length;j++){
+          let temp = location[j]
+          let num = 0
+          for(let k=0;k<tempLocation.length;k++){
+            if(temp === tempLocation[k]){
+              num++
+            }
+          }
+          data.push({'data':temp,'num':num})
+        }
+        return data
     },
 
     searchUploads: function(){
