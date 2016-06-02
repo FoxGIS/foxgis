@@ -8,23 +8,25 @@
       </div>
 
       <div class="filter">
-        <div class="condition">
-          <span>主题词：</span>
-          <a v-for="tag in theme_tags" v-if="$index<7"
-                @click="conditionClick($event,1)">{{ tag }}
-          </a>
-        </div>
-        <div class="condition">
-          <span>制图地区：</span>
-          <a v-for="location in location_tags" v-if="$index<7"
-                @click="conditionClick($event,2)">{{ location }}
-          </a>
-        </div>
-        <div class="condition">
-          <span>制图年份：</span>
-          <a v-for="year in year_tags | orderBy" v-if="$index<7"
-                @click="conditionClick($event,3)">{{ year }}
-          </a>
+        <div>
+          <div class="condition">
+            <span>主题词：</span>
+            <a v-for="tag in theme_tags" v-if="$index<7"
+                  @click="conditionClick($event,1)">{{ tag }}
+            </a>
+          </div>
+          <div class="condition">
+            <span>制图地区：</span>
+            <a v-for="location in location_tags" v-if="$index<7"
+                  @click="conditionClick($event,2)">{{ location }}
+            </a>
+          </div>
+          <div class="condition">
+            <span>制图年份：</span>
+            <a v-for="year in year_tags | orderBy" v-if="$index<7"
+                  @click="conditionClick($event,3)">{{ year }}
+            </a>
+          </div>
         </div>
       </div> 
 
@@ -485,7 +487,9 @@ export default {
 
 .filter {
   margin:5px 0;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .filter span {
