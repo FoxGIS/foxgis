@@ -17,9 +17,11 @@
         </div>
       </foxgis-card>
       <div class="footer">
-        <div>主管部门：国家测绘地理信息局</div>
-        <div>建设单位：国家基础地理信息中心</div>
+        <div>主管：国家测绘地理信息局 主办：国家基础地理信息中心</div>
         <div>技术支持：北京吉威数源信息技术有限公司</div>
+        <div>地址：北京海淀区莲花池西路28号    邮编：100830    E-mail:office@ngcc.cn</div>
+        <div>京ICP备12031976号-2    京公网安备11010802010297号</div>
+        <div>网站保留所有权，未经许可不得复制、镜像</div>
       </div>
     </div>
   </foxgis-layout>
@@ -152,8 +154,8 @@ export default {
 .footer{
   position: relative;
   margin: 0 auto 30px auto;
-  width: 230px;
-  height: 90px;
+  width: 600px;
+  height: 150px;
   color: #3f51b5;
   font: normal 12px/30px "SimSun";
 }
