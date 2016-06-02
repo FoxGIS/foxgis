@@ -480,7 +480,7 @@ export default {
 .mdl-button {
   color: #3f51b5;
   min-width: 0;
-  height: 40px;
+  height: auto;
   padding: 0 10px;
   line-height: 30px;
 }
@@ -543,7 +543,7 @@ export default {
 }
 
 .meta-info {
-  margin-top: 20px;
+  margin-top: 10px;
   position: relative;
   display: flex;
   justify-content: space-between;
