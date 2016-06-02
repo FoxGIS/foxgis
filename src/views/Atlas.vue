@@ -566,7 +566,6 @@ export default {
   width: 240px;
   overflow: hidden;
 }
-}
 
 .meta-info .preView {
   margin: auto;
