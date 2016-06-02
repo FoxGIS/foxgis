@@ -38,16 +38,15 @@
             </div>
           </a>
           <div class="meta-info">
-            <div class="preView">
-              <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p>
-            
-              <mdl-anchor-button accent raised v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
-
-              <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
-            </div>
-            <div>
+            <div class="title">
+              <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
               <p>制图地区：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
               <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
+            </div>
+            <div class="preView">
+              <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+
+              <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
             </div>
           </div>
         </foxgis-card>
@@ -478,8 +477,11 @@ export default {
 }
 
 .mdl-button {
-  background-color: #D4BC23;
+  color: #3f51b5;
   min-width: 0;
+  height: 30px;
+  padding: 0 10px;
+  line-height: 30px;
 }
 
 .filter {
@@ -540,19 +542,19 @@ export default {
 .meta-info {
   margin-top: 20px;
   position: relative;
-}
-
-.meta-info p {
-  font-size: 16px;
-  font-weight: bolder;
-  margin-left: 8px;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .meta-info div p {
   display: inline;
   font-size: 12px;
   font-family:Arial,Helvetica,sans-serif;
+  margin-left: 8px;
+  line-height: 30px;
+  width: 240px;
+  height: 18px;
+  overflow: hidden;
 }
 
 .meta-info i {
@@ -560,19 +562,17 @@ export default {
   right: 10px;
 }
 
-.meta-info .preView {
-  margin: 0 5px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  padding:0;
+.meta-info .title{
+  width: 240px;
 }
 
-.meta-info .preView p{
-  width: 140px;
-  height: 18px;
-  overflow: hidden;
+.meta-info .preView {
+  margin: auto;
+  padding:0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal {
