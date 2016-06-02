@@ -11,66 +11,65 @@
         <div class="condition">
           <span>主题词：</span>
           <a v-for="tag in theme_tags" v-if="$index<7"
-              @click="conditionClick($event,1)">{{ tag }}
+                @click="conditionClick($event,1)">{{ tag }}
           </a>
         </div>
         <div class="condition">
           <span>制图地区：</span>
           <a v-for="location in location_tags" v-if="$index<7"
-              @click="conditionClick($event,2)">{{ location }}
+                @click="conditionClick($event,2)">{{ location }}
           </a>
         </div>
         <div class="condition">
           <span>制图年份：</span>
           <a v-for="year in year_tags | orderBy" v-if="$index<7"
-              @click="conditionClick($event,3)">{{ year }}
+                @click="conditionClick($event,3)">{{ year }}
           </a>
         </div>
       </div> 
-    </div> 
 
-    <div class="search-results mdl-grid">
-      <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
-        <foxgis-card>
-          <a>
-            <div class="header-info">
-              <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-            </div>
-          </a>
-          <div class="meta-info">
-            <div class="title">
-              <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
-              <p>制图地区：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
-              <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
-            </div>
-            <div class="preView">
-              <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+      <div class="search-results mdl-grid">
+        <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
+          <foxgis-card>
+            <a>
+              <div class="header-info">
+                <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+              </div>
+            </a>
+            <div class="meta-info">
+              <div class="title">
+                <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
+                <p>制图地区：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
+                <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
+              </div>
+              <div class="preView">
+                <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
 
-              <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+                <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+              </div>
             </div>
-          </div>
-        </foxgis-card>
+          </foxgis-card>
+        </div>
       </div>
-    </div>
     
-    <div id="pagination" v-show="displayUploads.length>0?true:false">
-      <ul>
-        <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
-          <span><i class="material-icons">navigate_before</i></span>
-        </li>
-        <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-        <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
-          <span><i class="material-icons">navigate_next</i></span>
-        </li>
-      </ul>
-    </div>
+      <div id="pagination" v-show="displayUploads.length>0?true:false">
+        <ul>
+          <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
+            <span><i class="material-icons">navigate_before</i></span>
+          </li>
+          <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
+          <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
+            <span><i class="material-icons">navigate_next</i></span>
+          </li>
+        </ul>
+      </div>
   
-    <div class="modal" @click="hidePreview">
-      <div class="image-container" >
-         <img id='thumbnail'>
+      <div class="modal" @click="hidePreview">
+        <div class="image-container" >
+           <img id='thumbnail'>
+        </div>
       </div>
     </div>
-
   </foxgis-layout>
 </div>
 </template>
@@ -459,8 +458,8 @@ export default {
 }
 
 .content {
-  margin-left: auto;
-  margin-right: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .search-bar {
@@ -479,7 +478,7 @@ export default {
 .mdl-button {
   color: #3f51b5;
   min-width: 0;
-  height: 30px;
+  height: 40px;
   padding: 0 10px;
   line-height: 30px;
 }
@@ -565,6 +564,7 @@ export default {
 .meta-info .title{
   width: 240px;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .meta-info .preView {
