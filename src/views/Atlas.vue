@@ -31,6 +31,7 @@
       </div> 
 
       <div class="search-results mdl-grid">
+        <div class="panel">
         <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
           <foxgis-card>
             <a>
@@ -51,6 +52,7 @@
               </div>
             </div>
           </foxgis-card>
+        </div>
         </div>
       </div>
     
@@ -520,6 +522,14 @@ export default {
   background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%);
   display: flex;
   flex-wrap: wrap;
+}
+
+.search-results .panel{
+  margin: 0 auto;
+  height: 100%;
+  max-width: 1264px;
+  flex-wrap: wrap;
+  display: flex;
 }
 
 .foxgis-card {
