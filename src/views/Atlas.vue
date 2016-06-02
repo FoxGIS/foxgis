@@ -564,6 +564,8 @@ export default {
 
 .meta-info .title{
   width: 240px;
+  overflow: hidden;
+}
 }
 
 .meta-info .preView {
