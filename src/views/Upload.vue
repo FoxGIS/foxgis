@@ -21,7 +21,7 @@
       </a>
     </div>
     <div class="condition">
-      <span>制图地区：</span>
+      <span>制图区域：</span>
       <a v-for="location in location_tags" v-if="$index<10"
           @click="conditionClick($event,2)">{{ location }}
       </a>
@@ -70,7 +70,7 @@
     <input type="checkbox" class = "card-checkbox" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
       <p>
-        制图地区：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图区域：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
         制图年份：<input class="year" type="text" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
