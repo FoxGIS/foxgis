@@ -16,7 +16,7 @@
             </a>
           </div>
           <div class="condition">
-            <span>制图地区：</span>
+            <span>制图区域：</span>
             <a v-for="location in location_tags" v-if="$index<7"
                   @click="conditionClick($event,2)">{{ location }}
             </a>
@@ -41,7 +41,7 @@
             <div class="meta-info">
               <div class="title">
                 <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
-                <p>制图地区：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
+                <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
                 <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
               </div>
               <div class="preView">
