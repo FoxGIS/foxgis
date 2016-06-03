@@ -2,9 +2,12 @@
   <div>
     <div class="modal">
       <div class="dialog">
-        <div class="content">{{dialog.title}}</div>
-        <p>({{dialog.tips}})</p>
-        <mdl-textfield label="输入内容"></mdl-textfield>
+        <div class="title">{{dialog.title}}</div>
+        <p>{{dialog.tips}}</p>
+        <mdl-textfield label="主题词" id="tags-input"></mdl-textfield>
+        <mdl-textfield label="制图区域" id="location-input"></mdl-textfield>
+        <mdl-textfield label="制图年份" id="year-input"></mdl-textfield>
+        <mdl-select label="共享范围" id="scope-select" :value="scope" :options="scopeOptions"></mdl-select>
         <div class="action">
           <mdl-button accent raised v-mdl-ripple-effect v-on:click="doOK">确定</mdl-button>
           <mdl-button raised colored v-mdl-ripple-effect v-on:click="doCancel">取消</mdl-button>       
@@ -27,6 +30,13 @@ export default {
       this.$dispatch("dialog-action",'cancel')
     }
   },
+  data(){
+    return {
+    scope: '私有',
+    scopeOptions: ['私有', '公开']
+    }
+  },
+
   props:['dialog']
 }
 </script>
@@ -46,7 +56,7 @@ export default {
   position: absolute;
   background-color: white;
   border-radius: 3px;
-  overflow: hidden;
+  overflow: inherit;
   float: none;
   top: 30%;
   right: 0;
@@ -62,7 +72,7 @@ export default {
   font-size: 12px;
   margin: 0;
 }
-.content {
+.title {
   margin-bottom: 5px;
   font-size: 22px;
   font-weight: bold;
