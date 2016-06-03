@@ -8,22 +8,22 @@
       </div>
 
       <div class="filter">
-        <div>
+        <div style="width: 570px;">
           <div class="condition">
             <span>主题词：</span>
-            <a v-for="tag in theme_tags" v-if="$index<7"
+            <a v-for="tag in theme_tags" v-if="$index<6"
                   @click="conditionClick($event,1)">{{ tag }}
             </a>
           </div>
           <div class="condition">
             <span>制图区域：</span>
-            <a v-for="location in location_tags" v-if="$index<7"
+            <a v-for="location in location_tags" v-if="$index<6"
                   @click="conditionClick($event,2)">{{ location.data }}({{location.num}})
             </a>
           </div>
           <div class="condition">
             <span>制图年份：</span>
-            <a v-for="year in year_tags | orderBy" v-if="$index<7"
+            <a v-for="year in year_tags | orderBy" v-if="$index<6"
                   @click="conditionClick($event,3)">{{ year.data }}({{year.num}})
             </a>
           </div>
@@ -32,27 +32,27 @@
 
       <div class="search-results mdl-grid">
         <div class="panel">
-        <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
-          <foxgis-card>
-            <a>
-              <div class="header-info">
-                <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-              </div>
-            </a>
-            <div class="meta-info">
-              <div class="title">
-                <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
-                <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
-                <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
-              </div>
-              <div class="preView">
-                <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+          <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
+            <foxgis-card>
+              <a>
+                <div class="header-info">
+                  <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+                </div>
+              </a>
+              <div class="meta-info">
+                <div class="title">
+                  <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
+                  <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
+                  <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
+                </div>
+                <div class="preView">
+                  <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
 
-                <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+                  <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+                </div>
               </div>
-            </div>
-          </foxgis-card>
-        </div>
+            </foxgis-card>
+          </div>
         </div>
       </div>
     
