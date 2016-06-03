@@ -37,11 +37,8 @@
 
   <div>
     <div>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchAddTags" class="select-btn">批量加主题</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchEditLocation" class="select-btn">批量改区域</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchEditTime" class="select-btn">批量改年份</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchEditScope" class="select-btn">批量改范围</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchProcess" class="select-btn">批量编辑</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>     
     </div>
     <div id="select-button">
       <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
@@ -111,10 +108,8 @@
   </div>
 
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
-  <foxgis-dialog-input id="location-dialog" class='modal' :dialog="dialogcontent" @dialog-action="editLocationAction"></foxgis-dialog-input>
-  <foxgis-dialog-input id="add-tags-dialog" class='modal' :dialog="dialogcontent" @dialog-action="addTagsAction"></foxgis-dialog-input>
-  <foxgis-dialog-input id="time-dialog" class='modal' :dialog="dialogcontent" @dialog-action="editTimeAction"></foxgis-dialog-input>
-  <foxgis-dialog-input id="scope-dialog" class='modal' :dialog="dialogcontent" @dialog-action="editScopeAction"></foxgis-dialog-input>
+
+  <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
 </template>
 
 
@@ -212,7 +207,7 @@ export default {
         )
     },
 
-    batchEditScope:function(){
+    batchProcess:function(){
       //以下计算本页displayUploads的索引范围
       var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
       var minIndex = 0;var maxIndex=0;
@@ -234,190 +229,86 @@ export default {
       if(t===0){
         this.$broadcast("mailSent",{message:"未选择任何选项！",timeout:3000});
       }else{
-        this.dialogcontent.title="选择共享范围";
-        this.dialogcontent.tips="";
-        this.dialogcontent.element = "选择框";
-        this.dialogcontent.selectValue = "私有";
-        this.dialogcontent.selectOptions = ["私有","公开"];
-        this.dialogcontent.selectLabel = "共享范围";
-        this.$el.querySelector('#scope-dialog').style.display = 'block';
+        this.dialogcontent.title="批量编辑";
+        this.dialogcontent.tips="（提示：多个主题请用空格隔开）";
+        this.$el.querySelector('#batch-process-dialog').style.display = 'block';
       }
     },
+    batchProcessAction:function(status){
+      if(status !== 'ok'){
+        return;
+      }
+      //获取输入的值，去掉左右两边的空格
+      var tagValue = this.$el.querySelector('#batch-process-dialog #tags-input').value.replace(/^\s+|\s+$/g,"");
+      var locationValue = this.$el.querySelector('#batch-process-dialog #location-input').value.replace(/^\s+|\s+$/g,"");
+      var timeValue = this.$el.querySelector('#batch-process-dialog #year-input').value.replace(/^\s+|\s+$/g,"");
+      var scopeValue = this.$el.querySelector('#batch-process-dialog #scope-select').value.replace(/^\s+|\s+$/g,"");
+      //新建data对象，存储更改以后的属性值
+      var data = {};
+      if(tagValue){
+        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
+              
+      }
+      if(locationValue){data.location = locationValue}
+      if(timeValue){data.year = timeValue}
+      if(scopeValue==="私有"){data.scope = "private"}else if(scopeValue==="公开"){data.scope = "public"}
 
-    editScopeAction:function(status){
-      if(status==='ok'){
-        //以下计算本页displayUploads的索引范围
-        var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-        var minIndex = 0;var maxIndex=0;
-        if(this.pageConfig.current_page<totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-        }
-        if(this.pageConfig.current_page==totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.total_items;
-        }
-        var value = this.$el.querySelector('#scope-dialog input').value
-        if(value==="私有"){
-          var scope = "private";
-        }else if(value==="公开"){
-          var scope = "public";
-        }else{
-          this.$broadcast("mailSent",{message:"选择错误！",timeout:3000});
-        }
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        for(var i = minIndex;i<maxIndex;i++){
+      //以下计算本页displayUploads的索引范围
+      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
+      var minIndex = 0;var maxIndex=0;
+      if(this.pageConfig.current_page<totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
+      }
+      if(this.pageConfig.current_page==totalPages){
+        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        maxIndex = this.total_items;
+      }
+
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
+      var flag = 0;//标记是否有重复主题
+      //循环本页所有选中的选项
+      for(let i=minIndex;i<maxIndex;i++){
           if(this.displayUploads[i].checked === true){
+            if(tags){
+              var newTags = this.displayUploads[i].tags.concat(tags);
+              data.tags = [];
+              //去除重复的主题词
+              for(let j = 0; j < newTags.length; j++) {
+                if (newTags.indexOf(newTags[j]) === j){
+                  data.tags.push(newTags[j]);
+                }
+              }
+              if(data.tags.length !== newTags.length){
+                flag++;
+              }
+              this.displayUploads[i].tags = data.tags;
+            }
+            if(data.location){this.displayUploads[i].location = data.location;}
+            if(data.year){this.displayUploads[i].year = data.year;}
+            this.displayUploads[i].scope = data.scope;
+            //向服务器发送Patch请求，更新data对象
             let upload_id = this.displayUploads[i].upload_id;
             let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-            this.displayUploads[i].scope = scope;
-            this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data
-            let scope = data.scope
-            let days = 30
-            Cookies.set('scope',scope,{ expires: days })
+            this.$http({url:url,method:'PATCH',data:data,headers: { 'x-access-token': access_token }}).then(function(response){
+              let data = response.data
+              let days = 30
+              Cookies.set('location',data.location,{ expires: days });
+              Cookies.set('year',data.year,{ expires: days });
+              Cookies.set('scope',data.scope,{ expires: days });
           },function(response){
               alert("编辑错误")
             });
           }
         }
-      }
-    },
-
-    batchEditLocation:function () {
-      //以下计算本页displayUploads的索引范围
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-      //以下判断用户是否有勾选
-      var t = 0;
-      for(var i = minIndex;i<maxIndex;i++){
-        if(this.displayUploads[i].checked === true){
-          t++;
+        if(flag!==0){
+          this.$broadcast('mailSent', {message: '已为您自动删除重复主题！',timeout:3000});
         }
-      }
-      if(t===0){
-        this.$broadcast("mailSent",{message:"未选择任何选项！",timeout:3000});
-      }else{
-        this.dialogcontent.title="输入制图区域";
-        this.dialogcontent.tips="（提示：请不要有空格）";
-        this.dialogcontent.element = "文本框";
-        this.$el.querySelector('#location-dialog').style.display = 'block';
-      }     
-    },
-
-    editLocationAction:function(status){
-      if(status === "ok"){
-        if(this.$el.querySelector('#location-dialog input').value===""){
-          return;
-        }
-        //以下计算本页displayUploads的索引范围
-        var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-        var minIndex = 0;var maxIndex=0;
-        if(this.pageConfig.current_page<totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-        }
-        if(this.pageConfig.current_page==totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.total_items;
-        }
-        let location =  this.$el.querySelector('#location-dialog input').value;
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        for(var i = minIndex;i<maxIndex;i++){
-          if(this.displayUploads[i].checked === true){
-            let upload_id = this.displayUploads[i].upload_id;
-            let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-            this.displayUploads[i].location = location
-            this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data
-            let location = data.location
-            let date = new Date()
-            let days = 30
-            Cookies.set('location',location,{ expires: days })
-          },function(response){
-            alert("编辑错误")
-          });
-          }
-        }
-        this.$el.querySelector('#location-dialog input').value="";   
-      }
-    },
-
-    batchEditTime:function () {
-      //以下计算本页displayUploads的索引范围
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-      //以下判断用户是否有勾选
-      var t = 0;
-      for(var i = minIndex;i<maxIndex;i++){
-        if(this.displayUploads[i].checked === true){
-          t++;
-        }
-      }
-      if(t===0){
-        this.$broadcast("mailSent",{message:"未选择任何选项！",timeout:3000});
-      }else{
-        this.dialogcontent.title="输入制图年份";
-        this.dialogcontent.tips="（提示：请不要有空格）";
-        this.dialogcontent.element = "文本框";
-        this.$el.querySelector('#time-dialog').style.display = 'block';
-      }     
-    },
-
-    editTimeAction:function(status){
-      if(status === "ok"){
-        if(this.$el.querySelector('#time-dialog input').value===""){
-          return;
-        }
-        //以下计算本页displayUploads的索引范围
-        var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-        var minIndex = 0;var maxIndex=0;
-        if(this.pageConfig.current_page<totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-        }
-        if(this.pageConfig.current_page==totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.total_items;
-        }
-        let year =  this.$el.querySelector('#time-dialog input').value;
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        for(var i = minIndex;i<maxIndex;i++){
-          if(this.displayUploads[i].checked === true){
-            let upload_id = this.displayUploads[i].upload_id;
-            let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
-            this.displayUploads[i].year = year;
-            this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data;
-            let year = data.year;
-            let days = 30;
-            Cookies.set('year',year,{ expires: days });
-          },function(response){
-            alert("编辑错误");
-          });
-          }
-        }
-        this.$el.querySelector('#location-dialog input').value="";   
-      }
+        this.$el.querySelector('#batch-process-dialog #tags-input').value="";
+        this.$el.querySelector('#batch-process-dialog #location-input').value="";
+        this.$el.querySelector('#batch-process-dialog #year-input').value="";
+        this.$el.querySelector('#batch-process-dialog #scope-select').value="私有";
     },
 
     calculation:function(size){
@@ -467,11 +358,6 @@ export default {
         }else{
           formData.append('location', '');
         }
-        //var reader = new FileReader()
-        //reader.readAsBinaryString(e.target.files[i])
-        //reader.onloadend = function() {
-         // console.log(reader.result.length)
-        //}
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
             fileCount++;
@@ -559,73 +445,7 @@ export default {
         this.patchUpload(upload_id,{'tags':patchUpload.tags})
       }
     },
-    batchAddTags:function(){
-      //以下计算本页displayUploads的索引范围
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-      //以下判断用户是否有勾选
-      var t = 0;
-      for(var i = minIndex;i<maxIndex;i++){
-        if(this.displayUploads[i].checked === true){
-          t++;
-        }
-      }
-      if(t===0){
-        this.$broadcast("mailSent",{message:"未选择任何选项！",timeout:3000});
-      }else{
-        this.dialogcontent.title="输入主题词";
-        this.dialogcontent.tips="（提示：多个主题请用空格隔开）";
-        this.dialogcontent.element = "文本框";
-        this.$el.querySelector('#add-tags-dialog').style.display = 'block';
-      }     
-    },
-    
-    addTagsAction:function(status){
-      if(status === 'ok'){
-        //以下计算本页displayUploads的索引范围
-        var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-        var minIndex = 0;var maxIndex=0;
-        if(this.pageConfig.current_page<totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-        }
-        if(this.pageConfig.current_page==totalPages){
-          minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-          maxIndex = this.total_items;
-        }
-        if(this.$el.querySelector("#add-tags-dialog input").value.replace(/^\s+|\s+$/g,"")===""){
-          return;
-        }
-        var tagName = this.$el.querySelector("#add-tags-dialog input").value.replace(/^\s+|\s+$/g,"").split(/\s+/);
-        for(let i=minIndex;i<maxIndex;i++){
-          if(this.displayUploads[i].checked === true){
-            var tags = this.displayUploads[i].tags.concat(tagName);
-            var newTags = [];
-            for(let j = 0; j < tags.length; j++) {
-              if (tags.indexOf(tags[j]) === j){
-                newTags.push(tags[j]);
-              }
-            }
-            if(newTags.length !== tags.length){
-              this.$broadcast('mailSent', {message: '已为您自动删除重复主题！',timeout:3000});
-            }
-            this.displayUploads[i].tags = newTags;
-            let u_id = this.displayUploads[i].upload_id;
-            this.$el.querySelector("#add-tags-dialog input").value = '';
-            this.patchUpload(u_id,{'tags':this.displayUploads[i].tags});
-          }
-        }
-      }
-    },
-
+  
     selectChange:function(e,index){//复选框被选中或取消选中
       if(this.displayUploads[index].checked){
         this.displayUploads[index].checked=false;
@@ -1082,10 +902,6 @@ export default {
       dialogcontent: {
         title: '',//对话框标题
         tips:'',//对话框中的提示性文字
-        element:'',//对话框中的元素类型，“文本框”或“选择框”
-        selectLabel:'',
-        selectValue:'',//选择框默认值
-        selectOptions:[]//选择框的选项
       },
       deleteUploadId: [],
       tagConditions: [],

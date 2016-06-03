@@ -4,8 +4,10 @@
       <div class="dialog">
         <div class="title">{{dialog.title}}</div>
         <p>{{dialog.tips}}</p>
-        <mdl-textfield label="输入内容" v-if="dialog.element==='文本框'"></mdl-textfield>
-        <mdl-select :label="dialog.selectLabel" id="contry-select" v-if="dialog.element==='选择框'":value="dialog.selectValue" :options="dialog.selectOptions"></mdl-select>
+        <mdl-textfield label="主题词" id="tags-input"></mdl-textfield>
+        <mdl-textfield label="制图区域" id="location-input"></mdl-textfield>
+        <mdl-textfield label="制图年份" id="year-input"></mdl-textfield>
+        <mdl-select label="共享范围" id="scope-select" :value="scope" :options="scopeOptions"></mdl-select>
         <div class="action">
           <mdl-button accent raised v-mdl-ripple-effect v-on:click="doOK">确定</mdl-button>
           <mdl-button raised colored v-mdl-ripple-effect v-on:click="doCancel">取消</mdl-button>       
@@ -30,8 +32,8 @@ export default {
   },
   data(){
     return {
-    country: 'Spain',
-    countryArrays: ['Russia', 'Spain', 'France', 'China']
+    scope: '私有',
+    scopeOptions: ['私有', '公开']
     }
   },
 
