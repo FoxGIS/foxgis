@@ -2,9 +2,10 @@
   <div>
     <div class="modal">
       <div class="dialog">
-        <div class="content">{{dialog.title}}</div>
-        <p>({{dialog.tips}})</p>
-        <mdl-textfield label="输入内容"></mdl-textfield>
+        <div class="title">{{dialog.title}}</div>
+        <p>{{dialog.tips}}</p>
+        <mdl-textfield label="输入内容" v-if="dialog.element==='文本框'"></mdl-textfield>
+        <mdl-select :label="dialog.selectLabel" id="contry-select" v-if="dialog.element==='选择框'":value="dialog.selectValue" :options="dialog.selectOptions"></mdl-select>
         <div class="action">
           <mdl-button accent raised v-mdl-ripple-effect v-on:click="doOK">确定</mdl-button>
           <mdl-button raised colored v-mdl-ripple-effect v-on:click="doCancel">取消</mdl-button>       
@@ -27,6 +28,13 @@ export default {
       this.$dispatch("dialog-action",'cancel')
     }
   },
+  data(){
+    return {
+    country: 'Spain',
+    countryArrays: ['Russia', 'Spain', 'France', 'China']
+    }
+  },
+
   props:['dialog']
 }
 </script>
@@ -46,7 +54,7 @@ export default {
   position: absolute;
   background-color: white;
   border-radius: 3px;
-  overflow: hidden;
+  overflow: inherit;
   float: none;
   top: 30%;
   right: 0;
@@ -62,7 +70,7 @@ export default {
   font-size: 12px;
   margin: 0;
 }
-.content {
+.title {
   margin-bottom: 5px;
   font-size: 22px;
   font-weight: bold;
