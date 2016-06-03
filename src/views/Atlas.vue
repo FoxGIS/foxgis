@@ -104,7 +104,7 @@ export default {
 
     conditionClick: function(e,type){
       let str = e.target.textContent.trim()
-      str = str.substr(0, str.indexOf('('));
+      str = str.substr(0, str.indexOf('(')).trim()
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
         if(type == 3){
