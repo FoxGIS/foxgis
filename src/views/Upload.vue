@@ -35,15 +35,15 @@
   </div>
 
 
-  <div>
-    <div>
+  <div id="batch-btn-box">
+    <div id="batch-button">
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchProcess" class="select-btn">批量编辑</mdl-anchor-button>
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>     
     </div>
     <div id="select-button">
       <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
+      <mdl-anchor-button primary raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
+      <mdl-anchor-button primary raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
     </div>
   </div>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
@@ -65,7 +65,7 @@
       </span>
       <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
     </div>
-    <input type="checkbox" class = "card-checkbox" @click="selectChange($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
+    <input type="checkbox" class = "card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
       <p>
         制图区域：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -443,14 +443,6 @@ export default {
         patchUpload.tags.push(e.target.value)
         e.target.value = ''
         this.patchUpload(upload_id,{'tags':patchUpload.tags})
-      }
-    },
-  
-    selectChange:function(e,index){//复选框被选中或取消选中
-      if(this.displayUploads[index].checked){
-        this.displayUploads[index].checked=false;
-      }else{
-        this.displayUploads[index].checked=true;
       }
     },
 
@@ -986,7 +978,6 @@ span {
 }
 
 .card {
-  margin-top: 40px;
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
@@ -997,13 +988,7 @@ span {
 }
 
 .card + .card {
-  margin-top: 1px;
-}
-
-.card:focus,
-.card:hover {
-  box-shadow: 0 4px 4px rgba(0, 0, 0, .12);
-  margin: 12px -12px;
+  margin-top: 5px;
 }
 
 .name {
@@ -1196,11 +1181,19 @@ span {
   display: block;
   background: url("../../static/BtnNew.png") 0 0 repeat;
 }
+
+#batch-btn-box{
+  margin-top:5px;
+  position:relative;
+  height:45px;
+}
 #select-button{
   position: absolute;
-  right:8.2%;
+  right:0;
 }
-
+#batch-button{
+  position:absolute;
+}
 .mdl-dialog__content{
   padding:6px 27px 3px;
 }

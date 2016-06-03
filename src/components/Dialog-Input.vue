@@ -4,9 +4,9 @@
       <div class="dialog">
         <div class="title">{{dialog.title}}</div>
         <p>{{dialog.tips}}</p>
-        <mdl-textfield label="主题词" id="tags-input"></mdl-textfield>
-        <mdl-textfield label="制图区域" id="location-input"></mdl-textfield>
-        <mdl-textfield label="制图年份" id="year-input"></mdl-textfield>
+        <mdl-textfield label="主题词" floating-label="主题词" id="tags-input"></mdl-textfield>
+        <mdl-textfield label="制图区域" floating-label="制图区域" id="location-input"></mdl-textfield>
+        <mdl-textfield label="制图年份" floating-label="制图年份" id="year-input"></mdl-textfield>
         <mdl-select label="共享范围" id="scope-select" :value="scope" :options="scopeOptions"></mdl-select>
         <div class="action">
           <mdl-button accent raised v-mdl-ripple-effect v-on:click="doOK">确定</mdl-button>
@@ -61,9 +61,9 @@ export default {
   top: 30%;
   right: 0;
   left: 0;
-  width: 400px;
+  width: 340px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 50px 20px 50px;
   box-sizing: border-box;
 }
 

@@ -155,6 +155,8 @@ export default {
 }
 
 #user-info input{
+
+  width:190px;
   outline:none;
   border:0;
   text-align:right;
