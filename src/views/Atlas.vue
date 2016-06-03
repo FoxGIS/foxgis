@@ -189,7 +189,7 @@ export default {
   },
   attached() {
     let username = Cookies.get('username')
-    if(username === undefined){
+    if(!username){
       return 
     }
     let access_token = Cookies.get('access_token')
