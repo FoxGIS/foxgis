@@ -18,13 +18,15 @@
           <div class="condition">
             <span>制图区域：</span>
             <a v-for="location in location_tags" v-if="$index<6"
-                  @click="conditionClick($event,2)">{{ location.data }}({{location.num}})
+                  @click="conditionClick($event,2)">{{ location.data }}
+                  <span>({{ location.num }})</span>
             </a>
           </div>
           <div class="condition">
             <span>制图年份：</span>
             <a v-for="year in year_tags | orderBy" v-if="$index<6"
-                  @click="conditionClick($event,3)">{{ year.data }}({{year.num}})
+                  @click="conditionClick($event,3)">{{ year.data }}
+                  <span>({{ year.num }})</span>
             </a>
           </div>
         </div>
@@ -102,7 +104,7 @@ export default {
 
     conditionClick: function(e,type){
       let str = e.target.textContent.trim()
-      str = str.substr(0, str.indexOf('('));
+      str = str.substr(0, str.indexOf('(')).trim()
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none'
         if(type == 3){
@@ -535,7 +537,7 @@ export default {
 }
 
 .filter span {
-  width: 80px;
+  width: 70px;
   display: inline-block;
   font: normal 14px/5px "SimSun";
 }
@@ -547,9 +549,14 @@ export default {
 .filter .condition a {
   cursor: pointer;
   text-decoration: none;
-  margin-left: 15px;
+  margin-left: 10px;
   font-size: .9em;
   color: #666;
+}
+
+.filter .condition a span {
+  width: auto;
+  color: #3f51b5;
 }
 
 .filter .condition .active{
