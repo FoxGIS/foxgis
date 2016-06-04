@@ -91,22 +91,29 @@ export default {
   methods: {
     search: function(){
       this.searchKeyWords = document.getElementById("search").value.trim()
+      this.pageConfig.skip = 0
       let that = this
+      let url = ''
       if(this.searchKeyWords.length>0){
         let search = this.searchKeyWords
-        let url = SERVER_API.uploads + '?search='+search+'&limit=80&sort=-updatedAt'
-        this.getHttpData(url,function(data){
-            for(let i=0;i<data.length;i++){
-              if(!data[i].location){
-                data[i].location = "未指定"
-              }
-              if(!data[i].year){
-                data[i].year = "未指定"
-              }
-            }
-            that.uploads = data
-        })
+        url = SERVER_API.uploads + '?search='+search+'&limit=80&sort=-updatedAt'
+      }else{
+        url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
       }
+      this.getHttpData(url,function(data){
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              data[i].location = "未指定"
+            }
+            if(!data[i].year){
+              data[i].year = "未指定"
+            }
+          }
+          that.uploads = data
+          if(data.length < 80){
+            that.pageConfig.skip = 80
+          }
+      })
     },
 
     getHttpData: function(url,callback){
@@ -216,7 +223,7 @@ export default {
       if(this.pageConfig.current_page === allPages){
         this.searchKeyWords = document.getElementById("search").value.trim()
         let url = ''
-        let skip = (Math.floor(this.pageConfig.first_page/10)+1)*80
+        let skip = Math.ceil(this.pageConfig.first_page/10)*80
         if(this.pageConfig.skip === skip){
           return
         }else{
