@@ -92,6 +92,9 @@ export default {
     search: function(){
       this.searchKeyWords = document.getElementById("search").value.trim()
       this.pageConfig.skip = 0
+      this.pageConfig.page_item_num = 8      
+      this.pageConfig.current_page = 1
+      this.pageConfig.first_page = 1
       let that = this
       let url = ''
       if(this.searchKeyWords.length>0){
