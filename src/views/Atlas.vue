@@ -2,9 +2,10 @@
 <div class="atlas">
   <foxgis-layout>
     <div class="content">
-      <div class="search-bar">
-        <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-        <mdl-button raised accent v-mdl-ripple-effect class="search-button">搜索</mdl-button>
+      <div class="search-bar" id="searchButton">
+        <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search> -->
+        <input id="search" type="text" style="width: 500px;height: 36px;" placeholder="搜索" @keyup.enter="search"></input>
+        <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search">搜索</mdl-button>
       </div>
 
       <div class="filter">
@@ -86,14 +87,61 @@ import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
+  el: '#searchButton',
   methods: {
+    search: function(){
+      this.searchKeyWords = document.getElementById("search").value.trim()
+      this.pageConfig.skip = 0
+      this.pageConfig.page_item_num = 8      
+      this.pageConfig.current_page = 1
+      this.pageConfig.first_page = 1
+      let that = this
+      let url = ''
+      if(this.searchKeyWords.length>0){
+        let search = this.searchKeyWords
+        url = SERVER_API.uploads + '?search='+search+'&limit=80&sort=-updatedAt'
+      }else{
+        url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+      }
+      this.getHttpData(url,function(data){
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              data[i].location = "未指定"
+            }
+            if(!data[i].year){
+              data[i].year = "未指定"
+            }
+          }
+          that.uploads = data
+          if(data.length < 80){
+            that.pageConfig.skip = 80
+          }
+      })
+    },
+
+    getHttpData: function(url,callback){
+        let username = Cookies.get('username')
+        if(!username){
+          return 
+        }
+        let access_token = Cookies.get('access_token')
+        //获取数据列表
+        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+          if (response.data.length > 0) {
+            let data = response.data
+            callback(data)
+          }
+        }, function(response) {
+          console.log(response)
+        })
+    },
+
     showPreview: function(e, index) {
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('#thumbnail').src = url
       document.querySelector('.modal').style.display = 'block'
-      
     },
 
     hidePreview: function(e) {
@@ -154,25 +202,10 @@ export default {
       aLink.className = 'download_link'
       var text = document.createTextNode('&nbsp;')
       aLink.appendChild(text)
-      // var evt = document.createEvent("HTMLEvents")
-      // evt.initEvent("click", false, false);
       aLink.href = url
-      aLink.click()
-      // aLink.dispatchEvent(evt)     
+      aLink.click()  
     },
 
-    nextPage: function (event) {
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
-      if(this.pageConfig.current_page === allPages){
-        return
-      }
-      this.pageConfig.current_page += 1;
-      
-      if(this.pageConfig.current_page > this.show_page_num){
-        this.pageConfig.first_page +=1;
-      }
-    },
-    
     prePage: function (event) {
       if(this.pageConfig.current_page === 1){
         return
@@ -184,21 +217,63 @@ export default {
     },
     
     setPage: function (page) {
-      this.pageConfig.current_page = page+1;
+      this.pageConfig.current_page = page+this.pageConfig.first_page;
+    },
+
+    nextPage: function (event) {
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      let that = this
+      if(this.pageConfig.current_page === allPages){
+        this.searchKeyWords = document.getElementById("search").value.trim()
+        let url = ''
+        let skip = Math.ceil(this.pageConfig.first_page/10)*80
+        if(this.pageConfig.skip === skip){
+          return
+        }else{
+          this.pageConfig.skip = skip
+        }
+        if(this.searchKeyWords.length>0){
+          let search = this.searchKeyWords
+          url = SERVER_API.uploads + '?search='+search+'&limit=80&skip='+skip+'&sort=-updatedAt'   
+        }else{
+          url = SERVER_API.uploads + '?limit=80&skip='+skip+'&sort=-updatedAt'
+        }
+        this.getHttpData(url,function(data){
+            for(let i=0;i<data.length;i++){
+              if(!data[i].location){
+                data[i].location = "未指定"
+              }
+              if(!data[i].year){
+                data[i].year = "未指定"
+              }
+            }
+            that.uploads = _.concat(that.uploads,data)
+            that.pageConfig.current_page += 1;
+            if(that.pageConfig.current_page > that.show_page_num){
+              that.pageConfig.first_page +=1;
+            }
+        })
+      }else{
+        this.pageConfig.current_page += 1;
+        if(this.pageConfig.current_page > this.show_page_num){
+          this.pageConfig.first_page +=1;
+        }
+      }
     }
+    
   },
   attached() {
     let username = Cookies.get('username')
-    if(username === undefined){
+    if(!username){
       return 
     }
     let access_token = Cookies.get('access_token')
-    let url = SERVER_API.uploads + '/' + username
-    var that = this
-      //获取数据列表
+    let url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+    let that = this
+    //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data
+        let data = response.data
         data = data.map(function(d) {
           if (d.filesize / 1024 > 1024) {
             d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
@@ -209,6 +284,14 @@ export default {
           return d
         })
         this.uploads = data
+        for(let i=0;i<this.uploads.length;i++){
+          if(!this.uploads[i].location){
+            this.uploads[i].location = "未指定"
+          }
+          if(!this.uploads[i].year){
+            this.uploads[i].year = "未指定"
+          }
+        }
       }
     }, function(response) {
       console.log(response)
@@ -216,14 +299,13 @@ export default {
     console.log(this.$parent)
   },
 
-
   computed: {
     show_page_num: function (){
       let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
         this.pageConfig.current_page = cop_page_num
       }
-      return cop_page_num > 5 ? 5 : cop_page_num
+      return cop_page_num > 10 ? 10 : cop_page_num
     },
      
     total_items: function (){
@@ -239,16 +321,9 @@ export default {
       let temp2 = []
       let temp3 = []
       let tempUploads = this.uploads
-      if(this.searchUploads.length>0){
-        tempUploads = this.searchUploads
-      }
 
-      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
+      if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0){
         return tempUploads.slice(0)
-      }
-      if(this.searchUploads.length === 0 && this.searchKeyWords.trim().length!==0){
-      //用户进行了搜索，但结果为空
-        return this.searchUploads;
       }
 
       if(this.selected_theme_tags.length>0){
@@ -284,63 +359,36 @@ export default {
         }
       }
 
-      if(temp1.length == 0){
-        if(temp2.length == 0){
-          if(temp3.length == 0){
-            temp=this.searchUploads
+      if(temp1.length === 0){
+        if(temp2.length === 0){
+          if(temp3.length === 0){
+            temp=tempUploads
           }else{
-            if(this.searchUploads.length == 0){
-              temp =temp3
-            }else{
-              temp = _.intersection(temp3,this.searchUploads)
-            }
+            temp =temp3
           } 
         }else{
-          if(temp3.length == 0){
-            if(this.searchUploads.length == 0){
-              temp =temp2
-            }else{
-              temp = _.intersection(temp2,this.searchUploads)
-            }
+          if(temp3.length === 0){
+            temp =temp2
           }else{
-            if(this.searchUploads.length == 0){
-              temp = _.intersection(temp2,temp3)
-            }else{
-              temp = _.intersection(temp2,temp3,this.searchUploads)
-            }
+            temp = _.intersection(temp2,temp3)
           }
         }
       }else{
-        if(temp2.length == 0){
-          if(temp3.length == 0){
-            if(this.searchUploads.length == 0){
-              temp = temp1
-            }else{
-              temp = _.intersection(temp1,this.searchUploads)
-            }  
+        if(temp2.length === 0){
+          if(temp3.length === 0){
+            temp = temp1
           }else{
-            if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp3)
-            }else{
-              temp = _.intersection(temp1,temp3,this.searchUploads)
-            }  
+            temp = _.intersection(temp1,temp3)
           }
         }else{
-          if(temp3.length == 0){
-            if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp2)
-            }else{
-              temp = _.intersection(temp1,temp2,this.searchUploads)
-            } 
+          if(temp3.length === 0){
+            temp = _.intersection(temp1,temp2)
           }else{
-            if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp2,temp3)
-            }else{
-              temp = _.intersection(temp1,temp2,temp3,this.searchUploads)
-            } 
+            temp = _.intersection(temp1,temp2,temp3)
           }
         }
       }
+
       if(temp.length===0){
         let data1 = []
         let data2 = []
@@ -359,20 +407,11 @@ export default {
 
     theme_tags: function(){
         let theme = []
-        let k=0
         let tempUploads = this.uploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }else{
-            return theme
-          }
-        }
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].tags.length>0){
             for(let j=0;j<tempUploads[i].tags.length;j++){
               theme.push(tempUploads[i].tags[j])
-              k++
             }
           }
         }
@@ -384,15 +423,8 @@ export default {
         let year = []
         let data = []
         let tempUploads = this.uploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }else{
-            return year
-          }
-        }
         for(let i=0;i<tempUploads.length;i++){
-          year.push(tempUploads[i].year.toString())
+          year.push(tempUploads[i].year)
         }
         let tempYear = year
         year = _.uniq(year).sort()
@@ -413,13 +445,6 @@ export default {
         let location = []
         let data = []
         let tempUploads = this.uploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }else{
-            return location
-          }
-        }
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].location.length > 0){
             location.push(tempUploads[i].location)
@@ -438,40 +463,7 @@ export default {
           data.push({'data':temp,'num':num})
         }
         return data
-    },
-
-    searchUploads: function(){
-      let temp = []
-      if(this.searchKeyWords != ''){
-        let keyWords = this.searchKeyWords.trim().split(' ')
-        keyWords = _.uniq(keyWords)
-        for(let u=0;u<this.uploads.length;u++){
-          let upload = this.uploads[u]
-          let num = 0
-          for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w]
-            if(keyWord.indexOf(' ')==-1){
-              if(upload.name&&upload.name.indexOf(keyWord)!=-1 || upload.location&&upload.location.indexOf(keyWord)!=-1 || upload.year&&upload.year.toString().indexOf(keyWord)!=-1){
-                  num++
-              }else{
-                for(let k=0;k<upload.tags.length;k++){
-                  if(upload.tags[k].indexOf(keyWord)!=-1){
-                    num++
-                  }
-                }
-              }
-            }else{
-              num++
-            }
-          }
-          if(num == keyWords.length){
-            temp.push(upload)
-          }
-        }
-      }
-      return temp
     }
-
   },
 
   data() {
@@ -481,6 +473,7 @@ export default {
         page_item_num: 8,         //每页显示的条数
         current_page: 1,
         first_page: 1,
+        skip: 0
       },
       selected_year_tags: [],
       selected_location_tags: [], 

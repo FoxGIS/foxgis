@@ -1124,6 +1124,8 @@ span {
 
 .small-pic img {
   border-radius: 5px;
+  max-width:100%;
+  height:auto; 
 }
 
 #pagination {
