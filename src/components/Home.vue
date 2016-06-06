@@ -74,16 +74,6 @@ export default {
     })
   },
 	
-	/*ready(){
-		console.log('ready')
-		$("#scrollDiv").textSlider({line:2,speed:500,timer:3000});//设置文字滚动
-		$('.automatic-slider').unslider({
-			autoplay: true,
-			delay:5000,
-			infinite: true
-		});//设置图片滚动
-	},
-*/
 	data() {
 		return {
 			images: [{

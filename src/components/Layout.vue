@@ -69,7 +69,7 @@ export default {
   },
   ready() {
     /*global componentHandler */
-    //componentHandler.upgradeElement(this.$el.firstElementChild)
+    componentHandler.upgradeElement(this.$el.firstElementChild)
   },
   attached: function() {
     //判断是否登陆
