@@ -3,7 +3,6 @@
   <foxgis-layout>
     <div class="content">
       <div class="search-bar" id="searchButton">
-        <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search> -->
         <div class="atlas-search">
           <i class="material-icons">search</i>
           <input id="search" type="text" placeholder="搜索" @keyup.enter="search"></input>
