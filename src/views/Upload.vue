@@ -133,12 +133,7 @@ export default {
     },
 
     editLocation: function(e, index) {
-        let tempUploads = this.uploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }
-        }
+        let tempUploads = this.displayUploads
         let location = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -158,12 +153,7 @@ export default {
     },
 
     editTime: function(e, index) {
-        let tempUploads = this.uploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }
-        }
+        let tempUploads = this.displayUploads
         let year = e.target.value
         if(e.target.value.length == 0){
           let today=new Date()
@@ -187,11 +177,6 @@ export default {
 
     editScope: function(e,index){
         let tempUploads = this.displayUploads
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
-          }
-        }
         let scope = document.getElementById('scope').selectedOptions[0].value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
