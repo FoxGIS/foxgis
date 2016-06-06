@@ -58,7 +58,7 @@
       <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <div id="map-property">
         <p>
-        比例尺：<span style="color:black;">1:  </span> <input type="text" class="map-scale" v-model="" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+        比例尺：<span style="color:black;">1:  </span> <input type="text" class="map-scale" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
         图幅大小：<span class="map-area">25cm*25cm</span>
         </p>
       </div>
