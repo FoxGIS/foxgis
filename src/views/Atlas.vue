@@ -4,7 +4,10 @@
     <div class="content">
       <div class="search-bar" id="searchButton">
         <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search> -->
-        <input id="search" type="text" style="width: 500px;height: 36px;" placeholder="搜索" @keyup.enter="search"></input>
+        <div class="atlas-search">
+          <i class="material-icons">search</i>
+          <input id="search" type="text" placeholder="搜索" @keyup.enter="search"></input>
+        </div>
         <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search">搜索</mdl-button>
       </div>
 
@@ -506,6 +509,33 @@ export default {
   width: 60px;
   height: 40px;
   margin-left: 10px;
+}
+
+.atlas-search {
+  width: 500px;
+  height: 40px;
+  background-color: #FFF;
+  border: 1px solid #b8b8b8;
+  border-bottom: 1px solid #ccc;
+  display: inline-flex;
+}
+
+.atlas-search:hover {
+  border: 1px solid #4285F4;
+}
+
+.atlas-search input {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 9px 0px;
+  font: 16px arial,sans-serif;
+  border: none;
+  outline: none;
+}
+
+.atlas-search .material-icons {
+  padding: 8px 0px 8px 8px;
 }
 
 .hotactive {
