@@ -13,8 +13,12 @@
           <a class="mdl-navigation__link" href="/static/用户手册.docx" v-bind:class="username==undefined?'disabled':''">帮助</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a> -->
           <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==undefined">登录</a>
-          <a class="mdl-navigation__link" v-else>{{username}}</a>
+          <a class="mdl-navigation__link" v-on:click="showUserCenter" v-else>{{username}}</a>
         </nav>
+      </div>
+      <div class="userCenter">
+        <a v-link="{ path: '/studio/user' }">用户管理</a>
+        <a v-on:click.prevent="signout">注销</a>
       </div>
     </header>
 
@@ -42,6 +46,27 @@
 <script>
 import Cookies from 'js-cookie'
 export default {
+  methods: {
+    signout: function(){
+      Cookies.remove('username')
+      Cookies.remove('access_token')
+      Cookies.remove('name')
+      Cookies.remove('phone')
+      Cookies.remove('email')
+      Cookies.remove('location')
+      Cookies.remove('organization')
+      window.location.href = '/'
+    },
+
+    showUserCenter: function(){
+      if(document.querySelector('.userCenter').style.display === 'none'){
+        document.querySelector('.userCenter').style.display = 'block'
+      }else{
+        document.querySelector('.userCenter').style.display = 'none'
+      }
+      
+    }
+  },
   ready() {
     /*global componentHandler */
     componentHandler.upgradeElement(this.$el.firstElementChild)
@@ -97,6 +122,7 @@ export default {
   font-size: 1em;
   line-height: 30px;
   padding: 0 10px;
+  cursor: pointer;
 }
 
 .mdl-layout--content {
@@ -116,6 +142,25 @@ a.disabled {
 
 .download_link{
   cursor: pointer;
+}
+
+.userCenter{
+  height: 60px;
+  width: 110px;
+  z-index: 9999;
+  position: absolute;
+  right: 0;
+  background-color: #3f51b5;
+  text-align: center;
+  line-height: 30px;
+  display: none;
+}
+
+.userCenter a{
+  display: inherit;
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
 }
 
 </style>

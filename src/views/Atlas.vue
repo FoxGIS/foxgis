@@ -89,7 +89,9 @@ import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
-  el: '#searchButton',
+  el() {
+    return '#searchButton'
+  },
   methods: {
     search: function(){
       document.querySelector('.modal').style.display = 'block'
