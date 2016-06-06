@@ -101,9 +101,9 @@ export default {
       let url = ''
       if(this.searchKeyWords.length>0){
         let search = this.searchKeyWords
-        url = SERVER_API.uploads + '?search='+search+'&limit=80&sort=-updatedAt'
+        url = SERVER_API.uploads + '?search='+search+'&limit='+this.requestCounts+'&sort=-updatedAt'
       }else{
-        url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt'
       }
       this.getHttpData(url,function(data){
           for(let i=0;i<data.length;i++){
@@ -115,8 +115,8 @@ export default {
             }
           }
           that.uploads = data
-          if(data.length < 80){
-            that.pageConfig.skip = 80
+          if(data.length < that.requestCounts){
+            that.pageConfig.skip = that.requestCounts
           }
       })
     },
@@ -228,7 +228,7 @@ export default {
       if(this.pageConfig.current_page === allPages){
         this.searchKeyWords = document.getElementById("search").value.trim()
         let url = ''
-        let skip = Math.ceil(this.pageConfig.first_page/10)*80
+        let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts
         if(this.pageConfig.skip === skip){
           return
         }else{
@@ -236,9 +236,9 @@ export default {
         }
         if(this.searchKeyWords.length>0){
           let search = this.searchKeyWords
-          url = SERVER_API.uploads + '?search='+search+'&limit=80&skip='+skip+'&sort=-updatedAt'   
+          url = SERVER_API.uploads+'?search='+search+'&limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'   
         }else{
-          url = SERVER_API.uploads + '?limit=80&skip='+skip+'&sort=-updatedAt'
+          url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
         }
         this.getHttpData(url,function(data){
             for(let i=0;i<data.length;i++){
@@ -270,7 +270,7 @@ export default {
       return 
     }
     let access_token = Cookies.get('access_token')
-    let url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+    let url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt'
     let that = this
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
@@ -471,6 +471,7 @@ export default {
   data() {
     return {
       uploads: [] ,
+      requestCounts: 80,           //每次向数据库请求得到的数据个数
       pageConfig: {
         page_item_num: 8,         //每页显示的条数
         current_page: 1,
