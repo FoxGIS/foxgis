@@ -3,8 +3,10 @@
   <foxgis-layout>
     <div class="content">
       <div class="search-bar" id="searchButton">
-        <!-- <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search> -->
-        <input id="search" type="text" style="width: 500px;height: 36px;" placeholder="搜索" @keyup.enter="search"></input>
+        <div class="atlas-search">
+          <i class="material-icons">search</i>
+          <input id="search" type="text" placeholder="搜索" @keyup.enter="search"></input>
+        </div>
         <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search">搜索</mdl-button>
       </div>
 
@@ -87,9 +89,12 @@ import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
-  el: '#searchButton',
+  el() {
+    return '#searchButton'
+  },
   methods: {
     search: function(){
+      document.querySelector('.modal').style.display = 'block'
       this.searchKeyWords = document.getElementById("search").value.trim()
       this.pageConfig.skip = 0
       this.pageConfig.page_item_num = 8      
@@ -99,9 +104,9 @@ export default {
       let url = ''
       if(this.searchKeyWords.length>0){
         let search = this.searchKeyWords
-        url = SERVER_API.uploads + '?search='+search+'&limit=80&sort=-updatedAt'
+        url = SERVER_API.uploads + '?search='+search+'&limit='+this.requestCounts+'&sort=-updatedAt'
       }else{
-        url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt'
       }
       this.getHttpData(url,function(data){
           for(let i=0;i<data.length;i++){
@@ -113,9 +118,10 @@ export default {
             }
           }
           that.uploads = data
-          if(data.length < 80){
-            that.pageConfig.skip = 80
+          if(data.length < that.requestCounts){
+            that.pageConfig.skip = that.requestCounts
           }
+          document.querySelector('.modal').style.display = 'none'
       })
     },
 
@@ -127,10 +133,8 @@ export default {
         let access_token = Cookies.get('access_token')
         //获取数据列表
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-          if (response.data.length > 0) {
             let data = response.data
             callback(data)
-          }
         }, function(response) {
           console.log(response)
         })
@@ -226,7 +230,7 @@ export default {
       if(this.pageConfig.current_page === allPages){
         this.searchKeyWords = document.getElementById("search").value.trim()
         let url = ''
-        let skip = Math.ceil(this.pageConfig.first_page/10)*80
+        let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts
         if(this.pageConfig.skip === skip){
           return
         }else{
@@ -234,9 +238,9 @@ export default {
         }
         if(this.searchKeyWords.length>0){
           let search = this.searchKeyWords
-          url = SERVER_API.uploads + '?search='+search+'&limit=80&skip='+skip+'&sort=-updatedAt'   
+          url = SERVER_API.uploads+'?search='+search+'&limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'   
         }else{
-          url = SERVER_API.uploads + '?limit=80&skip='+skip+'&sort=-updatedAt'
+          url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
         }
         this.getHttpData(url,function(data){
             for(let i=0;i<data.length;i++){
@@ -268,7 +272,7 @@ export default {
       return 
     }
     let access_token = Cookies.get('access_token')
-    let url = SERVER_API.uploads + '?limit=80&sort=-updatedAt'
+    let url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt'
     let that = this
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
@@ -469,6 +473,7 @@ export default {
   data() {
     return {
       uploads: [] ,
+      requestCounts: 80,           //每次向数据库请求得到的数据个数
       pageConfig: {
         page_item_num: 8,         //每页显示的条数
         current_page: 1,
@@ -506,6 +511,33 @@ export default {
   width: 60px;
   height: 40px;
   margin-left: 10px;
+}
+
+.atlas-search {
+  width: 500px;
+  height: 40px;
+  background-color: #FFF;
+  border: 1px solid #b8b8b8;
+  border-bottom: 1px solid #ccc;
+  display: inline-flex;
+}
+
+.atlas-search:hover {
+  border: 1px solid #4285F4;
+}
+
+.atlas-search input {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 9px 0px;
+  font: 16px arial,sans-serif;
+  border: none;
+  outline: none;
+}
+
+.atlas-search .material-icons {
+  padding: 8px 0px 8px 8px;
 }
 
 .hotactive {
