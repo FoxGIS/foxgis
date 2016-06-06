@@ -92,6 +92,7 @@ export default {
   el: '#searchButton',
   methods: {
     search: function(){
+      document.querySelector('.modal').style.display = 'block'
       this.searchKeyWords = document.getElementById("search").value.trim()
       this.pageConfig.skip = 0
       this.pageConfig.page_item_num = 8      
@@ -118,6 +119,7 @@ export default {
           if(data.length < that.requestCounts){
             that.pageConfig.skip = that.requestCounts
           }
+          document.querySelector('.modal').style.display = 'none'
       })
     },
 
