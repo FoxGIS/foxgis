@@ -54,6 +54,13 @@
 
     <div class="name">
       <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <div id="map-property">
+        <p>
+        比例尺：<span style="color:black;">1:  </span> <input type="text" class="map-scale" v-model="" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+        图幅大小：<span class="map-area">25cm*25cm</span>
+        </p>
+      </div>
+      
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
@@ -68,7 +75,7 @@
     <input type="checkbox" class = "card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
       <p>
-        制图区域：<input class="location" type="text" style="width:80px;" @click="bindInput()" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+        制图区域：<input class="location" type="text" style="width:80px;" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
         制图年份：<input class="year" type="text" @click="bindInput()" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
@@ -128,6 +135,11 @@ export default {
       $(".year").autocomplete({
         source:[this.year_tags]
       }) */
+    },
+
+    editScale:function() {
+      // body...
+
     },
 
     editLocation: function(e, index) {
@@ -1004,9 +1016,25 @@ span {
   margin: 0;
   border: none;
   padding: 5px 5px 5px 0;
-  width: 70%;
+  width: 360px;
 }
 
+#map-property{
+  position: absolute;
+  left: 492px;
+}
+#map-property p{
+  margin: 0;
+  font-size: 12px;
+  color: #A2A2A2;
+}
+#map-property input{
+  width: 58px;
+  font-size: 12px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
 .tags {
   margin-left: 24px;
   margin-right: 24px;

@@ -18,7 +18,7 @@
             </tr>
             <tr id="tr-email">
               <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td><input @change="emailChange" value="{{userInfo.email}}"></td>
+              <td style="color:#989898;">{{userInfo.email}}</td>
             </tr>
             <tr id="tr-phone">
               <td class="mdl-data-table__cell--non-numeric"><b>电话：</b></td>
@@ -47,7 +47,7 @@
 import Cookies from 'js-cookie'
 export default {
   methods:{
-    emailChange:function(e){
+    emailChange:function(e){//暂时禁止修改邮箱，此函数暂时取消
       var newEmail = e.target.value;
       if (newEmail != "") {
          let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
