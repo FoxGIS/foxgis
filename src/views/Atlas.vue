@@ -129,10 +129,8 @@ export default {
         let access_token = Cookies.get('access_token')
         //获取数据列表
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-          if (response.data.length > 0) {
             let data = response.data
             callback(data)
-          }
         }, function(response) {
           console.log(response)
         })
