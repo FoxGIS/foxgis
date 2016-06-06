@@ -5,5 +5,6 @@ window.SERVER_API = {
   tilesets: baseURL + '/tilesets',
   fonts: baseURL + '/fonts',
   sprites: baseURL + '/sprites',
-  uploads: baseURL + '/uploads'
+  uploads: baseURL + '/uploads',
+  stats:baseURL + '/stats'
 }

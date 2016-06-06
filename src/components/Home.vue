@@ -12,7 +12,8 @@
 		</div>-->
 
 	 <!-- <foxgis-footer></foxgis-footer>-->
-	 <div class="automatic-slider unslider-horizontal" style="position: absolute; overflow: hidden;width:100%;bottom:24px;top:0px;">
+	 <div class="automatic-slider unslider-horizontal" style="position: absolute; overflow: hidden;width: 70%;
+    left: 15%;height: calc(100% - 24px);">
 			<ul class="unslider-wrap unslider-carousel" style="width: 400%; left: -200%;">
 					<li class="" v-for="image in images" >
 						 <img v-bind:src=image.path  title="{{image.title}}" width="" height="">
@@ -22,8 +23,8 @@
 	<div id = "scrollDiv">
 		<div class="scrollText" >
 			<ul style="margin-top: 0px; ">
-			 <li v-for="message in messages"><b>{{message.name}}已上传{{message.map_count}}幅地图</b></li>
-		 </ul>
+			 <li v-for="message in messages"><b>{{message.name}}已上传{{message.total}}幅地图</b></li>
+		    </ul>
 	</div></div>
 	</foxgis-layout>
 
@@ -40,27 +41,39 @@ export default {
 	},
 	
   attached() {
-		//自动登录
-    //判断是否登陆
-    let username = Cookies.get('username')
-		console.log(username)
-    if(username === undefined){
-      window.location.href = "#!/login"
-    }else{
-      this.username = username
-    }
-  },
-	
-	ready(){
-		console.log('ready')
-		$("#scrollDiv").textSlider({line:1,speed:500,timer:3000});//设置文字滚动
+    let access_token = Cookies.get('access_token')
+    let url = SERVER_API.stats + '/uploads'
+    var that = this
+      //获取数据列表
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        var messages = [];
+        for(let i=0;i<data.length;i++){
+        	if(data[i].organization){
+        		messages.push({"name":data[i].organization,"total":data[i].total});
+        	}else if(data[i].location){
+        		messages.push({"name":data[i].location,"total":data[i].total});
+        	}else if(data[i].name){
+        		messages.push({"name":data[i].name,"total":data[i].total});
+        	}else if(data[i].owner){
+        		messages.push({"name":data[i].owner,"total":data[i].total});
+        	}
+        }
+        this.messages = messages;
+
+        setTimeout("$('#scrollDiv').textSlider({line:2,speed:500,timer:3000})",1000);//设置文字滚动
 		$('.automatic-slider').unslider({
 			autoplay: true,
-			delay:3000,
+			delay:5000,
 			infinite: true
 		});//设置图片滚动
-	},
-
+      }
+    }, function(response) {
+      console.log(response)
+    })
+  },
+	
 	data() {
 		return {
 			images: [{
@@ -85,31 +98,7 @@ export default {
 				path:'/static/Home_image/中国世界遗产.jpg',
 				title:'中国世界遗产'
 			}],
-			messages:[{
-				id:1,
-				name:'四川省测绘地理信息局',
-				map_count:'42'
-			},
-			{
-				id:2,
-				name:'陕西省测绘地理信息局',
-				map_count:'37'
-			},
-			{
-				id:3,
-				name:'黑龙江省测绘地理信息局',
-				map_count:'34'
-			},
-			{
-				id:4,
-				name:'海南省测绘地理信息局',
-				map_count:'25'
-			},
-			{
-				id:5,
-				name:'云南省测绘地理信息局',
-				map_count:'21'
-			}]
+			messages:[]
 		}
 	}
 }
@@ -173,7 +162,7 @@ li img{
 
 .scrollText li{
 	list-style:none;
-	font-size:25px;
+	font-size:18px;
 	line-height:33px;
 	letter-spacing:3px;
 }
