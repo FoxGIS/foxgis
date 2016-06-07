@@ -40,7 +40,7 @@ export default {
 
 	},
 	
-  attached() {
+  ready() {
     let access_token = Cookies.get('access_token')
     let url = SERVER_API.stats + '/uploads'
     var that = this

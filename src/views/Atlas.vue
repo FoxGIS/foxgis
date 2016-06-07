@@ -42,6 +42,7 @@
               <a>
                 <div class="header-info">
                   <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+                  <span class="mdl-badge delete-badge" v-if="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].is_deleted === true" data-badge="已删除"></span>
                 </div>
               </a>
               <div class="meta-info">
@@ -618,11 +619,23 @@ export default {
   margin: 0px;
   padding: 0px;
   height: 210px;
+  overflow: hidden;
 }
 
 .header-info img{
   width: 300px;
   height: 210px;
+}
+.delete-badge[data-badge]:after{
+  width: 100px;
+  height: 22px;
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+span.delete-badge{
+  position: relative;
+  bottom: 187px;
+  left: 303px;
 }
 
 .meta-info {
