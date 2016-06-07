@@ -54,7 +54,7 @@
                 <div class="preView">
                   <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
 
-                  <mdl-anchor-button @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+                  <mdl-anchor-button @click="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
                 </div>
               </div>
             </foxgis-card>
@@ -142,7 +142,7 @@ export default {
     },
 
     showPreview: function(e, index) {
-      let username = Cookies.get('username')
+      let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('#thumbnail').src = url
@@ -199,10 +199,10 @@ export default {
       return url
     },
 
-    downloadUpload: function(upload_id) {
-      let username = Cookies.get('username')
+    downloadUpload: function(e,index) {
+      let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
-      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
+      let url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token
       var aLink = document.createElement('a')
       aLink.className = 'download_link'
       var text = document.createTextNode('&nbsp;')
