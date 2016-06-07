@@ -43,7 +43,7 @@
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>     
     </div>
     <div id="select-button">
-      <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button>
+      <!-- <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button> -->
       <mdl-anchor-button primary raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
       <mdl-anchor-button primary raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
     </div>
@@ -394,7 +394,6 @@ export default {
           }
         });
       }
-
     },
 
     showPreview: function(e, index) {
