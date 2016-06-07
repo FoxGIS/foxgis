@@ -153,7 +153,6 @@ export default {
 
 .footer{
   position: relative;
-  margin: 0 auto 30px auto;
   width: 600px;
   height: 150px;
   color: #3f51b5;
