@@ -141,7 +141,7 @@ export default {
     },
 
     showPreview: function(e, index) {
-      let username = Cookies.get('username')
+      let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
       document.querySelector('#thumbnail').src = url
