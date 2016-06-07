@@ -6,35 +6,35 @@
           <tbody>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
-              <td style="color:#989898;">{{userInfo.username}}</td>
+              <td><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
-              <td style="color:#989898;">{{userInfo.is_verified}}</td>
+              <td><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
             </tr>
             <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>真实姓名：</b></td>
-              <td style="color:#989898;">{{userInfo.name}}</td>
+              <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
+              <td><input disabled id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
             </tr>
-            <tr id="tr-email">
+            <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td style="color:#989898;">{{userInfo.email}}</td>
+              <td><input disabled id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
             </tr>
-            <tr id="tr-phone">
+            <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>电话：</b></td>
-              <td><input @change="phoneChange" value="{{userInfo.phone}}"></td>
+              <td><input id="phone-input" @change="infoChange" value="{{userInfo.phone}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
-              <td style="color:#989898;">{{userInfo.location}}</td>
+              <td><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-              <td style="color:#989898;">{{userInfo.organization}}</td>
+              <td><input disabled id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
-              <td style="color:#989898;">{{userInfo.createdAt}}</td>
+              <td><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
             </tr>
           </tbody>
         </table>
@@ -47,50 +47,121 @@
 import Cookies from 'js-cookie'
 export default {
   methods:{
-    emailChange:function(e){//暂时禁止修改邮箱，此函数暂时取消
-      var newEmail = e.target.value;
-      if (newEmail != "") {
-         let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
-         let isok= reg.test(newEmail);
-           if (!isok) {
-              alert("邮箱格式不正确，请重新输入！");
-              return;
-           }
-       }else{
-        alert("邮箱地址不能为空！");
-        return;
-       }      
-       let username = Cookies.get('username');
-       let access_token = Cookies.get('access_token');
-       let url = SERVER_API.users + '/' + username;
-       this.$http({url:url,method:'PATCH',data:{"email":newEmail},headers:{'x-access-token':access_token}}).then(function(response){
-          if(response.ok){
-            this.$broadcast('mailSent', { message: '邮箱修改成功！',timeout:3000 });
-          }
-        }, function(response) {
-          alert("网络错误");
-      });
-    },
-    phoneChange:function(e){
-      var newPhone = e.target.value;
-      if(newPhone!=""){
-        let reg = /^1[3,5,8]\d{9}$/;
-        let reg2 = /^0(([1,2]\d)|([3-9]\d{2}))\d{7,8}$/;
-        let isok = reg.test(newPhone)||reg2.test(newPhone);
-        if(!isok){
-          alert("电话格式不正确，请重新输入");
+    infoChange:function(e){
+      var info = e.target.value;
+      var data = {};
+      var message = "";
+      /*--------用户修改的是用户名-----------*/
+      if(e.target.id === "username-input"){
+        if(info === ''){
+          alert('用户名不能为空');
+          e.target.value = userInfo.username;
+          return;
+        }else if(info.length>20){
+          alert('用户名过长');
+          e.target.value = userInfo.username;
+          return; 
+        }
+        data.username = info;
+        message = "用户名";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是用户验证信息-----------*/
+      if(e.target.id === "verify-input"){
+        if(info === '已验证'){
+          data.is_verified = true;
+        }else if(info === '未验证'){
+          data.is_verified = false; 
+        }else{
+          alert("输入错误！请输入“已验证”或“未验证”");
+          e.target.value = userInfo.is_verified;
           return;
         }
-       }else{
-        alert("电话不能为空！");
-        return;
-       }
-       let username = Cookies.get('username');
-       let access_token = Cookies.get('access_token');
-       let url = SERVER_API.users + '/' + username;
-       this.$http({url:url,method:'PATCH',data:{"phone":newPhone},headers:{'x-access-token':access_token}}).then(function(response){
+        message = "验证信息";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是姓名-----------*/
+      if(e.target.id === "name-input"){
+        if(info === ''){
+          alert('姓名不能为空');
+          e.target.value = userInfo.name;
+          return;
+        }else if(info.length>10){
+          alert('姓名过长');
+          e.target.value = userInfo.name;
+          return; 
+        }
+        data.name = info;
+        message = "姓名";
+      }
+      /*------------------------------------*/
+
+      /*--------用户修改的是电话-----------*/
+      if(e.target.id === "phone-input"){
+        if(info!=""){
+          let reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+          let isok = reg.test(info);
+          if(!isok){
+            alert("电话格式不正确，请重新输入");
+            e.target.value = userInfo.phone;
+            return;
+          }
+        }else{
+          alert("电话不能为空！");
+          e.target.value = userInfo.phone;
+          return;
+        }
+        data.phone = info;
+        message = "电话";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是邮箱-----------*/
+      if(e.target.id === "email-input"){
+        if (info != "") {
+         let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+         let isok= reg.test(info);
+           if (!isok) {
+              alert("邮箱格式不正确，请重新输入！");
+              e.target.value = userInfo.email;
+              return;
+           }
+        }else{
+          alert("邮箱地址不能为空！");
+          e.target.value = userInfo.email;
+          return;
+        }
+        data.email = info;
+        message = "邮箱";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是位置-----------*/
+      if(e.target.id === "location-input"){
+        if(info === ''){
+          alert('位置名不能为空');
+          e.target.value = userInfo.location;
+          return;
+        }
+        data.location = info;
+        message = "位置";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是单位-----------*/
+      if(e.target.id === "organization-input"){
+        if(info===""){          
+          alert("单位名称不能为空！");
+          e.target.value = userInfo.organization;
+          return;
+        }
+        data.organization = info;
+        message = "单位";
+      }
+      /*------------------------------------*/     
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.users + '/' + username;
+      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
           if(response.ok){
-            this.$broadcast('mailSent', { message: '电话修改成功！',timeout:3000 });
+            this.$broadcast('mailSent', { message: message+'修改成功！',timeout:3000 });
           }
         }, function(response) {
           alert("网络错误");
@@ -162,7 +233,9 @@ export default {
   text-align:right;
   background-color:transparent;
 }
-
+input[disabled]{
+  color: #989898;
+}
 input:hover{
   background-color:transparent;
 }
