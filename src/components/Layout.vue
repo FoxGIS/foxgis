@@ -8,7 +8,7 @@
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
-          <a class="mdl-navigation__link" v-link="{ path: '/atlas' }">图集</a>
+          <a class="mdl-navigation__link" v-link="{ path: '/atlas' }" v-bind:class="username==undefined?'disabled':''">图集</a>
           <a class="mdl-navigation__link" v-link="{ path: '/studio' }" v-bind:class="username==undefined?'disabled':''">制图</a>
           <a class="mdl-navigation__link" href="/static/用户手册.docx" v-bind:class="username==undefined?'disabled':''">帮助</a>
           <!-- <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a> -->
