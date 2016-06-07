@@ -268,23 +268,11 @@ export default {
       if(timeValue){data.year = timeValue}
       if(scopeValue==="私有"){data.scope = "private"}else if(scopeValue==="公开"){data.scope = "public"}
 
-      //以下计算本页displayUploads的索引范围
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       var flag = 0;//标记是否有重复主题
-      //循环本页所有选中的选项
-      for(let i=minIndex;i<maxIndex;i++){
+      //循环页面所有选中的选项
+      for(let i=0;i<this.displayUploads.length;i++){
           if(this.displayUploads[i].checked === true){
             if(tags){
               var newTags = this.displayUploads[i].tags.concat(tags);
@@ -468,34 +456,14 @@ export default {
     },
 
     selectAll:function(){//全选
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
+      for(let i = 0;i<this.displayUploads.length;i++){
         this.displayUploads[i].checked=true;
         //document.getElementById(this.displayUploads[i].upload_id).checked=true;
       }
     },
 
     inverseSelect:function(){
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
-      for(let i = minIndex;i<maxIndex;i++){
+      for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked==true){
           this.displayUploads[i].checked=false;
         }else{

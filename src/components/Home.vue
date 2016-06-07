@@ -62,12 +62,12 @@ export default {
         }
         this.messages = messages;
 
-        setTimeout("$('#scrollDiv').textSlider({line:2,speed:500,timer:3000})",1000);//设置文字滚动
-		$('.automatic-slider').unslider({
+        $('.automatic-slider').unslider({
 			autoplay: true,
 			delay:5000,
 			infinite: true
 		});//设置图片滚动
+        setTimeout("$('#scrollDiv').textSlider({line:2,speed:500,timer:3000})",1000);//设置文字滚动		
       }
     }, function(response) {
       console.log(response)
