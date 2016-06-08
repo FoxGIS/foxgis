@@ -172,6 +172,7 @@ export default {
             var input = $(".location");
             for(let i=0;i<input.length;i++){
               input[i].value = this.displayUploads[i].location;
+              input[i].blur();
             }
             let data = response.data;
             let location = data.location
@@ -200,6 +201,7 @@ export default {
             var input = $(".year");
             for(let i=0;i<input.length;i++){
               input[i].value = this.displayUploads[i].year;
+              input[i].blur();
             }
             let data = response.data;
           },function(response){
