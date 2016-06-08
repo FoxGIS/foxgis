@@ -32,8 +32,8 @@ export default {
   },
   data(){
     return {
-    scope: '私有',
-    scopeOptions: ['私有', '公开']
+    scope: '不修改',
+    scopeOptions: ['不修改','私有', '公开']
     }
   },
 
