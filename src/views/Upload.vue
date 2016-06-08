@@ -23,14 +23,14 @@
     <div class="condition">
       <span>制图区域：</span>
       <a v-for="location in location_tags" v-if="$index<8"
-          @click="conditionClick($event,2)">{{ location.data }}
+          @click="conditionClick($event,2)" class = "{{this.selected_location_tags.indexOf(location.data)===-1?'none':'filter condition active'}}">{{ location.data }}
           <span>({{ location.num }})</span>
       </a>
     </div>
     <div class="condition">
       <span>制图年份：</span>
       <a v-for="year in year_tags | orderBy" v-if="$index<8"
-          @click="conditionClick($event,3)">{{ year.data }}
+          @click="conditionClick($event,3)" class = "{{this.selected_year_tags.indexOf(year.data)===-1?'none':'filter condition active'}}">{{ year.data }}
           <span>({{ year.num }})</span>
       </a>
     </div>
