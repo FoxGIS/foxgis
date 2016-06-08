@@ -79,6 +79,9 @@
            <img id='thumbnail'>
         </div>
       </div>
+
+      <div class="modal2"></div>
+
     </div>
   </foxgis-layout>
 </div>
@@ -95,7 +98,7 @@ export default {
   },
   methods: {
     search: function(){
-      document.querySelector('.modal').style.display = 'block'
+      document.querySelector('.modal2').style.display = 'block'
       this.searchKeyWords = document.getElementById("search").value.trim()
       this.pageConfig.skip = 0
       this.pageConfig.page_item_num = 8      
@@ -122,7 +125,7 @@ export default {
           if(data.length < that.requestCounts){
             that.pageConfig.skip = that.requestCounts
           }
-          document.querySelector('.modal').style.display = 'none'
+          document.querySelector('.modal2').style.display = 'none'
       })
     },
 
@@ -675,7 +678,7 @@ span.delete-badge{
   align-items: center;
 }
 
-.modal {
+.modal,.modal2 {
   position: fixed;
   left: 0px;
   right: 0px;
