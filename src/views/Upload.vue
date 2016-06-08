@@ -285,7 +285,7 @@ export default {
             }
             //if(data.location){this.displayUploads[i].location = data.location;}
             //if(data.year){this.displayUploads[i].year = data.year;}
-            this.displayUploads[i].scope = data.scope;
+            if(data.scope){this.displayUploads[i].scope = data.scope;}
             //向服务器发送Patch请求，更新data对象
             let upload_id = this.displayUploads[i].upload_id;
             let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
@@ -309,7 +309,7 @@ export default {
         this.$el.querySelector('#batch-process-dialog #tags-input').value="";
         this.$el.querySelector('#batch-process-dialog #location-input').value="";
         this.$el.querySelector('#batch-process-dialog #year-input').value="";
-        this.$el.querySelector('#batch-process-dialog #scope-select').value="私有";
+        this.$el.querySelector('#batch-process-dialog #scope-select').value="不修改";
     },
 
     calculation:function(size){
