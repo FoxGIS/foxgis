@@ -55,11 +55,11 @@ export default {
       if(e.target.id === "username-input"){
         if(info === ''){
           alert('用户名不能为空');
-          e.target.value = userInfo.username;
+          e.target.value = this.userInfo.username;
           return;
         }else if(info.length>20){
           alert('用户名过长');
-          e.target.value = userInfo.username;
+          e.target.value = this.userInfo.username;
           return; 
         }
         data.username = info;
@@ -74,7 +74,7 @@ export default {
           data.is_verified = false; 
         }else{
           alert("输入错误！请输入“已验证”或“未验证”");
-          e.target.value = userInfo.is_verified;
+          e.target.value = this.userInfo.is_verified;
           return;
         }
         message = "验证信息";
@@ -84,11 +84,11 @@ export default {
       if(e.target.id === "name-input"){
         if(info === ''){
           alert('姓名不能为空');
-          e.target.value = userInfo.name;
+          e.target.value = this.userInfo.name;
           return;
         }else if(info.length>10){
           alert('姓名过长');
-          e.target.value = userInfo.name;
+          e.target.value = this.userInfo.name;
           return; 
         }
         data.name = info;
@@ -103,12 +103,12 @@ export default {
           let isok = reg.test(info);
           if(!isok){
             alert("电话格式不正确，请重新输入");
-            e.target.value = userInfo.phone;
+            e.target.value = this.userInfo.phone;
             return;
           }
         }else{
           alert("电话不能为空！");
-          e.target.value = userInfo.phone;
+          e.target.value = this.userInfo.phone;
           return;
         }
         data.phone = info;
@@ -122,12 +122,12 @@ export default {
          let isok= reg.test(info);
            if (!isok) {
               alert("邮箱格式不正确，请重新输入！");
-              e.target.value = userInfo.email;
+              e.target.value = this.userInfo.email;
               return;
            }
         }else{
           alert("邮箱地址不能为空！");
-          e.target.value = userInfo.email;
+          e.target.value = this.userInfo.email;
           return;
         }
         data.email = info;
@@ -138,7 +138,7 @@ export default {
       if(e.target.id === "location-input"){
         if(info === ''){
           alert('位置名不能为空');
-          e.target.value = userInfo.location;
+          e.target.value = this.userInfo.location;
           return;
         }
         data.location = info;
@@ -149,7 +149,7 @@ export default {
       if(e.target.id === "organization-input"){
         if(info===""){          
           alert("单位名称不能为空！");
-          e.target.value = userInfo.organization;
+          e.target.value = this.userInfo.organization;
           return;
         }
         data.organization = info;
