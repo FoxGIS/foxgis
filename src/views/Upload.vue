@@ -203,7 +203,7 @@ export default {
             }
             let data = response.data;
           },function(response){
-            alert("编辑错误")
+            alert("编辑错误");
           }
         )
     },
