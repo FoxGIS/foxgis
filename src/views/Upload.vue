@@ -169,7 +169,7 @@ export default {
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         tempUploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data
+            let data = response.data;
             let location = data.location
             let date = new Date()
             let days = 30
@@ -184,8 +184,8 @@ export default {
         let tempUploads = this.displayUploads
         let year = e.target.value
         if(e.target.value.length == 0){
-          let today=new Date()
-          let year=today.getFullYear()
+          let today=new Date();
+          let year=today.getFullYear();
         }
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
