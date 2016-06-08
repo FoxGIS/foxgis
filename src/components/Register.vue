@@ -7,8 +7,10 @@
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
         <mdl-textfield floating-label="姓名" id="name"></mdl-textfield>
-        <mdl-textfield floating-label="邮箱" id="email" pattern="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></mdl-textfield>
-        <mdl-textfield floating-label="手机" id="phone" pattern="^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"></mdl-textfield>
+        <!-- <mdl-textfield floating-label="邮箱" id="email" pattern="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></mdl-textfield>
+        <mdl-textfield floating-label="手机" id="phone" pattern="^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$"></mdl-textfield> -->
+        <mdl-textfield floating-label="邮箱" id="email"></mdl-textfield>
+        <mdl-textfield floating-label="手机" id="phone"></mdl-textfield>
         <mdl-textfield floating-label="单位" id="organization"></mdl-textfield>
         <div class="location">
           <span>位置</span>
