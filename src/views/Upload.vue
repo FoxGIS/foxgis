@@ -793,7 +793,13 @@ export default {
           if(this.searchUploads.length>0){
             tempUploads = this.searchUploads
           }else{
-            return theme
+            //theme的元素发生变化后检测selected_theme_tags是否需要更改
+            for(let i=0;i<this.selected_theme_tags.length;i++){
+              if(theme.indexOf(this.selected_theme_tags[i])===-1){
+                this.selected_theme_tags.splice(i,1);
+              }
+            }
+            return theme;
           }
         }
         for(let i=0;i<tempUploads.length;i++){
@@ -805,6 +811,12 @@ export default {
           }
         }
         theme = _.uniq(theme)
+        //theme的元素发生变化后检测selected_theme_tags是否需要更改
+        for(let i=0;i<this.selected_theme_tags.length;i++){
+          if(theme.indexOf(this.selected_theme_tags[i])===-1){
+            this.selected_theme_tags.splice(i,1);
+          }
+        }
         return theme
     },
 
@@ -816,6 +828,11 @@ export default {
           if(this.searchUploads.length>0){
             tempUploads = this.searchUploads
           }else{
+            for(let i=0;i<this.selected_year_tags.length;i++){
+              if(year.indexOf(this.selected_year_tags[i])===-1){
+                this.selected_year_tags.splice(i,1);
+              }
+            }
             return year
           }
         }
@@ -834,6 +851,11 @@ export default {
           }
           data.push({'data':temp,'num':num})
         }
+        for(let i=0;i<this.selected_year_tags.length;i++){
+          if(year.indexOf(this.selected_year_tags[i])===-1){
+            this.selected_year_tags.splice(i,1);
+          }
+        }
         return data
     },
 
@@ -845,6 +867,11 @@ export default {
           if(this.searchUploads.length>0){
             tempUploads = this.searchUploads
           }else{
+            for(let i=0;i<this.selected_location_tags.length;i++){
+              if(location.indexOf(this.selected_location_tags[i])===-1){
+                this.selected_location_tags.splice(i,1);
+              }
+            }
             return location
           }
         }
@@ -864,6 +891,11 @@ export default {
             }
           }
           data.push({'data':temp,'num':num})
+        }
+        for(let i=0;i<this.selected_location_tags.length;i++){
+          if(location.indexOf(this.selected_location_tags[i])===-1){
+            this.selected_location_tags.splice(i,1);
+          }
         }
         return data
     },
