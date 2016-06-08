@@ -169,6 +169,11 @@ export default {
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         tempUploads[index].location = location
         this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
+            var input = $(".location");
+            for(let i=0;i<input.length;i++){
+              input[i].value = this.displayUploads[i].location;
+              input[i].blur();
+            }
             let data = response.data;
             let location = data.location
             let date = new Date()
@@ -193,12 +198,14 @@ export default {
         let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
         tempUploads[index].year = year
         this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data
-            let year = data.year
-            let days = 30
-            Cookies.set('year',year,{ expires: days })
+            var input = $(".year");
+            for(let i=0;i<input.length;i++){
+              input[i].value = this.displayUploads[i].year;
+              input[i].blur();
+            }
+            let data = response.data;
           },function(response){
-            alert("编辑错误")
+            alert("编辑错误");
           }
         )
     },
@@ -223,20 +230,9 @@ export default {
     },
 
     batchProcess:function(){
-      //以下计算本页displayUploads的索引范围
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
       //以下判断用户是否有勾选
       var t = 0;
-      for(var i = minIndex;i<maxIndex;i++){
+      for(var i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           t++;
         }
@@ -261,12 +257,11 @@ export default {
       //新建data对象，存储更改以后的属性值
       var data = {};
       if(tagValue){
-        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
-              
+        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);             
       }
-      if(locationValue){data.location = locationValue}
-      if(timeValue){data.year = timeValue}
-      if(scopeValue==="私有"){data.scope = "private"}else if(scopeValue==="公开"){data.scope = "public"}
+      if(locationValue){data.location = locationValue;}
+      if(timeValue){data.year = timeValue;}
+      if(scopeValue==="私有"){data.scope = "private";}else if(scopeValue==="公开"){data.scope = "public";}
 
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
@@ -288,18 +283,21 @@ export default {
               }
               this.displayUploads[i].tags = data.tags;
             }
-            if(data.location){this.displayUploads[i].location = data.location;}
-            if(data.year){this.displayUploads[i].year = data.year;}
+            //if(data.location){this.displayUploads[i].location = data.location;}
+            //if(data.year){this.displayUploads[i].year = data.year;}
             this.displayUploads[i].scope = data.scope;
             //向服务器发送Patch请求，更新data对象
             let upload_id = this.displayUploads[i].upload_id;
             let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
             this.$http({url:url,method:'PATCH',data:data,headers: { 'x-access-token': access_token }}).then(function(response){
-              let data = response.data
-              let days = 30
-              Cookies.set('location',data.location,{ expires: days });
-              Cookies.set('year',data.year,{ expires: days });
-              Cookies.set('scope',data.scope,{ expires: days });
+              let data = response.data;
+              for(let t=0;t<this.displayUploads.length;t++){
+                if(this.displayUploads[t].upload_id === data.upload_id){
+                  this.displayUploads[t].location = data.location;
+                  this.displayUploads[t].year = data.year;
+                }
+              }
+              
           },function(response){
               alert("编辑错误")
             });
