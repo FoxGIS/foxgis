@@ -14,11 +14,11 @@
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
-              <td><input disabled id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
+              <td><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td><input disabled id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+              <td><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>电话：</b></td>
@@ -30,7 +30,7 @@
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-              <td><input disabled id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+              <td><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
