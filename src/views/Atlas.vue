@@ -48,7 +48,7 @@
               <div class="meta-info">
                 <div class="title">
                   <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
-                  <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p>
+                  <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p><br>
                   <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
                 </div>
                 <div class="preView">
@@ -650,7 +650,6 @@ span.delete-badge{
   font-size: 12px;
   font-family:Arial,Helvetica,sans-serif;
   margin-left: 8px;
-  line-height: 30px;
   width: 240px;
   height: 18px;
   overflow: hidden;
