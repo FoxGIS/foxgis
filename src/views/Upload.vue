@@ -513,19 +513,9 @@ export default {
       this.deleteUploadId.push(upload_id);
     },
     batchDeleteUpload:function(){
-      var totalPages = Math.ceil(this.total_items/this.pageConfig.page_item_num);//总页数
-      var minIndex = 0;var maxIndex=0;
-      if(this.pageConfig.current_page<totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.pageConfig.current_page*this.pageConfig.page_item_num;
-      }
-      if(this.pageConfig.current_page==totalPages){
-        minIndex = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-        maxIndex = this.total_items;
-      }
       var t = 0;
       var deleteIds = [];
-      for(var i = minIndex;i<maxIndex;i++){
+      for(var i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           deleteIds.push(this.displayUploads[i].upload_id);
           t++;
@@ -560,7 +550,7 @@ export default {
             alert('未知错误，请稍后再试')
           });
         }
-        this.deleteUploadId = [];
+        this.deleteUploadId = [];//重置deleteUploadId
       }
     },
 
