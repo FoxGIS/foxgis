@@ -362,7 +362,7 @@ export default {
 }
 
 .image-container {
-  max-width: 1000px;
+  max-width: 800px;
   margin: 200px auto 0 auto;
 }
 
@@ -370,7 +370,7 @@ export default {
   clear: both;
   display: block;
   margin: 0 auto;
-  max-width: 1000px;
+  max-width: 800px;
   max-height: 541px;
 }
 
