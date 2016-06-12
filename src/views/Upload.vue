@@ -670,34 +670,40 @@ export default {
       }
 
       if(this.selected_theme_tags.length>0){
-        let conditions = this.selected_theme_tags.join()
-        for(let u=0,length=tempUploads.length;u<length;u++){
-          let upload = tempUploads[u]
-          if(upload.tags.length>0){
-            for(let i=0;i<upload.tags.length;i++){
-              if(conditions.indexOf(upload.tags[i])!=-1&&temp1.indexOf(upload) === -1){
-                temp1.push(upload)
-                break
+        for(let k=0;k<this.selected_theme_tags.length;k++){
+          let conditions = this.selected_theme_tags[k]
+          for(let u=0,length=tempUploads.length;u<length;u++){
+            let upload = tempUploads[u]
+            if(upload.tags.length>0){
+              for(let i=0;i<upload.tags.length;i++){
+                if(conditions === upload.tags[i]&&temp1.indexOf(upload) === -1){
+                  temp1.push(upload)
+                  break
+                }
               }
-            }
+            }  
           }
-        }
+        }   
       }
       if(this.selected_year_tags.length>0){
-        let conditions = this.selected_year_tags.join()
-        for(let u=0,length=tempUploads.length;u<length;u++){
-          let upload = tempUploads[u]
-          if(conditions.indexOf(upload.year)!=-1&&temp2.indexOf(upload) === -1){
-            temp2.push(upload)
+        for(let k=0;k<this.selected_year_tags.length;k++){
+          let conditions = this.selected_year_tags[k]
+          for(let u=0,length=tempUploads.length;u<length;u++){
+            let upload = tempUploads[u]
+            if(conditions === upload.year&&temp2.indexOf(upload) === -1){
+              temp2.push(upload)
+            }
           }
-        }
+        } 
       }
       if(this.selected_location_tags.length>0){
-        let conditions = this.selected_location_tags.join()
-        for(let u=0,length=tempUploads.length;u<length;u++){
-          let upload = tempUploads[u]
-          if(conditions.indexOf(upload.location)!=-1&&temp3.indexOf(upload) === -1){
-            temp3.push(upload)
+        for(let k=0;k<this.selected_location_tags.length;k++){
+          let conditions = this.selected_location_tags[k]
+          for(let u=0,length=tempUploads.length;u<length;u++){
+            let upload = tempUploads[u]
+            if(conditions === upload.location&&temp3.indexOf(upload) === -1){
+              temp3.push(upload)
+            }
           }
         }
       }
