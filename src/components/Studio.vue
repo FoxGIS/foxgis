@@ -8,7 +8,7 @@
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据</a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i>符号库</a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i>符号库<span  v-mdl-badge.number="sprite_nums" ></span></a>
         <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图<span  v-mdl-badge.number="upload_nums" ></span></a>
       </nav>
       <div class="mdl-layout-spacer"></div>
@@ -64,12 +64,16 @@ export default {
     return {
       username: '用户',
       upload_nums:0,
+      sprite_nums:0,
       access:false
     }
   },
   events: {
     "upload_nums":function(msg) {
       this.upload_nums = parseInt(msg)
+    },
+    "sprite_nums":function(msg) {
+      this.sprite_nums = parseInt(msg)
     }
   }
 }
@@ -105,6 +109,13 @@ export default {
 
 .v-link-active {
   background-color: #e0e0e0;
+}
+
+.mdl-badge {
+    position: absolute;
+    white-space: nowrap;
+    margin-right: 24px;
+    right: 76px;
 }
 
 .mdl-badge:after {

@@ -4,7 +4,7 @@
   <h5><i class="material-icons">place</i><span>符号</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传符号</mdl-button>
     <input type="file" multiple style="display:none" id="icon-input" accept=".zip">
   </div>
@@ -13,7 +13,7 @@
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <foxgis-data-cards-icon :dataset="dataset"></foxgis-data-cards-icon>
+  <foxgis-data-cards-icon :dataset="displayDataset"></foxgis-data-cards-icon>
 </div>
 </template>
 
@@ -21,6 +21,7 @@
 <script>
 import util from '../components/util.js'
 import Cookies from 'js-cookie'
+import _ from 'lodash'
 export default {
   methods:{
     uploadClick: function() {
@@ -70,6 +71,35 @@ export default {
       }
     }
   },
+  computed:{
+    displayDataset:function(){
+      var temp = [];
+      if(this.searchKeyWords.trim().length===0){
+        temp = this.dataset;
+      }else{        
+        let keyWords = this.searchKeyWords.trim().split(' ');
+        keyWords = _.uniq(keyWords);
+        for(let u=0;u<this.dataset.length;u++){
+          let sprite = this.dataset[u];
+          let num = 0;
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w];
+            if(keyWord.indexOf(' ')==-1){
+              if(sprite.name&&sprite.name.indexOf(keyWord)!=-1){
+                  num++;
+              }
+            }else{
+              num++;
+            }
+          }
+          if(num == keyWords.length){
+            temp.push(sprite)
+          }
+        }
+      }
+      return temp;
+    }
+  },
   attached(){
     let username = Cookies.get('username');
     if(username === undefined){
@@ -100,6 +130,7 @@ export default {
   data() {
     return {
       dataset: [],
+      searchKeyWords: ''
     }
   }
 }
@@ -133,7 +164,9 @@ h5 {
 span {
   vertical-align: middle;
 }
-
+#upload-progress{
+  width:calc(100% - 130px);;
+}
 .search {
   margin-top: 40px;
   display: flex;
