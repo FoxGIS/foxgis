@@ -118,6 +118,11 @@ export default {
   top: 34px;
   left: 40px;
 }
+
+.mdl-navigation .v-link-active{
+  background-color: rgb(15, 199, 251);
+}
+
 .mdl-layout__header-row .mdl-navigation__link {
   font-size: 1em;
   line-height: 30px;
