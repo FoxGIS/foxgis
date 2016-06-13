@@ -73,14 +73,15 @@ export default {
   },
   computed:{
     displayDataset:function(){
-      var temp = [];
+      var temp = this.dataset;
+      var t=[];
       if(this.searchKeyWords.trim().length===0){
-        temp = this.dataset;
+        return temp;
       }else{        
         let keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
-        for(let u=0;u<this.dataset.length;u++){
-          let sprite = this.dataset[u];
+        for(let u=0;u<temp.length;u++){
+          let sprite = temp[u];
           let num = 0;
           for(let w=0;w<keyWords.length;w++){
             let keyWord = keyWords[w];
@@ -93,11 +94,11 @@ export default {
             }
           }
           if(num == keyWords.length){
-            temp.push(sprite)
+            t.push(sprite)
           }
         }
+        return t;
       }
-      return temp;
     }
   },
   attached(){
