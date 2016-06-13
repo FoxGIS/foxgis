@@ -1,9 +1,10 @@
 <template>
 <div class="data">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">text_format</i><span>字体</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect @click="fontClick" id="font-button">上传字体</mdl-button>
     <input type="file" multiple style="display:none" id="file" accept=".ttf,.otf">
   </div>
@@ -12,12 +13,36 @@
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <foxgis-data-cards-font :dataset="fonts"></foxgis-data-cards-font>
+  <!-- <foxgis-data-cards-font :dataset="displayFonts"></foxgis-data-cards-font> -->
+  <div class="result_data">
+    <div class="card" v-for="data in displayFonts.length" track-by="$index">
+      <div class="name">
+        <p>{{ displayFonts[$index].fontname }}</p>
+        <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
+      </div>
+      <div class="meta">
+        <p>
+          上传时间：<span>{{ changeTime(displayFonts[$index].createdAt) }}</span>
+
+          共享范围：<select id="scope" v-model="displayFonts[$index].scope" @change="editScope($event,$index)">
+            <option value="private">私有</option>
+            <option value="public">公开</option>
+          </select>
+        </p>
+        
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont(displayFonts[$index].fontname)">删除</mdl-anchor-button>
+      </div>
+    </div>
+  </div>
+  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+
 </div>
 </template>
 
 
 <script>
+import Vue from 'vue'
+import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
 export default {
@@ -44,7 +69,7 @@ export default {
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.fonts + '/' + username
       for(let i=0;i<e.target.files.length;i++){
-        var formData = new FormData()
+        let formData = new FormData()
         formData.append('fonts', e.target.files[i]);
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
@@ -72,6 +97,128 @@ export default {
       }
     },
 
+    showDetails: function (e) {
+      //移除之前的active
+      let activeCards = this.$el.querySelector('.active')
+      if(activeCards&&activeCards!==e.currentTarget){
+        activeCards.className = activeCards.className.replace(' active','')
+      }
+      //给当前的dom添加active
+      let claName = e.currentTarget.className
+      if(claName.indexOf('active')!=-1){
+        claName = claName.replace(' active','')
+      }else{
+        claName += ' active'
+      }
+      e.currentTarget.className = claName
+    },
+
+    deleteAction: function(status) {
+      let that = this
+      if (status === 'ok') {
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
+        for(let i=0;i<this.deleteFontName.length;i++){
+          let fontname = this.deleteFontName[i]
+          let url = SERVER_API.fonts + '/' + username + "/" + fontname
+          this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+          .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<that.displayFonts.length;i++){
+              if(that.displayFonts[i].fontname === fontname){
+                that.displayFonts.splice(i,1)
+              }
+            }
+          }
+          }, function(response) {
+            alert('未知错误，请稍后再试')
+          });
+        }
+        this.deleteFontName = []//重置deleteFontName
+      }
+    },
+
+    deleteFont: function(fontname) {
+      this.dialogcontent.title = "确定删除吗？"
+      document.getElementById('delete-dialog').style.display = 'block'
+      this.deleteFontName.push(fontname)
+    },
+
+    changeTime: function(time){
+      return time
+    },
+
+    editScope: function(e,index){
+        let tempUploads = this.displayFonts
+        let scope = document.getElementById('scope').selectedOptions[0].value
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
+        let fontname = tempUploads[index].fontname
+        let url = SERVER_API.fonts + '/' + username + "/" + fontname
+        tempUploads[index].scope = scope
+        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let scope = data.scope
+            let days = 30
+            Cookies.set('scope',scope,{ expires: days })
+          },function(response){
+            alert("编辑错误")
+          }
+        )
+    }
+
+  },
+
+  computed: {
+    total_items: function (){
+      let count = this.displayFonts.length
+      let allCount = this.fonts.length
+      this.$dispatch("font_nums", allCount)
+      return count
+    },
+
+    displayFonts: function(){
+      let tempFonts = this.fonts
+      if(this.searchFonts.length>0){
+        tempFonts = this.searchFonts
+      }
+
+      if( this.searchKeyWords.trim().length===0){
+        return tempFonts.slice(0)
+      }
+      if(this.searchFonts.length === 0 && this.searchKeyWords.trim().length!==0){
+      //用户进行了搜索，但结果为空
+        return this.searchFonts;
+      }
+
+      return tempFonts
+    },
+
+    searchFonts: function(){
+      let temp = []
+      if(this.searchKeyWords != ''){
+        let keyWords = this.searchKeyWords.trim().split(' ')
+        keyWords = _.uniq(keyWords)
+        for(let u=0;u<this.fonts.length;u++){
+          let font = this.fonts[u]
+          let num = 0
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w]
+            if(keyWord.indexOf(' ')==-1){
+              if(font.fontname&&font.fontname.indexOf(keyWord)!=-1){
+                  num++
+              }
+            }else{
+              num++
+            }
+          }
+          if(num == keyWords.length){
+            temp.push(font)
+          }
+        }
+      }
+      return temp
+    }
   },
 
   attached() {
@@ -96,7 +243,13 @@ export default {
 
   data() {
     return {
-      fonts: []
+      fonts: [],
+      searchKeyWords: '',
+      dialogcontent: {
+        title: '',//对话框标题
+        tips:'',//对话框中的提示性文字
+      },
+      deleteFontName: []
     }
   }
 }
@@ -149,4 +302,120 @@ span {
 #font-progress{
   width:calc(100% - 100px);;
 }
+
+
+.result_data {
+  margin-top: 40px;
+}
+
+.card {
+/*  height: 120px;*/
+  border-radius: 2px 2px 0 0;
+  transform: translatez(0);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  outline: none;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.card+.card {
+  margin-top: 1px;
+}
+
+.card:focus, .card:hover {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 12px -12px;
+}
+
+.card .name {
+  margin: 24px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.name p {
+  font-size: 1em;
+  margin: 0;
+}
+
+.card .meta {
+  margin: 5px 24px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-details {
+  opacity: 0;
+  max-height: 0;
+  margin: 24px 24px 0;
+  transition: .2s;
+}
+
+.card-details p {
+  font-weight: bolder;
+}
+
+.card-details li {
+  list-style: none;
+  margin-left: 10px;
+  padding: 5px 0;
+}
+
+.active .card-details {
+  max-height: 4000px;
+  opacity: 1;
+}
+
+.active .meta {
+  display: none;
+}
+
+.active .name {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 12px 15px;
+}
+
+.active .name p {
+  font-size: 1.5rem;
+}
+
+.meta p {
+  color: #9E9E9E;
+  font-size: .5em;
+  margin: 0;
+}
+
+.meta .mdl-button {
+  text-align: right;
+  min-width: 0;
+}
+
+.meta span{
+    border: 0;
+    width: 200px;
+    color: #9E9E9E;
+    font-size: 12px;
+    margin: 0;
+    display: inline-block;
+}
+
+.modal {
+  position: fixed;
+  left: 240px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9999;
+  overflow: auto;
+}
+
 </style>

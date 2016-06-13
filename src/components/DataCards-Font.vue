@@ -49,13 +49,13 @@ export default {
         var username = Cookies.get('username')
         var access_token = Cookies.get('access_token')
         for(let i=0;i<this.deleteFontName.length;i++){
-          let name = this.deleteFontName[i]
-          let url = SERVER_API.fonts + '/' + username + "/" + name
+          let fontname = this.deleteFontName[i]
+          let url = SERVER_API.fonts + '/' + username + "/" + fontname
           this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
           if(response.ok){
             for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].fontname === name){
+              if(this.dataset[i].fontname === fontname){
                 console.log('delete dataset')
                 this.dataset.splice(i,1)
               }
@@ -84,7 +84,8 @@ export default {
         let scope = document.getElementById('scope').selectedOptions[0].value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let url = SERVER_API.fonts + '/' + username
+        let fontname = tempUploads[index].fontname
+        let url = SERVER_API.fonts + '/' + username + "/" + fontname
         tempUploads[index].scope = scope
         this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
