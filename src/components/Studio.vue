@@ -72,17 +72,18 @@ export default {
   },
   events: {
     "upload_nums":function(msg) {
-      this.upload_nums = parseInt(msg)
+      this.upload_nums = parseInt(msg);
     },
 
     "sprite_nums":function(msg) {
-      this.sprite_nums = parseInt(msg)
+      this.sprite_nums = parseInt(msg);
     },
     "tileset_nums":function(msg) {
-      this.tileset_nums = parseInt(msg)
+      this.tileset_nums = parseInt(msg);
+    },
     
     "font_nums":function(msg){
-      this.font_nums = parseInt(msg)
+      this.font_nums = parseInt(msg);
     }
   }
 }
