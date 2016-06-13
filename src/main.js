@@ -110,7 +110,7 @@ router.map({
       '/fonts': {
         component: Fonts
       },
-      '/icons': {
+      '/sprites': {
         component: Icons
       },
       '/uploads': {

@@ -1,42 +1,137 @@
 <template>
 <div class="data">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">place</i><span>符号</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect>上传符号</mdl-button>
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传符号</mdl-button>
+    <input type="file" multiple style="display:none" id="icon-input" accept=".zip">
+  </div>
+  <div class='progress-bar' style="display:none">
+    <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
+    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <foxgis-data-cards-icon :dataset="dataset"></foxgis-data-cards-icon>
+  <foxgis-data-cards-icon :dataset="displayDataset"></foxgis-data-cards-icon>
 </div>
 </template>
 
 
 <script>
+import util from '../components/util.js'
+import Cookies from 'js-cookie'
+import _ from 'lodash'
 export default {
+  methods:{
+    uploadClick: function() {
+      let fileInput = document.getElementById('icon-input')
+      fileInput.click();
+      fileInput.addEventListener('change', this.uploadFile)
+    },
+
+    uploadFile: function(e) {
+      if(document.getElementById('icon-input').value==="") return;
+      var fileCount=0;//记录上传的文件数目
+      this.$el.querySelector('#upload-button').disabled = "disabled"
+      this.$el.querySelector('.progress-bar').style.display = 'block'
+
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
+      let url = SERVER_API.sprites + '/' + username
+      for(let i=0;i<e.target.files.length;i++){
+        var formData = new FormData()
+        formData.append('upload', e.target.files[i]);
+        this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+         .then(function(response) {
+            fileCount++;
+            var file = response.data
+            file.createdAt = util.dateFormat(new Date(file.createdAt));
+            file.checked = false;//为新增加的文件添加checked属性
+            this.dataset.unshift(file)
+            if(fileCount===e.target.files.length){
+              this.$el.querySelector('.progress-bar').style.display = 'none';
+              this.$el.querySelector('#upload-button').disabled ="";
+              this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });
+          }
+
+         }, function(response) {
+           this.$el.querySelector('.progress-bar').style.display = 'none';
+           if (response.data.error) {
+             this.$el.querySelector('.progress-bar').style.display = 'none';
+             this.$el.querySelector('#upload-button').disabled ="";
+             var snackbarContainer = document.querySelector('#demo-toast-example');
+             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
+            } else {
+            this.$el.querySelector('.progress-bar').style.display = 'none';
+            this.$el.querySelector('#upload-button').disabled ="";
+            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
+          }
+        });
+      }
+    }
+  },
+  computed:{
+    displayDataset:function(){
+      var temp = this.dataset;
+      var t=[];
+      if(this.searchKeyWords.trim().length===0){
+        return temp;
+      }else{        
+        let keyWords = this.searchKeyWords.trim().split(' ');
+        keyWords = _.uniq(keyWords);
+        for(let u=0;u<temp.length;u++){
+          let sprite = temp[u];
+          let num = 0;
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w];
+            if(keyWord.indexOf(' ')==-1){
+              if(sprite.name&&sprite.name.indexOf(keyWord)!=-1){
+                  num++;
+              }
+            }else{
+              num++;
+            }
+          }
+          if(num == keyWords.length){
+            t.push(sprite)
+          }
+        }
+        return t;
+      }
+    }
+  },
+  attached(){
+    let username = Cookies.get('username');
+    if(username === undefined){
+      return
+    }
+    let access_token = Cookies.get('access_token')
+    let url = SERVER_API.sprites + '/' + username
+    var that = this
+      //获取数据列表
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        data = data.map(function(d) {
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
+          return d;
+        });
+        for(let i=0;i<data.length;i++){
+          data[i].checked = false;//增加checked属性，标记卡片是否被选中
+        }
+        this.dataset = data;
+
+      }
+    }, function(response) {
+      console.log("符号请求失败");
+    });
+  },
+
   data() {
     return {
-      dataset: [{
-        name: '基本形状',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
-      },{
-        name: '公共交通图标',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
-      },{
-        name: '地形符号',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
-      },{
-        name: '特殊标注',
-        layers: 5,
-        size: '200 MB',
-        upload_time: '2016-3-25'
-      }]
+      dataset: [],
+      searchKeyWords: ''
     }
   }
 }
@@ -70,7 +165,9 @@ h5 {
 span {
   vertical-align: middle;
 }
-
+#upload-progress{
+  width:calc(100% - 130px);;
+}
 .search {
   margin-top: 40px;
   display: flex;
