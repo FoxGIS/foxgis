@@ -13,23 +13,22 @@
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <!-- <foxgis-data-cards-font :dataset="displayFonts"></foxgis-data-cards-font> -->
   <div class="result_data">
     <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
       <div class="name">
         <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
-        <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
+        <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
       </div>
       <div class="meta">
         <p>
-          上传时间：<span>{{ changeTime(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt) }}</span>
+          上传时间：<span>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
 
           共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
             <option value="private">私有</option>
             <option value="public">公开</option>
           </select>
         </p>
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
       </div>
     </div>
   </div>
@@ -154,10 +153,6 @@ export default {
       this.dialogcontent.title = "确定删除吗？"
       document.getElementById('delete-dialog').style.display = 'block'
       this.deleteFontName.push(fontname)
-    },
-
-    changeTime: function(time){
-      return time
     },
 
     editScope: function(e,index){
@@ -473,6 +468,11 @@ span {
   display: none;
   z-index: 9999;
   overflow: auto;
+}
+
+.delete-button{
+  position: relative;
+  left: -18px;
 }
 
 #pagination {
