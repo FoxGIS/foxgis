@@ -193,8 +193,9 @@ export default {
      },
 
      total_items: function (){
+      let allCount = this.$parent.dataset.length;
       let count = this.dataset.length;
-      this.$dispatch("tileset_nums", count);
+      this.$dispatch("tileset_nums", allCount);
       return count;
      }
    },

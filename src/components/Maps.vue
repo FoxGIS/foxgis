@@ -94,9 +94,9 @@ export default {
 
       if(response.data.length>0){
         this.dataset = response.data.map(function(d){
-          d.modify_at = util.dateFormat(new Date(d.modify_at))
-          d.create_at = util.dateFormat(new Date(d.create_at))
-          return d
+          d.modify_at = util.dateFormat(new Date(d.modify_at));
+          d.create_at = util.dateFormat(new Date(d.create_at));
+          return d;
         })
 
       }

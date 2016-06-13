@@ -163,8 +163,9 @@ export default {
      },
 
      total_items: function (){
+      let allCount = this.$parent.dataset.length;
       let count = this.dataset.length;
-      this.$dispatch("sprite_nums", count);
+      this.$dispatch("sprite_nums", allCount);
       return count;
      },
    },

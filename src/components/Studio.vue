@@ -54,11 +54,39 @@ export default {
     }else{
       this.username = username
     }
+    let access_token = Cookies.get('access_token');
+    let tileset_url = SERVER_API.tilesets + '/' + username;
+    let fonts_url = SERVER_API.fonts + '/' + username;
+    let sprites_url = SERVER_API.sprites + '/' + username;
+    let uploads_url = SERVER_API.uploads + '/' + username;
     this.$http({url:'/static/whitelist.json',method:'GET'}).then(function(response){
       var accessUser = response.data.usernames;
       if(accessUser.indexOf(this.username)!==-1){this.access=true;}
-    })
-    console.log(this.$children[0].$children[0].uploads)
+    });
+    this.$http({ url: tileset_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      let data = response.data;
+      this.tileset_nums = data.length;
+    },function(response){
+
+    });
+    this.$http({ url: fonts_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      let data = response.data;
+      this.font_nums = data.length;
+    },function(response){
+
+    });
+    this.$http({ url: sprites_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      let data = response.data;
+      this.sprite_nums = data.length;
+    },function(response){
+
+    });
+    this.$http({ url: uploads_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      let data = response.data;
+      this.upload_nums = data.length;
+    },function(response){
+
+    });
   },
   data: function(){
     return {
