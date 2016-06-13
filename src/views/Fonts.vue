@@ -13,23 +13,22 @@
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <!-- <foxgis-data-cards-font :dataset="displayFonts"></foxgis-data-cards-font> -->
   <div class="result_data">
     <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
       <div class="name">
         <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
-        <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
+        <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
       </div>
       <div class="meta">
         <p>
-          上传时间：<span>{{ changeTime(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt) }}</span>
+          上传时间：<span>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
 
-          共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,$index)">
+          共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
             <option value="private">私有</option>
             <option value="public">公开</option>
           </select>
         </p>
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
       </div>
     </div>
   </div>
@@ -126,7 +125,6 @@ export default {
     },
 
     deleteAction: function(status) {
-      let that = this
       if (status === 'ok') {
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -135,13 +133,13 @@ export default {
           let url = SERVER_API.fonts + '/' + username + "/" + fontname
           this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<that.displayFonts.length;i++){
-              if(that.displayFonts[i].fontname === fontname){
-                that.displayFonts.splice(i,1)
+            if(response.ok){
+              for(let i = 0;i<this.fonts.length;i++){
+                if(this.fonts[i].fontname === fontname){
+                  this.fonts.splice(i,1)
+                }
               }
             }
-          }
           }, function(response) {
             alert('未知错误，请稍后再试')
           });
@@ -150,18 +148,15 @@ export default {
       }
     },
 
-    deleteFont: function(fontname) {
+    deleteFont: function(e,index) {
+      let fontname = this.displayFonts[index].fontname
       this.dialogcontent.title = "确定删除吗？"
       document.getElementById('delete-dialog').style.display = 'block'
       this.deleteFontName.push(fontname)
     },
 
-    changeTime: function(time){
-      return time
-    },
-
     editScope: function(e,index){
-        let scope = document.getElementById('scope').selectedOptions[0].value
+        let scope = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
         let fontname = this.displayFonts[index].fontname
@@ -278,6 +273,13 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         let data = response.data
+        data = data.map(function(d) {
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
+          return d
+        });
+        for(let i=0;i<data.length;i++){
+          data[i].checked = false//增加checked属性，标记卡片是否被选中
+        }
         that.fonts = data
       }
     }, function(response) {
@@ -466,6 +468,11 @@ span {
   display: none;
   z-index: 9999;
   overflow: auto;
+}
+
+.delete-button{
+  position: relative;
+  left: -18px;
 }
 
 #pagination {

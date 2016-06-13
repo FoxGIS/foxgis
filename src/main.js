@@ -22,14 +22,13 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Studio from './components/Studio'
 import Maps from './components/Maps'
-import Fonts from './components/Fonts'
+import Fonts from './views/Fonts'
 import Data from './components/Data'
 import Icons from './components/Icons'
 import Upload from './views/Upload'
 import DataCardsMap from './components/DataCards-Map'
 import DataCardsData from './components/DataCards-Data'
 import DataCardsIcon from './components/DataCards-Icon'
-import DataCardsFont from './components/DataCards-Font'
 import MapView from './components/MapView'
 import MapEditor from './components/MapEditor'
 import DataCards from './components/DataCards'
@@ -58,7 +57,6 @@ Vue.component('foxgis-table', Table)
 Vue.component('foxgis-map', Map)
 Vue.component('foxgis-data-cards-map', DataCardsMap)
 Vue.component('foxgis-data-cards-data', DataCardsData)
-Vue.component('foxgis-data-cards-font', DataCardsFont)
 Vue.component('foxgis-data-cards-icon', DataCardsIcon)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-post', Post)
