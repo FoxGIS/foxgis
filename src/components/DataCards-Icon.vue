@@ -47,18 +47,18 @@ export default {
   methods: {
     showDetails: function (e) {
       //移除之前的active
-      let activeCards = this.$el.querySelector('.active')
+      let activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.currentTarget){
-        activeCards.className = activeCards.className.replace(' active','')
+        activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      let claName = e.currentTarget.className
+      let claName = e.currentTarget.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','')
       }else{
-        claName += ' active'
+        claName += ' active';
       }
-      e.currentTarget.className = claName
+      e.currentTarget.className = claName;
     },
     editScope: function(e,index){//修改共享范围
         let scope = e.target.value;
@@ -76,8 +76,8 @@ export default {
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
       let sprite_id = this.dataset[index].sprite_id;
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
       let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
@@ -93,41 +93,41 @@ export default {
       });
     },
     showPreview: function(e, index) {
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.sprites + '/' + username+'/'+this.dataset[index].sprite_id+'/sprite.png?access_token='+access_token
-      document.querySelector('#thumbnail').src = url
-      document.querySelector('.preview-modal').style.display = 'block'
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.sprites + '/' + username+'/'+this.dataset[index].sprite_id+'/sprite.png?access_token='+access_token;
+      document.querySelector('#thumbnail').src = url;
+      document.querySelector('.preview-modal').style.display = 'block';
 
     },
 
     hidePreview: function(e) {
       if (e.target.className.indexOf('preview-modal') != -1) {
-        e.target.style.display = 'none'
+        e.target.style.display = 'none';
       }
     },
     deleteSprite: function(sprite_id) {//删除符号
       this.dialogcontent.title = "确定删除吗？";
-      this.$el.querySelector('#delete-dialog').style.display = 'block'
+      this.$el.querySelector('#delete-dialog').style.display = 'block';
       this.deleteUploadId = sprite_id;
     },
     deleteAction: function(status) {
       if (status === 'ok') {
-        var username = Cookies.get('username')
-        var access_token = Cookies.get('access_token')
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
         let sprite_id = this.deleteUploadId;
         let url = SERVER_API.sprites + '/' + username + "/" + sprite_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].sprite_id === sprite_id){
-                this.dataset.splice(i,1);
+            for(let i = 0;i<this.$parent.dataset.length;i++){
+              if(this.$parent.dataset[i].sprite_id === sprite_id){
+                this.$parent.dataset.splice(i,1);
               }
             }
           }
         }, function(response) {
-            alert('未知错误，请稍后再试')
+            alert('未知错误，请稍后再试');
         });
         this.deleteUploadId = "";//重置deleteUploadId
       }
@@ -160,11 +160,11 @@ export default {
   },
   computed: {
      show_page_num: function (){
-        let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+        let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num);
         if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
-          this.pageConfig.current_page = cop_page_num
+          this.pageConfig.current_page = cop_page_num;
         }
-        return cop_page_num > 5 ? 5 : cop_page_num
+        return cop_page_num > 5 ? 5 : cop_page_num;
      },
 
      total_items: function (){

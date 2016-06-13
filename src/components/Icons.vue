@@ -13,7 +13,7 @@
     <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
   </div>
 
-  <foxgis-data-cards-icon :dataset="displayDataset"></foxgis-data-cards-icon>
+  <foxgis-data-cards-icon :dataset.sync="displayDataset"></foxgis-data-cards-icon>
 </div>
 </template>
 
