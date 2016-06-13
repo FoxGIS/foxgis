@@ -21,8 +21,12 @@
               <td><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
             </tr>
             <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>电话：</b></td>
-              <td><input id="phone-input" @change="infoChange" value="{{userInfo.phone}}"></td>
+              <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
+              <td><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
+            </tr>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
+              <td><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
@@ -31,6 +35,10 @@
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
               <td><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+            </tr>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
+              <td><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
@@ -52,7 +60,7 @@ export default {
       var data = {};
       var message = "";
       /*--------用户修改的是用户名-----------*/
-      if(e.target.id === "username-input"){
+      if(e.target.id === "username-input"){//暂时禁止修改
         if(info === ''){
           alert('用户名不能为空');
           e.target.value = this.userInfo.username;
@@ -67,7 +75,7 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是用户验证信息-----------*/
-      if(e.target.id === "verify-input"){
+      if(e.target.id === "verify-input"){//暂时禁止修改
         if(info === '已验证'){
           data.is_verified = true;
         }else if(info === '未验证'){
@@ -96,23 +104,42 @@ export default {
       }
       /*------------------------------------*/
 
-      /*--------用户修改的是电话-----------*/
+      /*--------用户修改的是固定电话-----------*/
       if(e.target.id === "phone-input"){
+        if(info!=""){
+          let reg = /^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+          let isok = reg.test(info);
+          if(!isok){
+            alert("电话格式不正确，请重新输入");
+            e.target.value = this.userInfo.telephone;
+            return;
+          }
+        }else{
+          alert("电话不能为空！");
+          e.target.value = this.userInfo.telephone;
+          return;
+        }
+        data.telephone = info;
+        message = "固定电话";
+      }
+      /*------------------------------------*/
+      /*--------用户修改的是移动电话-----------*/
+      if(e.target.id === "mobile-input"){
         if(info!=""){
           let reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
           let isok = reg.test(info);
           if(!isok){
             alert("电话格式不正确，请重新输入");
-            e.target.value = this.userInfo.phone;
+            e.target.value = this.userInfo.mobile;
             return;
           }
         }else{
           alert("电话不能为空！");
-          e.target.value = this.userInfo.phone;
+          e.target.value = this.userInfo.mobile;
           return;
         }
-        data.phone = info;
-        message = "电话";
+        data.mobile = info;
+        message = "手机号码";
       }
       /*------------------------------------*/
       /*--------用户修改的是邮箱-----------*/
@@ -155,7 +182,18 @@ export default {
         data.organization = info;
         message = "单位";
       }
-      /*------------------------------------*/     
+      /*------------------------------------*/
+      /*--------用户修改的是职务/职称-----------*/
+      if(e.target.id === "position-input"){
+        if(info===""){          
+          alert("职位名称不能为空！");
+          e.target.value = this.userInfo.position;
+          return;
+        }
+        data.position = info;
+        message = "职务/职称";
+      }
+      /*------------------------------------*/      
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.users + '/' + username;
