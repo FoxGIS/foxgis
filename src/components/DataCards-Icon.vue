@@ -70,8 +70,7 @@ export default {
   
           },function(response){
             alert("编辑错误");
-          }
-        )
+          });
     },
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
@@ -120,11 +119,7 @@ export default {
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            for(let i = 0;i<this.$parent.dataset.length;i++){
-              if(this.$parent.dataset[i].sprite_id === sprite_id){
-                this.$parent.dataset.splice(i,1);
-              }
-            }
+            this.$dispatch("delete_sprite", sprite_id);
           }
         }, function(response) {
             alert('未知错误，请稍后再试');
