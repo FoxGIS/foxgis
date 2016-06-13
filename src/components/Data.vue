@@ -1,16 +1,21 @@
 <template>
 <div class="data">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">layers</i><span>数据</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect @click="uploadFileClick">上传数据</mdl-button>
-    <input type="file" style="display:none" id="file" accept="*.*,.json,.mbtiles,.zip">
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+    <mdl-button raised colored v-mdl-ripple-effect id="upload-button" @click="uploadFileClick">上传数据</mdl-button>
+    <input type="file" multiple style="display:none" id="file" accept=".json,.mbtiles,.zip,*.*">
   </div>
 
-  <foxgis-data-cards-data :dataset="dataset" @delete-upload="deleteUpload" @download-upload="downloadUpload"></foxgis-data-cards-data>
-  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
-  <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
+  <div class='progress-bar' style="display:none">
+    <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
+    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
+  </div>
+
+  <foxgis-data-cards-data :dataset="displayDataset"></foxgis-data-cards-data>
+  
 </div>
 </template>
 
@@ -21,71 +26,66 @@ import util from './util.js'
 export default {
   methods: {
     uploadFileClick: function() {
-      let hidefile = document.getElementById('file')
-      hidefile.click()
-      hidefile.addEventListener('change', this.uploadFile)
+      let hidefile = document.getElementById('file');
+      hidefile.click();
+      hidefile.addEventListener('change', this.uploadFile);
     },
 
     uploadFile: function(e) {
-      this.$el.querySelector('#create-loading').style.display = 'block'
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.uploads + '/' + username
-      var formData = new FormData()
-      formData.append('file', e.target.files[0])
-      var reader = new FileReader()
+      if(document.getElementById('file').value==="") return;
+      var fileCount=0;//记录上传的文件数目
+      this.$el.querySelector('#upload-button').disabled = "disabled";
+      this.$el.querySelector('.progress-bar').style.display = 'block';
+
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.tilesets + '/' + username;
+      for(let i=0;i<e.target.files.length;i++){
+        var formData = new FormData();
+        formData.append('upload', e.target.files[0]);
+        this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          fileCount++;
+          var file = response.data;
+          if (file.filesize / 1024 > 1024) {
+            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB';
+          } else {
+            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB';
+          }
+
+          file.createdAt = util.dateFormat(new Date(file.createdAt));
+          file.checked = false;//为新增加的文件添加checked属性
+          this.dataset.unshift(file);
+          if(fileCount===e.target.files.length){
+            this.$el.querySelector('.progress-bar').style.display = 'none';
+            this.$el.querySelector('#upload-button').disabled ="";
+            this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });
+          }
+        }, function(response) {
+          this.$el.querySelector('.progress-bar').style.display = 'none';
+           if (response.data.error) {
+             this.$el.querySelector('.progress-bar').style.display = 'none';
+             this.$el.querySelector('#upload-button').disabled ="";
+             var snackbarContainer = document.querySelector('#demo-toast-example');
+             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
+            } else {
+            this.$el.querySelector('.progress-bar').style.display = 'none';
+            this.$el.querySelector('#upload-button').disabled ="";
+            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
+          }
+        });
+      }
+      
+      /*var reader = new FileReader()
       reader.readAsBinaryString(e.target.files[0])
       reader.onloadend = function() {
         console.log(reader.result.length)
-      }
+      }*/
 
-      this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
-        .then(function(response) {
-          var file = response.data
-          if (file.filesize / 1024 > 1024) {
-            file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
-          } else {
-            file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
-          }
-
-          file.upload_at = util.dateFormat(new Date(file.upload_at))
-          this.dataset.push(file)
-          this.$el.querySelector('#create-loading').style.display = 'none'
-        }, function(response) {
-          this.$el.querySelector('#create-loading').style.display = 'none'
-          if (response.data.error) {
-            alert(response.data.error)
-          } else {
-            alert('未知错误，请稍后再试')
-          }
-        })
+      
     },
 
-    deleteUpload: function(upload_id) {
-      this.$el.querySelector('#delete-dialog').style.display = 'block'
-      this.deleteUploadId = upload_id
-    },
-
-    deleteAction: function(status) {
-      if (status === 'ok') {
-        let upload_id = this.deleteUploadId
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let url = SERVER_API.uploads + '/' + username + "/" + upload_id
-        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].upload_id === upload_id){
-                this.dataset.splice(i,1)
-              }
-            }
-          }
-        }, function(response) {
-            alert('未知错误，请稍后再试')
-          })
-      }
-    },
+    
 
     downloadUpload: function(upload_id) {
       let username = Cookies.get('username')
@@ -94,57 +94,86 @@ export default {
       window.open(url)
     }
   },
+
+  computed:{
+    displayDataset:function(){
+      var temp = this.dataset;
+      var t=[];
+      if(this.searchKeyWords.trim().length===0){
+        return temp;
+      }else{        
+        let keyWords = this.searchKeyWords.trim().split(' ');
+        keyWords = _.uniq(keyWords);
+        for(let u=0;u<temp.length;u++){
+          let tileset = temp[u];
+          let num = 0;
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w];
+            if(keyWord.indexOf(' ')==-1){
+              if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
+                  num++;
+              }
+            }else{
+              num++;
+            }
+          }
+          if(num == keyWords.length){
+            t.push(tileset)
+          }
+        }
+        return t;
+      }
+    }
+  },
+
   attached() {
-    let username = Cookies.get('username')
+    let username = Cookies.get('username');
+    if(username === undefined){
+      return
+    }
     let access_token = Cookies.get('access_token')
     //this.username = username
-    let url = SERVER_API.uploads + '/' + username
+    let url = SERVER_API.tilesets + '/' + username
     var that = this
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
 
       if (response.data.length > 0) {
-        var data = response.data
+        var data = response.data;
         data = data.map(function(d) {
           if (d.filesize / 1024 > 1024) {
-            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
+            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB';
           } else {
-            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
+            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB';
           }
+          var date = new Date(d.createdAt)
+          d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 
-          d.createdAt = util.dateFormat(new Date(d.createdAt))
-
-          return d
-        })
-        this.dataset = data
+          return d;
+        });
+        for(let i=0;i<data.length;i++){
+          data[i].checked = false;//增加checked属性，标记卡片是否被选中
+        }
+        this.dataset = data;
       }
     }, function(response) {
-      console.log(response)
+      console.log("数据集请求失败");
     })
   },
   data() {
     return {
-      dataset: [{
-        filename: '全国人口分布数据',
-        filesize: '200 MB',
-        upload_at: '2016-3-25'
-      }, {
-        filename: '全国人口分布数据',
-        filesize: '200 MB',
-        upload_at: '2016-3-25'
-      }, {
-        filename: '全国人口分布数据',
-        filesize: '200 MB',
-        upload_at: '2016-3-25'
-      }, {
-        filename: '全国人口分布数据',
-        filesize: '200 MB',
-        upload_at: '2016-3-25'
-      }],
-      dialogcontent: {
-        title: '确定删除吗？'
-      },
-      deleteUploadId: ''
+      dataset: [],
+      searchKeyWords: ''
+    }
+  },
+
+  events:{
+    "delete_tileset":function(msg){
+      for(let i = 0;i<this.dataset.length;i++){
+        if(this.dataset[i].tileset_id === msg){
+          this.dataset.splice(i,1);
+        }
+      }
     }
   }
 }
@@ -204,5 +233,9 @@ span {
 
 .foxgis-data-cards {
   margin-top: 40px;
+}
+
+#upload-progress{
+  width:calc(100% - 98px);;
 }
 </style>

@@ -25,35 +25,35 @@ import _ from 'lodash'
 export default {
   methods:{
     uploadClick: function() {
-      let fileInput = document.getElementById('icon-input')
+      let fileInput = document.getElementById('icon-input');
       fileInput.click();
-      fileInput.addEventListener('change', this.uploadFile)
+      fileInput.addEventListener('change', this.uploadFile);
     },
 
     uploadFile: function(e) {
       if(document.getElementById('icon-input').value==="") return;
       var fileCount=0;//记录上传的文件数目
-      this.$el.querySelector('#upload-button').disabled = "disabled"
-      this.$el.querySelector('.progress-bar').style.display = 'block'
+      this.$el.querySelector('#upload-button').disabled = "disabled";
+      this.$el.querySelector('.progress-bar').style.display = 'block';
 
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.sprites + '/' + username
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.sprites + '/' + username;
       for(let i=0;i<e.target.files.length;i++){
-        var formData = new FormData()
+        var formData = new FormData();
         formData.append('upload', e.target.files[i]);
         this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
          .then(function(response) {
             fileCount++;
-            var file = response.data
+            var file = response.data;
             file.createdAt = util.dateFormat(new Date(file.createdAt));
             file.checked = false;//为新增加的文件添加checked属性
-            this.dataset.unshift(file)
+            this.dataset.unshift(file);
             if(fileCount===e.target.files.length){
               this.$el.querySelector('.progress-bar').style.display = 'none';
               this.$el.querySelector('#upload-button').disabled ="";
               this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });
-          }
+            }
 
          }, function(response) {
            this.$el.querySelector('.progress-bar').style.display = 'none';
@@ -132,6 +132,16 @@ export default {
     return {
       dataset: [],
       searchKeyWords: ''
+    }
+  },
+
+  events:{
+    "delete_sprite":function(msg){
+      for(let i = 0;i<this.dataset.length;i++){
+        if(this.dataset[i].sprite_id === msg){
+          this.dataset.splice(i,1);
+        }
+      }
     }
   }
 }
