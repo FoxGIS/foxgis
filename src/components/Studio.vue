@@ -7,7 +7,7 @@
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据<span  v-mdl-badge.number="tileset_nums" ></span></a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体</a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体<span  v-mdl-badge.number="font_nums" ></span></a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i>符号库<span  v-mdl-badge.number="sprite_nums" ></span></a>
         <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图<span  v-mdl-badge.number="upload_nums" ></span></a>
       </nav>
@@ -66,6 +66,7 @@ export default {
       upload_nums:0,
       sprite_nums:0,
       tileset_nums:0,
+      font_nums:0,
       access:false
     }
   },
@@ -73,11 +74,15 @@ export default {
     "upload_nums":function(msg) {
       this.upload_nums = parseInt(msg)
     },
+
     "sprite_nums":function(msg) {
       this.sprite_nums = parseInt(msg)
     },
     "tileset_nums":function(msg) {
       this.tileset_nums = parseInt(msg)
+    
+    "font_nums":function(msg){
+      this.font_nums = parseInt(msg)
     }
   }
 }
