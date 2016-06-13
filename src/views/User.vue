@@ -107,7 +107,7 @@ export default {
       /*--------用户修改的是固定电话-----------*/
       if(e.target.id === "phone-input"){
         if(info!=""){
-          let reg = /^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+          let reg = /^(([0\+]\d{2,3}-)?(0\d{2,3}))(\d{7,8})(-(\d{3,}))?$/;
           let isok = reg.test(info);
           if(!isok){
             alert("电话格式不正确，请重新输入");
