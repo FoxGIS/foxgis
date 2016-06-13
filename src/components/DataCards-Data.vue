@@ -29,7 +29,6 @@
       中心：<span style="width:80px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[1]|currency '' 2 }}]</span>
       边界：<span style="width: 170px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[1]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[2]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[3]|currency '' 2 }}]</span>
       级别：<span style="width: 35px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].minzoom }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].maxzoom }}]</span>
-      <!-- 最大级别：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].maxzoom }}</span> -->
       格式：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format?dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format:'未知' }}</span>
       </p>
       <div>
@@ -91,6 +90,44 @@ export default {
           },function(response){
             alert("编辑错误");
           });
+    },
+    deleteTag: function(pId, tag_id) {
+      let tags = this.dataset[pId].tags;
+      let tileset_id = this.dataset[pId].tileset_id;
+      tags.splice(tag_id, 1);
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+          }
+        }, function(response) {
+          alert("网络错误");
+      });
+    },
+
+    addTag: function(e, index) {
+      if (e.target.value) {
+        let tags = this.dataset[index].tags;
+        let tileset_id = this.dataset[index].tileset_id;
+        if(tags.indexOf(e.target.value)!=-1){
+          alert('该标签已存在');
+          return;
+        }
+        tags.push(e.target.value);
+        e.target.value = '';
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+        this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+         .then(function(response){
+            if(response.ok){
+            }
+          }, function(response) {
+            alert("网络错误");
+        });
+      }
     },
     deleteUpload: function(tileset_id) {
       this.dialogcontent.title = "确定删除吗？";
