@@ -2,19 +2,29 @@
 <div class="foxgis-data-cards">
   <div class="card" v-for="data in dataset" track-by="$index">
     <div class="name">
-      <p>{{ data.name }}</p>
+      <p>{{ data.fontname }}</p>
       <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
     </div>
     <div class="meta">
-      <p>{{ data.layers }}种字体 · {{ data.size }} · {{  data.upload_time }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect>删除</mdl-anchor-button>
+      <p>
+        上传时间：<span>{{ changeTime(data.createdAt) }}</span>
+
+        共享范围：<select id="scope" :value="data.scope" @change="editScope($event,$index)">
+          <option value="private">私有</option>
+          <option value="public">公开</option>
+        </select>
+      </p>
+      
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont(data.fontname)">删除</mdl-anchor-button>
     </div>
   </div>
 </div>
+<foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
 </template>
 
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
@@ -32,6 +42,68 @@ export default {
         claName += ' active'
       }
       e.currentTarget.className = claName
+    },
+
+    deleteAction: function(status) {
+      if (status === 'ok') {
+        var username = Cookies.get('username')
+        var access_token = Cookies.get('access_token')
+        for(let i=0;i<this.deleteFontName.length;i++){
+          let name = this.deleteFontName[i]
+          let url = SERVER_API.fonts + '/' + username + "/" + name
+          this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+          .then(function(response){
+          if(response.ok){
+            for(let i = 0;i<this.dataset.length;i++){
+              if(this.dataset[i].fontname === name){
+                console.log('delete dataset')
+                this.dataset.splice(i,1)
+              }
+            }
+          }
+          }, function(response) {
+            alert('未知错误，请稍后再试')
+          });
+        }
+        this.deleteFontName = []//重置deleteFontName
+      }
+    },
+
+    deleteFont: function(fontname) {
+      this.dialogcontent.title = "确定删除吗？"
+      document.getElementById('delete-dialog').style.display = 'block'
+      this.deleteFontName.push(fontname)
+    },
+
+    changeTime: function(time){
+      return time
+    },
+
+    editScope: function(e,index){
+        let tempUploads = this.dataset
+        let scope = document.getElementById('scope').selectedOptions[0].value
+        let username = Cookies.get('username')
+        let access_token = Cookies.get('access_token')
+        let url = SERVER_API.fonts + '/' + username
+        tempUploads[index].scope = scope
+        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+            let data = response.data
+            let scope = data.scope
+            let days = 30
+            Cookies.set('scope',scope,{ expires: days })
+          },function(response){
+            alert("编辑错误")
+          }
+        )
+    }
+  },
+  data() {
+    return {
+      dialogcontent: {
+        title: '',//对话框标题
+        tips:'',//对话框中的提示性文字
+      },
+      deleteFontName: []
     }
   }
 }
@@ -126,4 +198,32 @@ export default {
   text-align: right;
   min-width: 0;
 }
+
+.meta span{
+    border: 0;
+    width: 200px;
+    color: #9E9E9E;
+    font-size: 12px;
+    margin: 0;
+    display: inline-block;
+}
+
+.modal {
+  position: fixed;
+  left: 240px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9999;
+  overflow: auto;
+}
+
+.foxgis-data-cards {
+  margin-top: 40px;
+}
+
 </style>
