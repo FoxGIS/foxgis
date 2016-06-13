@@ -15,25 +15,37 @@
 
   <!-- <foxgis-data-cards-font :dataset="displayFonts"></foxgis-data-cards-font> -->
   <div class="result_data">
-    <div class="card" v-for="data in displayFonts.length" track-by="$index">
+    <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
       <div class="name">
-        <p>{{ displayFonts[$index].fontname }}</p>
+        <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
         <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
       </div>
       <div class="meta">
         <p>
-          上传时间：<span>{{ changeTime(displayFonts[$index].createdAt) }}</span>
+          上传时间：<span>{{ changeTime(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt) }}</span>
 
-          共享范围：<select id="scope" v-model="displayFonts[$index].scope" @change="editScope($event,$index)">
+          共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,$index)">
             <option value="private">私有</option>
             <option value="public">公开</option>
           </select>
         </p>
-        
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont(displayFonts[$index].fontname)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">删除</mdl-anchor-button>
       </div>
     </div>
   </div>
+
+  <div id="pagination" v-show="displayFonts.length>0?true:false">
+    <ul>
+      <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
+        <span><i class="material-icons">navigate_before</i></span>
+      </li>
+      <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
+      <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
+        <span><i class="material-icons">navigate_next</i></span>
+      </li>
+    </ul>
+  </div>
+
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
 
 </div>
@@ -149,13 +161,12 @@ export default {
     },
 
     editScope: function(e,index){
-        let tempUploads = this.displayFonts
         let scope = document.getElementById('scope').selectedOptions[0].value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
-        let fontname = tempUploads[index].fontname
+        let fontname = this.displayFonts[index].fontname
         let url = SERVER_API.fonts + '/' + username + "/" + fontname
-        tempUploads[index].scope = scope
+        this.displayFonts[index].scope = scope
         this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
             let data = response.data
             let scope = data.scope
@@ -165,11 +176,45 @@ export default {
             alert("编辑错误")
           }
         )
+    },
+
+    nextPage: function (event) {
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      if(this.pageConfig.current_page === allPages){
+        return
+      }
+      this.pageConfig.current_page += 1;
+
+      if(this.pageConfig.current_page > this.show_page_num){
+        this.pageConfig.first_page +=1;
+      }
+    },
+
+    prePage: function (event) {
+      if(this.pageConfig.current_page === 1){
+        return
+      }
+      this.pageConfig.current_page -= 1;
+      if(this.pageConfig.current_page < this.pageConfig.first_page){
+        this.pageConfig.first_page -=1;
+      }
+    },
+
+    setPage: function (page) {
+      this.pageConfig.current_page = page+1;
     }
 
   },
 
   computed: {
+    show_page_num: function (){
+      let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
+        this.pageConfig.current_page = cop_page_num
+      }
+      return cop_page_num > 5 ? 5 : cop_page_num
+    },
+
     total_items: function (){
       let count = this.displayFonts.length
       let allCount = this.fonts.length
@@ -249,7 +294,12 @@ export default {
         title: '',//对话框标题
         tips:'',//对话框中的提示性文字
       },
-      deleteFontName: []
+      deleteFontName: [],
+      pageConfig: {
+        page_item_num: 10,         //每页显示的条数
+        current_page: 1,
+        first_page: 1,
+      }
     }
   }
 }
@@ -270,7 +320,7 @@ h5 {
   margin-top: 40px;
 }
 
-.material-icons {
+h5 .material-icons {
   padding: 10px;
   margin-right: 5px;
   vertical-align: middle;
@@ -417,5 +467,57 @@ span {
   z-index: 9999;
   overflow: auto;
 }
+
+#pagination {
+  text-align: center;
+  display: block;
+}
+
+#pagination li.disabled {
+  color: #9c9696;
+}
+
+#pagination .material-icons {
+  vertical-align: middle;
+}
+
+#pagination ul {
+  padding: 10px;
+  display: inline-block;
+}
+
+#pagination li {
+  display: inline-block;
+  margin: 0 10px;
+  list-style-type: disc;
+  cursor: pointer;
+  width: 30px;
+}
+
+#pagination li:not(.page-active):hover {
+  background-color: #eaa5bd;
+  font-weight: bold;
+}
+
+#pagination li.page-active {
+  background-color: #ff4081;
+  font-weight: bolder;
+}
+
+#pagination li span {
+  padding: 6px;
+  line-height: 30px;
+  font-size: 1.2em;
+}
+
+#page-pre {
+  margin-right: 10px;
+}
+
+#page-next {
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
 
 </style>
