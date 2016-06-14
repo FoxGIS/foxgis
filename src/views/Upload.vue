@@ -212,7 +212,7 @@ export default {
 
     editScope: function(e,index){
         let tempUploads = this.displayUploads
-        let scope = document.getElementById('scope').selectedOptions[0].value
+        let scope = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
         let upload_id = tempUploads[index].upload_id
