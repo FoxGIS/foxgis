@@ -5,12 +5,14 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
-    <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff">
+    <!-- <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
+    <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff"> -->
+    <div id="picker" >上传决策用图</div>
   </div>
   <div class='progress-bar' style="display:none">
-    <mdl-progress indeterminate id='upload-progress' ></mdl-progress>
-    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传···</span>
+    <div class="activebar bar" :style="uploadStatus.percentage"></div>
+    <div class="bufferbar bar"></div>
+    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传 <span style = 'font-size:12px;color:red;'>({{uploadStatus.current_file}}/{{uploadStatus.total_files}})  {{uploadStatus.progress}}%</span></span>
   </div>
 
   <div class="filter">
@@ -86,7 +88,7 @@
           <option value="public">公开</option>
         </select>
 
-        文件大小：<span>{{ calculation(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size) }}</span>
+        文件大小：<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size }}</span>
 
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
@@ -174,11 +176,6 @@ export default {
               input[i].value = this.displayUploads[i].location;
               input[i].blur();
             }
-            let data = response.data;
-            let location = data.location
-            let date = new Date()
-            let days = 30
-            Cookies.set('location',location,{ expires: days })
           },function(response){
             alert("编辑错误")
           }
@@ -329,13 +326,14 @@ export default {
     },
 
     uploadClick: function() {
-      let fileInput = document.getElementById('file')
+     /* let fileInput = document.getElementById('file')
       fileInput.click();
-      fileInput.addEventListener('change', this.uploadFile)
+      fileInput.addEventListener('change', this.uploadFile)*/
+      
     },
 
     uploadFile: function(e) {
-      if(document.getElementById('file').value==="") return;
+      /*if(document.getElementById('file').value==="") return;
       var fileCount=0;//记录上传的文件数目
       for(let i=0;i<e.target.files.length;i++){
         if(e.target.files[i].size/1048576>200){
@@ -391,7 +389,7 @@ export default {
             this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
           }
         });
-      }
+      }*/
     },
 
     showPreview: function(e, index) {
@@ -611,14 +609,87 @@ export default {
     let url = SERVER_API.uploads + '/' + username
     var that = this
       //获取数据列表
+    var uploader = WebUploader.create({
+      swf:'../assets/webuploader/Uploader.swf',
+      server:url+'?access_token='+access_token,
+      pick:'#picker',
+      resize:false,
+      auto:true,
+      compress:false,
+      prepareNextFile:true,
+      accept:{
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,bmp,png,tif,tiff',
+        mimeTypes: 'image/*'
+      },
+      Vue:that,
+      formData:{
+        year:new Date().getFullYear(),    
+        location:Cookies.get('location')?Cookies.get('location'):''
+      }
+    });
+    uploader.on('filesQueued',function(file){//添加文件到队列
+      this.options.Vue.uploadStatus.total_files = file.length;
+      for(var i=0;i<file.length;i++){
+        this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
+      }
+    });
+    uploader.on('uploadStart',function(file){//开始上传
+      $('.progress-bar').css('display','block');
+      $('.webuploader-pick').css('background-color','#9E9E9E');
+      $('#picker input').attr('disabled','disabled');
+      //this.options.Vue.uploadStatus.current_file +=1;
+    })
+    uploader.on( 'uploadSuccess', function( file,response) {//上传成功
+    /*this.$broadcast('mailSent',{message:'上传成功',timeout:3000});*/
+      console.log("上传成功");
+      
+      this.options.Vue.uploadStatus.current_file +=1;
+      var data = response;
+        if (data.size / 1024 > 1024) {
+          data.size = (data.size / 1048576).toFixed(2) + 'MB'
+        } else {
+          data.size = (data.size / 1024).toFixed(2) + 'KB'
+        }
+        data.upload_at = util.dateFormat(new Date(data.upload_at));
+        data.checked = false;//为新增加的文件添加checked属性
+        this.options.Vue.uploads.unshift(data);
+        if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
+          $('.progress-bar').css('display','none');
+          $('.webuploader-pick').css('background-color','#3F51B5');
+          $('#picker input').removeAttr('disabled');
+          this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
+          this.options.Vue.uploadStatus.current_file=1;
+          this.options.Vue.uploadStatus.total_files=0;
+          this.options.Vue.uploadStatus.progress=0;
+          this.options.Vue.uploadStatus.percentage="width:0";
+        }
+        
+    });
+    uploader.on( 'uploadError', function( file ) {//上传失败
+      $('.progress-bar').css('display','none');
+      this.options.Vue.$broadcast('mailSent', { message: '上传失败！',timeout:3000 });
+    });
+    uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
+      var fileIds = this.options.Vue.uploadStatus.fileIds;
+      this.options.Vue.uploadStatus.progress=0;
+      for(var i=0;i<fileIds.length;i++){
+        if(fileIds[i].id === file.id){
+          fileIds[i].status = percentage;
+        }
+        this.options.Vue.uploadStatus.progress+=parseInt((fileIds[i].status*100/fileIds.length));
+      }
+      this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
+      //$('.progress-bar .activebar').css( 'width', );
+    });
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         var data = response.data
         data = data.map(function(d) {
-          if (d.filesize / 1024 > 1024) {
-            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB'
+          if (d.size / 1024 > 1024) {
+            d.size = (d.size / 1048576).toFixed(2) + 'MB'
           } else {
-            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB'
+            d.size = (d.size / 1024).toFixed(2) + 'KB'
           }
           d.createdAt = util.dateFormat(new Date(d.createdAt))
           return d
@@ -947,7 +1018,14 @@ export default {
       selected_year_tags: [],
       selected_location_tags: [],
       selected_theme_tags: [],
-      searchKeyWords: ''
+      searchKeyWords: '',
+      uploadStatus:{
+        percentage:"width:0%",//进度条的css样式
+        fileIds:[],//上传文件列表，包括id和status两个属性，id为文件id，status为文件上传进度（0-1）
+        progress:0,//总体上传进度（0-100）
+        total_files:0,//上传文件数目
+        current_file:1//当前正在第几个文件
+      }
     }
   }
 }
@@ -1170,9 +1248,37 @@ span {
   color: blue;
 }
 
-#upload-progress{
-  width:calc(100% - 130px);;
+.progress-bar{
+  display: block;
+  position: relative;
+  height: 4px;
+  width: calc(100% - 130px);
+  max-width: 100%;
 }
+
+.progress-bar .bufferbar{
+  z-index: 0;
+  left: 0;
+  background-color: #c2d6d4;
+  width: 100%;
+}
+.progress-bar .activebar{
+  z-index: 1;
+  left: 0;
+  width: 0;
+  background-color: #009688;
+}
+
+.progress-bar .bar{
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    transition: width .2s cubic-bezier(.4,0,.2,1);
+}
+/* #upload-progress{
+  width:calc(100% - 130px);;
+} */
 .small-pic {
   float: left;
   height: 100px;
@@ -1266,4 +1372,14 @@ span {
 .mdl-dialog{
   padding:0;
 }
+
+#picker{
+  width: 116px;
+  height: 40px;
+  position: relative;
+  display: inline-block;
+  line-height: 1.428571429;
+  vertical-align: middle;
+}
+
 </style>

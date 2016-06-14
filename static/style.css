@@ -1,0 +1,17 @@
+.webuploader-pick{
+  position: relative;
+  cursor: pointer;
+  background: #3F51B5;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  overflow: hidden;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+}
+
+#picker input{
+  position: absolute !important;
+  clip: rect(1px,1px,1px,1px);
+}
