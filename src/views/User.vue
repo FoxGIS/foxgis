@@ -112,8 +112,8 @@ export default {
           if(!isok){
             alert("电话格式不正确，请重新输入");
             e.target.value = this.userInfo.telephone;
-            return;*/
-          }
+            return;
+          }*/
         }else{
           alert("电话不能为空！");
           e.target.value = this.userInfo.telephone;
