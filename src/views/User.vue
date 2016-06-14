@@ -107,12 +107,12 @@ export default {
       /*--------用户修改的是固定电话-----------*/
       if(e.target.id === "phone-input"){
         if(info!=""){
-          let reg = /^[0-9]*$/;
+          /*let reg = /^[0-9]*$/;
           let isok = reg.test(info);
           if(!isok){
             alert("电话格式不正确，请重新输入");
             e.target.value = this.userInfo.telephone;
-            return;
+            return;*/
           }
         }else{
           alert("电话不能为空！");
