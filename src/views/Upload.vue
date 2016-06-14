@@ -325,73 +325,6 @@ export default {
       return url
     },
 
-    uploadClick: function() {
-     /* let fileInput = document.getElementById('file')
-      fileInput.click();
-      fileInput.addEventListener('change', this.uploadFile)*/
-      
-    },
-
-    uploadFile: function(e) {
-      /*if(document.getElementById('file').value==="") return;
-      var fileCount=0;//记录上传的文件数目
-      for(let i=0;i<e.target.files.length;i++){
-        if(e.target.files[i].size/1048576>200){
-          this.$broadcast('mailSent', { message: '出现错误！单个文件不能超过200MB！',timeout:5000 });
-          return;
-        }
-      }
-      this.$el.querySelector('#upload-button').disabled = "disabled"
-      this.$el.querySelector('.progress-bar').style.display = 'block'
-
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.uploads + '/' + username
-      for(let i=0;i<e.target.files.length;i++){
-        var formData = new FormData()
-        formData.append('upload', e.target.files[i]);
-        formData.append('year', new Date().getFullYear());
-        file.year = new Date().getFullYear();//设置上传地图的默认制作时间（单位：年）
-        if(Cookies.get('location')){
-          formData.append('location', Cookies.get('location'));
-        }else{
-          formData.append('location', '');
-        }
-        this.$http({ url: url, method: 'POST', data: formData, headers: { 'x-access-token': access_token } })
-         .then(function(response) {
-            fileCount++;
-            var file = response.data
-
-            if (file.filesize / 1024 > 1024) {
-              file.filesize = (file.filesize / 1048576).toFixed(2) + 'MB'
-            } else {
-             file.filesize = (file.filesize / 1024).toFixed(2) + 'KB'
-           }
-            file.upload_at = util.dateFormat(new Date(file.upload_at));
-            file.checked = false;//为新增加的文件添加checked属性
-            this.uploads.unshift(file)
-            if(fileCount===e.target.files.length){
-              this.$el.querySelector('.progress-bar').style.display = 'none';
-              this.$el.querySelector('#upload-button').disabled ="";
-              this.$broadcast('mailSent', { message: '上传完成！',timeout:5000 });
-          }
-
-         }, function(response) {
-           this.$el.querySelector('.progress-bar').style.display = 'none';
-           if (response.data.error) {
-             this.$el.querySelector('.progress-bar').style.display = 'none';
-             this.$el.querySelector('#upload-button').disabled ="";
-             var snackbarContainer = document.querySelector('#demo-toast-example');
-             this.$broadcast('mailSent', {message: '上传失败，请重新上传！',timeout:5000});
-            } else {
-            this.$el.querySelector('.progress-bar').style.display = 'none';
-            this.$el.querySelector('#upload-button').disabled ="";
-            this.$broadcast('mailSent', {message: '出现错误，请稍后再试！',timeout:5000});
-          }
-        });
-      }*/
-    },
-
     showPreview: function(e, index) {
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
@@ -601,29 +534,29 @@ export default {
   },
 
   attached() {
-    let username = Cookies.get('username')
+    let username = Cookies.get('username');
     if(username === undefined){
       return
     }
-    let access_token = Cookies.get('access_token')
-    let url = SERVER_API.uploads + '/' + username
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.uploads + '/' + username;
     var that = this
       //获取数据列表
     var uploader = WebUploader.create({
-      swf:'../assets/webuploader/Uploader.swf',
-      server:url+'?access_token='+access_token,
-      pick:'#picker',
-      resize:false,
-      auto:true,
-      compress:false,
-      prepareNextFile:true,
-      accept:{
+      swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
+      server:url+'?access_token='+access_token,//上传url
+      pick:'#picker',//绑定的选择按钮
+      resize:false,//是否压缩上传图片
+      auto:true,//选择文件后自动上传
+      compress:false,//是否压缩
+      prepareNextFile:true,//自动准备下一个文件
+      accept:{//接受的文件格式
         title: 'Images',
         extensions: 'gif,jpg,jpeg,bmp,png,tif,tiff',
         mimeTypes: 'image/*'
       },
       Vue:that,
-      formData:{
+      formData:{//参数
         year:new Date().getFullYear(),    
         location:Cookies.get('location')?Cookies.get('location'):''
       }
@@ -639,11 +572,20 @@ export default {
       $('.webuploader-pick').css('background-color','#9E9E9E');
       $('#picker input').attr('disabled','disabled');
       //this.options.Vue.uploadStatus.current_file +=1;
-    })
-    uploader.on( 'uploadSuccess', function( file,response) {//上传成功
-    /*this.$broadcast('mailSent',{message:'上传成功',timeout:3000});*/
-      console.log("上传成功");
-      
+    });
+    uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
+      var fileIds = this.options.Vue.uploadStatus.fileIds;
+      this.options.Vue.uploadStatus.progress=0;
+      for(var i=0;i<fileIds.length;i++){
+        if(fileIds[i].id === file.id){
+          fileIds[i].status = percentage;
+        }
+        this.options.Vue.uploadStatus.progress+=parseInt((fileIds[i].status*100/fileIds.length));
+      }
+      this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
+      //$('.progress-bar .activebar').css( 'width', );
+    });
+    uploader.on( 'uploadSuccess', function( file,response) {//上传成功    
       this.options.Vue.uploadStatus.current_file +=1;
       var data = response;
         if (data.size / 1024 > 1024) {
@@ -663,25 +605,21 @@ export default {
           this.options.Vue.uploadStatus.total_files=0;
           this.options.Vue.uploadStatus.progress=0;
           this.options.Vue.uploadStatus.percentage="width:0";
-        }
-        
+        }    
     });
-    uploader.on( 'uploadError', function( file ) {//上传失败
-      $('.progress-bar').css('display','none');
-      this.options.Vue.$broadcast('mailSent', { message: '上传失败！',timeout:3000 });
-    });
-    uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
-      var fileIds = this.options.Vue.uploadStatus.fileIds;
-      this.options.Vue.uploadStatus.progress=0;
-      for(var i=0;i<fileIds.length;i++){
-        if(fileIds[i].id === file.id){
-          fileIds[i].status = percentage;
-        }
-        this.options.Vue.uploadStatus.progress+=parseInt((fileIds[i].status*100/fileIds.length));
+    uploader.on( 'uploadError', function( file,reason) {//上传失败
+      this.options.Vue.$broadcast('mailSent', { message: '上传失败！'+reason,timeout:3000 });
+      if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
+        $('.progress-bar').css('display','none');//所有状态初始化
+        $('.webuploader-pick').css('background-color','#3F51B5');
+        $('#picker input').removeAttr('disabled');
+        this.options.Vue.uploadStatus.current_file=1;
+        this.options.Vue.uploadStatus.total_files=0;
+        this.options.Vue.uploadStatus.progress=0;
+        this.options.Vue.uploadStatus.percentage="width:0";
       }
-      this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
-      //$('.progress-bar .activebar').css( 'width', );
     });
+    
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         var data = response.data
