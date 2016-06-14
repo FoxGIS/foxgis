@@ -389,7 +389,7 @@ span {
 }
 
 .name p {
-  font-size: 1em;
+  font-size: 20px;
   margin: 0;
 }
 
@@ -433,12 +433,12 @@ span {
 }
 
 .active .name p {
-  font-size: 1.5rem;
+  font-size: 36px;
 }
 
 .meta p {
   color: #9E9E9E;
-  font-size: .5em;
+  font-size: 12px;
   margin: 0;
 }
 
@@ -514,7 +514,7 @@ span {
 #pagination li span {
   padding: 6px;
   line-height: 30px;
-  font-size: 1.2em;
+  font-size: 18px;
 }
 
 #page-pre {

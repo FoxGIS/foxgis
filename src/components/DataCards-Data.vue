@@ -1,13 +1,13 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" @click="showDetails">
     <div class="small-pic">
        <img id='mini-thumbnail' v-bind:src = "parseImgURL(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
     </div>
 
     <div class="name">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect>添加到地图</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button>
     </div>
 
     <div class = "tags">
@@ -36,6 +36,12 @@
         <mdl-anchor-button colored v-mdl-ripple-effect  @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
       </div>
     </div>
+
+    <div class="details">
+      <div style="width:500px;height:300px;">
+        <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:500px;max-height:300px;">
+      </div>
+    </div>
   </div>
 
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -60,6 +66,21 @@ import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
+    showDetails: function (e) {
+      //移除之前的active
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards&&activeCards!==e.currentTarget){
+        activeCards.className = activeCards.className.replace(' active','');
+      }
+      //给当前的dom添加active
+      let claName = e.currentTarget.className;
+      if(claName.indexOf('active')!=-1){
+        claName = claName.replace(' active','')
+      }else{
+        claName += ' active';
+      }
+      e.currentTarget.className = claName;
+    },
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
       let tileset_id = this.dataset[index].tileset_id;
@@ -220,6 +241,19 @@ export default {
 
 
 <style scoped>
+
+.details{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: .3s;
+}
+
+.active .details{
+  max-height: 1000px;
+  opacity: 1;
+}
 .card {
 /*  height: 120px;*/
   border-radius: 2px 2px 0 0;
@@ -238,6 +272,11 @@ export default {
 .card:focus, .card:hover {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
   margin: 12px -12px;
+}
+
+.active:focus, .active:hover {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 24px -24px;
 }
 
 .card .name {
@@ -298,18 +337,14 @@ export default {
   padding: 5px 0;
 }
 
-.active .card-details {
-  max-height: 4000px;
-  opacity: 1;
-}
 
 .active .meta {
-  display: none;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .active .name {
-  border-bottom: 1px solid #e0e0e0;
-  padding: 12px 12px 15px;
+  
+/*   padding: 12px 12px 15px; */
 }
 
 .active .name p {

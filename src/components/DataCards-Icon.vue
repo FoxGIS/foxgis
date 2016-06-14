@@ -1,6 +1,6 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" @click="showDetails">
     <div class="name">
       <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
@@ -15,6 +15,11 @@
       上传时间：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       </p>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
+    </div>
+    <div class="details">
+      <div style="text-align:center;">
+        <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:500px;max-height:300px;padding:24px;">
+      </div>
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -218,7 +223,7 @@ export default {
 }
 
 .name p {
-  font-size: 1em;
+  font-size: 24px;
   margin: 0;
 }
 
@@ -257,17 +262,38 @@ export default {
 }
 
 .active .name {
+  padding-bottom: 24px;
   border-bottom: 1px solid #e0e0e0;
-  padding: 12px 12px 15px;
+  /* padding: 12px 12px 15px; */
 }
 
-.active .name p {
+/* .active .name p {
   font-size: 1.5rem;
+} */
+.details{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: .3s;
 }
 
+.active .details{
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.active:focus, .active:hover {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 24px -24px;
+}
+/* .active{
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 24px -24px;
+} */
 .meta p {
   color: #9E9E9E;
-  font-size: .5em;
+  font-size: 12px;
   margin: 0;
 }
 
@@ -331,7 +357,7 @@ export default {
 #pagination li span {
   padding: 6px;
   line-height: 30px;
-  font-size: 1.2em;
+  font-size: 18px;
 }
 
 #page-pre {
