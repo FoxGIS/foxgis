@@ -608,6 +608,7 @@ export default {
         }    
     });
     uploader.on( 'uploadError', function( file,reason) {//上传失败
+      this.options.Vue.uploadStatus.current_file +=1;
       this.options.Vue.$broadcast('mailSent', { message: '上传失败！'+reason,timeout:3000 });
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
         $('.progress-bar').css('display','none');//所有状态初始化
