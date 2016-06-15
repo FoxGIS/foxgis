@@ -1,7 +1,7 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" @click="showDetails">
-    <div class="name">
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" >
+    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
@@ -17,9 +17,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
     <div class="details">
-      <div style="text-align:center;">
-        <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:500px;max-height:300px;padding:24px;">
-      </div>
+      <foxgis-icon-panel :dataset="sprite"></foxgis-icon-panel>
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -50,20 +48,49 @@ import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e) {
+    showDetails: function (e,sprite_id) {
       //移除之前的active
       let activeCards = this.$el.querySelector('.active');
-      if(activeCards&&activeCards!==e.currentTarget){
+      if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      let claName = e.currentTarget.className;
+      let claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
-        claName = claName.replace(' active','')
+        claName = claName.replace(' active','');
+        this.sprite.sprite_id = '';
+        this.sprite.pngUrl = '';
+        this.sprite.icons = [];
       }else{
         claName += ' active';
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
+        this.sprite.sprite_id = sprite_id;
+        this.sprite.pngUrl = pngUrl;
+        let jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
+        this.$http({ url: jsonUrl, method: 'GET', headers: { 'x-access-token': access_token} })
+        .then(function(response){
+          //请求成功
+          let data = response.data;
+          let names = Object.keys(data);
+          this.sprite.icons = [];//初始化
+          for(let i=0;i<names.length;i++){
+            /*var ratio = 40/data[names[i]].height;
+            data[names[i]].x = data[names[i]].x*ratio;
+            data[names[i]].y = data[names[i]].y*ratio;
+            data[names[i]].width = data[names[i]].width*ratio;
+            data[names[i]].pixelRatio = ratio*100+"%";*/
+            this.sprite.icons.push({'name':names[i],'positions':data[names[i]]});
+          }
+        },function(){
+          //请求失败
+          console.log("spriteList获取失败");
+        });
       }
-      e.currentTarget.className = claName;
+      e.target.parentElement.className = claName;
+
+      
     },
     editScope: function(e,index){//修改共享范围
         let scope = e.target.value;
@@ -132,29 +159,40 @@ export default {
         this.deleteUploadId = "";//重置deleteUploadId
       }
     },
-    nextPage: function (event) {
+    nextPage: function (event) {      
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page === allPages){
         return
       }
       this.pageConfig.current_page += 1;
-
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
     },
 
-    prePage: function (event) {
+    prePage: function (event) {     
       if(this.pageConfig.current_page === 1){
         return
       }
       this.pageConfig.current_page -= 1;
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
       }
     },
 
     setPage: function (page) {
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       this.pageConfig.current_page = page+1;
     }
   },
@@ -172,7 +210,7 @@ export default {
       let count = this.dataset.length;
       this.$dispatch("sprite_nums", allCount);
       return count;
-     },
+     }
    },
   data(){
     return {
@@ -185,7 +223,12 @@ export default {
         title: '',//对话框标题
         tips:'',//对话框中的提示性文字
       },
-      deleteSpriteId: ""//
+      deleteSpriteId: "",//
+      sprite:{//每一个卡片一张雪碧图
+        sprite_id:'',//该雪碧图的id
+        pngUrl:'',//该雪碧图的url
+        icons:[]//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
+      }
     }
   }
 }
@@ -220,6 +263,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  cursor: pointer;
 }
 
 .name p {
@@ -235,28 +279,6 @@ export default {
   align-items: center;
 }
 
-.card-details {
-  opacity: 0;
-  max-height: 0;
-  margin: 24px 24px 0;
-  transition: .2s;
-}
-
-.card-details p {
-  font-weight: bolder;
-}
-
-.card-details li {
-  list-style: none;
-  margin-left: 10px;
-  padding: 5px 0;
-}
-
-.active .card-details {
-  max-height: 4000px;
-  opacity: 1;
-}
-
 .active .meta {
   display: none;
 }
@@ -267,9 +289,9 @@ export default {
   /* padding: 12px 12px 15px; */
 }
 
-/* .active .name p {
-  font-size: 1.5rem;
-} */
+.active .name input {
+  font-size: 24px;
+} 
 .details{
   max-height: 0;
   opacity: 0;
@@ -279,11 +301,13 @@ export default {
 }
 
 .active .details{
+  width: 900px;
+  margin: auto;
   max-height: 1000px;
   opacity: 1;
 }
 
-.active:focus, .active:hover {
+.foxgis-data-cards .card.active {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
   margin: 24px -24px;
 }

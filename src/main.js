@@ -42,6 +42,7 @@ import ModalStyleTemplate from './components/ModalStyleTemplate'
 import Loading from './components/Loading'
 import Dialog from './components/Dialog'
 import DialogInput from './components/Dialog-Input'
+import IconPanel from './components/IconPanel'
 import User from './views/User'
 
 Vue.config.debug = true
@@ -69,6 +70,7 @@ Vue.component('foxgis-style-template',ModalStyleTemplate)
 Vue.component('foxgis-loading',Loading)
 Vue.component('foxgis-dialog',Dialog)
 Vue.component('foxgis-dialog-input',DialogInput)
+Vue.component('foxgis-icon-panel',IconPanel)
 
 let router = new Router({
   history: false
