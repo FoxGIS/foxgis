@@ -291,6 +291,7 @@ export default {
 
 .active .name input {
   font-size: 24px;
+  transition:0.2s;
 } 
 .details{
   max-height: 0;

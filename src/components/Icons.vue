@@ -120,6 +120,10 @@ export default {
     });
     uploader.on( 'uploadSuccess', function( file,response) {//上传成功    
       this.options.Vue.uploadStatus.current_file +=1;
+      let activeCards = this.options.Vue.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       var data = response;
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         data.checked = false;//为新增加的文件添加checked属性
