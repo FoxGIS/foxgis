@@ -12,7 +12,10 @@
   <div class='progress-bar' style="display:none">
     <div class="activebar bar" :style="uploadStatus.percentage"></div>
     <div class="bufferbar bar"></div>
-    <span id='uplate-status' style = 'font-size:12px;color:#6F6F49;'>正在上传 <span style = 'font-size:12px;color:red;'>({{uploadStatus.current_file}}/{{uploadStatus.total_files}})  {{uploadStatus.progress}}%</span></span>
+    <span id='uplate-status'>
+      <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
+      <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
+    </span>
   </div>
 
   <div class="filter">
@@ -563,9 +566,17 @@ export default {
     });
     uploader.on('filesQueued',function(file){//添加文件到队列
       this.options.Vue.uploadStatus.total_files = file.length;
+      var totalSize = 0;
       for(var i=0;i<file.length;i++){
         this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
+        totalSize+=file[i].size;
       }
+      if (totalSize / 1024 > 1024) {
+        totalSize = (totalSize / 1048576).toFixed(2) + 'MB';
+      } else {
+        totalSize = (totalSize / 1024).toFixed(2) + 'KB';
+      }
+      this.options.Vue.uploadStatus.total_size = totalSize;
     });
     uploader.on('uploadStart',function(file){//开始上传
       $('.progress-bar').css('display','block');
@@ -609,7 +620,7 @@ export default {
     });
     uploader.on( 'uploadError', function( file,reason) {//上传失败
       this.options.Vue.uploadStatus.current_file +=1;
-      this.options.Vue.$broadcast('mailSent', { message: '上传失败！'+reason,timeout:3000 });
+      this.options.Vue.$broadcast('mailSent', { message: '上传失败！请重新上传'+reason,timeout:3000 });
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
         $('.progress-bar').css('display','none');//所有状态初始化
         $('.webuploader-pick').css('background-color','#3F51B5');
@@ -963,6 +974,7 @@ export default {
         fileIds:[],//上传文件列表，包括id和status两个属性，id为文件id，status为文件上传进度（0-1）
         progress:0,//总体上传进度（0-100）
         total_files:0,//上传文件数目
+        total_size:"0KB",
         current_file:1//当前正在第几个文件
       }
     }
