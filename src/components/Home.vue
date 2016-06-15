@@ -50,10 +50,10 @@ export default {
         var data = response.data;
         var messages = [];
         for(let i=0;i<data.length;i++){
-        	if(data[i].organization){
-        		messages.push({"name":data[i].organization,"total":data[i].total});
-        	}else if(data[i].location){
+        	if(data[i].location){
         		messages.push({"name":data[i].location,"total":data[i].total});
+        	}else if(data[i].organization){
+        		messages.push({"name":data[i].organization,"total":data[i].total});
         	}else if(data[i].name){
         		messages.push({"name":data[i].name,"total":data[i].total});
         	}else if(data[i].owner){
