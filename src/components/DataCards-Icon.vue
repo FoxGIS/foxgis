@@ -58,35 +58,40 @@ export default {
       let claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
-        this.sprite.sprite_id = '';
+        /*this.sprite.sprite_id = '';
         this.sprite.pngUrl = '';
-        this.sprite.icons = [];
+        this.sprite.icons = [];*/
       }else{
         claName += ' active';
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
-        this.sprite.sprite_id = sprite_id;
-        this.sprite.pngUrl = pngUrl;
-        let jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
-        this.$http({ url: jsonUrl, method: 'GET', headers: { 'x-access-token': access_token} })
-        .then(function(response){
-          //请求成功
-          let data = response.data;
-          let names = Object.keys(data);
-          this.sprite.icons = [];//初始化
-          for(let i=0;i<names.length;i++){
-            /*var ratio = 40/data[names[i]].height;
-            data[names[i]].x = data[names[i]].x*ratio;
-            data[names[i]].y = data[names[i]].y*ratio;
-            data[names[i]].width = data[names[i]].width*ratio;
-            data[names[i]].pixelRatio = ratio*100+"%";*/
-            this.sprite.icons.push({'name':names[i],'positions':data[names[i]]});
-          }
-        },function(){
-          //请求失败
-          console.log("spriteList获取失败");
-        });
+        if(this.sprite.sprite_id!==sprite_id){
+          this.sprite.sprite_id = '';
+          this.sprite.pngUrl = '';
+          this.sprite.icons = [];
+          let username = Cookies.get('username');
+          let access_token = Cookies.get('access_token');
+          let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
+          this.sprite.sprite_id = sprite_id;
+          this.sprite.pngUrl = pngUrl;
+          let jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
+          this.$http({ url: jsonUrl, method: 'GET', headers: { 'x-access-token': access_token} })
+          .then(function(response){
+            //请求成功
+            let data = response.data;
+            let names = Object.keys(data);
+            this.sprite.icons = [];//初始化
+            for(let i=0;i<names.length;i++){
+              /*var ratio = 40/data[names[i]].height;
+              data[names[i]].x = data[names[i]].x*ratio;
+              data[names[i]].y = data[names[i]].y*ratio;
+              data[names[i]].width = data[names[i]].width*ratio;
+              data[names[i]].pixelRatio = ratio*100+"%";*/
+              this.sprite.icons.push({'name':names[i],'positions':data[names[i]]});
+            }
+          },function(){
+            //请求失败
+            console.log("spriteList获取失败");
+          });
+        } 
       }
       e.target.parentElement.className = claName;
 
@@ -302,8 +307,6 @@ export default {
 }
 
 .active .details{
-  width: 900px;
-  margin: auto;
   max-height: 1000px;
   opacity: 1;
 }
