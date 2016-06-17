@@ -469,11 +469,13 @@ span {
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  cursor: pointer;
 }
 
 .name p {
   font-size: 20px;
   margin: 0;
+  transition: 0.2s;
 }
 
 .card .meta {
@@ -516,7 +518,8 @@ span {
 }
 
 .active .name p {
-  font-size: 36px;
+  font-size: 32px;
+  transition: 0.2s;
 }
 
 .details{
