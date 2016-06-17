@@ -35,7 +35,7 @@ export default {
     createStyle: function(data){
       var name = data.name
       var templateId = data.templateId
-      let url = './static/streets-v8.json'
+      let url = './static/admin-v8.json'
       this.$el.querySelector("#create-loading").style.display = 'block'
       this.$http.get(url).then(function(res){
         let data = res.data
@@ -54,7 +54,7 @@ export default {
           //window.location.href="#!mapeditor"
         });
       },function(res){
-        console.log(res)
+        console.log(res);
       })
     },
     deleteStyle: function(style_id){
@@ -94,8 +94,8 @@ export default {
 
       if(response.data.length>0){
         this.dataset = response.data.map(function(d){
-          d.modify_at = util.dateFormat(new Date(d.modify_at));
-          d.create_at = util.dateFormat(new Date(d.create_at));
+          d.updatedAt = util.dateFormat(new Date(d.updatedAt));
+          d.createdAt = util.dateFormat(new Date(d.createdAt));
           return d;
         })
 
@@ -107,22 +107,7 @@ export default {
   },
   data() {
     return {
-      dataset: [{
-        name: '全国人口分布地图',
-        modify_at: '2016-04-25',
-        create_at: '2016-03-25',
-        style_id: 'HyhyyJ0e'
-      },{
-        name: '全国人口分布地图',
-        modify_at: '2016-04-25',
-        create_at: '2016-03-25',
-        style_id: 'HyhyyJ0e'
-      },{
-        name: '全国人口分布地图',
-        modify_at: '2016-04-25',
-        create_at: '2016-03-25',
-        style_id: 'HyhyyJ0e'
-      }],
+      dataset: [],
       dialogcontent: {
         title: '确定删除吗？'
       },

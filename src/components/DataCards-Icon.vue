@@ -309,6 +309,7 @@ export default {
 .active .details{
   max-height: 1000px;
   opacity: 1;
+  transition:0.5s;
 }
 
 .foxgis-data-cards .card.active {

@@ -1,11 +1,11 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-    <div class="small-pic">
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" @click="showDetails">
+    <!-- <div class="small-pic">
        <img id='mini-thumbnail' v-bind:src = "parseImgURL(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
     </div>
-
-    <div class="name">
+     -->
+    <div class="name" >
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button>
     </div>
