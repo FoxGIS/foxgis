@@ -21,9 +21,9 @@
 
   <div class="result_data">
     <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
-      <div class="name">
+      <div class="name" @click="showDetails($event,displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">
         <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
-        <mdl-anchor-button accent raised v-mdl-ripple-effect>预览</mdl-anchor-button>
+        <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">下载</mdl-anchor-button>
       </div>
       <div class="meta">
         <p>
@@ -35,6 +35,24 @@
           </select>
         </p>
         <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
+      </div>
+      <div class="details">
+        <div class="panel">
+          <div class="meta-title">
+            <b>预览</b>
+          </div>
+          <div style="width: 100%;">  
+            <p>test</p>
+          </div>
+          <div class="meta-title">
+            <b>覆盖率</b>
+          </div>
+          <div style="display: flex;flex-wrap: wrap;">
+            <div v-for="coverage in coverages" style="width:190px;">
+              <p>{{coverage.name}} ：{{coverage.cov}}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -65,20 +83,31 @@ import util from '../components/util.js'
 export default {
   methods: {
 
-    showDetails: function (e) {
+    showDetails: function (e,fontname) {
       //移除之前的active
       let activeCards = this.$el.querySelector('.active')
-      if(activeCards&&activeCards!==e.currentTarget){
+      if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','')
       }
-      //给当前的dom添加active
-      let claName = e.currentTarget.className
+      //给当前dom的父控件添加active
+      let claName = e.target.parentElement.className
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','')
       }else{
         claName += ' active'
+        this.coverages = []
+        for(let i=0;i<this.fonts.length;i++){
+          let temp = this.fonts[i]
+          if(temp.fontname === fontname){
+            this.coverages = temp.coverages
+          }
+        }
+        for(let j=0;j<this.coverages.length;j++){
+          let cov = (this.coverages[j].count/this.coverages[j].total).toFixed(2)
+          this.coverages[j].cov = cov*100+'%'
+        }
       }
-      e.currentTarget.className = claName
+      e.target.parentElement.className= claName
     },
 
     deleteAction: function(status) {
@@ -110,6 +139,18 @@ export default {
       this.dialogcontent.title = "确定删除吗？"
       document.getElementById('delete-dialog').style.display = 'block'
       this.deleteFontName.push(fontname)
+    },
+
+    downloadFont: function(fontname) {
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
+      let url = SERVER_API.fonts + '/' + username + '/' + fontname + '/raw?access_token='+ access_token
+      let aLink = document.createElement('a')
+      aLink.className = 'download_link'
+      let text = document.createTextNode('&nbsp;')
+      aLink.appendChild(text)
+      aLink.href = url
+      aLink.click()
     },
 
     editScope: function(e,index){
@@ -342,7 +383,8 @@ export default {
         total_files:0,//上传文件数目
         total_size:"0KB",
         current_file:1//当前正在第几个文件
-      }
+      },
+      coverages:[]
     }
   }
 }
@@ -475,6 +517,33 @@ span {
 
 .active .name p {
   font-size: 36px;
+}
+
+.details{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: .3s;
+}
+
+.active .details{
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.details .meta-title{
+  margin: 12px 0px;
+}
+
+.details .panel{
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-bottom: 45px;
 }
 
 .meta p {
