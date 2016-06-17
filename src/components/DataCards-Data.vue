@@ -1,5 +1,6 @@
 <template>
 <div class="foxgis-data-cards">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
@@ -34,8 +35,39 @@
     </div>
 
     <div class="details">
-      <div style="text-align:center;margin-top:12px;margin-bottom:12px;">
-        <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:500px;max-height:300px;">
+      <div class="meta-container">
+        <div class="meta-title title">
+          <b>数据属性</b>
+        </div>
+        <div class="meta-data content" >
+          <h6>这里是元数据信息</h6>
+        </div>
+      </div>
+      <div class="description-container">
+        <div class="description-title title">
+          <b>数据描述</b>
+        </div>
+        <div class="description content">
+          <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="4" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
+        </div>
+        
+      </div>
+      <div class="property-container">
+        <div class="property-title title">
+          <b>数据版权</b>
+        </div>
+        <div class="tileset-property content">
+          <span>{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].attribution}}</span>
+        </div>
+      </div>
+      <div class="preview-container">
+        <div class="preview-title title">
+          <b>数据预览</b>
+        </div>
+        <div class="preview content">
+          <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:100%;max-height:100%;">
+        </div>
+        
       </div>
     </div>
   </div>
@@ -108,6 +140,26 @@ export default {
           },function(response){
             alert("编辑错误");
           });
+    },
+    editDescription: function(e,index){//修改符号名称
+      let value = e.target.value;
+      let tileset_id = this.dataset[index].tileset_id;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      this.dataset[index].description = value;
+      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          let data = response.data;
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
+          /*var input = $(".tileset-name");
+          for(let i=0;i<input.length;i++){
+            input[i].blur();
+            input[i].value = this.dataset[i].name;
+          }*/
+        }, function(response) {
+          alert("网络错误");
+      });
     },
     deleteTag: function(pId, tag_id) {
       let tags = this.dataset[pId].tags;
@@ -329,7 +381,7 @@ export default {
 }
 
 .active .details{
-  max-height: 1000px;
+  max-height: 4000px;
   opacity: 1;
   transition:0.5s;
 }
@@ -337,6 +389,17 @@ export default {
 .foxgis-data-cards .card.active {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
   margin: 24px -24px;
+}
+
+.title{
+  margin:12px 35px;
+}
+.content{
+  margin:16px 50px 16px 50px; 
+}
+
+.preview-container{
+  margin-bottom:40px; 
 }
 
 .tags {
