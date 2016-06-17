@@ -45,7 +45,8 @@ module.exports = {
       test: /\.(ttf|eot)$/,
       loader: 'file'
     }, {
-      test: /mapbox-gl.+\.js$/,
+      test: /\.js$/,
+      include: path.resolve(__dirname, 'node_modules/mapbox-gl/js/render/shaders.js'),
       loader: 'transform/cacheable?brfs'
     }, {
       test: /\.js$/,
