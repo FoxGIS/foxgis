@@ -47,7 +47,10 @@ module.exports = {
     }, {
       test: /mapbox-gl.+\.js$/,
       loader: 'transform/cacheable?brfs'
-    }, {
+    },{
+      test: /mapbox-gl-style-spec.+\.js$/,
+      loader: 'transform/cacheable?brfs'
+    },{
       test: /\.js$/,
       include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
       loader: 'worker'
