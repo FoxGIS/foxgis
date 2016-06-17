@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl'
+/*import mapboxgl from 'mapbox-gl'*/
+require("mapbox-gl/dist/mapbox-gl.js")
 
 export default {
   attached() {
