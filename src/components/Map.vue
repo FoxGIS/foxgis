@@ -3,9 +3,7 @@
 </template>
 
 <script>
-/*import mapboxgl from 'mapbox-gl'*/
-require("mapbox-gl/dist/mapbox-gl.js")
-
+import mapboxgl from 'mapbox-gl'
 export default {
   attached() {
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2lsNmZ4MjVoMDAwZ3Zxa3U1am9ndnZjYyJ9.Po8UY7yYwu6Y2Y7HOrJVpQ'

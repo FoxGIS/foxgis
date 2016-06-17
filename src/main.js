@@ -78,54 +78,86 @@ let router = new Router({
 
 router.map({
   '/': {
-    component: Login
+    component: function (resolve) {
+      require(['./components/Login.vue'], resolve)
+    }
   },
   '/home': {
-    component: Home
+    component: function (resolve) {
+      require(['./components/Home.vue'], resolve)
+    }
   },
   '/atlas': {
-    component: Atlas
+    component: function (resolve) {
+      require(['./views/Atlas.vue'], resolve)
+    }
   },
   '/blog': {
-    component: Blog
+    component: function (resolve) {
+      require(['./components/Blog.vue'], resolve)
+    }
   },
   '/login': {
-    component: Login
+    component: function (resolve) {
+      require(['./components/Login.vue'], resolve)
+    }
   },
   '/register': {
-    component: Register
+    component: function (resolve) {
+      require(['./components/Register.vue'], resolve)
+    }
   },
   '/studio': {
-    component: Studio,
+    component: function (resolve) {
+      require(['./components/Studio.vue'], resolve)
+    },
     subRoutes: {
       '/': {
-        component: Upload
+        component: function (resolve) {
+          require(['./views/Upload.vue'], resolve)
+        }
       },
       '/maps': {
-        component: Maps
+        component: function (resolve) {
+          require(['./components/Maps.vue'], resolve)
+        }
       },
       '/data': {
-        component: Data
+        component: function (resolve) {
+          require(['./components/Data.vue'], resolve)
+        }
       },
       '/fonts': {
-        component: Fonts
+        component: function (resolve) {
+          require(['./views/Fonts.vue'], resolve)
+        }
       },
       '/sprites': {
-        component: Icons
+        component: function (resolve) {
+          require(['./components/Icons.vue'], resolve)
+        }
       },
       '/uploads': {
-        component: Upload
+        component:function (resolve) {
+          require(['./views/Upload.vue'], resolve)
+        }
       },
       '/user':{
-        component:User
+        component:function (resolve) {
+          require(['./views/User.vue'], resolve)
+        }
       }
     }
   },
   '/mapview': {
-    component: MapView
+    component: function (resolve) {
+      require(['./components/MapView.vue'], resolve)
+    }
   },
   '/mapeditor/*any': {
-    component: MapEditor
+    component: function (resolve) {
+      require(['./components/MapEditor.vue'], resolve)
+    }
   }
 })
 
