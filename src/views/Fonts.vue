@@ -476,6 +476,7 @@ span {
   font-size: 20px;
   margin: 0;
   transition: 0.2s;
+  cursor: auto;
 }
 
 .card .meta {

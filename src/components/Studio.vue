@@ -5,7 +5,7 @@
     <div class="mdl-layout__drawer">
       <!-- <span class="mdl-layout-title">制图工作室</span> -->
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程</a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程<span  v-mdl-badge.number="map_nums" ></a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据<span  v-mdl-badge.number="tileset_nums" ></span></a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体<span  v-mdl-badge.number="font_nums" ></span></a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i>符号库<span  v-mdl-badge.number="sprite_nums" ></span></a>
@@ -59,9 +59,16 @@ export default {
     let fonts_url = SERVER_API.fonts + '/' + username;
     let sprites_url = SERVER_API.sprites + '/' + username;
     let uploads_url = SERVER_API.uploads + '/' + username;
+    let maps_url = SERVER_API.styles+'/' + username;
     this.$http({url:'/static/whitelist.json',method:'GET'}).then(function(response){
       var accessUser = response.data.usernames;
       if(accessUser.indexOf(this.username)!==-1){this.access=true;}
+    });
+    this.$http({ url: maps_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      let data = response.data;
+      this.map_nums = data.length;
+    },function(response){
+
     });
     this.$http({ url: tileset_url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       let data = response.data;
@@ -94,6 +101,7 @@ export default {
       upload_nums:0,
       sprite_nums:0,
       tileset_nums:0,
+      map_nums:0,
       font_nums:0,
       access:false
     }
@@ -112,6 +120,9 @@ export default {
     
     "font_nums":function(msg){
       this.font_nums = parseInt(msg);
+    },
+    "map_nums":function(msg){
+      this.map_nums = parseInt(msg);
     }
   }
 }
