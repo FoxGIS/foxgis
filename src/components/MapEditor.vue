@@ -8,7 +8,7 @@
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/icons' }"><i class="material-icons">place</i></a>
+      <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick"><i class="material-icons">build</i></a>
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>

@@ -212,6 +212,8 @@ export default {
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
+        center: [116.420679, 39.772537],
+        zoom:7,
         attributionControl: false
       })
       map.addControl(new mapboxgl.Navigation())
@@ -234,7 +236,7 @@ export default {
           }
         },function(response){
           console.log(response);
-          alert("更新style发生未知错误")
+          console.log("更新style发生未知错误")
         })
     }
   },
