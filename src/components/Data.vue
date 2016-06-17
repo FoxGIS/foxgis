@@ -164,8 +164,7 @@ export default {
           } else {
             d.filesize = (d.filesize / 1024).toFixed(2) + 'KB';
           }
-          var date = new Date(d.createdAt)
-          d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+          d.createdAt = util.dateFormat(new Date(d.createdAt));
 
           return d;
         });

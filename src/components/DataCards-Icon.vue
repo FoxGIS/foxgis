@@ -58,9 +58,6 @@ export default {
       let claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
-        /*this.sprite.sprite_id = '';
-        this.sprite.pngUrl = '';
-        this.sprite.icons = [];*/
       }else{
         claName += ' active';
         if(this.sprite.sprite_id!==sprite_id){
@@ -80,11 +77,6 @@ export default {
             let names = Object.keys(data);
             this.sprite.icons = [];//初始化
             for(let i=0;i<names.length;i++){
-              /*var ratio = 40/data[names[i]].height;
-              data[names[i]].x = data[names[i]].x*ratio;
-              data[names[i]].y = data[names[i]].y*ratio;
-              data[names[i]].width = data[names[i]].width*ratio;
-              data[names[i]].pixelRatio = ratio*100+"%";*/
               this.sprite.icons.push({'name':names[i],'positions':data[names[i]]});
             }
           },function(){
@@ -271,11 +263,6 @@ export default {
   cursor: pointer;
 }
 
-.name p {
-  font-size: 24px;
-  margin: 0;
-}
-
 .card .meta {
   margin: 5px 24px;
   font-size: 12px;
@@ -345,6 +332,7 @@ export default {
   border: none;
   padding: 5px 5px 5px 0;
   width: 360px;
+  transition: 0.2s;
 }
 
 #pagination {

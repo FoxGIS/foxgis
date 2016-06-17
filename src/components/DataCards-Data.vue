@@ -1,7 +1,7 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" @click="showDetails">
-    <div class="name" >
+  <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
       <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button>
     </div>
@@ -21,7 +21,7 @@
           <option value="private">私有</option>
           <option value="public">公开</option>
         </select>
-      <!-- 上传时间：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span> -->
+      上传时间：<span style="width:115px;display: inline-block;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       中心：<span style="width:80px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[1]|currency '' 2 }}]</span>
       边界：<span style="width: 170px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[1]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[2]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[3]|currency '' 2 }}]</span>
       级别：<span style="width: 35px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].minzoom }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].maxzoom }}]</span>
@@ -34,7 +34,7 @@
     </div>
 
     <div class="details">
-      <div style="width:500px;height:300px;">
+      <div style="text-align:center;margin-top:12px;margin-bottom:12px;">
         <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:500px;max-height:300px;">
       </div>
     </div>
@@ -65,17 +65,18 @@ export default {
     showDetails: function (e) {
       //移除之前的active
       let activeCards = this.$el.querySelector('.active');
-      if(activeCards&&activeCards!==e.currentTarget){
+      if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      let claName = e.currentTarget.className;
+      let claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','')
       }else{
         claName += ' active';
+        //do somthing
       }
-      e.currentTarget.className = claName;
+      e.target.parentElement.className = claName;
     },
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
@@ -238,18 +239,7 @@ export default {
 
 <style scoped>
 
-.details{
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  padding: 0;
-  transition: .3s;
-}
 
-.active .details{
-  max-height: 1000px;
-  opacity: 1;
-}
 .card {
 /*  height: 120px;*/
   border-radius: 2px 2px 0 0;
@@ -270,17 +260,13 @@ export default {
   margin: 12px -12px;
 }
 
-.active:focus, .active:hover {
-  box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 24px -24px;
-}
-
 .card .name {
   margin: 24px 24px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  cursor: pointer;
 }
 
 .name input {
@@ -289,6 +275,7 @@ export default {
   border: none;
   padding: 5px 5px 5px 0;
   width: 360px;
+  transition: 0.2s;
 }
 
 .small-pic {
@@ -316,41 +303,47 @@ export default {
   align-items: center;
 }
 
-.card-details {
-  opacity: 0;
-  max-height: 0;
-  margin: 24px 24px 0;
-  transition: .2s;
-}
-
-.card-details p {
-  font-weight: bolder;
-}
-
-.card-details li {
-  list-style: none;
-  margin-left: 10px;
-  padding: 5px 0;
-}
-
-
 .active .meta {
+  display: none;
+}
+
+.active .tags{
+  margin-top: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  transition: 0.2s;
 }
 
-.active .name {
-  
-/*   padding: 12px 12px 15px; */
+.active .name input {
+  font-size: 24px;
+  transition:0.2s;
+} 
+
+.details{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: .3s;
 }
 
-.active .name p {
-  font-size: 1.5rem;
+.active .details{
+  max-height: 1000px;
+  opacity: 1;
+  transition:0.5s;
+}
+
+.foxgis-data-cards .card.active {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 24px -24px;
 }
 
 .tags {
   margin-left: 24px;
   margin-right: 24px;
-  font-size: .8em;
+  font-size: 13px;
+  transition: 0.2s;
 }
 
 .tags input {
