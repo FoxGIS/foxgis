@@ -45,7 +45,7 @@
   <div id="batch-btn-box">
     <div id="batch-button">
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchProcess" class="select-btn">批量编辑</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>     
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>
     </div>
     <div id="select-button">
       <!-- <mdl-anchor-button accent raised disabled v-mdl-ripple-effect @click="cardSelect" class="select-btn">选择</mdl-anchor-button> -->
@@ -67,7 +67,7 @@
         图幅大小：<span class="map-area">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
         </p>
       </div>
-      
+
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
@@ -257,7 +257,7 @@ export default {
       //新建data对象，存储更改以后的属性值
       var data = {};
       if(tagValue){
-        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);             
+        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
       }
       if(locationValue){data.location = locationValue;}
       if(timeValue){data.year = timeValue;}
@@ -297,7 +297,7 @@ export default {
                   this.displayUploads[t].year = data.year;
                 }
               }
-              
+
           },function(response){
               alert("编辑错误")
             });
@@ -553,14 +553,14 @@ export default {
       auto:true,//选择文件后自动上传
       compress:false,//是否压缩
       prepareNextFile:true,//自动准备下一个文件
-      accept:{//接受的文件格式
-        title: 'Images',
-        extensions: 'gif,jpg,jpeg,bmp,png,tif,tiff',
-        mimeTypes: 'image/*'
-      },
+      // accept:{//接受的文件格式
+      //   title: 'Images',
+      //   extensions: 'gif,jpg,jpeg,bmp,png,tif,tiff',
+      //   mimeTypes: 'image/*'
+      // },
       Vue:that,
       formData:{//参数
-        year:new Date().getFullYear(),    
+        year:new Date().getFullYear(),
         location:Cookies.get('location')?Cookies.get('location'):''
       }
     });
@@ -596,7 +596,7 @@ export default {
       this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
       //$('.progress-bar .activebar').css( 'width', );
     });
-    uploader.on( 'uploadSuccess', function( file,response) {//上传成功    
+    uploader.on( 'uploadSuccess', function( file,response) {//上传成功
       this.options.Vue.uploadStatus.current_file +=1;
       var data = response;
         if (data.size / 1024 > 1024) {
@@ -616,7 +616,7 @@ export default {
           this.options.Vue.uploadStatus.total_files=0;
           this.options.Vue.uploadStatus.progress=0;
           this.options.Vue.uploadStatus.percentage="width:0";
-        }    
+        }
     });
     uploader.on( 'uploadError', function( file,reason) {//上传失败
       this.options.Vue.uploadStatus.current_file +=1;
@@ -631,7 +631,7 @@ export default {
         this.options.Vue.uploadStatus.percentage="width:0";
       }
     });
-    
+
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         var data = response.data
@@ -702,9 +702,9 @@ export default {
                   break
                 }
               }
-            }  
+            }
           }
-        }   
+        }
       }
       if(this.selected_year_tags.length>0){
         for(let k=0;k<this.selected_year_tags.length;k++){
@@ -715,7 +715,7 @@ export default {
               temp2.push(upload)
             }
           }
-        } 
+        }
       }
       if(this.selected_location_tags.length>0){
         for(let k=0;k<this.selected_location_tags.length;k++){
@@ -1245,7 +1245,7 @@ span {
 .small-pic img {
   border-radius: 5px;
   max-width:100%;
-  height:auto; 
+  height:auto;
 }
 
 #pagination {
