@@ -41,8 +41,8 @@
           <div class="meta-title">
             <b>预览</b>
           </div>
-          <div style="width: 100%;">  
-            <p>test</p>
+          <div style="width: 100%;">
+       		<img id='mini-thumbnail' v-bind:src = "parseImgURL(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
           </div>
           <div class="meta-title">
             <b>覆盖率</b>
@@ -108,6 +108,12 @@ export default {
         }
       }
       e.target.parentElement.className= claName
+    },
+
+    parseImgURL:function(font) {
+      let access_token = Cookies.get('access_token')
+      let url = SERVER_API.fonts + '/' + font.owner + "/" + font.fontname + "/thumbnail?access_token=" + access_token
+      return url
     },
 
     deleteAction: function(status) {
@@ -470,6 +476,11 @@ span {
   align-items: center;
   text-align: left;
   cursor: pointer;
+}
+
+.result_data .card.active {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 24px -24px;
 }
 
 .name p {
