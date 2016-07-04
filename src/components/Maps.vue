@@ -35,9 +35,9 @@ export default {
     createStyle: function(data){
       var name = data.name
       var templateId = data.templateId
-      let url = './static/streets-v8.json'
+      //let url = './static/streets-v8.json'
       this.$el.querySelector("#create-loading").style.display = 'block'
-      this.$http.get(url).then(function(res){
+      this.$http.get('./static/streets-v8.json').then(function(res){
         let data = res.data
         data.name = name
         let style = JSON.stringify(data)
