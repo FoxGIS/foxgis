@@ -4,12 +4,13 @@
   <div id="edit-wrap">
     <nav class="mdl-navigation" id="main-control">
       <img class="mdl-layout-icon" src="../assets/logo.png"></img>
-      <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick"><i class="material-icons">map</i></a>
-      <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick"><i class="material-icons">extension</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a>
-      <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick"><i class="material-icons">build</i></a>
+      <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick" title="样式配置"><i class="material-icons">map</i></a>
+      <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
+      <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
+      <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
+      <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
+      <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
+      
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
