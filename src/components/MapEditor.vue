@@ -188,6 +188,11 @@ export default {
       layers: [],
       currentLayer:{}
     }
+  },
+  events: {
+    'map-bounds-change': function(bounds){
+      this.$broadcast('map-bounds-change',bounds);
+    }
   }
 }
 </script>

@@ -52,7 +52,8 @@ export default {
   },
 
   ready: function(){
-    this.$http({url:'/static/adminTree.json',method:'GET'}).then(function(response){
+    var that=this;
+    this.$http({url:'/static/adminTree-new.json',method:'GET'}).then(function(response){
       var zNodes = response.data.znodes;
       var setting = {
         data:{
@@ -60,8 +61,13 @@ export default {
             enable:true
           }
         },
+        vue:this,
         callback:{
-          onClick:function(){}
+          onClick:function(e,treeId,treeNode){
+            let bounds = treeNode.bbox;
+            var vue = this.getZTreeObj("admin-tree").setting.vue;
+            vue.$dispatch('map-bounds-change',bounds)
+          }
         },
         view:{
           showIcon:false
