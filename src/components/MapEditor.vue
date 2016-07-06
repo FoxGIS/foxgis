@@ -190,8 +190,8 @@ export default {
     }
   },
   events: {
-    'map-bounds-change': function(bounds){
-      this.$broadcast('map-bounds-change',bounds);
+    'map-bounds-change': function(options){
+      this.$broadcast('map-bounds-change',options);
     }
   }
 }

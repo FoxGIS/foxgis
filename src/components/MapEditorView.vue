@@ -238,15 +238,68 @@ export default {
           console.log(response);
           console.log("更新style发生未知错误")
         })
+    },
+    // 给定 admin code，返回 admin 级别
+    // 省市县的 admin code 是6位格式，乡镇为8位格式
+    // 返回值：1 -- 省；2 -- 市；3 -- 县；4 -- 乡镇; 0 -- 无效 codeName
+    getAdminType:function(codeName) {
+      if (codeName.length == 8) {
+        return 4;
+      }
+      if(codeName === 156){
+        return 0;
+      }
+      // check valid
+      if (codeName.length != 6) {
+        return -1;
+      }
+      // 省级行政区的后四位为0
+      if (/0000$/.test(codeName)) {
+        return 1;
+      }
+      // 市级行政的后两位为0
+      if (/00$/.test(codeName)) {
+        return 2;
+      }
+      return 3;
     }
   },
   events: {
-    'map-bounds-change': function(bounds){
+    'map-bounds-change': function(options){
+      var replaceContent;
+      var bounds = options.bounds;
       if(Object.prototype.toString.call(bounds) === '[object Array]'){
         this.map.fitBounds(bounds)
       }else{
         console.log('bounds must be Array')
       }
+      var adminType = this.getAdminType(options.id.toString());//获取行政级别
+      if (adminType === 1) { // province
+        replaceContent = options.name;
+        var url = './static/admin-style-template/admin-prov-v8.json';
+      } else if (adminType === 2) { // city
+        replaceContent = options.name;
+        var url = './static/admin-style-template/admin-city-v8.json';
+      } else if (adminType === 3) { // county
+        replaceContent = options.id;
+        var url = './static/admin-style-template/admin-county-v8.json';
+      } else if (adminType === 0){//country
+        var url = './static/admin-style-template/admin-country-v8.json';
+      } else { // village
+        alert("暂不支持乡镇级");
+        return;
+      }
+      this.$http.get(url).then(function(res){
+        if(typeof(res.data)==="string"){
+          var styleStr = res.data;
+        }else{
+          var styleStr = JSON.stringify(res.data);
+        }
+        var result = styleStr.replace(/replaceme/g,replaceContent);
+        var newStyle = JSON.parse(result);
+        this.map.setStyle(newStyle);
+      });
+      
     },
     'show-bounds-box': function(bounds){
       console.log(bounds);
