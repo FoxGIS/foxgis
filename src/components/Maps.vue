@@ -47,6 +47,7 @@ export default {
         this.$http({'url':createURL,'method':'POST','data':style,headers:{'x-access-token':access_token}})
         .then(function(res){
           this.$el.querySelector("#create-loading").style.display = 'none'
+          document.getElementById("template-container").style.display = 'none'
           let styleid = res.data.style_id
           window.location.href="#!mapeditor/"+styleid
         },function(res){

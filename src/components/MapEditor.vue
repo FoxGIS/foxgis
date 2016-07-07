@@ -221,6 +221,11 @@ export default {
       currentLayer:{},
       styleId: null
     }
+  },
+  events: {
+    'map-bounds-change': function(options){
+      this.$broadcast('map-bounds-change',options);
+    }
   }
 }
 </script>
