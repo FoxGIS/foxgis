@@ -297,7 +297,9 @@ export default {
         }
         var result = styleStr.replace(/replaceme/g,replaceContent);
         var newStyle = JSON.parse(result);
-        this.map.setStyle(newStyle);
+        //this.map.setStyle(newStyle);
+        this.$parent.$broadcast('toc-init', newStyle);
+        this.$parent.changeStyle(newStyle);
       });
       
     },
