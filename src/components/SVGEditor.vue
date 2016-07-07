@@ -15,7 +15,7 @@ export default {
       }else{
         var iframe = document.createElement("iframe");
         iframe.src = "./static/svgedit/editor/embedapi.html"
-        iframe.style = "width: calc(100% - 5px); height: 800px; left: 30px;"
+        iframe.style = "width: 100%; height: 100%;"
         $("#svg-wrap").append(iframe)
       }
     }
@@ -25,7 +25,10 @@ export default {
 <style scoped>
 #svg-wrap {
   display: block;
-  height: 100%;
+  height: calc(100% - 55px);
   flex-direction: column;
+  position: absolute;
+  width: calc(100% - 30px);
+  right: 0px;
 }
 </style>
