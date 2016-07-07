@@ -14,7 +14,7 @@ export default {
         return
       }else{
         var iframe = document.createElement("iframe");
-        iframe.src = "./src/components/svgedit/editor/embedapi.html"
+        iframe.src = "./static/svgedit/editor/embedapi.html"
         iframe.style = "width: calc(100% - 5px); height: 800px; left: 30px;"
         $("#svg-wrap").append(iframe)
       }
