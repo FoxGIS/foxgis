@@ -44,6 +44,7 @@ import Dialog from './components/Dialog'
 import DialogInput from './components/Dialog-Input'
 import IconPanel from './components/IconPanel'
 import User from './views/User'
+import SVGEditor from './components/SVGEditor.vue'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -71,6 +72,7 @@ Vue.component('foxgis-loading',Loading)
 Vue.component('foxgis-dialog',Dialog)
 Vue.component('foxgis-dialog-input',DialogInput)
 Vue.component('foxgis-icon-panel',IconPanel)
+Vue.component('foxgis-svgeditor',SVGEditor)
 
 let router = new Router({
   history: false
@@ -157,6 +159,11 @@ router.map({
   '/mapeditor/*any': {
     component: function (resolve) {
       require(['./components/MapEditor.vue'], resolve)
+    }
+  },
+  '/svg/*any': {
+    component: function (resolve) {
+      require(['./components/SVGEditor.vue'], resolve)
     }
   }
 })

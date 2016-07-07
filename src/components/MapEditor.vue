@@ -7,6 +7,7 @@
       <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick" title="样式配置"><i class="material-icons">map</i></a>
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
+      <a class="mdl-navigation__link" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
       <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
@@ -14,6 +15,7 @@
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
+    <foxgis-svgeditor id="svg-editor"></foxgis-svgeditor>
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
@@ -47,30 +49,58 @@ export default {
       discontrol.style.display = 'none'
       let editorContainer = document.getElementById('style-editor')
       editorContainer.style.display = 'none'
+      let svgContainer = document.getElementById('svg-editor')
+      svgContainer.style.display = 'none'
+      let mapContainer = document.getElementById("map-editorview-container")
+      mapContainer.style.display = 'block'
       this.changeLayout()
       e.currentTarget.className += ' control-active'
-
     },
     //行政区按钮 click
     'districtControlClick': function(e){
-
       let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
       let discontrol = document.getElementById('district-control')
       discontrol.style.display = 'block'
       let editorContainer = document.getElementById('style-editor')
       editorContainer.style.display = 'none'
-      let that = this
-
+      let svgContainer = document.getElementById('svg-editor')
+      svgContainer.style.display = 'none'
+      let mapContainer = document.getElementById("map-editorview-container")
+      mapContainer.style.display = 'block'
       this.changeLayout()
+      e.currentTarget.className += ' control-active'
+    },
+    'SVGEditorClick': function(e){
+      let toc = document.getElementById('toc-container')
+      toc.style.display = 'none'
+      let discontrol = document.getElementById('district-control')
+      discontrol.style.display = 'none'
+      let editorContainer = document.getElementById('style-editor')
+      editorContainer.style.display = 'none'
+      let svgContainer = document.getElementById('svg-editor')
+      svgContainer.style.display = 'block'
+      this.$broadcast("loadIframe")
+      let mapContainer = document.getElementById("map-editorview-container")
+      mapContainer.style.display = 'none'
+      mapContainer.style.width = "calc(100% - 230px)"
+      mapContainer.style.left = "230px"
+      this.changeLayout()
+      document.getElementById("map-tool").style.display = 'none'
       e.currentTarget.className += ' control-active'
     },
     //style 编辑
     'styleEditorClick': function(e){
       e.currentTarget.className += ' control-active'
       let active = document.getElementsByClassName("control-active")
-      active[0].className = active[0].className.replace(' control-active','')
-
+      if(active.length === 2){
+        if(active[1].textContent === "build"){
+          active[0].className = active[0].className.replace(' control-active','')
+        }else{
+          active[1].className = active[1].className.replace(' control-active','')
+        }
+      }
+      
       //切换toc区域的内容
       let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
@@ -78,6 +108,9 @@ export default {
       discontrol.style.display = 'none'
       let editorContainer = document.getElementById('style-editor')
       editorContainer.style.display = 'block'
+      let svgContainer = document.getElementById('svg-editor')
+      svgContainer.style.display = 'none'
+      document.getElementById("map-editorview-container").style.display = 'block'
       // 传入style 字符串到textarea
       this.$broadcast('editor-init',this.style)
 
@@ -151,6 +184,7 @@ export default {
   attached: function(){
     let urlhash = window.location.hash
     let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1')
+    this.styleId = styleId
     var username = Cookies.get('username')
     let access_token = Cookies.get('access_token')
     if(styleId !== null && access_token !== undefined){
@@ -180,13 +214,12 @@ export default {
         console.log(res)
       })
     }
-
-
   },
   data: function(){
     return {
       layers: [],
-      currentLayer:{}
+      currentLayer:{},
+      styleId: null
     }
   }
 }
