@@ -90,12 +90,12 @@ TODOS
 				'ext-overview_window.js',
 				'ext-markers.js',
 				'ext-connector.js',
-				'ext-eyedropper.js',
+				/*'ext-eyedropper.js',*/
 				'ext-shapes.js',
 				'ext-imagelib.js',
 				'ext-grid.js',
-				'ext-polygon.js',
-				'ext-star.js',
+				/*'ext-polygon.js',
+				'ext-star.js',*/
 				'ext-panning.js',
 				'ext-storage.js'
 			],
