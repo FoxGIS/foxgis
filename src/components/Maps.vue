@@ -35,7 +35,7 @@ export default {
     createStyle: function(data){
       var name = data.name
       var templateId = data.templateId
-      var url = './static/foxgis-admin.json'
+      var url = './static/mapStyles/foxgis-admin.json'
       this.$el.querySelector("#create-loading").style.display = 'block'
       this.$http.get(url).then(function(res){
         let data = res.data
