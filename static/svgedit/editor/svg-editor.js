@@ -90,12 +90,13 @@ TODOS
 				'ext-overview_window.js',
 				'ext-markers.js',
 				'ext-connector.js',
-				'ext-eyedropper.js',
-				'ext-shapes.js',
+				/*'ext-eyedropper.js',*/
+				/*'ext-shapes.js',*/
+				'ext-compass.js',
 				'ext-imagelib.js',
 				'ext-grid.js',
-				'ext-polygon.js',
-				'ext-star.js',
+				/*'ext-polygon.js',
+				'ext-star.js',*/
 				'ext-panning.js',
 				'ext-storage.js'
 			],
@@ -2103,7 +2104,7 @@ TODOS
 							} else {
 								holder.css('left', l).show();
 							}
-							holder.data('shown_popop', true);
+							/*holder.data('shown_popop', true);*/
 						},time);
 						evt.preventDefault();
 					}).mouseup(function(evt) {

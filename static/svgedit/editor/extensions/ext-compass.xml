@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+	<g id="tool_compasslib">
+	  <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+		  <path fill="#c0c0c0" stroke-linejoin="round" stroke-width="14" stroke="#202020" fill-rule="nonzero" d="M261.64,331.354l-86.482,29.007l5.909-18.264l-18.264,5.909l87.02-263.209l7.52,23.098h0.538l3.223-11.281L348.66,360.36L261.64,331.354z M249.823,90.167l-84.334,255.152l84.334-27.933l83.796,27.933L249.823,90.167z M280.978,460.81l-44.047-65.534v65.534h-10.743v-84.872h11.817l44.047,65.534v-65.534h10.743v84.872H280.978z"/>
+  	</svg>
+	</g>
+</svg>

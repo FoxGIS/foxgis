@@ -17,6 +17,7 @@ svgEditor.addExtension('shapes', function() {'use strict';
 	var start_x, start_y;
 	var svgroot = canv.getRootElem();
 	var lastBBox = {};
+	var clickButton_id;
 
 	// This populates the category list
 	var categories = {
@@ -33,7 +34,8 @@ svgEditor.addExtension('shapes', function() {'use strict';
 		music: 'Music',
 		misc: 'Miscellaneous',
 		raphael_1: 'raphaeljs.com set 1',
-		raphael_2: 'raphaeljs.com set 2'
+		raphael_2: 'raphaeljs.com set 2',
+		compass: 'Compass'
 	};
 
 	var library = {
@@ -67,7 +69,6 @@ svgEditor.addExtension('shapes', function() {'use strict';
 				'cross': 'm0.99844,99.71339l98.71494,0l0,-98.71495l101.26279,0l0,98.71495l98.71495,0l0,101.2628l-98.71495,0l0,98.71494l-101.26279,0l0,-98.71494l-98.71494,0z',
 				'plaque': 'm-0.00197,49.94376l0,0c27.5829,0 49.94327,-22.36036 49.94327,-49.94327l199.76709,0l0,0c0,27.5829 22.36037,49.94327 49.94325,49.94327l0,199.7671l0,0c-27.58289,0 -49.94325,22.36034 -49.94325,49.94325l-199.76709,0c0,-27.58292 -22.36037,-49.94325 -49.94327,-49.94325z',
 				'page': 'm249.3298,298.99744l9.9335,-39.73413l39.73413,-9.93355l-49.66763,49.66768l-248.33237,0l0,-298.00001l298.00001,0l0,248.33234'
-
 			},
 			buttons: []
 		}
@@ -86,6 +87,9 @@ svgEditor.addExtension('shapes', function() {'use strict';
 		var fill = cur_lib.fill || false;
 		var off = size * 0.05;
 		var vb = [-off, -off, size + off*2, size + off*2].join(' ');
+		if(clickButton_id == "compass"){
+			vb = [0, 0, 512, 512].join(' ');
+		}
 		var stroke = fill ? 0: (size/30);
 		var shape_icon = new DOMParser().parseFromString(
 			'<svg xmlns="http://www.w3.org/2000/svg"><svg viewBox="' + vb + '"><path fill="'+(fill?'#333':'none')+'" stroke="#000" stroke-width="' + stroke + '" /></svg></svg>',
@@ -118,7 +122,7 @@ svgEditor.addExtension('shapes', function() {'use strict';
 	function loadLibrary(cat_id) {
 
 		var lib = library[cat_id];
-
+		clickButton_id = cat_id;
 		if (!lib) {
 			$('#shape_buttons').html('Loading...');
 			$.getJSON(svgEditor.curConfig.extPath + 'shapelib/' + cat_id + '.json', function(result) {
@@ -189,6 +193,7 @@ svgEditor.addExtension('shapes', function() {'use strict';
 
 			// Do mouseup on parent element rather than each button
 			$('#shape_buttons').mouseup(function(evt) {
+				
 				var btn = $(evt.target).closest('div.tool_button');
 
 				if (!btn.length) {return;}
@@ -231,6 +236,7 @@ svgEditor.addExtension('shapes', function() {'use strict';
 			shower.mouseup(function() {
 				canv.setMode(current_d ? mode_id : 'select');
 			});
+			
 			$('#tool_shapelib').remove();
 
 			var h = $('#tools_shapelib').height();
