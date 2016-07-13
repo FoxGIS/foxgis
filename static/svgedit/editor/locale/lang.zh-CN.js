@@ -200,7 +200,8 @@ svgEditor.readLang({
 		"music": "音乐符号",
 		"misc": "杂项",
 		"raphael_1": "常用图标1",
-		"raphael_2": "常用图标2"
+		"raphael_2": "常用图标2",
+		"compass": "指北针"
 	},
 	imagelib: {
 		"select_lib": "选择一个图像库",

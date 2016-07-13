@@ -2103,7 +2103,7 @@ TODOS
 							} else {
 								holder.css('left', l).show();
 							}
-							holder.data('shown_popop', true);
+							/*holder.data('shown_popop', true);*/
 						},time);
 						evt.preventDefault();
 					}).mouseup(function(evt) {
