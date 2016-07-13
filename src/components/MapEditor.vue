@@ -221,6 +221,7 @@ export default {
         this.changeStyle(initStyle)
         var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
         sprite.pngUrl = initStyle.sprite+".png";
+        this.spriteObj.pngUrl = sprite.pngUrl;
         let jsonUrl = initStyle.sprite+".json";
         this.$http({url:jsonUrl,method:"GET",headers:{'x-access-token':access_token}})
         .then(function(res){
@@ -229,7 +230,7 @@ export default {
           for(let i=0;i<names.length;i++){
             sprite.icons.push({'name':names[i],'positions':data[names[i]]});
           }
-          this.spriteObj = sprite;
+          this.spriteObj.icons = sprite.icons;
         },function(){
           alert("sprite json请求错误");
         })
@@ -254,7 +255,10 @@ export default {
       layers: [],
       currentLayer:{},
       styleId: null,
-      spriteObj:{}
+      spriteObj:{
+        pngUrl:"",
+        icons:[]
+      }
     }
   },
   events: {

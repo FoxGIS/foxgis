@@ -524,6 +524,13 @@ export default {
           value = value.split(',');
         }
       }
+
+      if(!currentLayer.hasOwnProperty('layout')){
+        currentLayer.layout = {};
+      }
+      if(!currentLayer.hasOwnProperty('paint')){
+        currentLayer.paint = {};
+      }
       //visibility
       if(targetDom.type === 'checkbox'){
         if(targetDom.parentElement.dataset.name === 'visibility'){
