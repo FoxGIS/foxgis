@@ -1,5 +1,6 @@
 <template>
 <div>
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div id="header"></div>
   <div id="edit-wrap">
     <nav class="mdl-navigation" id="main-control">
@@ -9,14 +10,15 @@
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
-      <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
+      <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
+      <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
       
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
     <foxgis-svgeditor id="svg-editor"></foxgis-svgeditor>
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
+    <foxgis-icon-panel id="icon-select-panel" :dataset="spriteObj"></foxgis-icon-panel>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
@@ -123,6 +125,9 @@ export default {
       mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px"
       document.getElementById("map-tool").style.display = 'none'
     },
+    'styleSaveClick':function(){
+      this.patchStyle(this.style);
+    },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")
       active[0].className = active[0].className.replace(' control-active','')
@@ -179,6 +184,22 @@ export default {
       this.$broadcast('hide-bounds-box')
       let printbutton = document.querySelector("#print-button")
       printbutton.innerText = '打印'
+    },
+    patchStyle: function(style){
+      let style_id = style.style_id
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
+      let url = SERVER_API.styles + '/' + username + '/' + style_id
+      let data = JSON.stringify(style)
+      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            this.$broadcast("mailSent",{message:"保存成功！",timeout:3000});
+          }
+        },function(response){
+          console.log(response);
+          this.$broadcast("mailSent",{message:"保存失败！发生未知错误！",timeout:3000});
+        })
     }
   },
   attached: function(){
@@ -198,7 +219,21 @@ export default {
         this.$broadcast('toc-init', tocdata)
         console.log('mapeditor init')
         this.changeStyle(initStyle)
-
+        var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
+        sprite.pngUrl = initStyle.sprite+".png";
+        this.spriteObj.pngUrl = sprite.pngUrl;
+        let jsonUrl = initStyle.sprite+".json";
+        this.$http({url:jsonUrl,method:"GET",headers:{'x-access-token':access_token}})
+        .then(function(res){
+          let data = res.data;
+          let names = Object.keys(data);
+          for(let i=0;i<names.length;i++){
+            sprite.icons.push({'name':names[i],'positions':data[names[i]]});
+          }
+          this.spriteObj.icons = sprite.icons;
+        },function(){
+          alert("sprite json请求错误");
+        })
       },function(){
         alert("style 信息错误")
       })
@@ -219,7 +254,11 @@ export default {
     return {
       layers: [],
       currentLayer:{},
-      styleId: null
+      styleId: null,
+      spriteObj:{
+        pngUrl:"",
+        icons:[]
+      }
     }
   },
   events: {
@@ -231,6 +270,16 @@ export default {
 </script>
 
 <style scoped>
+#main-control .save-style{
+  padding: 10px 0 5px 5px;
+  bottom: 0px;
+  position: absolute;
+  cursor: pointer;
+}
+.save-style:hover{
+  background-color: blue;
+}
+
 #header {
   height: 50px;
   background-image: url('../assets/header.jpg');
@@ -299,6 +348,25 @@ export default {
   display: none;
 }
 
+#icon-select-panel{
+  width: 300px;
+  height: 400px;
+  position: fixed;
+  left: 550px;
+  top: 150px;
+  background-color: #fbfbfd;
+  z-index: 1;
+  display: none;
+}
+
+#icon-select-panel .panel{
+  margin-left: 10px;
+  margin-right: 10px;
+  height:350px;
+  overflow: auto;
+  border-radius: 0;
+  border: none;
+}
 #map-tool {
   position: absolute;
   bottom: 20px;
@@ -332,5 +400,6 @@ export default {
 #back-button i {
   vertical-align: middle;
 }
+
 
 </style>

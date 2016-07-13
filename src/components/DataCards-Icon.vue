@@ -17,7 +17,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
     <div class="details">
-      <foxgis-icon-panel :dataset="sprite"></foxgis-icon-panel>
+      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -293,6 +293,11 @@ export default {
   transition: .3s;
 }
 
+.details .icon-panel{
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-bottom: 45px;
+}
 .active .details{
   max-height: 1000px;
   opacity: 1;

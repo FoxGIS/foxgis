@@ -44,39 +44,127 @@
         </div>
       </div>
       <div v-if="curPanelLayer.type=='symbol'">
-        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-          <div class="property-value" v-if="name.indexOf('color')==-1">
-            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+        <nav class="mdl-navigation" id="symbol-property-control">
+          <a class="mdl-navigation symbol symbol-control-active" v-on:click="symbolControlClick" title="设置符号属性">布局</a>
+          <a class="mdl-navigation text" v-on:click="symbolControlClick" title="设置注记属性">注记</a>
+          <a class="mdl-navigation icon" v-on:click="symbolControlClick" title="设置图标属性">符号</a>
+        </nav>
+        <div id="text-div" class="label-set" style="display: none">
+          <b>绘图属性</b>
+          <div v-for="(name,value) in propertyGroup.text.paint" class="property-item">
+            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+            <div class="property-value" v-if="name.indexOf('color')==-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')!=-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            </div>
           </div>
-          <div class="property-value" v-if="name.indexOf('color')!=-1">
-            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
-            <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+          <b>输出属性</b>
+          <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
+            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'">
+              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')!=-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
+              <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+            </div>
+            <div class="property-value" v-if="name=='text-anchor'">
+              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="center" v-if="value=='center'" selected>中心</option>
+                <option value="center"  v-else>中心</option>
+                <option value="left" v-if="value=='left'" selected>右</option>
+                <option value="left" v-else>右</option>
+                <option value="right" v-if="value=='right'" selected>左</option>
+                <option value="right" v-else>左</option>
+                <option value="top" v-if="value=='top'" selected>下</option>
+                <option value="top" v-else>下</option>
+                <option value="bottom" v-if="value=='bottom'" selected>上</option>
+                <option value="bottom" v-else>上</option>
+                <option value="top-left" v-if="value=='top-left'" selected>右下</option>
+                <option value="top-left" v-else>右下</option>
+                <option value="top-right" v-if="value=='top-right'" selected>左下</option>
+                <option value="top-right" v-else>左下</option>
+                <option value="bottom-left" v-if="value=='bottom-left'" selected>右上</option>
+                <option value="bottom-left" v-else>右上</option>
+                <option value="bottom-right" v-if="value=='bottom-right'" selected>左上</option>
+                <option value="bottom-right" v-else>左上</option>
+              </select>
+            </div>
+            <div class="property-value" v-if="name=='text-allow-overlap'">
+              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
+            <div class="property-value" v-if="name=='text-ignore-placement'">
+              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
           </div>
         </div>
-        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-          <div class="property-value" v-if="name!=='symbol-placement'&&name.indexOf('color')==-1&&name!=='visibility'">
-            <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+        <div id="icon-div" class="label-set" style="display: none">
+          <b>绘图属性</b>
+          <div v-for="(name,value) in propertyGroup.icon.paint" class="property-item">
+            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+            <div class="property-value" v-if="name.indexOf('color')==-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')!=-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            </div>
           </div>
-          <div class="property-value" v-if="name=='symbol-placement'">
-            <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-              <option value="point" v-if="value=='point'" selected>点</option>
-              <option value="point"  v-else>点</option>
-              <option value="line" v-if="value=='line'" selected>线</option>
-              <option value="line" v-else>线</option>
-            </select>
+          <b>输出属性</b>
+          <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
+            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
+              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')!=-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
+              <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+            </div>
+            <div class="property-value" v-if="name=='icon-allow-overlap'">
+              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
+            <div class="property-value" v-if="name=='icon-ignore-placement'">
+              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
           </div>
-          <div class="property-value" v-if="name.indexOf('color')!=-1">
-            <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
-            <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
-          </div>
-          <div class="property-value" v-if="name=='visibility'">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+        </div>
+        <div id="symbol-div" class="label-set" style="display: block">
+          <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
+            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+            <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name.indexOf('color')==-1&&name!=='visibility'">
+              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+            </div>
+            <div class="property-value" v-if="name=='symbol-avoid-edges'">
+              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
+            <div class="property-value" v-if="name=='symbol-placement'">
+              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="point" v-if="value=='point'" selected>点</option>
+                <option value="point"  v-else>点</option>
+                <option value="line" v-if="value=='line'" selected>线</option>
+                <option value="line" v-else>线</option>
+              </select>
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')!=-1">
+              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
+              <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+            </div>
+            <div class="property-value" v-if="name=='visibility'">
+              <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
           </div>
         </div>
       </div>
+
       <div v-if="curPanelLayer.type=='fill'">
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -96,7 +184,6 @@
             <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
             <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
           </div>
-
         </div>
         <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
           <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -106,6 +193,7 @@
           </div>
         </div>
       </div>
+
       <div v-if="curPanelLayer.type=='line'" >
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -165,6 +253,7 @@
           </div>
         </div>
       </div>
+
       <div v-if="curPanelLayer.type=='circle'">
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -189,6 +278,7 @@
           </div>
         </div>
       </div>
+
       <div v-if="curPanelLayer.type=='raster'">
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -206,8 +296,8 @@
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePanel">clear</i>
     </div>
-
   </div>
+
 </template>
 
 <script>
@@ -222,6 +312,34 @@ export default {
     }
   },
   methods: {
+    symbolControlClick:function(e){
+      //移除之前的active
+      let activeCards = this.$el.querySelector('.symbol-control-active');
+      if(activeCards&&activeCards!==e.target){
+        activeCards.className = activeCards.className.replace(' symbol-control-active','');
+      }
+      //给当前的dom添加active
+      let claName = e.target.className;
+      if(claName.indexOf('symbol-control-active')===-1){
+        claName += ' symbol-control-active';
+      }
+      e.target.className = claName;
+      if($(e.target).hasClass("text")){
+        $('#text-div').css("display","block");
+        $("#icon-div").css("display","none");
+        $("#symbol-div").css("display","none");
+      }
+      if($(e.target).hasClass("icon")){
+        $('#text-div').css("display","none");
+        $("#icon-div").css("display","block");
+        $("#symbol-div").css("display","none");
+      }
+      if($(e.target).hasClass("symbol")){
+        $('#text-div').css("display","none");
+        $("#icon-div").css("display","none");
+        $("#symbol-div").css("display","block");
+      }
+    },
     fixType: function(layer){
       //有的layer没有type属性，有ref属性,补充这个信息
       if(layer.type === undefined && layer.ref){
@@ -256,6 +374,44 @@ export default {
       templayer.layout = defaultProperty[templayer['type']].layout
       return templayer
     },
+    resolvePropertyGroup:function(panelLayer){
+      if(panelLayer.type==="symbol"){
+        var group = {
+          text:{
+            layout:{},
+            paint:{}
+          },
+          icon:{
+            layout:{},
+            paint:{}
+          },
+          symbol:{}
+        };
+        if(panelLayer.paint !== undefined){
+          for(let name in panelLayer.paint){
+            if(name.indexOf("text")===0){
+              group.text.paint[name] = panelLayer.paint[name];
+            }else if(name.indexOf("icon")===0){
+              group.icon.paint[name] = panelLayer.paint[name];
+            }
+          }
+        }
+        if(panelLayer.layout !== undefined){
+          for(let name in panelLayer.layout){
+            if(name.indexOf("text")===0){
+              group.text.layout[name] = panelLayer.layout[name];
+            }else if(name.indexOf("icon")===0){
+              group.icon.layout[name] = panelLayer.layout[name];
+            }else if(name.indexOf("symbol")===0||name.indexOf("visibility")===0){
+              group.symbol[name] = panelLayer.layout[name];
+            }
+          }
+        }
+        return group;
+      }else{
+        return panelLayer;
+      }
+    },
     createTocLayer: function(style){
       let styleObj = JSON.parse(JSON.stringify(style))
       let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
@@ -289,6 +445,8 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(layer_id){
+      $("input[name='icon-image']").unbind("click");
+      $("input[name='icon-image']").bind("click",this.onShowIconPanel);
       this.$el.querySelector("#property-panel").style.display = 'block'
       this.$dispatch("hide-mapbounds")
       let layers = this.styleObj.layers
@@ -303,6 +461,7 @@ export default {
         this.currentLayer = clickLayer
         this.fixType(clickLayer)
         this.curPanelLayer = this.filterProperty(clickLayer)
+        this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
       }
     },
     checkSublayer:function(layer_id,index,e){
@@ -346,30 +505,45 @@ export default {
         value = targetDom.options[targetDom.selectedIndex].value
       }else{
         value = targetDom.value
+        if(value === ""){
+          value = this.defaultProperty[currentLayer['type']][targetDom.dataset.type][targetDom.name];
+        }
       }
 
       var temp = Number(value)
       if(!isNaN(temp)){
         value = temp
       }else if(typeof value === 'string'){
-        if(value.indexOf(',')!=-1){
+        if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"){
           value = value.split(',')
           for(var i=0,length=value.length;i<length;i++){
             value[i] = Number(value[i])
           }
         }
+        if(targetDom.name==="text-font"){
+          value = value.split(',');
+        }
+      }
+
+      if(!currentLayer.hasOwnProperty('layout')){
+        currentLayer.layout = {};
+      }
+      if(!currentLayer.hasOwnProperty('paint')){
+        currentLayer.paint = {};
       }
       //visibility
-      if(targetDom.type === 'checkbox' && targetDom.parentElement.dataset.name === 'visibility'){
-        if(targetDom.checked){
-          value = 'visible'
+      if(targetDom.type === 'checkbox'){
+        if(targetDom.parentElement.dataset.name === 'visibility'){
+          if(targetDom.checked){
+            value = 'visible'
+          }else{
+            value = 'none'
+          }
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
         }else{
-          value = 'none'
+          value = targetDom.checked
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
         }
-        currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
-      }else if(targetDom.type === 'checkbox' && targetDom.parentElement.dataset.name === 'fill-antialias'){
-        value = targetDom.checked
-        currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
       }else{
         currentLayer[targetDom.dataset.type][targetDom.name] = value
       }
@@ -545,6 +719,25 @@ export default {
     closePanel: function(e){
       let panel = this.$el.querySelector("#property-panel")
       panel.style.display = 'none'
+      $("#icon-select-panel").hide();
+    },
+    onShowIconPanel:function(e){
+      var iconPanel = $("#icon-select-panel");
+      if(iconPanel.is(":visible")===true){
+        iconPanel.hide();
+        $("#icon-select-panel .icon-link").unbind("click");
+      }else{
+        iconPanel.show();
+        $("#icon-select-panel .icon-link").unbind("click");
+        $("#icon-select-panel .icon-link").bind("click",{inputEvent:e},this.iconClick);
+      }
+    },
+    iconClick:function(e){
+      var iconName = e.target.title;
+      var inputEvent = e.data.inputEvent;
+      inputEvent.target.value = iconName;
+      this.propertyChange(inputEvent);
+      $("#icon-select-panel").hide();
     }
   },
   events: {
@@ -555,8 +748,11 @@ export default {
       this.fixType(this.currentLayer)
       //展示属性
       this.curPanelLayer = this.filterProperty(this.currentLayer)
+      this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
+      
     },
     'toc-layer-change': function(id){
+      $("input[name='icon-image']").unbind("click");
       let styleObj = this.styleObj
       let layers = styleObj.layers
       for(let i=0,length=layers.length;i<length;i++){
@@ -568,8 +764,10 @@ export default {
       this.fixType(this.currentLayer)
       //展示属性
       this.curPanelLayer = this.filterProperty(this.currentLayer)
+      this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
       let panel = this.$el.querySelector("#property-panel")
       panel.style.display = 'block'
+      $("input[name='icon-image']").bind("click",this.onSelectIcon);
     }
   },
   data: function() {
@@ -588,20 +786,36 @@ export default {
         'translate-anchor': '偏移相对物',
         'pattern': '图案',
         'antialias': '反锯齿',
+        'icon-image':'图标名称',
+        'icon-size':'图标大小',
+        'icon-rotate':'图标旋转',
+        'icon-offset':'图标偏移',
+        'icon-allow-overlap':'允许覆盖',
+        'icon-ignore-placement':'允许被覆盖',
         'icon-opacity': '图标透明度',
         'icon-color': '图标颜色',
-        'icon-halo-color': '图标光环颜色',
-        'icon-halo-width': '图标光环宽度',
-        'text-opacity': '字体透明度',
-        'text-color': '字体颜色',
-        'text-halo-color': '字体光环颜色',
-        'text-halo-width': '字体光环宽度',
-        'icon-size': '图标大小',
-        'text-field':'字体字段',
+        'icon-halo-color': '图标光晕颜色',
+        'icon-halo-width': '图标光晕宽度',
+        'icon-halo-blur':'光晕模糊度',
+        'text-field':'注记字段',
+        'text-font':'注记字体',
         'text-size': '字体大小',
-        'text-max-width': '字体最大宽度',
+        'text-max-width': '注记最大宽度',
+        'text-line-height':"注记行高",
+        'text-letter-spacing':'字体间距',
+        'text-anchor':'注记位置',
+        'text-rotate':'注记旋转',
+        'text-offset':'注记偏移',
+        'text-allow-overlap':'允许覆盖',
+        'text-ignore-placement':'允许被覆盖',
+        'text-opacity': '文字透明度',
+        'text-color': '字体颜色',
+        'text-halo-color': '字体光晕颜色',
+        'text-halo-width': '字体光晕宽度',
+        'text-halo-blur': '光晕模糊度',
         'placement': '符号位置',
         'spacing': '符号间隔',
+        'avoid-edges':'避免边缘',
         'gap-width': '间隙宽度',
         'offset': '方向偏移',
         'blur': '模糊距离',
@@ -611,6 +825,7 @@ export default {
         'miter-limit': '切线交叉限制',
         'round-limit': '圆交叉限制'
       },
+      propertyGroup:{},
       typeIcon: {
         symbol: 'grade',
         line: 'remove',
@@ -696,18 +911,35 @@ export default {
             'icon-color': '#000000',
             'icon-halo-color': 'rgba(0,0,0,0)',
             'icon-halo-width': 0,
+            'icon-halo-blur':0,
+            'text-opacity':1,
             'text-color': '#000000',
             'text-halo-color': '#000000',
-            'text-halo-width': 1
+            'text-halo-width': 1,
+            'text-halo-blur':0
           },
           'layout': {
+            'symbol-placement': 'point',
+            'symbol-spacing': 250,
+            'symbol-avoid-edges':false,
             'visibility': 'visible',
+            'icon-image':'{icon-image}',
             'icon-size': 1,
+            'icon-offset':[0,0],
+            'icon-rotate':0,
+            'icon-allow-overlap':false,
+            'icon-ignore-placement':false,
             'text-field':'{text-field}',
+            'text-font':['SimHei Regular'],
             'text-size': 16,
             'text-max-width': 10,
-            'symbol-placement': 'point',
-            'symbol-spacing': 250
+            'text-line-height':1.2,
+            'text-letter-spacing':0,
+            'text-anchor':'center',
+            'text-rotate':0,
+            'text-offset':[0,0],
+            'text-allow-overlap':false,
+            'text-ignore-placement':false
           }
         }
       }
@@ -728,6 +960,7 @@ export default {
         this.fixType(this.currentLayer)
         //展示属性
         this.curPanelLayer = this.filterProperty(this.currentLayer)
+        this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
       },
       deep: true
     }
@@ -938,4 +1171,27 @@ a {
   z-index: 1;
 }
 
+#symbol-property-control{
+    width: 310px;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    height: 30px;
+    box-sizing: border-box;
+    background-color: #2061C6;
+}
+
+#symbol-property-control a{
+    color: white;
+    box-sizing: border-box;
+    width: 50px;
+    cursor: pointer;
+    padding: 3px 0 3px 10px;
+}
+
+#symbol-property-control .symbol-control-active{
+    color: #2061C6;
+    background-color: #E5E2D3;
+}
 </style>

@@ -4,8 +4,8 @@
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
     </div>
     <div class="panel" style="text-align:center;">
-      <a v-for="icon in dataset.icons" class="icon-link">
-        <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;cursor:pointer;'" title="{{icon.name}}">
+      <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
+        <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
           
         </div>
       </a>
@@ -31,23 +31,39 @@ export default {
 </script>
 
 <style scoped>
-.icon-link{
+.icon-link:hover{
+  background-color: #ababab;
+  cursor:pointer;
   /* margin-left: auto;
   margin-right: auto; */
 } 
 .meta-title{
-  margin: 12px 35px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-left: 5px;
 }
 .panel{
   display: flex;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-left: 45px;
-  margin-right: 45px;
-  margin-bottom: 45px;
   background-color: #D8D8D8;
-  border: 2px solid blue;
-  border-radius: 18px;
+  overflow: auto;
+  margin: 5px;
+  height: calc(100% - 50px);
+}
+
+.panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.panel::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+.panel::-webkit-scrollbar-thumb {
+    background-color: #adadad;
 }
 </style>

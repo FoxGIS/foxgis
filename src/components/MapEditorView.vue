@@ -212,8 +212,8 @@ export default {
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
-        center: [116.420679, 39.772537],
-        zoom:7,
+        center: [108.420679, 36.772537],
+        zoom:3,
         attributionControl: false
       })
       map.addControl(new mapboxgl.Navigation())
@@ -246,7 +246,7 @@ export default {
       if (codeName.length == 8) {
         return 4;
       }
-      if(codeName === 156){
+      if(codeName === '156'){
         return 0;
       }
       // check valid
@@ -297,9 +297,10 @@ export default {
         }
         var result = styleStr.replace(/replaceme/g,replaceContent);
         var newStyle = JSON.parse(result);
+        newStyle.style_id = this.localStyle.style_id;
         //this.map.setStyle(newStyle);
-        this.$parent.$broadcast('toc-init', newStyle);
-        this.$parent.changeStyle(newStyle);
+        //this.$parent.$broadcast('toc-init', newStyle);
+        this.changeStyle(newStyle);
       });
       
     },
@@ -404,7 +405,7 @@ export default {
               break
           }
         }
-        this.patchStyle(style)
+        //this.patchStyle(style)
         this.localStyle = JSON.parse(JSON.stringify(style))
       },
       deep:true
