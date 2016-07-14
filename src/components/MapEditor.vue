@@ -33,6 +33,7 @@
 import Cookies from 'js-cookie'
 import { validate } from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
+import util from '../components/util.js'
 export default {
   vuex: {
     getters: {
@@ -215,7 +216,7 @@ export default {
       .then(function(res){
         let data = res.data
         let initStyle = JSON.parse(JSON.stringify(data))
-        var tocdata = JSON.parse(JSON.stringify(data))
+        var tocdata = initStyle;
         this.$broadcast('toc-init', tocdata)
         console.log('mapeditor init')
         this.changeStyle(initStyle)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="style-header">
-      <span>{{styleObj.name}}</span><i class="material-icons">add</i>
+      <span>{{styleObj.name}}</span><i class="material-icons new-layer" v-on:click="showCreateStyle">create</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
@@ -296,12 +296,79 @@
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePanel">clear</i>
     </div>
+
+    <div id="new-layer-panel">
+      <div id="property-header">新建样式图层</div>
+
+      <div class="property-item">
+        <div class="property-name"><span >样式ID</span></div>
+        <div class="property-value">
+          <input type="text" name="layer-id" value="new_layer">
+        </div>
+      </div>
+
+      <div class="property-item">
+        <div class="property-name"><span >数据源</span></div>
+        <div class="property-value">
+          <select name="source" @change="sourceSelected">
+            <option value="" selected>选择数据源</option>
+            <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="property-item">
+        <div class="property-name"><span >源图层</span></div>
+        <div class="property-value">
+          <select name="source-layer">
+            <option value="" selected>选择数据图层</option>
+            <option value="{{layer.id}}" v-for="layer in sourceLayers">{{layer.id}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="property-item">
+        <div class="property-name"><span >数据类型</span></div>
+        <div class="property-value">
+          <input type="radio" name="type" value="fill" checked>
+          <label for="one">面 </label>
+          <input type="radio" name="type" value="line">
+          <label for="two">线</label>
+          <input type="radio" name="type" value="circle">
+          <label for="one">圆</label>
+          <input type="radio" name="type" value="symbol">
+          <label for="two">点</label>
+        </div>
+      </div> 
+
+      <div class="property-item">
+        <div class="property-name"><span >级别</span></div>
+        <div class="property-value">
+          <input type="text" name="minzoom" value="0" style="width:80px;">
+          <label class="label minzoom-label">小</label>
+          <input type="text" name="maxzoom" value="22" style="width:80px;">
+          <label class="label maxzoom-label">大</label>
+        </div>
+      </div>
+
+      <div class="property-item">
+        <div class="property-name"><span >过滤条件</span></div>
+        <div class="property-value">
+          <input type="text" name="filter" value="filter">
+        </div>
+      </div>
+
+      <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
+      <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
+    </div><!-- new-layer-panel结束 -->
+
   </div>
 
 </template>
 
 <script>
 import { changeStyle } from '../vuex/actions'
+import _ from 'lodash'
 export default {
   vuex: {
     getters: {
@@ -312,6 +379,18 @@ export default {
     }
   },
   methods: {
+    showCreateStyle:function(){
+      if($("#property-panel").is(":visible")){
+        $("#property-panel").hide();
+      }
+      var newLayerPanel = $("#new-layer-panel");
+      if(newLayerPanel.is(":visible")){
+        newLayerPanel.hide();
+      }else{
+        newLayerPanel.show();
+        //this.sourceLayers = this.sources[0].sourceLayers;
+      }
+    },
     symbolControlClick:function(e){
       //移除之前的active
       let activeCards = this.$el.querySelector('.symbol-control-active');
@@ -445,10 +524,7 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(layer_id){
-      $("input[name='icon-image']").unbind("click");
-      $("input[name='icon-image']").bind("click",this.onShowIconPanel);
-      this.$el.querySelector("#property-panel").style.display = 'block'
-      this.$dispatch("hide-mapbounds")
+      
       let layers = this.styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
@@ -457,11 +533,18 @@ export default {
           break
         }
       }
-      if(clickLayer){
+      if(_.isEqual(this.curPanelLayer,this.filterProperty(clickLayer))&&$("#property-panel").is(":visible")){
+        $("#property-panel").hide();
+      }else{
+        $("#new-layer-panel").hide();
+        $("#property-panel").show();
+        this.$dispatch("hide-mapbounds")
         this.currentLayer = clickLayer
         this.fixType(clickLayer)
         this.curPanelLayer = this.filterProperty(clickLayer)
         this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
+        $("input[name='icon-image']").unbind("click");
+        $("input[name='icon-image']").bind("click",this.onShowIconPanel);
       }
     },
     checkSublayer:function(layer_id,index,e){
@@ -563,16 +646,78 @@ export default {
         }
       }
 
-      //同时更新style
-      // let styleObj = this.styleObj
-      // for(let i=0,length=layers.length;i<length;i++){
-      //   if(layers[i].id==this.currentLayer.id){
-      //     layers[i] = JSON.parse(JSON.stringify(this.currentLayer))
-      //   }
-      // }
       let data = JSON.parse(JSON.stringify(this.styleObj))
       console.log('property change')
       this.changeStyle(data)
+    },
+    sourceSelected:function(e){
+      var source = e.target.options[e.target.selectedIndex].value;
+      if(source===""){this.sourceLayers=[];}
+      for(let i=0;i<this.sources.length;i++){
+        if(source === this.sources[i].sourceName){
+          this.sourceLayers = this.sources[i].sourceLayers;
+        }
+      }
+    },
+    createNewLayer:function(){
+      var id = $("#new-layer-panel input[name='layer-id']").val();
+      if(id===""){alert("样式ID不能为空");return;}
+      var layers = this.styleObj.layers;
+      for(let j=0;j<layers.length;j++){
+        if(id===layers[j].id){alert("该样式ID已存在！");return;}
+      }
+
+      var sourceDom = $("#new-layer-panel select[name='source']")[0];
+      var source = sourceDom.options[sourceDom.selectedIndex].value;
+      var sourceLayerDom = $("#new-layer-panel select[name='source-layer']")[0];
+      var source_layer = sourceLayerDom.options[sourceLayerDom.selectedIndex].value;
+
+      var minzoom = $("#new-layer-panel input[name='minzoom']").val();
+      var maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
+      
+
+      var ratioDom = $("#new-layer-panel input[name='type']");
+      for(let i=0;i<ratioDom.length;i++){
+        if(ratioDom[i].checked){
+          var type = ratioDom[i].value;
+        }
+      }
+
+      if(source===""||source_layer===""){
+        alert("数据源或源图层不能为空！");
+        return;
+      }
+      if(maxzoom===""){maxzoom=22;}
+      minzoom=Number(minzoom);
+      maxzoom=Number(maxzoom);
+      if(maxzoom<minzoom){alert("地图级别设置有误！");return;}
+      var layer = {
+        'id':id,
+        "source":source,
+        "source-layer":source_layer,
+        'type':type,
+        "minzoom":minzoom,
+        "maxzoom":maxzoom,
+        'layout':{},
+        'paint':{}
+      }
+
+      this.styleObj.layers.push(layer);
+      this.changeStyle(this.styleObj);
+      this.createPanelClose();
+    },
+    createPanelClose:function(){
+      $("#new-layer-panel input[name='layer-id']").val("new_layer");
+      $("#new-layer-panel select[name='source']")[0].selectedIndex=0;
+      $("#new-layer-panel select[name='source-layer']")[0].selectedIndex=0;
+      this.sourceLayers=[];
+
+      $("#new-layer-panel input[name='minzoom']").val(0);
+      $("#new-layer-panel input[name='maxzoom']").val(22);
+      
+
+      $("#new-layer-panel input[name='type']")[0].checked=true;
+      $("#new-layer-panel").hide();
     },
     eledragstart: function(e){
       e.dataTransfer.setData('dragid',e.target.id)
@@ -776,6 +921,8 @@ export default {
       curPanelLayer: {},
       currentLayer: {},
       styleObj: {},
+      sources:[],
+      sourceLayers:[],
       translate: {
         'color': '颜色',
         'outline-color': '边框颜色',
@@ -909,7 +1056,7 @@ export default {
           'paint': {
             'icon-opacity':1,
             'icon-color': '#000000',
-            'icon-halo-color': 'rgba(0,0,0,0)',
+            'icon-halo-color': '#ffffff',
             'icon-halo-width': 0,
             'icon-halo-blur':0,
             'text-opacity':1,
@@ -950,6 +1097,29 @@ export default {
       handler: function(style,oldStyle){
         console.log('style change to toc')
         this.styleObj = JSON.parse(JSON.stringify(style))
+        if(!_.isEqual(style.sources,oldStyle.sources)){//sources发生变化时，重新计算this,sources
+          var sourceNames = Object.keys(this.styleObj.sources);
+          for(let j = 0;j<sourceNames.length;j++){
+            var source = {};
+            source.sourceName = sourceNames[j];
+            if(this.styleObj.sources[sourceNames[j]].url){
+              source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
+              this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{data:source}}).then(function(res){
+                var data = res.data;
+                var params = res.request.params;//请求参数
+                for(let m=0;m<this.sources.length;m++){
+                  if(this.sources[m].sourceName===params.sourceName){
+                    this.sources[m].sourceLayers = data.vector_layers;
+                  }
+                }
+              },function(res){
+
+              });
+            }
+            this.sources.push(source);
+          }
+        }
+        
         let layers = this.styleObj.layers
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id === this.currentLayer.id){
@@ -988,11 +1158,16 @@ export default {
 }
 
 #style-header i {
-  margin-left: 5px;
-  margin-top: -42px;
-  font-size: 30px;
-  line-height: 40px;
+  position: absolute;
+  font-size: 24px;
   vertical-align: middle;
+  cursor: pointer;
+  top:12px;
+}
+
+#style-header .new-layer:hover{
+  background-color: blue;
+  color: white;
 }
 
 #layer-control {
@@ -1096,6 +1271,38 @@ a {
   display: none;
 }
 
+#new-layer-panel{
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  background-color: rgb(237, 233, 217);
+  left: 200px;
+  top: 0px;
+  z-index: 1;
+  padding-right: 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: none;
+}
+
+#new-layer-panel .property-item {
+  margin-top: 10px;
+}
+
+#new-layer-panel .property-name {
+  width:85px;
+  text-align: right;
+  float: left;
+  padding-right: 15px;
+  white-space: nowrap;
+  line-height: 30px;
+}
+
+#new-layer-panel .property-value {
+  margin-left: 100px;
+  position: relative;
+}
+
 #property-panel::-webkit-scrollbar {
   width: 6px;
 }
@@ -1118,6 +1325,29 @@ a {
   width: 300px;
 }
 
+.property-value .label{
+  position: absolute;
+  color: gray;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.minzoom-label{
+  left: 65px;
+}
+
+.maxzoom-label{
+  left: 155px;
+}
+
+#btn-createLayer,#btn-cancel{
+  background-color: #0e66d2;
+  width: 250px;
+  margin: 55px 25px 0px 25px;
+}
+#btn-cancel{
+  margin-top: 10px;
+}
 #property-panel .property-item {
   margin-top: 10px;
 }

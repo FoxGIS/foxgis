@@ -40,6 +40,16 @@ export default {
       this.$http.get(url).then(function(res){
         let data = res.data
         data.name = name
+        var temLayers = data.layers;
+        for(let i=0;i<temLayers.length;i++){
+          var temPaint = temLayers[i].paint;
+          var names = Object.keys(temPaint);
+          for(let j=0;j<names.length;j++){
+            if(names[j].indexOf("color")!==-1){
+              temPaint[names[j]] = util.rgb2hex(temPaint[names[j]]); 
+            }
+          }
+        }
         let style = JSON.stringify(data)
         var username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
