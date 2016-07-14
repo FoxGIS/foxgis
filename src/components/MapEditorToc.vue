@@ -1,7 +1,9 @@
 <template>
   <div>
     <div id="style-header">
-      <span>{{styleObj.name}}</span><i class="material-icons new-layer" v-on:click="showCreateStyle">create</i>
+      <span>{{styleObj.name}}</span>
+      <i class="material-icons new-layer" v-on:click="showCreateStyle" title="新建样式">create</i>
+      <i class="material-icons delete-layer" v-on:click="deleteStyleLayer" title="删除样式">delete</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
@@ -691,6 +693,9 @@ export default {
       minzoom=Number(minzoom);
       maxzoom=Number(maxzoom);
       if(maxzoom<minzoom){alert("地图级别设置有误！");return;}
+
+      var layout = this.defaultProperty[type].layout;
+      var paint = this.defaultProperty[type].paint;
       var layer = {
         'id':id,
         "source":source,
@@ -698,8 +703,8 @@ export default {
         'type':type,
         "minzoom":minzoom,
         "maxzoom":maxzoom,
-        'layout':{},
-        'paint':{}
+        'layout':layout,
+        'paint':paint
       }
 
       this.styleObj.layers.push(layer);
@@ -718,6 +723,22 @@ export default {
 
       $("#new-layer-panel input[name='type']")[0].checked=true;
       $("#new-layer-panel").hide();
+    },
+    deleteStyleLayer:function(){
+      if($("#property-panel").is(":visible")){
+        var currentLayer = this.currentLayer;
+        let layers = this.styleObj.layers
+        for(let i=0,length=layers.length;i<length;i++){
+          if(layers[i].id === currentLayer.id){
+            layers.splice(i,1);
+            break
+          }
+        }
+        $("#property-panel").hide();
+        this.changeStyle(this.styleObj);
+      }else{
+        alert('未选择任何样式');
+      }
     },
     eledragstart: function(e){
       e.dataTransfer.setData('dragid',e.target.id)
@@ -1061,7 +1082,7 @@ export default {
             'icon-halo-blur':0,
             'text-opacity':1,
             'text-color': '#000000',
-            'text-halo-color': '#000000',
+            'text-halo-color': '#ffffff',
             'text-halo-width': 1,
             'text-halo-blur':0
           },
@@ -1149,7 +1170,7 @@ export default {
 
 #style-header span {
   display: inline-block;
-  width: 150px;
+  width: 125px;
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
@@ -1158,16 +1179,16 @@ export default {
 }
 
 #style-header i {
-  position: absolute;
+  position: relative;
   font-size: 24px;
   vertical-align: middle;
   cursor: pointer;
-  top:12px;
+  top:-15px;
 }
 
-#style-header .new-layer:hover{
-  background-color: blue;
-  color: white;
+#style-header i:hover{
+  color: #545454;
+  border-bottom: 2px solid #545454;
 }
 
 #layer-control {
