@@ -384,6 +384,7 @@ export default {
     showCreateStyle:function(){
       if($("#property-panel").is(":visible")){
         $("#property-panel").hide();
+        $("#icon-select-panel").hide();
       }
       var newLayerPanel = $("#new-layer-panel");
       if(newLayerPanel.is(":visible")){
@@ -526,7 +527,7 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(layer_id){
-      
+      $("#icon-select-panel").hide();
       let layers = this.styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
@@ -735,6 +736,7 @@ export default {
           }
         }
         $("#property-panel").hide();
+        $("#icon-select-panel").hide();
         this.changeStyle(this.styleObj);
       }else{
         alert('未选择任何样式');
@@ -1374,7 +1376,7 @@ a {
 }
 
 #property-panel .property-name {
-  width:110px;
+  width:85px;
   text-align: right;
   float: left;
   padding-right: 15px;
@@ -1383,13 +1385,13 @@ a {
 }
 
 #property-panel .property-value {
-  margin-left: 125px;
+  margin-left: 100px;
   position: relative;
 }
 
 #property-panel .property-value input[type='color'] {
   position: absolute;
-  right: 8px;
+  right: 33px;
   top: 5px;
   width: 15px;
   height: 15px;
