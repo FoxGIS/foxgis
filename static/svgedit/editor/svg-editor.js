@@ -1133,7 +1133,7 @@ TODOS
 				if ($(button).parent().hasClass('tools_flyout')) {return true;}
 				var fadeFlyouts = 'normal';
 				if (!noHiding) {
-					$('.tools_flyout').fadeOut(fadeFlyouts);
+					/*$('.tools_flyout').fadeOut(fadeFlyouts);*/
 				}
 				$('#styleoverrides').text('');
 				workarea.css('cursor', 'auto');
