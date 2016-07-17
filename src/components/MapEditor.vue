@@ -20,10 +20,9 @@
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
-      <button v-on:click="printMap" id="print-button">打印</button>
+      <button v-on:click="printMap" id="print-button">输出</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
-    <foxgis-layoutmap id="layout-map"></foxgis-layoutmap>
   </div>
 </div>
 </template>
@@ -45,6 +44,9 @@ export default {
   methods: {
     //图层控制
     'layerControlClick': function(e){
+      if(e.currentTarget.className.indexOf('control-active')!==-1){
+        return;
+      }
       let toc = document.getElementById('toc-container')
       toc.style.display = 'block'
       let discontrol = document.getElementById('district-control')
@@ -60,6 +62,9 @@ export default {
     },
     //行政区按钮 click
     'districtControlClick': function(e){
+      if(e.currentTarget.className.indexOf('control-active')!==-1){
+        return;
+      }
       let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
       let discontrol = document.getElementById('district-control')
@@ -74,6 +79,9 @@ export default {
       e.currentTarget.className += ' control-active'
     },
     'SVGEditorClick': function(e){
+      if(e.currentTarget.className.indexOf('control-active')!==-1){
+        return;
+      }
       let toc = document.getElementById('toc-container')
       toc.style.display = 'none'
       let discontrol = document.getElementById('district-control')
@@ -93,6 +101,9 @@ export default {
     },
     //style 编辑
     'styleEditorClick': function(e){
+      if(e.currentTarget.className.indexOf('control-active')!==-1){
+        return;
+      }
       e.currentTarget.className += ' control-active'
       let active = document.getElementsByClassName("control-active")
       if(active.length === 2){
@@ -132,9 +143,9 @@ export default {
       let active = document.getElementsByClassName("control-active")
       active[0].className = active[0].className.replace(' control-active','')
       let mapContainer = document.getElementById("map-editorview-container")
-      if(mapContainer.style.display == 'none'){
+      /*if(mapContainer.style.display == 'none'){
         mapContainer = document.getElementById("map-layout-container")
-      }
+      }*/
       //之前改变过map时，还原map
       if(mapContainer.style.left === "380px"){
         mapContainer.style.width = mapContainer.getBoundingClientRect().width + 150 + "px"
@@ -148,11 +159,11 @@ export default {
     },
     printMap: function(e){
       document.getElementById("back-button").innerText = '返回'
-      if(e.target.textContent === '打印'){
+      if(e.target.textContent === '输出'){
         this.$broadcast('show-bounds-box')
-        e.target.innerHTML = '预览'
+        e.target.innerHTML = '确定'
         document.getElementById("back-button").style.display = 'block'
-      }else if(e.target.textContent === '预览'){
+      }else if(e.target.textContent === '确定'){
         let style_id = this.styleId;
         let username = Cookies.get('username');
         let access_token = Cookies.get('access_token');
@@ -164,7 +175,7 @@ export default {
         this.SVGEditorClick();
         this.$broadcast('map-layout',url);
         this.hideBoundsBox()
-        document.getElementById("print-button").innerHTML = "打印"
+        document.getElementById("print-button").innerHTML = "输出"
         document.getElementById("back-button").innerText = '分享'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '下载'){
@@ -177,23 +188,17 @@ export default {
         return
       }
       var operator = document.getElementById("print-button")
-      if(operator.innerText === '下载'){
-        // return to bounds
-        this.$broadcast('show-bounds-box',this.$refs.drafmap.controlBound)
-        document.getElementById("map-layout-container").style.display = 'none'
-        document.getElementById("map-editorview-container").style.display = 'block'
-        operator.innerText = "预览"
-      }else if(operator.innerText === '预览'){
+      if(operator.innerText === '确定'){
         // return to editor
         this.hideBoundsBox()
-        operator.innerHTML = "打印"
+        operator.innerHTML = "输出"
         document.getElementById("back-button").innerText = '分享'
       }
     },
     hideBoundsBox: function(e){
       this.$broadcast('hide-bounds-box')
       let printbutton = document.querySelector("#print-button")
-      printbutton.innerText = '打印'
+      printbutton.innerText = '输出'
     },
     patchStyle: function(style){
       let style_id = style.style_id

@@ -344,7 +344,7 @@
     </div>
 
     <div id="new-layer-panel">
-      <div id="property-header">新建样式图层</div>
+      <div id="property-header">新建图层</div>
       <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
