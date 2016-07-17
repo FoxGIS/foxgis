@@ -18,7 +18,6 @@
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
     <foxgis-svgeditor id="svg-editor"></foxgis-svgeditor>
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
-    <foxgis-icon-panel id="icon-select-panel" :dataset="spriteObj"></foxgis-icon-panel>
     <div id="map-tool">
       <button v-on:click="backEditor" id="back-button">分享</button>
       <button v-on:click="printMap" id="print-button">打印</button>
@@ -220,21 +219,6 @@ export default {
         this.$broadcast('toc-init', tocdata)
         console.log('mapeditor init')
         this.changeStyle(initStyle)
-        var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
-        sprite.pngUrl = initStyle.sprite+".png";
-        this.spriteObj.pngUrl = sprite.pngUrl;
-        let jsonUrl = initStyle.sprite+".json";
-        this.$http({url:jsonUrl,method:"GET",headers:{'x-access-token':access_token}})
-        .then(function(res){
-          let data = res.data;
-          let names = Object.keys(data);
-          for(let i=0;i<names.length;i++){
-            sprite.icons.push({'name':names[i],'positions':data[names[i]]});
-          }
-          this.spriteObj.icons = sprite.icons;
-        },function(){
-          alert("sprite json请求错误");
-        })
       },function(){
         alert("style 信息错误")
       })
@@ -255,11 +239,7 @@ export default {
     return {
       layers: [],
       currentLayer:{},
-      styleId: null,
-      spriteObj:{
-        pngUrl:"",
-        icons:[]
-      }
+      styleId: null
     }
   },
   events: {
@@ -349,25 +329,7 @@ export default {
   display: none;
 }
 
-#icon-select-panel{
-  width: 300px;
-  height: 400px;
-  position: fixed;
-  left: 550px;
-  top: 150px;
-  background-color: #fbfbfd;
-  z-index: 1;
-  display: none;
-}
 
-#icon-select-panel .panel{
-  margin-left: 10px;
-  margin-right: 10px;
-  height:350px;
-  overflow: auto;
-  border-radius: 0;
-  border: none;
-}
 #map-tool {
   position: absolute;
   bottom: 20px;
