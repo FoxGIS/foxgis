@@ -161,8 +161,8 @@ export default {
         var controlBound = this.$refs.drafmap.controlBound;
         var bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
         let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;
-        this.SVGEditorClick();
         this.$broadcast('map-layout',url);
+        this.SVGEditorClick();
         this.hideBoundsBox()
         document.getElementById("print-button").innerHTML = "打印"
         document.getElementById("back-button").innerText = '分享'
