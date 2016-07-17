@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div id="style-header">
+      <b style="color:white;">行政区划</b>
+    </div>
     <div id="district-container"><ul id="admin-tree" class="ztree"></ul></div>
   </div>
 </template>
@@ -41,9 +44,25 @@ export default {
 </script>
 
 <style scoped>
+#style-header {
+  height: 40px;
+  padding: 5px;
+  background-color: #2061C6;
+}
+
+#style-header b {
+  display: inline-block;
+  width: 125px;
+  height: 40px;
+  line-height: 40px;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
 #district-control {
   width: 200px;
-  height: calc(100% - 115px);
+  height: calc(100% - 165px);
   box-sizing: border-box;
   position: absolute;
   left: 30px;
