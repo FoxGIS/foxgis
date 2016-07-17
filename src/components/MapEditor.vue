@@ -79,7 +79,7 @@ export default {
       e.currentTarget.className += ' control-active'
     },
     'SVGEditorClick': function(e){
-      if(e.currentTarget.className.indexOf('control-active')!==-1){
+      if(document.getElementById("svgeditor-open").className.indexOf('control-active')!==-1){
         return;
       }
       let toc = document.getElementById('toc-container')
