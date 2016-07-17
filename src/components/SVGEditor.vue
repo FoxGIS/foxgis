@@ -18,6 +18,9 @@ export default {
         iframe.style = "width: 100%; height: 100%;"
         $("#svg-wrap").append(iframe)
       }
+    },
+    "map-layout":function(url){
+      console.log(url);
     }
   }
   }

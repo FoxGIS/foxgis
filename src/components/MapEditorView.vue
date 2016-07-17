@@ -397,6 +397,12 @@ export default {
             case 'setFilter':
               this.map.setFilter.apply(this.map,comds[i].args)
               break
+            case 'setLayerZoomRange':
+              this.map.setLayerZoomRange.apply(this.map,comds[i].args)
+              break
+            case 'setLayerProperty':
+              this.map.setLayerProperty.apply(this.map,comds[i].args)
+              break
             case 'addSource':
               this.map.addSource.apply(this.map,comds[i].args)
               break

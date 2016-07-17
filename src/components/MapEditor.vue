@@ -8,7 +8,7 @@
       <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick" title="样式配置"><i class="material-icons">map</i></a>
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
-      <a class="mdl-navigation__link" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
+      <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
       <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
       <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
@@ -89,7 +89,7 @@ export default {
       mapContainer.style.left = "230px"
       this.changeLayout()
       document.getElementById("map-tool").style.display = 'none'
-      e.currentTarget.className += ' control-active'
+      document.getElementById("svgeditor-open").className += ' control-active'
     },
     //style 编辑
     'styleEditorClick': function(e){
@@ -153,9 +153,19 @@ export default {
         e.target.innerHTML = '预览'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '预览'){
-        this.$broadcast('show-layout-map',this.$refs.drafmap.controlBound,'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA')
-        document.getElementById("map-editorview-container").style.display = 'none'
-        e.target.innerHTML = '下载'
+        let style_id = this.styleId;
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        var zoom = this.$refs.drafmap.map.getZoom();
+        var scale = 1;
+        var controlBound = this.$refs.drafmap.controlBound;
+        var bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
+        let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;
+        this.SVGEditorClick();
+        this.$broadcast('map-layout',url);
+        this.hideBoundsBox()
+        document.getElementById("print-button").innerHTML = "打印"
+        document.getElementById("back-button").innerText = '分享'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '下载'){
         let controlBound = this.$refs.drafmap.controlBound

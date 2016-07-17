@@ -3,14 +3,14 @@
     <div class="property-item">
       <div class="property-name"><span >样式ID</span></div>
       <div class="property-value">
-        <input type="text" name="layer-id" value="{{selecteddata.id}}">
+        <input type="text" name="id" value="{{selecteddata.id}}" @change="propertyChange">
       </div>
     </div>
 
     <div class="property-item">
       <div class="property-name"><span >数据源</span></div>
       <div class="property-value">
-        <select name="source" @change="sourceSelected">
+        <select name="source" @change="propertyChange">
           <option value="">选择数据源</option>
           <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
         </select>
@@ -20,9 +20,9 @@
     <div class="property-item">
       <div class="property-name"><span >源图层</span></div>
       <div class="property-value">
-        <select name="source-layer">
-          <option value="" selected>选择数据图层</option>
-          <option value="{{layer.id}}" v-for="layer in sourceLayers">{{layer.id}}({{layer.description}})</option>
+        <select name="source-layer" @change="propertyChange">
+          <option value="">选择数据图层</option>
+          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}({{layer.description}})</option>
         </select>
       </div>
     </div>
@@ -30,13 +30,13 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <input type="radio" name="type" value="fill">
+        <input type="radio" name="type" value="fill" @change="propertyChange">
         <label for="one">面 </label>
-        <input type="radio" name="type" value="line">
+        <input type="radio" name="type" value="line" @change="propertyChange">
         <label for="two">线</label>
-        <input type="radio" name="type" value="circle">
+        <input type="radio" name="type" value="circle" @change="propertyChange">
         <label for="one">圆</label>
-        <input type="radio" name="type" value="symbol">
+        <input type="radio" name="type" value="symbol" @change="propertyChange">
         <label for="two">点</label>
       </div>
     </div> 
@@ -44,9 +44,9 @@
     <div class="property-item">
       <div class="property-name"><span >级别</span></div>
       <div class="property-value">
-        <input type="text" name="minzoom" style="width:80px;" value="{{selecteddata.minzoom}}">
+        <input type="text" name="minzoom" style="width:80px;" value="{{selecteddata.minzoom}}" @change="propertyChange">
         <label class="label minzoom-label">小</label>
-        <input type="text" name="maxzoom" style="width:80px;" value="{{selecteddata.maxzoom}}">
+        <input type="text" name="maxzoom" style="width:80px;" value="{{selecteddata.maxzoom}}" @change="propertyChange">
         <label class="label maxzoom-label">大</label>
       </div>
     </div>
@@ -54,7 +54,7 @@
     <div class="property-item">
       <div class="property-name"><span >过滤条件</span></div>
       <div class="property-value">
-        <input type="text" name="filter" value="filter">
+        <input type="text" name="filter" value="filter" @change="propertyChange">
       </div>
     </div>
 
@@ -64,14 +64,27 @@
 <script>
 export default {
   methods: {
-    sourceSelected:function(e){
-      var source = e.target.options[e.target.selectedIndex].value;
-      if(source===""){this.sourceLayers=[];}
-      for(let i=0;i<this.sources.length;i++){
-        if(source === this.sources[i].sourceName){
-          this.sourceLayers = this.sources[i].sourceLayers;
+    propertyChange:function(e){
+      var value = $(e.target).val();
+      if(e.target.name==="source"){
+        var source = value;
+        if(source===""){this.sourcelayers=[];}
+        for(let i=0;i<this.sources.length;i++){
+          if(source === this.sources[i].sourceName){
+            this.sourcelayers = this.sources[i].sourceLayers;
+          }
         }
       }
+      if(this.selecteddata.panel_type==="create"){
+        return;
+      }
+      if(e.target.name==="minzoom"||e.target.name==="maxzoom"){
+        value = Number(value);
+      }
+      var params = {};
+      params.name = e.target.name;
+      params.value = value;
+      this.$dispatch("data-select-change",params);
     }
     
   },
@@ -80,27 +93,35 @@ export default {
   },*/
   data(){
     return {
-      sourceLayers:[]//新建样式图层时动态生成数据图层列表
+      //sourceLayers:[]新建样式图层时动态生成数据图层列表
     }
   },
   watch:{
     selecteddata:{
       handler:function(data,olddata){
-        $(".select-data input[name='layer-id']").val(data.id);
-        $(".select-data select[name='source']").val(data.source);
-        $(".select-data select[name='source-layer']").val(data.source_layer);
-        this.sourceLayers=[];
-
-        $(".select-data input[name='minzoom']").val(data.minzoom);
-        $(".select-data input[name='maxzoom']").val(data.maxzoom);
-
+        $(".select-data input[name='id']").val(this.selecteddata.id);
+        $(".select-data select[name='source']").val(this.selecteddata.source);
+        $(".select-data input[name='minzoom']").val(this.selecteddata.minzoom);
+        $(".select-data input[name='maxzoom']").val(this.selecteddata.maxzoom);
         $(".select-data input[name='type']").attr("checked",false);
-        $(".select-data input[name='type'][value="+data.type+"]").attr("checked",true);
+        $(".select-data input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
+        $(".select-data select[name='source-layer']").val(this.selecteddata['source-layer']);
+        if(this.selecteddata.panel_type==="update"){
+          $(".select-data input[name='id']").attr("disabled",true);
+          $(".select-data select[name='source']").attr("disabled",true);
+          $(".select-data select[name='source-layer']").attr("disabled",true);
+          $(".select-data input[name='type']").attr("disabled",true);
+        }else{
+          $(".select-data input[name='id']").attr("disabled",false);
+          $(".select-data select[name='source']").attr("disabled",false);
+          $(".select-data select[name='source-layer']").attr("disabled",false);
+          $(".select-data input[name='type']").attr("disabled",false);
+        }
       }
     }
   },
 
-  props:['sources','selecteddata']
+  props:['sources','selecteddata','sourcelayers']
 }
 </script>
 

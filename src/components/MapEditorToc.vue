@@ -53,7 +53,7 @@
           <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
         </div>
         <div id="text-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -177,7 +177,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -216,7 +216,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -286,7 +286,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -321,7 +321,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -345,20 +345,27 @@
 
     <div id="new-layer-panel">
       <div id="property-header">新建样式图层</div>
-      <foxgis-filter-data :sources="sources" :selecteddata="selectedData"></foxgis-filter-data>
+      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
     </div>
 
     <div id="font-select-panel">
       <div class="meta-title">
-        <b>字体详情（<b style="color:blue;">{{fontList.length}}</b>）</b>
+        <b>字体详情</b>
       </div>
       <div class="font-list">
-        <div class="font-item" v-for="font in fontList" title="{{font.name}}">
-          <i class="material-icons">folder</i>
-          <img :src="font.previewUrl" title="{{font.name}}" style="width:calc(100% - 25px);">
-        </div>
+        <div class="font-family" v-for="(family,fonts) in fontList" >
+          <div class="family-name" @click="fontFamilyClick">
+            <i class="material-icons">folder</i>
+            <span>{{family}}（<b style="color:blue;">{{fonts.length}}</b>）</span>
+          </div>
+          
+          <div class="font-item"  v-for="font in fonts" title="{{font.name}}" style="display:none;">
+            <i class="material-icons">title</i>
+            <img :src="font.previewUrl" title="{{font.name}}" style="width:calc(100% - 25px);">
+          </div>
+        </div>  
       </div>
     </div>
 
@@ -393,6 +400,7 @@ export default {
       }else{
         newLayerPanel.show();
         this.selectedData={
+          'panel_type':'create',
           'id':'new_layer',
           'source':'',
           'source-layer':'',
@@ -401,6 +409,7 @@ export default {
           'maxzoom':22,
           'filter':[]
         }
+        this.sourceLayers=[];
       }
     },
     styleControlClick:function(e){
@@ -562,13 +571,21 @@ export default {
         $("input[name='text-font']").unbind("click");
         $("input[name='text-font']").bind("click",this.onShowFontPanel);
         this.selectedData={
+          'panel_type':'update',
           'id':this.curPanelLayer.id,
-          'source':this.curPanelLayer.source,
-          'source-layer':this.curPanelLayer['source-layer'],
+          'source':this.curPanelLayer.source||"",
+          'source-layer':this.curPanelLayer['source-layer']||"",
           'type':this.curPanelLayer.type||'fill',
           'minzoom':this.curPanelLayer.minzoom||0,
           'maxzoom':this.curPanelLayer.maxzoom||22,
           'filter':this.curPanelLayer.filter||[]
+        }
+        if(this.selectedData.source===""){this.sourceLayers=[];}
+        for(let i=0;i<this.sources.length;i++){
+          if(this.selectedData.source === this.sources[i].sourceName){
+            this.sourceLayers = this.sources[i].sourceLayers;
+            break;
+          }
         }
       }
     },
@@ -676,7 +693,7 @@ export default {
       this.changeStyle(data)
     },
     createNewLayer:function(){
-      var id = $("#new-layer-panel input[name='layer-id']").val();
+      var id = $("#new-layer-panel input[name='id']").val();
       if(id===""){alert("样式ID不能为空");return;}
       var layers = this.styleObj.layers;
       for(let j=0;j<layers.length;j++){
@@ -726,7 +743,7 @@ export default {
       this.createPanelClose();
     },
     createPanelClose:function(){
-      $("#new-layer-panel input[name='layer-id']").val("new_layer");
+      $("#new-layer-panel input[name='id']").val("new_layer");
       $("#new-layer-panel select[name='source']").val("");
       $("#new-layer-panel select[name='source-layer']").val("");
       this.sourceLayers=[];
@@ -936,6 +953,16 @@ export default {
       inputEvent.target.value = fontName;
       this.propertyChange(inputEvent);
       $("#font-select-panel").hide();
+    },
+    fontFamilyClick:function(e){
+      
+      var font_item = $(e.target).closest(".font-family").children(".font-item");
+      if(font_item.is(":visible")){
+        font_item.css("display","none");
+      }else{
+        //$(".font-item").css("display","none");
+        font_item.css("display","block");
+      }
     }
   },
   events: {
@@ -966,6 +993,15 @@ export default {
       let panel = this.$el.querySelector("#property-panel")
       panel.style.display = 'block'
       $("input[name='icon-image']").bind("click",this.onSelectIcon);
+    },
+    'data-select-change':function(options){
+      var name = options.name;
+      var value = options.value;
+      var currentLayer = this.currentLayer;
+      currentLayer[name] = value;
+
+      let data = JSON.parse(JSON.stringify(this.styleObj))
+      this.changeStyle(data)
     }
   },
   data: function() {
@@ -975,7 +1011,9 @@ export default {
       currentLayer: {},
       styleObj: {},
       sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source
+      sourceLayers:[],
       selectedData:{
+        'panel_type':'',//create or update
         'id':'new_layer',
         'source':'',
         'source-layer':'',
@@ -984,7 +1022,7 @@ export default {
         'maxzoom':22,
         'filter':[]
       },
-      fontList:[],//字体选择面板里的字体列表
+      fontList:{},//字体选择面板里的字体列表
       spriteObj:{//图标对象，用于图标选择面板
         pngUrl:"",
         icons:[]
@@ -1080,7 +1118,7 @@ export default {
             'line-gap-width': 0,
             'line-offset': 0,
             'line-blur': 0,
-            'line-dasharray': [0,0]
+            'line-dasharray': [1,0]
           },
           'layout': {
             'visibility': 'visible',
@@ -1171,7 +1209,7 @@ export default {
             source.sourceName = sourceNames[j];
             if(this.styleObj.sources[sourceNames[j]].url){
               source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
-              this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{data:source}}).then(function(res){
+              this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{'x-access-token':access_token}}).then(function(res){
                 var data = res.data;
                 var params = res.request.params;//请求参数
                 for(let m=0;m<this.sources.length;m++){
@@ -1194,12 +1232,22 @@ export default {
           this.$http({url:fontUrl,method:"GET",headers:{'x-access-token':access_token}})
           .then(function(res){
             var fonts = res.data;
+            var fontFamilys={};
             for(let i=0;i<fonts.length;i++){
               var temFont = {};
               temFont.name = fonts[i].fontname;
               temFont.previewUrl = fontUrl+"/"+fonts[i].fontname+"/thumbnail?access_token="+access_token;
-              this.fontList.push(temFont);
-            }     
+              var family_name = fonts[i].family_name;
+              if(fontFamilys.hasOwnProperty(family_name)){
+                fontFamilys[family_name].push(temFont);
+              }else{
+                fontFamilys[family_name]=[];
+                fontFamilys[family_name].push(temFont);
+              }  
+            } 
+            /*var length = Object.keys(fontFamilys).length;
+            fontFamilys.count = length;*/
+            this.fontList = fontFamilys;    
           },function(res){
             alert("字体列表请求失败");
           });
@@ -1534,21 +1582,23 @@ a {
   margin-left: 5px;
 }
 .font-list{
-  display: flex;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
+  display: block;
   background-color: #D8D8D8;
   overflow: auto;
   margin: 5px;
   height: calc(100% - 50px);
 }
 
-.font-list .font-item{
+.font-list .font-family{
   width: 100%;
 }
 
-.font-list .font-item:hover{
+.font-list .font-item{
+  width: calc(100% - 5px);
+  margin-left:5px;
+}
+
+.font-list .font-item:hover,.font-list .family-name:hover{
   background-color: #ababab;
   cursor:pointer;
 } 
@@ -1566,7 +1616,7 @@ a {
     background-color: #adadad;
 }
 
-.font-item i{
+.font-family i{
   font-size: 18px;
   vertical-align: middle;
 }
