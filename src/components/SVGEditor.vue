@@ -17,7 +17,7 @@ export default {
         iframe.id = "fatherSVG"
         iframe.src = "./static/svgedit/editor/embedapi.html"
         iframe.style = "width: 100%; height: 100%;"
-        $("#svg-wrap").append(iframe)
+        $("#svg-wrap").append(iframe);
       }
     },
     "map-layout":function(options){
@@ -27,7 +27,9 @@ export default {
         var iframe = document.createElement("iframe");
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
         iframe.style = "width: 100%; height: 100%;"
+        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
         iframe.id = "fatherSVG"
+        $("#svg-wrap").append(iframe);
       }else{
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
       }   
