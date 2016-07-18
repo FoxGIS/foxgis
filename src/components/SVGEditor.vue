@@ -16,16 +16,21 @@ export default {
         var iframe = document.createElement("iframe");
         iframe.src = "./static/svgedit/editor/embedapi.html"
         iframe.style = "width: 100%; height: 100%;"
-        iframe.id = "base-iframe";
+        iframe.id = "base-iframe"
         $("#svg-wrap").append(iframe)
       }
     },
-    "map-layout":function(url){
-      console.log(url)
-      this.url = url
+    "map-layout":function(options){
+      var options = JSON.stringify(options);
       var iframe = document.getElementById("base-iframe");
-      iframe.src = "./static/svgedit/editor/embedapi.html?url="+this.url;
-      //document.getElementById("svgcanvas").setAttribute("url",url)
+      if(iframe.length===0){
+        var iframe = document.createElement("iframe");
+        iframe.src = "./static/svgedit/editor/embedapi.html"
+        iframe.style = "width: 100%; height: 100%;"
+        iframe.id = "base-iframe"
+      }else{
+        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
+      }   
     }
   },
   data: function(){
