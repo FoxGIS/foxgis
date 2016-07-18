@@ -1,12 +1,7 @@
-/*globals svgEditor, $, DOMParser*/
-/*jslint es5: true, vars: true, eqeq: true*/
 /*
  * ext-compass.js
- *
- * Licensed under the MIT License
- *
- * Copyright(c) 2010 Christian Tzurcanu
- * Copyright(c) 2010 Alexis Deveria
+ * 2016/7
+ * chenlisheng
  *
  */
 
