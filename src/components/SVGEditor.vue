@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div id="svg-wrap" url=''>
+  <div id="svg-wrap">
     <!-- <iframe src="../node_modules/svgedit/editor/embedapi.html"></iframe> -->
   </div>
 </div>
@@ -14,7 +14,8 @@ export default {
         return
       }else{
         var iframe = document.createElement("iframe");
-        iframe.src = "./static/svgedit/editor/embedapi.html?"+this.url
+        iframe.id = "fatherSVG"
+        iframe.src = "./static/svgedit/editor/embedapi.html#"+this.url
         iframe.style = "width: 100%; height: 100%;"
         $("#svg-wrap").append(iframe)
       }
@@ -22,7 +23,6 @@ export default {
     "map-layout":function(url){
       console.log(url)
       this.url = url
-      //document.getElementById("svgcanvas").setAttribute("url",url)
     }
   },
   data: function(){

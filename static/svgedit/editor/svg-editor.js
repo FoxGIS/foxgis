@@ -5098,13 +5098,16 @@ TODOS
 		editor.loadFromString = function (str) {
 			var width = 800;
 			var height = 600;
-			//var url = "images/logo.png";
-
-			var url = "http://218.244.250.70:8090/api/v1/styles/chenlisheng/SJPgyDo8/thumbnail?zoom=5&amp;cale=1&amp;bbox=[71.50661649999938,8.485392686062838,145.33474150000063,57.51994253643193]&amp;access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoZW5saXNoZW5nIiwiaWF0IjoxNDY4NzU5ODk0LCJleHAiOjE0NjkzNjQ2OTR9.b57PxlnVeHfWZuLs48Z8qZVzM0zZXTSirnWNBgxLyG0";
-			/*var url = String(input).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, ''')
-        		.replace(/</g, '&lt;')
-        		.replace(/>/g, '&gt;');
-        	alert(url);*/
+			var url = "images/logo.png";
+			var param = window.parent.document;
+			if(param.URL.split('#').length === 2){
+				var str = param.URL.split('#')[1];
+				url = String(str).replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+			}
 			var html = '';
 			html += '<svg width="'+width+'" height="'+height+'" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
 			html += '<!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->';
@@ -5116,7 +5119,7 @@ TODOS
 			html += '<rect id="map_outside" height="'+(height-80)+'" width="'+(width-20)+'" y="60" x="10" stroke-width="2" stroke="#000000" fill="#ffffff"/>';
 			html += '<rect id="map_inside" height="'+(height-90)+'" width="'+(width-30)+'" y="65" x="15" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>';
 			html += '</g>';
-			html += '<image xlink:href="'+url+'" id="svg_3" height="'+(height-90)+'" width="'+(width-30)+'" y="65" x="15"/>';
+			html += '<image xlink:href="'+url+'" id="mapImg" height="'+(height-90)+'" width="'+(width-30)+'" y="65" x="15"/>';
 			html += '<g id="map_tag">';
 			html += '<rect id="map_compass" height="50" width="50" y="65" x="'+(width-65)+'" stroke-linecap="null" stroke-linejoin="round" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>';
 			html += '<path fill="#000000" d="m773.06526,102.39295c-3.64537,3.7362 -8.08414,5.60343 -13.31629,5.60343c-5.3048,0 -9.83406,-1.86723 -13.58686,-5.60343c-3.71732,-3.698 -5.57548,-8.28452 -5.57548,-13.75875c0,-5.4733 1.84052,-10.13356 5.52137,-13.98069c3.71642,-3.80892 8.26341,-5.71436 13.64097,-5.71436c5.26853,0 9.72503,1.92351 13.3704,5.76982c3.64457,3.84713 5.46726,8.48829 5.46726,13.92523c0,5.40049 -1.84032,9.98629 -5.52137,13.75875zm-23.05975,2.38569l9.74356,-3.21783l9.41888,3.21783l-9.41888,-35.83939l-9.74356,35.8394l0,-0.00001z" id="svg_2" stroke="#000000"/>';
