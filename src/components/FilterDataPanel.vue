@@ -30,13 +30,13 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <input type="radio" name="type" value="fill" @change="propertyChange">
+        <input type="radio" value="fill" @change="propertyChange">
         <label for="one">面 </label>
-        <input type="radio" name="type" value="line" @change="propertyChange">
+        <input type="radio" value="line" @change="propertyChange">
         <label for="two">线</label>
-        <input type="radio" name="type" value="circle" @change="propertyChange">
+        <input type="radio" value="circle" @change="propertyChange">
         <label for="one">圆</label>
-        <input type="radio" name="type" value="symbol" @change="propertyChange">
+        <input type="radio" value="symbol" @change="propertyChange">
         <label for="two">点</label>
       </div>
     </div> 
@@ -103,8 +103,17 @@ export default {
         $(".select-data select[name='source']").val(this.selecteddata.source);
         $(".select-data input[name='minzoom']").val(this.selecteddata.minzoom);
         $(".select-data input[name='maxzoom']").val(this.selecteddata.maxzoom);
-        $(".select-data input[name='type']").attr("checked",false);
-        $(".select-data input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
+        //$(".select-data input[name='type']").attr("checked",false);
+        if(this.selecteddata.panel_type==="update"){
+          $(".select-data input[type='radio']").removeAttr("name");
+          $("#data-div input[type='radio']").attr("name","type")
+          $("#data-div input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
+        }else{
+          $(".select-data input[type='radio']").removeAttr("name");
+          $("#new-layer-panel input[type='radio']").attr("name","type")
+          $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
+        }
+        
         $(".select-data select[name='source-layer']").val(this.selecteddata['source-layer']);
         if(this.selecteddata.panel_type==="update"){
           $(".select-data input[name='id']").attr("disabled",true);

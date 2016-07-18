@@ -301,8 +301,7 @@ export default {
         //this.map.setStyle(newStyle);
         //this.$parent.$broadcast('toc-init', newStyle);
         this.changeStyle(newStyle);
-      });
-      
+      });   
     },
     'show-bounds-box': function(bounds){
       console.log(bounds);
