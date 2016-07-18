@@ -5099,10 +5099,10 @@ TODOS
 			var width = 800;
 			var height = 600;
 			var url = "images/logo.png";
-			var param = window.parent.document;
-			if(param.URL.split('#').length === 2){
-				var str = param.URL.split('#')[1];
-				url = String(str).replace(/&/g, '&amp;')
+			var options = window.OPTIONS;
+			if(options){
+				url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+				url = String(url).replace(/&/g, '&amp;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '')
                 .replace(/</g, '&lt;')
