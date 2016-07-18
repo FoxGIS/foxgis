@@ -7,7 +7,6 @@ if(options){
     options.bbox = options.bbox.replace("[","").replace("]","").split(",");
     window.OPTIONS=options;
 }
-alert(optionsStr);
 function parseURL(url) {  
     var a =  document.createElement('a');  
     a.href = url;  
