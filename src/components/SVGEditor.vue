@@ -15,22 +15,25 @@ export default {
       }else{
         var iframe = document.createElement("iframe");
         iframe.id = "fatherSVG"
-        iframe.src = "./static/svgedit/editor/embedapi.html#"+this.url
+        iframe.src = "./static/svgedit/editor/embedapi.html"
         iframe.style = "width: 100%; height: 100%;"
         $("#svg-wrap").append(iframe)
       }
     },
-    "map-layout":function(url){
-      console.log(url)
-      this.url = url
-    }
-  },
-  data: function(){
-    return {
-      url: ''
+    "map-layout":function(options){
+      var options = JSON.stringify(options);
+      var iframe = document.getElementById("fatherSVG");
+      if(iframe.length===0){
+        var iframe = document.createElement("iframe");
+        iframe.src = "./static/svgedit/editor/embedapi.html"
+        iframe.style = "width: 100%; height: 100%;"
+        iframe.id = "base-iframe"
+      }else{
+        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
+      }   
     }
   }
-  }
+}
 </script>
 <style scoped>
 #svg-wrap {

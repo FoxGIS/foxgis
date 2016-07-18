@@ -8,7 +8,11 @@ $(function () {'use strict';
     
     var svgCanvas = null;
     var frame;
-    var  LocString = this.URL;
+    var url = this.URL;
+    if(parseURL(url).params.options){
+        var optionsStr = decodeURI(parseURL(url).params.options);
+        var options = JSON.parse(optionsStr);
+    }
 
     initEmbed = function () {
         var doc, mainButton;
@@ -64,25 +68,34 @@ $(function () {'use strict';
         );
 		svgCanvas.exportPDF(exportWindow.name);
     }
-    
-    function getQueryStr(sArgName){
-        var args = LocString.split("?");
-        var retval = "";
-        if(args[0] == LocString){ /*参数为空*/
-            return retval; /*无需做任何处理*/
-        }    
-        var str = args[1];
-        args = str.split("&");
-        for(var i = 0; i < args.length; i ++){
-            str = args[i];
-            var arg = str.split("=");
-            if(arg.length <= 1) continue;
-            if(arg[0] == sArgName) retval = arg[1]; 
-        }
-        return retval;
-    }
 
-    var url = getQueryStr('url');
+    function parseURL(url) {  
+     var a =  document.createElement('a');  
+     a.href = url;  
+     return {  
+     source: url,  
+     protocol: a.protocol.replace(':',''),  
+     host: a.hostname,  
+     port: a.port,  
+     query: a.search,  
+     params: (function(){  
+         var ret = {},  
+             seg = a.search.replace(/^\?/,'').split('&'),  
+             len = seg.length, i = 0, s;  
+         for (;i<len;i++) {  
+             if (!seg[i]) { continue; }  
+             s = seg[i].split('=');  
+             ret[s[0]] = s[1];  
+         }  
+         return ret;  
+     })(),  
+     file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],  
+     hash: a.hash.replace('#',''),  
+     path: a.pathname.replace(/^([^\/])/,'/$1'),  
+     relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],  
+     segments: a.pathname.replace(/^\//,'').split('/')  
+     };  
+    } 
 
     // Add event handlers
     $('#load').click(loadSvg);

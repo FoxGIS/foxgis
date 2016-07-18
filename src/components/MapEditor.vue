@@ -164,22 +164,22 @@ export default {
         e.target.innerHTML = '确定'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '确定'){
-        let style_id = this.styleId;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        var zoom = this.$refs.drafmap.map.getZoom();
-        var scale = 1;
+        var options = {};
+        options.API = SERVER_API;
+        options.style_id = this.styleId;
+        options.username = Cookies.get('username');
+        options.access_token = Cookies.get('access_token');
+        options.zoom = this.$refs.drafmap.map.getZoom();
+        options.scale = 1;
         var controlBound = this.$refs.drafmap.controlBound;
-        var bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
-        let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;
-        this.$broadcast('map-layout',url);
+        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
+        /*let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;*/
+        this.$broadcast('map-layout',options);
         this.SVGEditorClick();
         this.hideBoundsBox()
         document.getElementById("print-button").innerHTML = "输出"
         document.getElementById("back-button").innerText = '分享'
         document.getElementById("back-button").style.display = 'block'
-      }else if(e.target.textContent === '下载'){
-        let controlBound = this.$refs.drafmap.controlBound
       }
     },
     backEditor: function(e){
