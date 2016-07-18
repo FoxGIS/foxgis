@@ -27,7 +27,6 @@ export default {
         var iframe = document.createElement("iframe");
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
         iframe.style = "width: 100%; height: 100%;"
-        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
         iframe.id = "fatherSVG"
         $("#svg-wrap").append(iframe);
       }else{
