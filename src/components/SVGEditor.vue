@@ -23,11 +23,11 @@ export default {
     "map-layout":function(options){
       var options = JSON.stringify(options);
       var iframe = document.getElementById("fatherSVG");
-      if(iframe.length===0){
+      if(!iframe){
         var iframe = document.createElement("iframe");
-        iframe.src = "./static/svgedit/editor/embedapi.html"
+        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
         iframe.style = "width: 100%; height: 100%;"
-        iframe.id = "base-iframe"
+        iframe.id = "fatherSVG"
       }else{
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
       }   
