@@ -14,14 +14,17 @@ export default {
         return
       }else{
         var iframe = document.createElement("iframe");
-        iframe.src = "./static/svgedit/editor/embedapi.html?"+this.url
+        iframe.src = "./static/svgedit/editor/embedapi.html"
         iframe.style = "width: 100%; height: 100%;"
+        iframe.id = "base-iframe";
         $("#svg-wrap").append(iframe)
       }
     },
     "map-layout":function(url){
       console.log(url)
       this.url = url
+      var iframe = document.getElementById("base-iframe");
+      iframe.src = "./static/svgedit/editor/embedapi.html?url="+this.url;
       //document.getElementById("svgcanvas").setAttribute("url",url)
     }
   },
