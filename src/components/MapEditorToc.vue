@@ -358,7 +358,7 @@
         <div class="font-family" v-for="(family,fonts) in fontList" >
           <div class="family-name" @click="fontFamilyClick">
             <i class="material-icons">folder</i>
-            <span>{{family}}（<b style="color:blue;">{{fonts.length}}</b>）</span>
+            <span>{{family}}(<b style="color:blue;">{{fonts.length}}</b>)</span>
           </div>
           
           <div class="font-item"  v-for="font in fonts" title="{{font.name}}" style="display:none;">

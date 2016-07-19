@@ -93,6 +93,7 @@ TODOS
 				/*'ext-eyedropper.js',*/
 				/*'ext-shapes.js',*/
 				'ext-compass.js',
+				'ext-legend.js',
 				'ext-imagelib.js',
 				'ext-grid.js',
 				/*'ext-polygon.js',
@@ -255,7 +256,11 @@ TODOS
 		*	that, it will then be subject to tampering
 		*/
 		editor.loadContentAndPrefs = function () {
-			if (!curConfig.forceStorage && (curConfig.noStorageOnLoad || !document.cookie.match(/(?:^|;\s*)store=(?:prefsAndContent|prefsOnly)/))) {
+			var res = $.ajax({url:"./template/map-template.xml",async:false});
+			var xml = res.responseText;
+			editor.loadFromString(xml);
+		
+			/*if (!curConfig.forceStorage && (curConfig.noStorageOnLoad || !document.cookie.match(/(?:^|;\s*)store=(?:prefsAndContent|prefsOnly)/))) {
 				return;
 			}
 
@@ -289,7 +294,7 @@ TODOS
 						defaultPrefs[key] = result ? decodeURIComponent(result[1]) : '';
 					}
 				}
-			}
+			}*/
 		};
 
 		/**
@@ -5098,39 +5103,25 @@ TODOS
 		editor.loadFromString = function (str) {
 			var width = 800;
 			var height = 600;
-			var url = "images/logo.png";
+			//var url = "images/default-map.png";
 			var options = window.OPTIONS;
 			if(options){
-				url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-				url = String(url).replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+                var xmlObj = $.parseXML(str);//xml对象
+				var image = $(xmlObj).find("image");
+				image.attr("xlink:href",url);//替换url
+				var xmlString;//xml字符串
+				if (window.ActiveXObject){//code for ie
+				    xmlString = xmlObj.xml;
+				}else{// code for Mozilla, Firefox, Opera, etc.
+				    xmlString = (new XMLSerializer()).serializeToString(xmlObj);
+				}
+			}else{
+				var xmlString = str;
 			}
-			var html = '';
-			html += '<svg width="'+width+'" height="'+height+'" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
-			html += '<!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->';
-			html += '<title>辅助决策用图</title>';
-			html += '<g class="layer">';
-			html += '<title>Layer 1</title>';
-			html += '<text fill="#000000" text-anchor="middle" stroke="#000000" x="'+(width/2)+'" y="42" id="svg_1" font-size="24" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>';
-			html += '<g id="map_box">';
-			html += '<rect id="map_outside" height="'+(height-80)+'" width="'+(width-20)+'" y="60" x="10" stroke-width="2" stroke="#000000" fill="#ffffff"/>';
-			html += '<rect id="map_inside" height="'+(height-90)+'" width="'+(width-30)+'" y="65" x="15" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>';
-			html += '</g>';
-			html += '<image xlink:href="'+url+'" id="mapImg" height="'+(height-90)+'" width="'+(width-30)+'" y="65" x="15"/>';
-			html += '<g id="map_tag">';
-			html += '<rect id="map_compass" height="50" width="50" y="65" x="'+(width-65)+'" stroke-linecap="null" stroke-linejoin="round" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="#ffffff"/>';
-			html += '<path fill="#000000" d="m773.06526,102.39295c-3.64537,3.7362 -8.08414,5.60343 -13.31629,5.60343c-5.3048,0 -9.83406,-1.86723 -13.58686,-5.60343c-3.71732,-3.698 -5.57548,-8.28452 -5.57548,-13.75875c0,-5.4733 1.84052,-10.13356 5.52137,-13.98069c3.71642,-3.80892 8.26341,-5.71436 13.64097,-5.71436c5.26853,0 9.72503,1.92351 13.3704,5.76982c3.64457,3.84713 5.46726,8.48829 5.46726,13.92523c0,5.40049 -1.84032,9.98629 -5.52137,13.75875zm-23.05975,2.38569l9.74356,-3.21783l9.41888,3.21783l-9.41888,-35.83939l-9.74356,35.8394l0,-0.00001z" id="svg_2" stroke="#000000"/>';
-			html += '<rect id="map_legend" height="190" width="190" y="'+(height-215)+'" x="15" stroke-linecap="null" stroke-linejoin="round" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>';
-			html += '<text fill="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="100" y="'+(height-105)+'" id="svg_5" font-size="10" font-family="serif" text-anchor="middle" xml:space="preserve" stroke="#000000">比例尺  1:360000</text>';
-			html += '<text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="100" y="'+(height-190)+'" id="svg_4" font-size="10" font-family="serif" text-anchor="middle" xml:space="preserve">图     例</text>';
-			html += '</g>';
-			html += '</g>';
-			html += '</svg>';
+
 			editor.ready(function() {
-				loadSvgString(html);
+				loadSvgString(xmlString);
 			});
 		};
 
