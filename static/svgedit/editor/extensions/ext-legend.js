@@ -50,6 +50,7 @@ svgEditor.addExtension('ext-legend', function() {
 				var iconUrl = prefix+legendArr[i].styles[0]['icon-image']+"?access_token="+options.access_token;
 				var res = $.ajax({url:iconUrl,async:false});
 				var svgStr = res.responseText;
+				console.log(svgStr)
 				var newDoc = $.parseXML(svgStr);
 				// set new svg document
 				// If DOM3 adoptNode() available, use it. Otherwise fall back to DOM2 importNode()
@@ -63,11 +64,9 @@ svgEditor.addExtension('ext-legend', function() {
 				if(flag%2===0){
 					svgcontent.setAttribute("x",'130');
 					svgcontent.setAttribute("y",405+parseInt((flag/2)-1)*20);
-					svgcontent.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*(20)+')');
 				}else{
 					svgcontent.setAttribute("x",'30');
 					svgcontent.setAttribute("y",405+parseInt((flag/2)-1)*20);
-					svgcontent.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(20)+')');
 				}
 				console.log(svgcontent);
 				canv.getElem("legend-group").appendChild(svgcontent);

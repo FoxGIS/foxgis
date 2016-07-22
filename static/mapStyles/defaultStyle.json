@@ -11,14 +11,14 @@
   "zoom": 6.7311773289985615,
   "layers": [
     {
-      "id": "background",
+      "id": "背景",
       "type": "background",
       "paint": {
         "background-color": "#87c2e4"
       }
     },
     {
-      "id": "asia_fill",
+      "id": "亚洲面",
       "type": "fill",
       "source": "data2012",
       "source-layer": "asia_a",
@@ -27,7 +27,7 @@
       }
     },
     {
-      "id": "china_bou_glow",
+      "id": "国界光晕",
       "type": "line",
       "source": "data2012",
       "source-layer": "china_l",
@@ -59,7 +59,7 @@
       }
     },
     {
-      "id": "china_bou",
+      "id": "国界",
       "type": "line",
       "source": "data2012",
       "source-layer": "china_l",
@@ -89,7 +89,7 @@
       }
     },
     {
-      "id": "heliu_line1",
+      "id": "线状水系（主要江河）",
       "source": "data2012",
       "source-layer": "hydl",
       "minzoom": 3,
@@ -114,7 +114,7 @@
       }
     },
     {
-      "id": "river_line",
+      "id": "线状水系（其他江河）",
       "source": "data2012",
       "source-layer": "hydl",
       "minzoom": 7,
@@ -125,7 +125,7 @@
       }
     },
     {
-      "id": "river_fill",
+      "id": "面状水系",
       "source": "data2012",
       "source-layer": "hyda",
       "minzoom": 6,
@@ -135,10 +135,10 @@
       }
     },
     {
-      "id": "tielu_case",
+      "id": "铁路（实线）",
       "source": "data2012",
       "source-layer": "lrrl",
-      "minzoom": 7,
+      "minzoom": 6,
       "maxzoom": 11,
       "filter": [
         "any",
@@ -170,10 +170,10 @@
       }
     },
     {
-      "id": "tielu",
+      "id": "铁路（虚线）",
       "source": "data2012",
       "source-layer": "lrrl",
-      "minzoom": 7,
+      "minzoom": 6,
       "maxzoom": 11,
       "filter": [
         "any",
@@ -203,13 +203,13 @@
         "line-width": 1.2,
         "line-color": "#fff",
         "line-dasharray": [
-          10,
-          10
+          8,
+          8
         ]
       }
     },
     {
-      "id": "daolu_case",
+      "id": "普通道路（边线）",
       "type": "line",
       "source": "data2012",
       "filter": [
@@ -247,7 +247,7 @@
       }
     },
     {
-      "id": "daolu_in",
+      "id": "普通道路",
       "type": "line",
       "source": "data2012",
       "filter": [
@@ -285,7 +285,7 @@
       }
     },
     {
-      "id": "gaosu_case",
+      "id": "高速公路（边线）",
       "type": "line",
       "source": "data2012",
       "source-layer": "lrdl",
@@ -294,7 +294,7 @@
         "rteg",
         "高速"
       ],
-      "minzoom": 8,
+      "minzoom": 5,
       "maxzoom": 11,
       "layout": {
         "line-cap": "round"
@@ -303,6 +303,10 @@
         "line-color": "rgb(246,130,65)",
         "line-width": {
           "stops": [
+	    [
+	    5,
+	    2
+	    ],
             [
               8,
               4
@@ -320,7 +324,7 @@
       }
     },
     {
-      "id": "gaosu_in",
+      "id": "高速公路",
       "type": "line",
       "source": "data2012",
       "source-layer": "lrdl",
@@ -329,7 +333,7 @@
         "rteg",
         "高速"
       ],
-      "minzoom": 7,
+      "minzoom": 5,
       "maxzoom": 11,
       "layout": {
         "line-cap": "round"
@@ -359,11 +363,11 @@
       }
     },
     {
-      "id": "sheng_line",
+      "id": "省界线",
       "type": "line",
       "source": "data2012",
       "source-layer": "boua_prov",
-      "minzoom": 5,
+      "minzoom": 4,
       "maxzoom": 9,
       "layout": {
         "line-cap":"round",
@@ -379,7 +383,7 @@
       }
     },
     {
-      "id": "asia_label",
+      "id": "“亚洲”注记",
       "type": "symbol",
       "source": "data2012",
       "source-layer": "zhou_label",
@@ -415,7 +419,7 @@
       }
     },
     {
-      "id": "china_label",
+      "id": "“中国”注记",
       "type": "symbol",
       "source": "data2012",
       "source-layer": "zhou_label",
@@ -455,7 +459,7 @@
       }
     },
     {
-      "id": "capital_label",
+      "id": "首都注记",
       "type": "symbol",
       "source": "data2012",
       "source-layer": "agnp",
@@ -489,7 +493,7 @@
       }
     },
     {
-      "id": "shenghui_label_icon",
+      "id": "省会城市注记",
       "type": "symbol",
       "source": "data2012",
       "source-layer": "agnp",
@@ -499,8 +503,8 @@
         "北京",
         ""
       ],
-      "minzoom": 5,
-      "maxzoom": 5,
+      "minzoom": 4,
+      "maxzoom": 6,
       "layout": {
         "text-size": {"stops":[[5,13],[10,18]]},
         "icon-image": "circle-11",
@@ -527,7 +531,7 @@
       }
     },
     {
-      "id": "shi_label",
+      "id": "地级市注记",
       "type": "symbol",
       "source": "data2012",
       "source-layer": "agnp",
@@ -619,7 +623,7 @@
       }
     },
     {
-      "id": "xian_label",
+      "id": "县注记",
       "source": "data2012",
       "source-layer": "agnp",
       "filter": [
