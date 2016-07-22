@@ -66,7 +66,7 @@ svgEditor.addExtension('ext-legend', function() {
 					svgcontent.setAttribute("y",405+parseInt((flag/2)-1)*20);
 				}else{
 					svgcontent.setAttribute("x",'30');
-					svgcontent.setAttribute("y",405+parseInt((flag/2)-1)*20);
+					svgcontent.setAttribute("y",405+parseInt(flag/2)*20);
 				}
 				console.log(svgcontent);
 				canv.getElem("legend-group").appendChild(svgcontent);
