@@ -174,7 +174,6 @@ svgEditor.addExtension('compass', function() {'use strict';
 			start_y = opts.start_y;
 			var y = start_y;
 			var cur_style = canv.getStyle();
-		 
 			startClientPos.x = opts.event.clientX;
 			startClientPos.y = opts.event.clientY;
 

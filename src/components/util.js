@@ -13,6 +13,9 @@ export default {
     return formateString
   },
   rgb2hex:function(rgb){//将rgb的颜色格式转换为16进制的颜色格式
+    if(typeof rgb==="object"){
+      return rgb;
+    }
     if(rgb.indexOf("#")===0){
       return rgb;
     }
