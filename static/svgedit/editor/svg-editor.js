@@ -878,13 +878,7 @@ TODOS
 							ok.hide();
 						}
 
-						// 解决第一次选择加载时弹出弹框的问题
-						/*if(type !== 'select'){
-							document.getElementById('dialog_container').style='';
-							document.getElementById('dialog_content').style='';
-							box.show();
-						}*/
-						box.show(); //这句是源码
+						box.show(); 
 
 						ok.click(function() {
 							box.hide();
