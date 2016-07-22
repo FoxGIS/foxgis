@@ -85,7 +85,7 @@ svgEditor.addExtension('ext-legend', function() {
 						opacity: 1
 					}
 				});
-				cur_text.textContent = legendArr[i].source_layer;
+				cur_text.textContent = legendArr[i].name;
 				if(flag%2===0){
 					cur_text.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*20+')');
 				}else{
@@ -139,7 +139,7 @@ svgEditor.addExtension('ext-legend', function() {
 						opacity: 1
 					}
 				});
-				cur_text.textContent = legendArr[i].source_layer;
+				cur_text.textContent = legendArr[i].name;
 				if(flag%2===0){
 					cur_text.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*(20)+')');
 				}else{
@@ -178,7 +178,7 @@ svgEditor.addExtension('ext-legend', function() {
 					}
 				});
 				console.log(canv);
-				cur_text.textContent = legendArr[i].source_layer;
+				cur_text.textContent = legendArr[i].name;
 				if (/[a-z]/.test(fill_d)) {
 					fill_d = canv.pathActions.convertPath(cur_shape);
 					cur_shape.setAttribute('d', fill_d);
@@ -227,6 +227,7 @@ svgEditor.addExtension('ext-legend', function() {
 			    if(legendArr[i].type===legendArr[j].type&&legendArr[i].source===legendArr[j].source&&
 			    	legendArr[i].source_layer===legendArr[j].source_layer&&legendArr[i].filter.toString()===legendArr[j].filter.toString()){
 			        legendArr[j].styles=legendArr[j].styles.concat(legendArr[i].styles);
+			    	legendArr[j].name = legendArr[i].name;
 			    	legendArr.splice(i,1);
 			    	i = i-1; flag=1;
 			    }
@@ -292,7 +293,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var zoom = window.OPTIONS.zoom;//地图级别
 		var temdArr = [];
 		for(var i=0;i<typeLayers.length;i++){
-			var temLegend = {type:'',source:'',source_layer:'',filter:[],styles:[]};
+			var temLegend = {name:'',type:'',source:'',source_layer:'',filter:[],styles:[]};
 		    if(!typeLayers[i].minzoom){typeLayers[i].minzoom=0;}
 		    if(!typeLayers[i].maxzoom){typeLayers[i].maxzoom=22;}		    //判断存在icon属性，并且当前级别在显示级别之内，并且visibility属性为true，都满足才作为候选图例条目
 		    if(!typeLayers[i].layout){typeLayers[i].layout={};}
@@ -301,6 +302,7 @@ svgEditor.addExtension('ext-legend', function() {
 		        if(type==="symbol"&&!typeLayers[i].layout["icon-image"]){
 		        	continue;
 		        }
+		        temLegend.name = typeLayers[i].id;
 		        temLegend.type = type;
 		        temLegend.source = typeLayers[i].source;
 		        temLegend.source_layer = typeLayers[i]['source-layer'];
