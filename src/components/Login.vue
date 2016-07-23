@@ -71,7 +71,7 @@ export default {
           Cookies.set('location',location)
         }
         if(organization!=undefined){
-          Cookies.set('organization',location)
+          Cookies.set('organization',organization)
         }
         
         //跳转不好处理，所以统一跳转到首页
