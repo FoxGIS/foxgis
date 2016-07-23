@@ -3611,8 +3611,68 @@ TODOS
 					if (!imgType) {
 						return;
 					}
+
+					var str = $('#svgcontent')[0].outerHTML; 
+					var xmlObj = $.parseXML(str);//xml对象
+					var svg = $(xmlObj).find("svg");
+					var image = $(xmlObj).find("image");
+					var height = document.getElementById("svgcontent").getAttribute("height");
+					var width = document.getElementById("svgcontent").getAttribute("width");
+					var url = document.getElementById("mapImg").getAttribute("xlink:href");
+					var options = window.OPTIONS;
+					if(options){
+						url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+					}
+					svg.attr("height",height*4);
+					svg.attr("width",width*4);	
+					getDataUri(url, function(dataUri) {
+						url = dataUri;
+						image.attr("xlink:href",url);
+						if (window.ActiveXObject){//code for ie
+						    str = xmlObj.xml;
+						}else{// code for Mozilla, Firefox, Opera, etc.
+						    str = (new XMLSerializer()).serializeToString(xmlObj);
+						}	
+						downLoad(str);
+					});
+					
+					function downLoad(str){
+						var svgXml = str;
+						var image = new Image();
+						image.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
+
+						var canvas = document.getElementById('myCanvas');  //准备空画布
+
+						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+						context.drawImage(image, 0, 0);
+
+						var a = document.createElement('a');
+						a.href = canvas.toDataURL('image/png');  //将画布内的信息导出为png图片数据
+						a.download = "MapByMathArtSys";  //设定下载名称
+						a.click(); //点击触发下载
+					};
+					
+					function getDataUri(url, callback) {
+						var image = new Image();
+
+					    image.onload = function () {
+					    	console.log("image loaded!")
+					        var canvas = document.createElement('canvas');
+					        canvas.width = width*4; // or 'width' if you want a special/scaled size
+					        canvas.height = height*4; // or 'height' if you want a special/scaled size
+
+					        canvas.getContext('2d').drawImage(this, 0, 0);
+
+					        // Get raw image data
+					        var raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+					        callback(raw);
+					    };
+					    image.crossOrigin = "Anonymous";
+					    image.src = url;
+					};
+
 					// Open placeholder window (prevents popup)
-					var exportWindowName;
+					/*var exportWindowName;
 					function openExportWindow () {
 						var str = uiStrings.notification.loadingImage;
 						if (curConfig.exportWindowType === 'new') {
@@ -3636,7 +3696,7 @@ TODOS
 						}
 						var quality = parseInt($('#image-slider').val(), 10)/100;
 						svgCanvas.rasterExport(imgType, quality, exportWindowName);
-					}
+					}*/
 				}, function () {
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
@@ -5095,29 +5155,37 @@ TODOS
 		};
 
 		editor.loadFromString = function (str) {
-			var width = 800;
-			var height = 600;
 			//var url = "images/default-map.png";
 			var options = window.OPTIONS;
 			if(options){
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-                var xmlObj = $.parseXML(str);//xml对象
+				var xmlObj = $.parseXML(str);//xml对象	
 				var image = $(xmlObj).find("image");
+<<<<<<< HEAD
 				console.log($(xmlObj).children().children())
 				image.attr("xlink:href",url);//替换url
+=======
+				image.attr("xlink:href",url);//替换url		  
+				var img = new Image();	// 创建对象		  		
+				img.src = url;	// 改变图片的src		  
+				img.onload = function(){// 加载完成执行
+					document.getElementById('mapImg').setAttribute("width",img.width);
+					document.getElementById('mapImg').setAttribute("height",img.height);
+				};
+>>>>>>> 5a89459d76b0da0ecc60467cb7e8319e1ccd3d7d
 				var xmlString;//xml字符串
 				if (window.ActiveXObject){//code for ie
 				    xmlString = xmlObj.xml;
 				}else{// code for Mozilla, Firefox, Opera, etc.
 				    xmlString = (new XMLSerializer()).serializeToString(xmlObj);
-				}
+				}   
 			}else{
 				var xmlString = str;
 			}
-
 			editor.ready(function() {
 				loadSvgString(xmlString);
 			});
+			
 		};
 
 		editor.disableUI = function (featList) {
