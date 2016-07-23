@@ -3,20 +3,20 @@
 	<title>辅助决策用图</title>
 	<g class="layer">
 		<title>地图标题与图框</title>
-		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="42" id="svg_1" font-size="43" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>
+		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="svg_1" font-size="43" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>
 		<g id="map_box">
-			<rect id="map_outside" height="1100" width="1560" y="60" x="20" stroke-width="2" stroke="#000000" fill="#ffffff"/>
-			<rect id="map_inside" height="1090" width="1550" y="65" x="25" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
+			<rect id="map_outside" height="1080" width="1560" y="80" x="20" stroke-width="2" stroke="#000000" fill="#ffffff"/>
+			<rect id="map_inside" height="1070" width="1550" y="85" x="25" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
 		</g>
 	</g>
 	<g class="layer">
 		<title>地图预览</title>
-		<image xlink:href="images/default-map.png" id="mapImg" height="1090" width="1550" y="65" x="25"/>
+		<image xlink:href="images/default-map.png" id="mapImg" height="1070" width="1550" y="85" x="25"/>
 	</g>
 	<g id="north-arrow">
 		<title>指北针</title>
 		<g id="northArrow-group">
-			<path fill="#000000" d="m773.06526,102.39295c-3.64537,3.7362 -8.08414,5.60343 -13.31629,5.60343c-5.3048,0 -9.83406,-1.86723 -13.58686,-5.60343c-3.71732,-3.698 -5.57548,-8.28452 -5.57548,-13.75875c0,-5.4733 1.84052,-10.13356 5.52137,-13.98069c3.71642,-3.80892 8.26341,-5.71436 13.64097,-5.71436c5.26853,0 9.72503,1.92351 13.3704,5.76982c3.64457,3.84713 5.46726,8.48829 5.46726,13.92523c0,5.40049 -1.84032,9.98629 -5.52137,13.75875zm-23.05975,2.38569l9.74356,-3.21783l9.41888,3.21783l-9.41888,-35.83939l-9.74356,35.8394l0,-0.00001z" id="svg_2" stroke="#000000"/>
+			<path fill="#000000" stroke-width="0" d="m1533.09351,205.9394l-33.09351,38.39391l33.09351,-108.81803l33.3122,108.81803l-33.3122,-38.39391zm-12.71133,-110.9394l5.25997,0l17.0945,24.81826l0,-24.81826l4.38317,0l0,32.24226l-4.38317,0l-18.19039,-26.09101l0,26.09101l-4.16408,0l0,-32.24226zm12.71133,50.90888l0,55.15161l24.54585,27.99992l-24.54585,-83.15153z" id="svg_2" stroke="#000000"/>
 		</g>
 	</g>
 	<g class="layer" id="legend">
