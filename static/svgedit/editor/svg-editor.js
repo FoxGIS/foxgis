@@ -3616,33 +3616,46 @@ TODOS
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
 					var image = $(xmlObj).find("image");
-					var height = document.getElementById("svgcontent").getAttribute("height");
-					var width = document.getElementById("svgcontent").getAttribute("width");
-					var url = document.getElementById("mapImg").getAttribute("xlink:href");
-					var options = window.OPTIONS;
-					if(options){
-						url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-					}
+					//var height = document.getElementById("svgcontent").getAttribute("height");
+					//var width = document.getElementById("svgcontent").getAttribute("width");
+					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
+					var height = parseInt(viewBox.split(' ')[3]);
+					var width = parseInt(viewBox.split(' ')[2]);
 					svg.attr("height",height*4);
-					svg.attr("width",width*4);	
-					getDataUri(url, function(dataUri) {
-						url = dataUri;
-						image.attr("xlink:href",url);
+					svg.attr("width",width*4);
+					if(document.getElementById("mapImg")){
+						var url = document.getElementById("mapImg").getAttribute("xlink:href");
+						var options = window.OPTIONS;
+						/*if(options){
+							var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale*4+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+						}*/
+						getDataUri(url, function(dataUri) {
+							url = dataUri;
+							image.attr("xlink:href",url);
+							if (window.ActiveXObject){//code for ie
+							    str = xmlObj.xml;
+							}else{// code for Mozilla, Firefox, Opera, etc.
+							    str = (new XMLSerializer()).serializeToString(xmlObj);
+							}	
+							downLoad(str);
+						});
+					}else{
 						if (window.ActiveXObject){//code for ie
-						    str = xmlObj.xml;
+							str = xmlObj.xml;
 						}else{// code for Mozilla, Firefox, Opera, etc.
-						    str = (new XMLSerializer()).serializeToString(xmlObj);
+							str = (new XMLSerializer()).serializeToString(xmlObj);
 						}	
 						downLoad(str);
-					});
-					
+					}
+
 					function downLoad(str){
 						var svgXml = str;
 						var image = new Image();
 						image.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
 
 						var canvas = document.getElementById('myCanvas');  //准备空画布
-
+						document.getElementById('myCanvas').setAttribute("width",width*4);
+						document.getElementById('myCanvas').setAttribute("height",height*4);
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
 						context.drawImage(image, 0, 0);
 
@@ -3656,7 +3669,6 @@ TODOS
 						var image = new Image();
 
 					    image.onload = function () {
-					    	console.log("image loaded!")
 					        var canvas = document.createElement('canvas');
 					        canvas.width = width*4; // or 'width' if you want a special/scaled size
 					        canvas.height = height*4; // or 'height' if you want a special/scaled size
@@ -3860,9 +3872,25 @@ TODOS
 				$('#svg_prefs').hide();
 				preferences = false;
 			};
+			/*动态改变模板(新添加的函数)*/
+			var changeSVGTemple = function(oldWidth,width,height,title){
+				document.getElementById("title_name").innerHTML = title;
+				document.getElementById("title_name").setAttribute("x",width/2);
+				document.getElementById("map_outside").setAttribute("width",width-40);
+				document.getElementById("map_outside").setAttribute("height",height-120);
+				document.getElementById("map_inside").setAttribute("width",width-50);
+				document.getElementById("map_inside").setAttribute("height",height-130);
+				document.getElementById("mapping_time").setAttribute("y",height-20);
+				document.getElementById("mapping_organization").setAttribute("x",width-100);
+				document.getElementById("mapping_organization").setAttribute("y",height-20);
+				var translate = "translate("+(width-1600)+",0)";
+				document.getElementById("northArrow-group").setAttribute("transform",translate);
+			};
+			/**/
 
 			var saveDocProperties = function() {
 				// set title
+				var oldWidth = document.getElementById("title_name").getAttribute("x")*2;
 				var newTitle = $('#canvas_title').val();
 				updateTitle(newTitle);
 				svgCanvas.setDocumentTitle(newTitle);
@@ -3870,6 +3898,7 @@ TODOS
 				// update resolution
 				var width = $('#canvas_width'), w = width.val();
 				var height = $('#canvas_height'), h = height.val();
+				changeSVGTemple(oldWidth,w,h,newTitle);
 
 				if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
 					$.alert(uiStrings.notification.invalidAttrValGiven);
