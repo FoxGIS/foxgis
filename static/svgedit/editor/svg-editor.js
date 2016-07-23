@@ -5167,6 +5167,9 @@ TODOS
 				img.onload = function(){// 加载完成执行
 					document.getElementById('mapImg').setAttribute("width",img.width);
 					document.getElementById('mapImg').setAttribute("height",img.height);
+					var date = new Date();
+					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
+					document.getElementById('mapping_organization').innerHTML = options.organization;        
 				};
 				var xmlString;//xml字符串
 				if (window.ActiveXObject){//code for ie
