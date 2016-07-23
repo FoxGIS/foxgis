@@ -5161,10 +5161,6 @@ TODOS
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 				var xmlObj = $.parseXML(str);//xml对象	
 				var image = $(xmlObj).find("image");
-<<<<<<< HEAD
-				console.log($(xmlObj).children().children())
-				image.attr("xlink:href",url);//替换url
-=======
 				image.attr("xlink:href",url);//替换url		  
 				var img = new Image();	// 创建对象		  		
 				img.src = url;	// 改变图片的src		  
@@ -5172,7 +5168,6 @@ TODOS
 					document.getElementById('mapImg').setAttribute("width",img.width);
 					document.getElementById('mapImg').setAttribute("height",img.height);
 				};
->>>>>>> 5a89459d76b0da0ecc60467cb7e8319e1ccd3d7d
 				var xmlString;//xml字符串
 				if (window.ActiveXObject){//code for ie
 				    xmlString = xmlObj.xml;
