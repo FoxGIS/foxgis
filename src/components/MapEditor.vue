@@ -164,22 +164,30 @@ export default {
         e.target.innerHTML = '确定'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '确定'){
-        var options = {};
-        options.API = SERVER_API;
-        options.style_id = this.styleId;
-        options.username = Cookies.get('username');
-        options.access_token = Cookies.get('access_token');
-        options.zoom = this.$refs.drafmap.map.getZoom();
-        options.scale = 1;
-        var controlBound = this.$refs.drafmap.controlBound;
-        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
-        /*let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;*/
-        this.$broadcast('map-layout',options);
-        this.SVGEditorClick();
-        this.hideBoundsBox()
-        document.getElementById("print-button").innerHTML = "输出"
-        document.getElementById("back-button").innerText = '分享'
-        document.getElementById("back-button").style.display = 'block'
+        var options = {}
+        options.API = SERVER_API
+        options.style_id = this.styleId
+        options.username = Cookies.get('username')
+        options.access_token = Cookies.get('access_token')
+        options.zoom = this.$refs.drafmap.map.getZoom()
+        options.scale = 1
+        var controlBound = this.$refs.drafmap.controlBound
+        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']'
+        let url = SERVER_API.users+'/'+options.username
+        this.$http({url:url,method:'GET',headers:{'x-access-token':options.access_token}})
+          .then(function(res){
+            let data = res.data
+            options.organization = data.organization
+            /*let url = SERVER_API.styles + '/' + username + '/' + style_id+'/thumbnail?zoom='+zoom+'&scale='+scale+'&bbox='+bbox+'&access_token='+access_token;*/
+            this.$broadcast('map-layout',options)
+            this.SVGEditorClick()
+            this.hideBoundsBox()
+            document.getElementById("print-button").innerHTML = "输出"
+            document.getElementById("back-button").innerText = '分享'
+            document.getElementById("back-button").style.display = 'block'
+          },function(){
+            alert("获取用户信息错误")
+          })
       }
     },
     backEditor: function(e){
