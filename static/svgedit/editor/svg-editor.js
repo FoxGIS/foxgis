@@ -3618,15 +3618,13 @@ TODOS
 					var image = $(xmlObj).find("image");
 					var height = document.getElementById("svgcontent").getAttribute("height");
 					var width = document.getElementById("svgcontent").getAttribute("width");
-					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
 					var url = document.getElementById("mapImg").getAttribute("xlink:href");
-					var length = $(xmlObj).children().children().length;
-					for(var i=0;i<length;i++){
-						$(xmlObj).children().children()[i].setAttribute("transform","scale(4)");
+					var options = window.OPTIONS;
+					if(options){
+						url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 					}
 					svg.attr("height",height*4);
-					svg.attr("width",width*4);
-					svg.attr("viewBox","0 0 "+(width*4)+" "+(height*4));
+					svg.attr("width",width*4);	
 					getDataUri(url, function(dataUri) {
 						url = dataUri;
 						image.attr("xlink:href",url);
@@ -5157,15 +5155,19 @@ TODOS
 		};
 
 		editor.loadFromString = function (str) {
-			var width = 800;
-			var height = 600;		
 			//var url = "images/default-map.png";
 			var options = window.OPTIONS;
 			if(options){
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-				var xmlObj = $.parseXML(str);//xml对象
+				var xmlObj = $.parseXML(str);//xml对象	
 				var image = $(xmlObj).find("image");
-				image.attr("xlink:href",url);//替换url
+				image.attr("xlink:href",url);//替换url		  
+				var img = new Image();	// 创建对象		  		
+				img.src = url;	// 改变图片的src		  
+				img.onload = function(){// 加载完成执行
+					document.getElementById('mapImg').setAttribute("width",img.width);
+					document.getElementById('mapImg').setAttribute("height",img.height);
+				};
 				var xmlString;//xml字符串
 				if (window.ActiveXObject){//code for ie
 				    xmlString = xmlObj.xml;
