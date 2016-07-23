@@ -498,10 +498,9 @@
       "source": "data2012",
       "source-layer": "agnp",
       "filter":[
-        "!in",
-        "capname",
-        "北京",
-        ""
+        "==",
+        "class",
+        "AB"
       ],
       "minzoom": 4,
       "maxzoom": 6,

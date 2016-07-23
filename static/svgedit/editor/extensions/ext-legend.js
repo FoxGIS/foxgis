@@ -39,18 +39,54 @@ svgEditor.addExtension('ext-legend', function() {
 
 
 	function drawLegend(legendArr){
-		var fill_d = "m60.67206,421.74505c0,0.52831 -0.4239,0.95667 -0.94683,0.95667l-34.79472,0c-0.52289,0 -0.94679,-0.42832 -0.94679,-0.95667l0,-12.09954c0,-0.52831 0.4239,-0.95667 0.94679,-0.95667l34.79472,0c0.52289,0 0.94683,0.42832 0.94683,0.95667l0,12.09954z";
+		console.log(canv);
+		console.log(svgEditor);
+		var fill_d = "m74.49659,136.10344c0,0.62855 -0.46923,1.13819 -1.04807,1.13819l-38.51549,0c-0.5788,0 -1.04803,-0.50959 -1.04803,-1.13819l0,-14.39536c0,-0.62855 0.46923,-1.13819 1.04803,-1.13819l38.51549,0c0.5788,0 1.04807,0.50959 1.04807,1.13819l0,14.39536z";
 		var flag = 0;//用于识别图例在那一列，一共两列
 		var username = options.username;
 		var tem = styleObj.sprite.split("/");
 		var prefix = styleObj.sprite.replace(new RegExp(tem[tem.length-1]+"$"),"");
+		var rectHeight = (parseInt(legendArr.length/2)+2)*30;
+		canv.createLayer("图例");
+		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		var rect = canv.addSvgElementFromJson({//创建图例矩形框
+			'element': 'rect',
+			'curStyles': true,
+			'attr': {
+				stroke:"#000000",
+				fill:"#ffffff",
+				'stroke-linejoin':"round",
+				'stroke-width':"1",
+				x:25,
+				y:85,
+				width:380,
+				height:rectHeight,
+				opacity: 1
+			}
+		});
+		var text = canv.addSvgElementFromJson({//创建“图例”文字
+			'element': 'text',
+			'curStyles': true,
+			'attr': {
+				x: 194,
+				y: 106,
+				id: canv.getNextId(),
+				fill: '#000000',
+				'stroke-width': 0,
+				'font-size': 18,
+				'text-anchor': 'middle',
+				'font-family':"serif",
+				'xml:space': 'preserve',
+				opacity: 1
+			}
+		});
+		text.textContent = "图     例";
 		for(var i=0;i<legendArr.length;i++){
 			if(legendArr[i].type === "symbol"){
 				flag++;
 				var iconUrl = prefix+legendArr[i].styles[0]['icon-image']+"?access_token="+options.access_token;
 				var res = $.ajax({url:iconUrl,async:false});
 				var svgStr = res.responseText;
-				console.log(svgStr)
 				var newDoc = $.parseXML(svgStr);
 				// set new svg document
 				// If DOM3 adoptNode() available, use it. Otherwise fall back to DOM2 importNode()
@@ -60,26 +96,33 @@ svgEditor.addExtension('ext-legend', function() {
 				else {
 					var svgcontent = document.importNode(newDoc.documentElement, true);
 				}
+				var icon_height = $(svgcontent).attr("height");
+				var icon_width = $(svgcontent).attr("width");
+				var curr_width = legendArr[i].styles[0]['icon-size']*icon_width;
+				var curr_height = legendArr[i].styles[0]['icon-size']*icon_height;
+				svgcontent.setAttribute("width",curr_width);
+				svgcontent.setAttribute("height",curr_height);
 				
+				current_layer.appendChild(svgcontent);
+				canv.groupSvgElem(svgcontent);
 				if(flag%2===0){
-					svgcontent.setAttribute("x",'130');
-					svgcontent.setAttribute("y",405+parseInt((flag/2)-1)*20);
+					svgcontent.setAttribute("x",234-curr_width/2);
+					svgcontent.setAttribute("y",128-curr_height/2+parseInt((flag/2)-1)*30);
 				}else{
-					svgcontent.setAttribute("x",'30');
-					svgcontent.setAttribute("y",405+parseInt(flag/2)*20);
+					svgcontent.setAttribute("x",54-curr_width/2);
+					svgcontent.setAttribute("y",128-curr_height/2+parseInt(flag/2)*30);
 				}
-				console.log(svgcontent);
-				canv.getElem("legend-group").appendChild(svgcontent);
+				//canv.getElem("legend-group").appendChild(svgcontent);
 				var cur_text = canv.addSvgElementFromJson({
 					'element': 'text',
 					'curStyles': true,
 					'attr': {
-						x: 64,
-						y: 418,
+						x: 80,
+						y: 132,
 						id: canv.getNextId(),
 						fill: '#000000',
 						'stroke-width': 0,
-						'font-size': 6,
+						'font-size': 12,
 						'text-anchor': 'left',
 						'xml:space': 'preserve',
 						opacity: 1
@@ -87,12 +130,12 @@ svgEditor.addExtension('ext-legend', function() {
 				});
 				cur_text.textContent = legendArr[i].name;
 				if(flag%2===0){
-					cur_text.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*20+')');
+					cur_text.setAttribute('transform', 'translate(180,'+parseInt((flag/2)-1)*30+')');
 				}else{
-					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*20+')');
+					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*30+')');
 				}
 				canv.recalculateDimensions(cur_text);				
-				canv.getElem("legend-group").appendChild(cur_text);
+				//canv.getElem("legend-group").appendChild(cur_text);
 			}else if(legendArr[i].type === "line"){
 				flag++;
 				for(var j=0;j<legendArr[i].styles.length;j++){
@@ -100,10 +143,10 @@ svgEditor.addExtension('ext-legend', function() {
 						element: 'line',
 						curStyles: true,
 						attr: {
-							x1: 24,
-							y1: 415.5,
-							x2: 61,
-							y2: 415.5,
+							x1: 34,
+							y1: 128,
+							x2: 75,
+							y2: 128,
 							id: canv.getNextId(),
 							stroke: legendArr[i].styles[j]['line-color'],
 							'stroke-width': legendArr[i].styles[j]['line-width'],
@@ -117,23 +160,23 @@ svgEditor.addExtension('ext-legend', function() {
 						}
 					});
 					if(flag%2===0){
-						cur_line.setAttribute('transform', 'translate(100,'+(parseInt(((flag/2)-1))*20+legendArr[i].styles[j]['line-offset'])+')');
+						cur_line.setAttribute('transform', 'translate(180,'+(parseInt(((flag/2)-1))*30+legendArr[i].styles[j]['line-offset'])+')');
 					}else{
-						cur_line.setAttribute('transform', 'translate(0,'+(parseInt(flag/2)*20+legendArr[i].styles[j]['line-offset'])+')');
+						cur_line.setAttribute('transform', 'translate(0,'+(parseInt(flag/2)*30+legendArr[i].styles[j]['line-offset'])+')');
 					}
 					canv.recalculateDimensions(cur_line);
-					canv.getElem("legend-group").appendChild(cur_line);
+					//canv.getElem("legend-group").appendChild(cur_line);
 				}
 				var cur_text = canv.addSvgElementFromJson({
 					'element': 'text',
 					'curStyles': true,
 					'attr': {
-						x: 64,
-						y: 418,
+						x: 80,
+						y: 132,
 						id: canv.getNextId(),
 						fill: '#000000',
 						'stroke-width': 0,
-						'font-size': 6,
+						'font-size': 12,
 						'text-anchor': 'left',
 						'xml:space': 'preserve',
 						opacity: 1
@@ -141,12 +184,12 @@ svgEditor.addExtension('ext-legend', function() {
 				});
 				cur_text.textContent = legendArr[i].name;
 				if(flag%2===0){
-					cur_text.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*(20)+')');
+					cur_text.setAttribute('transform', 'translate(180,'+parseInt((flag/2)-1)*(30)+')');
 				}else{
-					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(20)+')');
+					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(30)+')');
 				}
 				canv.recalculateDimensions(cur_text);				
-				canv.getElem("legend-group").appendChild(cur_text);
+				//canv.getElem("legend-group").appendChild(cur_text);
 			}else if(legendArr[i].type === "fill"){
 				flag++;
 				var cur_shape = canv.addSvgElementFromJson({
@@ -166,18 +209,17 @@ svgEditor.addExtension('ext-legend', function() {
 					'element': 'text',
 					'curStyles': true,
 					'attr': {
-						x: 64,
-						y: 418,
+						x: 80,
+						y: 132,
 						id: canv.getNextId(),
 						fill: '#000000',
 						'stroke-width': 0,
-						'font-size': 6,
+						'font-size': 12,
 						'text-anchor': 'left',
 						'xml:space': 'preserve',
 						opacity: 1
 					}
 				});
-				console.log(canv);
 				cur_text.textContent = legendArr[i].name;
 				if (/[a-z]/.test(fill_d)) {
 					fill_d = canv.pathActions.convertPath(cur_shape);
@@ -185,18 +227,23 @@ svgEditor.addExtension('ext-legend', function() {
 					canv.pathActions.fixEnd(cur_shape);
 				}
 				if(flag%2===0){
-					cur_shape.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*(20)+')');
-					cur_text.setAttribute('transform', 'translate(100,'+parseInt((flag/2)-1)*(20)+')');
+					cur_shape.setAttribute('transform', 'translate(180,'+parseInt((flag/2)-1)*(30)+')');
+					cur_text.setAttribute('transform', 'translate(180,'+parseInt((flag/2)-1)*(30)+')');
 				}else{
-					cur_shape.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(20)+')');
-					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(20)+')');
+					cur_shape.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(30)+')');
+					cur_text.setAttribute('transform', 'translate(0,'+parseInt(flag/2)*(30)+')');
 				}
 				canv.recalculateDimensions(cur_shape);
 				canv.recalculateDimensions(cur_text);				
-				canv.getElem("legend-group").appendChild(cur_shape);
-				canv.getElem("legend-group").appendChild(cur_text);
+				//canv.getElem("legend-group").appendChild(cur_shape);
+				//canv.getElem("legend-group").appendChild(cur_text);
 			}
 		}
+		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
+		var frameWidth = parseFloat(viewBox[2]);
+		var frameHeight = parseFloat(viewBox[3]);
+		current_layer.setAttribute("transform","translate("+(frameWidth-430)+","+(frameHeight-130-rectHeight)+")");
+		canv.recalculateDimensions(current_layer);
 	}
 	/**
  	* 根据地图样式中的layers筛选图例单元,该函数返回已筛选和分组完成的图例数组

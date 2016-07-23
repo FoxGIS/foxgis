@@ -7,14 +7,14 @@
       "url": "http://218.244.250.70:8090/api/v1/tilesets/foxgis/admin"
     }
   },
-  "sprite": "http://218.244.250.70:8090/api/v1/sprites/foxgis/SkpEKKP8/sprite",
+  "sprite": "http://218.244.250.70:8090/api/v1/sprites/foxgis/Hk6NFtw8/sprite",
   "glyphs": "http://218.244.250.70:8090/api/v1/fonts/foxgis/{fontstack}/{range}.pbf",
   "transition": {
     "duration": 300,
     "delay": 0
   },
   "layers": [{
-    "id": "background",
+    "id": "背景",
     "type": "background",
     "paint": {
       "background-color": "#87c2e4"
@@ -22,7 +22,7 @@
   },
 
     {
-      "id":"asia_fill",
+      "id":"亚洲面",
       "type":"fill",
       "source":"data2012",
       "source-layer":"asia_a",
@@ -31,80 +31,59 @@
       }
     },
     {
-      "id":"asia_line",
+      "id":"国界光晕",
       "type":"line",
       "source":"data2012",
-      "source-layer":"asia_a",
-      "layout":{
-        "line-join":"round"
-      },
+      "source-layer":"china_l",
+      "minzoom":3,
+      "maxzoom": 11,
       "paint":{
-        "line-color":"rgb(75,138,232)",
-        "line-opacity":0.5,
-        "line-width":0.6
-
+        "line-offset":-3,
+        "line-color":"rgba(255, 214, 211, 0.98)",
+        "line-width":{
+          "stops":[[3,4],[4,6],[6,8]]
+        }
       }
     },
     {
-      "id":"china_bou_case",
+      "id":"国界",
       "type":"line",
       "source":"data2012",
       "source-layer":"china_l",
       "maxzoom":11,
       "paint":{
-        "line-color":"rgb(225,214,211)",
+        "line-color":"#e8ae59",
         "line-width":{
-          "stops":[[2,5],[4,8],[6,10]]
+          "stops":[[2,1],[7,2],[9,3]]
         }
       }
     },
     {
-      "id":"china_bou",
-      "type":"line",
-      "source":"data2012",
-      "source-layer":"china_l",
-      "maxzoom":11,
-      "paint":{
-        "line-color":"rgb(150,150,150)",
-        "line-width":{
-          "stops":[[2,1],[4,2],[6,3]]
-        }
-      }
-    },
-    {
-      "id":"sheng_line",
-      "type":"line",
-      "source":"data2012",
-      "source-layer":"boua_prov",
-      "minzoom":3,
-      "maxzoom":9,
-      "layout":{
-        "line-join":"round"
+      "id": "省界线",
+      "type": "line",
+      "source": "data2012",
+      "source-layer": "boua_prov",
+      "minzoom": 4,
+      "maxzoom": 9,
+      "layout": {
+        "line-cap":"round",
+        "line-join": "round"
       },
-      "paint":{
-        "line-color":"rgb(150,150,150)",
-        "line-width":1,
-        "line-dasharray":[1,3]
+      "paint": {
+        "line-color": "rgb(150,150,150)",
+        "line-width": 1,
+        "line-dasharray": [
+          1.5,
+          3
+        ]
       }
     },
     {
-      "id":"sheng_line2",
-      "type":"line",
-      "source":"data2012",
-      "source-layer":"boua_prov",
-      "minzoom":3,
-      "maxzoom":9,
-      "paint":{
-        "line-color":"rgb(150,150,150)",
-        "line-width":1,
-        "line-dasharray":[5,8]
-      }
-    },
-    {
-      "id":"city_line_focus",
+      "id":"当前地级市界线(5-8)",
       "source":"data2012",
       "source-layer":"boua_dist",
       "minzoom":5,
+      "maxzoom":8,
       "type":"line",
       "filter":["==","name","replaceme"],
       "layout":{
@@ -118,10 +97,11 @@
       }
     },
     {
-      "id":"city_line",
+      "id":"当前地级市界线(8-11)",
       "source":"data2012",
       "source-layer":"boua_dist",
       "minzoom":8,
+      "maxzoom":11,
       "type":"line",
       "filter":["==","name","replaceme"],
       "layout":{
@@ -134,10 +114,11 @@
       }
     },
     {
-      "id":"city_line_glow",
+      "id":"当前地级市界线光晕",
       "source":"data2012",
       "source-layer":"boua_dist",
       "minzoom":8,
+      "maxzoom":11,
       "type":"line",
       "filter":["==","name","replaceme"],
       "layout":{
@@ -151,10 +132,11 @@
       }
     },
     {
-      "id":"county_color1",
+      "id":"县填充色1",
       "source":"data2012",
       "source-layer":"boua",
       "minzoom":6,
+      "maxzoom":11,
       "type":"fill",
       "filter":["all",
         ["==","belong_dis","replaceme"],
@@ -167,10 +149,11 @@
       }
     },
     {
-      "id":"county_color2",
+      "id":"县填充色2",
       "source":"data2012",
       "source-layer":"boua",
       "minzoom":6,
+      "maxzoom":11,
       "type":"fill",
       "filter":["all",
         ["==","belong_dis","replaceme"],
@@ -183,10 +166,11 @@
       }
     },
     {
-      "id":"town_color3",
+      "id":"县填充色3",
       "source":"data2012",
       "source-layer":"boua",
       "minzoom":6,
+      "maxzoom":11,
       "type":"fill",
       "filter":["all",
         ["==","belong_dis","replaceme"],
@@ -199,10 +183,11 @@
       }
     },
     {
-      "id":"town_color4",
+      "id":"县填充色4",
       "source":"data2012",
       "source-layer":"boua",
       "minzoom":6,
+      "maxzoom":11,
       "type":"fill",
       "filter":["all",
         ["==","belong_dis","replaceme"],
@@ -215,9 +200,11 @@
       }
     },
     {
-      "id":"jumindi_fill",
+      "id":"居民地",
       "source":"data2012",
       "source-layer":"resa",
+      "minzoom":6,
+      "maxzoom":11,
       "type":"fill",
       "paint":{
         "fill-color":"#8029fc",
@@ -225,7 +212,7 @@
       }
     },
     {
-      "id":"heliu_line",
+      "id":"线状水系",
       "source":"data2012",
       "source-layer":"hydl",
       "minzoom":3,
@@ -240,7 +227,7 @@
       }
     },
     {
-      "id":"heliu_fill",
+      "id":"面状水系",
       "source":"data2012",
       "source-layer":"hyda",
       "minzoom":3,
@@ -251,10 +238,11 @@
       }
     },
     {
-      "id":"tielu_case",
+      "id":"铁路（实线）",
       "source":"data2012",
       "source-layer":"lrrl",
       "minzoom":7,
+      "maxzoom":11,
       "filter":["any",
         ["==","gb",410101],
         ["==","gb",410102],
@@ -268,10 +256,11 @@
       }
     },
     {
-      "id":"tielu",
+      "id":"铁路（虚线）",
       "source":"data2012",
       "source-layer":"lrrl",
       "minzoom":7,
+      "maxzoom":11,
       "filter":["any",
         ["==","gb",410101],
         ["==","gb",410102],
@@ -286,12 +275,13 @@
       }
     },
     {
-      "id":"daolu_case",
+      "id":"普通道路（边线）",
       "type":"line",
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
       "minzoom":6,
+      "maxzoom":11,
       "layout":{
         "line-cap":"round"
       },
@@ -301,12 +291,13 @@
       }
     },
     {
-      "id":"daolu_in",
+      "id":"普通道路",
       "type":"line",
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
       "minzoom":6,
+      "maxzoom":11,
       "layout":{
         "line-cap":"round"
       },
@@ -316,12 +307,13 @@
       }
     },
     {
-      "id":"gaosu_case",
+      "id":"高速公路（边线）",
       "type":"line",
       "source":"data2012",
       "source-layer":"lrdl",
       "filter":["==","rteg","高速"],
       "minzoom":8,
+      "maxzoom":11,
       "layout":{
         "line-cap":"round"
       },
@@ -333,12 +325,13 @@
       }
     },
     {
-      "id":"gaosu_in",
+      "id":"高速公路",
       "type":"line",
       "source":"data2012",
       "source-layer":"lrdl",
       "filter":["==","rteg","高速"],
       "minzoom":5,
+      "maxzoom":11,
       "layout":{
         "line-cap":"round"
       },
@@ -350,7 +343,7 @@
       }
     },
     {
-      "id":"asia_label",
+      "id":"“亚洲”注记",
       "type":"symbol",
       "source":"data2012",
       "source-layer":"zhou_label",
@@ -360,7 +353,7 @@
       "layout":{
         "symbol-placement":"point",
         "text-field":"{name}",
-        "text-font":["FangSong Regular"],
+        "text-font":["SimHei Regular"],
         "text-allow-overlap":true,
         "text-size":{
           "stops":[[1,14],[2,25]]
@@ -371,7 +364,7 @@
       }
     },
     {
-      "id":"china_label",
+      "id":"“中国”注记",
       "type":"symbol",
       "source":"data2012",
       "source-layer":"zhou_label",
@@ -381,7 +374,7 @@
       "layout":{
         "symbol-placement":"point",
         "text-field":"中华人民共和国",
-        "text-font":["FangSong Regular"],
+        "text-font":["SimHei Regular"],
         "text-size":{
           "stops":[[1,10],[2,12],[3,16],[4,25]]
         },
@@ -395,7 +388,7 @@
       }
     },
     {
-      "id":"sheng_label",
+      "id":"省名注记",
       "source":"data2012",
       "source-layer":"prov_label",
       "type":"symbol",
@@ -404,7 +397,7 @@
       "layout":{
         "text-size": 12,
         "text-font": [
-          "FangSong Regular"
+          "STXinwei Regular"
         ],
         "text-offset":[1,0],
         "symbol-placement": "point",
@@ -420,7 +413,7 @@
     },
 
     {
-      "id":"cun_label",
+      "id":"行政村注记",
       "source":"data2012",
       "source-layer":"agnp",
       "filter":["==","class","AK"],
@@ -452,7 +445,7 @@
       }
     },
     {
-      "id":"xiangzhen_label",
+      "id":"乡镇注记",
       "source":"data2012",
       "source-layer":"agnp",
       "filter":["any",
@@ -486,11 +479,12 @@
       }
     },
     {
-      "id":"xian_label",
+      "id":"县注记",
       "source":"data2012",
       "source-layer":"agnp",
       "filter":["any",["==","class","AE"],["==","class","AF"]],
-      "minzoom":7,
+      "minzoom":8,
+      "maxzoom":11,
       "type":"symbol",
       "layout":{
         "text-line-height": 1.2,
@@ -498,11 +492,11 @@
         "icon-image": "circle-stroked-11",
         "text-ignore-placement": false,
         "text-max-angle": 38,
-        "text-font": ["FangSong Regular"],
+        "text-font": ["SimHei Regular"],
         "symbol-placement": "point",
         "text-offset": [
-          0.7,
-          0.7
+          0,
+          0.6
         ],
         "icon-optional": false,
         "text-rotation-alignment": "viewport",
@@ -519,13 +513,13 @@
       }
     },
     {
-      "id":"shi_label",
+      "id":"地级市注记",
       "type":"symbol",
       "source":"data2012",
       "source-layer":"agnp",
       "filter":["any",["==","class","AD"],["==","class","AC"]],
-      "minzoom":6,
-      "maxzoom":13,
+      "minzoom":7,
+      "maxzoom":11,
       "layout":{
         "text-line-height": 1.2,
         "text-size": 13,
@@ -534,12 +528,12 @@
         "text-ignore-placement": false,
         "text-max-angle": 38,
         "text-font": [
-          "FangSong Regular"
+          "STXinwei Regular"
         ],
         "symbol-placement": "point",
         "visibility": "visible",
         "text-offset": [
-          0.7,
+          0,
           0.7
         ],
         "icon-optional": false,
@@ -557,7 +551,7 @@
       }
     },
     {
-      "id":"shenghui_label_icon",
+      "id":"省会城市注记",
       "type":"symbol",
       "source":"data2012",
       "source-layer":"agnp",
@@ -568,11 +562,11 @@
         "text-size": 15,
         "icon-image": "circle-11",
         "text-font": [
-          "FangSong Regular"
+          "STXinwei Regular"
         ],
         "symbol-placement": "point",
         "text-offset": [
-          0.7,
+          0,
           0.7
         ],
         "text-anchor": "top",
@@ -588,7 +582,7 @@
       }
     },
     {
-      "id":"capital_label",
+      "id":"首都注记",
       "type":"symbol",
       "source":"data2012",
       "source-layer":"agnp",
@@ -599,13 +593,13 @@
         "text-size": 14,
         "icon-image": "star-15",
         "text-font": [
-          "FangSong Regular"
+          "SimHei Regular"
         ],
         "symbol-placement": "point",
         "text-allow-overlap":true,
         "text-offset": [
-          0.7,
-          0.7
+          0,
+          1
         ],
         "text-anchor": "top",
         "text-field": "{capname}",
@@ -613,14 +607,14 @@
         "text-max-width": 8
       },
       "paint":{
-        "text-color":"rgb(20,20,20)",
+        "text-color":"rgb(255,0,0)",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
         "text-halo-blur":1
       }
     },
     {
-      "id":"heliu_line_label",
+      "id":"线状水系注记",
       "source":"data2012",
       "source-layer":"hydl",
       "type":"symbol",
@@ -638,7 +632,7 @@
       }
     },
     {
-      "id":"heliu_point_label",
+      "id":"点状水系注记",
       "source":"data2012",
       "source-layer":"hyda_labelp",
       "type":"symbol",
@@ -657,19 +651,21 @@
 
 
     {
-      "id":"tianditu_live",
+      "id":"天地图_居民地",
       "source":"data2012",
       "source-layer":"cresa",
       "type":"fill",
+      "minzoom":11,
       "paint":{
         "fill-color":"#8029fc",
         "fill-opacity":0.4
       }
     },
     {
-      "id":"river_line",
+      "id":"天地图_线状水系",
       "source":"data2012",
       "source-layer":"chydl",
+      "minzoom":11,
       "type":"line",
       "layout":{
 
@@ -680,9 +676,10 @@
       }
     },
     {
-      "id":"river_line_glow",
+      "id":"天地图_线状水系光晕",
       "source":"data2012",
       "source-layer":"chydl",
+      "minzoom":11,
       "type":"line",
       "layout":{
 
@@ -694,40 +691,21 @@
       }
     },
     {
-      "id":"river_fill",
+      "id":"天地图_面状水系",
       "source":"data2012",
       "source-layer":"chyda",
+      "minzoom":11,
       "type":"fill",
       "paint":{
-        "fill-color":"#95d6f3"
+        "fill-color":"#95d6f3",
+  "fill-outline-color":"rgb(12,127,241)"
       }
     },
     {
-      "id":"river_outline",
-      "source":"data2012",
-      "source-layer":"chyda",
-      "type":"line",
-      "paint":{
-        "line-width":1.3,
-        "line-color":"rgb(12,127,241)"
-      }
-    },
-    {
-      "id":"river_glow",
-      "source":"data2012",
-      "source-layer":"chyda",
-      "type":"line",
-      "paint":{
-        "line-width":4,
-        "line-color":"rgb(180,206,231)",
-        "line-opacity":0.5
-      }
-    },
-
-    {
-      "id":"otherway_case",
+      "id":"天地图_普通道路（边线）",
       "source":"data2012",
       "source-layer":"clrdl",
+      "minzoom":11,
       "filter":["!=","rteg","高速"],
       "type":"line",
       "layout":{
@@ -741,9 +719,11 @@
       }
     },
     {
-      "id":"otherway",
+      "id":"天地图_普通道路",
       "source":"data2012",
       "source-layer":"clrdl",
+      "minzoom":11,
+      "filter":["!=","rteg","高速"],
       "type":"line",
       "layout":{
 
@@ -756,9 +736,10 @@
       }
     },
     {
-      "id":"highway_road_case",
+      "id":"天地图_高速公路（边线）",
       "source":"data2012",
       "source-layer":"clrdl",
+      "minzoom":11,
       "filter":["==","rteg","高速"],
       "type":"line",
       "layout":{
@@ -770,9 +751,10 @@
       }
     },
     {
-      "id":"highway_road",
+      "id":"天地图_高速公路",
       "source":"data2012",
       "source-layer":"clrdl",
+      "minzoom":11,
       "filter":["==","rteg","高速"],
       "type":"line",
       "layout":{
@@ -785,9 +767,10 @@
     },
 
     {
-      "id":"railway_case",
+      "id":"天地图_铁路（实线）",
       "source":"data2012",
       "source-layer":"clrrl",
+      "minzoom":11,
       "type":"line",
       "paint":{
         "line-width": {
@@ -797,9 +780,10 @@
       }
     },
     {
-      "id":"railway",
+      "id":"天地图_铁路",
       "source":"data2012",
       "source-layer":"clrrl",
+      "minzoom":11,
       "type":"line",
       "paint":{
         "line-width":1.2,
@@ -810,9 +794,10 @@
 
 
     {
-      "id":"village_label_AK",
+      "id":"天地图_行政村注记",
       "source":"data2012",
       "source-layer":"cagnp",
+      "minzoom":11,
       "filter":["==","class","AK"],
       "type":"symbol",
       "layout":{
@@ -843,44 +828,9 @@
       }
     },
     {
-      "id":"village_label",
+      "id":"天地图_乡镇注记",
       "source":"data2012",
-      "source-layer":"cagnp",
-      "filter":["all",["any",
-        ["==","class","BA"],
-        ["==","class","BB"],
-        ["==","class","BC"]]
-      ],
-      "type":"symbol",
-      "layout":{
-        "text-line-height": 1.2,
-        "text-size": 8,
-        "text-ignore-placement": false,
-        "text-max-angle": 38,
-        "text-font": ["FangSong Regular"],
-        "symbol-placement": "point",
-        "text-offset": [
-          0.7,
-          0.7
-        ],
-        "text-rotation-alignment": "viewport",
-        "text-anchor": "top",
-        "text-field": "{name}",
-        "text-letter-spacing": 0.02,
-        "text-max-width": 7,
-        "text-allow-overlap":false,
-        "symbol-avoid-edges":true
-      },
-      "paint":{
-        "text-color":"#9a9a9a",
-        "text-halo-color":"rgb(255,255,255)",
-        "text-halo-width":1,
-        "text-halo-blur":0.5
-      }
-    },
-    {
-      "id":"town_label",
-      "source":"data2012",
+      "minzoom":11,
       "source-layer":"cagnp",
       "filter":["any",
         ["==","class","AH"],
@@ -889,15 +839,17 @@
       ],
       "type":"symbol",
       "layout":{
+        "icon-image": "circle-11",
+  "icon-size":0.8,
         "text-line-height": 1.2,
         "text-size": 13,
         "text-ignore-placement": false,
         "text-max-angle": 38,
-        "text-font": ["FangSong Regular"],
+        "text-font": ["STXinwei Regular"],
         "symbol-placement": "point",
         "text-offset": [
-          0.7,
-          0.7
+          0,
+          0.5
         ],
         "text-rotation-alignment": "viewport",
         "text-anchor": "top",
@@ -914,9 +866,10 @@
       }
     },
     {
-      "id":"county_label",
+      "id":"天地图_县注记",
       "source":"data2012",
       "source-layer":"cagnp",
+      "minzoom":11,
       "filter":["any",["==","class","AF"],["==","class","AE"]],
       "type":"symbol",
       "layout":{
@@ -925,11 +878,11 @@
         "icon-image": "circle-stroked-11",
         "text-ignore-placement": false,
         "text-max-angle": 38,
-        "text-font": ["FangSong Regular"],
+        "text-font": ["STXinwei Regular"],
         "symbol-placement": "point",
         "text-offset": [
-          0.7,
-          0.7
+          0,
+          0.5
         ],
         "icon-optional": false,
         "text-rotation-alignment": "viewport",
@@ -947,9 +900,10 @@
       }
     },
     {
-      "id":"river_line_label",
+      "id":"天地图_线状水系注记",
       "source":"data2012",
       "source-layer":"chydl",
+      "minzoom":11,
       "type":"symbol",
       "layout":{
         "symbol-placement":"line",
@@ -965,9 +919,10 @@
       }
     },
     {
-      "id":"river_point_label",
+      "id":"天地图_点状水系注记",
       "source":"data2012",
       "source-layer":"chyda_labelp",
+      "minzoom":11,
       "type":"symbol",
       "layout":{
         "symbol-placement":"point",

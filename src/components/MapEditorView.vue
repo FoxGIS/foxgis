@@ -299,18 +299,23 @@ export default {
         var newStyle = JSON.parse(result);
         newStyle.style_id = this.localStyle.style_id;
         //this.map.setStyle(newStyle);
-        //this.$parent.$broadcast('toc-init', newStyle);
+        this.$parent.$broadcast('toc-init', newStyle);
         this.changeStyle(newStyle);
       });   
     },
     'show-bounds-box': function(bounds){
-      console.log(bounds);
       let controlBox = document.getElementById("location-control")
       controlBox.style.display = 'block'
       //如果没有传入bounds，bounds的地理位置则有其css决定
       if(bounds === undefined){
+        var temBounds = this.map.getBounds();
+        var right_top = this.map.project(temBounds._ne);
+        var left_bottom = this.map.project(temBounds._sw);
+        controlBox.style.top = '8px';
+        controlBox.style.left = '8px';
+        controlBox.style.width = (right_top.x-16)+'px';
+        controlBox.style.height = (left_bottom.y-16)+'px';
         let mapBound = this.mapBound
-
         var boxBound = controlBox.getBoundingClientRect()
         this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
         this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
@@ -321,6 +326,7 @@ export default {
 
 
       this.map.on('dragstart', this.mapDragStart)
+      this.map.on('zoomend',this.mapZoomEnd)
 
       this.map.off('click', this.mapClick)
       let infoContainer = document.getElementById('info-container')
@@ -477,10 +483,10 @@ export default {
 /* box bounds */
 #location-control {
   position: absolute;
-  width: 80%;
-  height: 80%;
-  top: 10%;
-  left: 10%;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
   box-shadow:rgba(0, 0, 0, 0.298039) 0px 0px 0px 9999px;
   z-index: 1;
 }

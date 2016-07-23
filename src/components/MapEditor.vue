@@ -176,10 +176,12 @@ export default {
         options.organization = Cookies.get('organization')
         this.$broadcast('map-layout',options)
         this.SVGEditorClick()
+        this.patchStyle(this.style);
         this.hideBoundsBox()
         document.getElementById("print-button").innerHTML = "输出"
         document.getElementById("back-button").innerText = '分享'
         document.getElementById("back-button").style.display = 'block'
+
       }
     },
     backEditor: function(e){
@@ -209,11 +211,11 @@ export default {
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$broadcast("mailSent",{message:"保存成功！",timeout:3000});
+            this.$broadcast("mailSent",{message:"样式已保存！",timeout:3000});
           }
         },function(response){
           console.log(response);
-          this.$broadcast("mailSent",{message:"保存失败！发生未知错误！",timeout:3000});
+          this.$broadcast("mailSent",{message:"样式保存失败！发生未知错误！",timeout:3000});
         })
     }
   },

@@ -8,7 +8,6 @@ $(function () {'use strict';
     
     var svgCanvas = null;
     var frame;
-    console.log("dom.js--11---:"+this.URL);
 
     initEmbed = function () {
         var doc, mainButton;
