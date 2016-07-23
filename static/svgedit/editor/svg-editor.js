@@ -5103,6 +5103,7 @@ TODOS
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
                 var xmlObj = $.parseXML(str);//xml对象
 				var image = $(xmlObj).find("image");
+				console.log($(xmlObj).children().children())
 				image.attr("xlink:href",url);//替换url
 				var xmlString;//xml字符串
 				if (window.ActiveXObject){//code for ie

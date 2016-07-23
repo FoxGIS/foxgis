@@ -39,6 +39,8 @@ svgEditor.addExtension('ext-legend', function() {
 
 
 	function drawLegend(legendArr){
+		console.log(canv);
+		console.log(svgEditor);
 		var fill_d = "m60.67206,421.74505c0,0.52831 -0.4239,0.95667 -0.94683,0.95667l-34.79472,0c-0.52289,0 -0.94679,-0.42832 -0.94679,-0.95667l0,-12.09954c0,-0.52831 0.4239,-0.95667 0.94679,-0.95667l34.79472,0c0.52289,0 0.94683,0.42832 0.94683,0.95667l0,12.09954z";
 		var flag = 0;//用于识别图例在那一列，一共两列
 		var username = options.username;
@@ -50,7 +52,6 @@ svgEditor.addExtension('ext-legend', function() {
 				var iconUrl = prefix+legendArr[i].styles[0]['icon-image']+"?access_token="+options.access_token;
 				var res = $.ajax({url:iconUrl,async:false});
 				var svgStr = res.responseText;
-				console.log(svgStr)
 				var newDoc = $.parseXML(svgStr);
 				// set new svg document
 				// If DOM3 adoptNode() available, use it. Otherwise fall back to DOM2 importNode()
@@ -68,7 +69,6 @@ svgEditor.addExtension('ext-legend', function() {
 					svgcontent.setAttribute("x",'30');
 					svgcontent.setAttribute("y",405+parseInt(flag/2)*20);
 				}
-				console.log(svgcontent);
 				canv.getElem("legend-group").appendChild(svgcontent);
 				var cur_text = canv.addSvgElementFromJson({
 					'element': 'text',
@@ -177,7 +177,6 @@ svgEditor.addExtension('ext-legend', function() {
 						opacity: 1
 					}
 				});
-				console.log(canv);
 				cur_text.textContent = legendArr[i].name;
 				if (/[a-z]/.test(fill_d)) {
 					fill_d = canv.pathActions.convertPath(cur_shape);
