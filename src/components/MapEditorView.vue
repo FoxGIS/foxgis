@@ -308,10 +308,13 @@ export default {
       controlBox.style.display = 'block'
       //如果没有传入bounds，bounds的地理位置则有其css决定
       if(bounds === undefined){
-        controlBox.style.left='8px';
-        controlBox.style.right='8px';
-        controlBox.style.top='8px';
-        controlBox.style.bottom='8px';
+        var temBounds = this.map.getBounds();
+        var right_top = this.map.project(temBounds._ne);
+        var left_bottom = this.map.project(temBounds._sw);
+        controlBox.style.top = '8px';
+        controlBox.style.left = '8px';
+        controlBox.style.width = (right_top.x-16)+'px';
+        controlBox.style.height = (left_bottom.y-16)+'px';
         let mapBound = this.mapBound
         var boxBound = controlBox.getBoundingClientRect()
         this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])

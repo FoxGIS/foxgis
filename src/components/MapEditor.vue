@@ -164,6 +164,7 @@ export default {
         e.target.innerHTML = '确定'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '确定'){
+        this.patchStyle(this.style);
         var options = {};
         options.API = SERVER_API;
         options.style_id = this.styleId;
@@ -209,11 +210,11 @@ export default {
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$broadcast("mailSent",{message:"保存成功！",timeout:3000});
+            this.$broadcast("mailSent",{message:"样式已保存！",timeout:3000});
           }
         },function(response){
           console.log(response);
-          this.$broadcast("mailSent",{message:"保存失败！发生未知错误！",timeout:3000});
+          this.$broadcast("mailSent",{message:"样式保存失败！发生未知错误！",timeout:3000});
         })
     }
   },
