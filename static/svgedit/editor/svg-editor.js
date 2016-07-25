@@ -39,6 +39,8 @@ TODOS
 		editor.showSaveWarning = false;
 		editor.storagePromptClosed = false; // For use with ext-storage.js
 
+		var left_gap,right_gap,top_gap,rect_gap,
+			bottom_gap = 40;
 		var svgCanvas, urldata,
 			Utils = svgedit.utilities,
 			isReady = false,
@@ -198,6 +200,22 @@ TODOS
 					retrieving: 'Retrieving \'%s\' ...'
 				}
 			};
+
+		/*动态改变模板(新添加的函数)*/
+		var changeSVGTemple = function(width,height,title){
+			document.getElementById("title_name").innerHTML = title;
+			document.getElementById("title_name").setAttribute("x",width/2);
+			document.getElementById("map_outside").setAttribute("width",width-2*left_gap);
+			document.getElementById("map_outside").setAttribute("height",height-top_gap-bottom_gap);
+			document.getElementById("map_inside").setAttribute("width",width-2*(left_gap+rect_gap));
+			document.getElementById("map_inside").setAttribute("height",height-top_gap-bottom_gap-2*rect_gap);
+			document.getElementById("mapping_time").setAttribute("y",height-left_gap);
+			document.getElementById("mapping_organization").setAttribute("x",width-left_gap);
+			document.getElementById("mapping_organization").setAttribute("y",height-20);
+			var translate = "translate("+(width-1600)+",0)";
+			document.getElementById("northArrow-group").setAttribute("transform",translate);
+		};
+		/**/
 
 		function loadSvgString (str, callback) {
 			var success = svgCanvas.setSvgString(str) !== false;
@@ -3615,7 +3633,7 @@ TODOS
 					var str = $('#svgcontent')[0].outerHTML; 
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
-					var image = $(xmlObj).find("image");
+					var imageElem = $(xmlObj).find("image");
 					//var height = document.getElementById("svgcontent").getAttribute("height");
 					//var width = document.getElementById("svgcontent").getAttribute("width");
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
@@ -3624,14 +3642,14 @@ TODOS
 					svg.attr("height",height*4);
 					svg.attr("width",width*4);
 					if(document.getElementById("mapImg")){
-						var url = document.getElementById("mapImg").getAttribute("xlink:href");
+						//var url = document.getElementById("mapImg").getAttribute("xlink:href");
 						var options = window.OPTIONS;
-						/*if(options){
+						if(options){
 							var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale*4+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-						}*/
+						}
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
-							image.attr("xlink:href",url);
+							imageElem.attr("xlink:href",url);
 							if (window.ActiveXObject){//code for ie
 							    str = xmlObj.xml;
 							}else{// code for Mozilla, Firefox, Opera, etc.
@@ -3666,9 +3684,9 @@ TODOS
 					};
 					
 					function getDataUri(url, callback) {
-						var image = new Image();
+						var temImage = new Image();
 
-					    image.onload = function () {
+					    temImage.onload = function () {
 					        var canvas = document.createElement('canvas');
 					        canvas.width = width*4; // or 'width' if you want a special/scaled size
 					        canvas.height = height*4; // or 'height' if you want a special/scaled size
@@ -3679,8 +3697,8 @@ TODOS
 					        var raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
 					        callback(raw);
 					    };
-					    image.crossOrigin = "Anonymous";
-					    image.src = url;
+					    temImage.crossOrigin = "Anonymous";
+					    temImage.src = url;
 					};
 
 					// Open placeholder window (prevents popup)
@@ -3872,25 +3890,10 @@ TODOS
 				$('#svg_prefs').hide();
 				preferences = false;
 			};
-			/*动态改变模板(新添加的函数)*/
-			var changeSVGTemple = function(oldWidth,width,height,title){
-				document.getElementById("title_name").innerHTML = title;
-				document.getElementById("title_name").setAttribute("x",width/2);
-				document.getElementById("map_outside").setAttribute("width",width-40);
-				document.getElementById("map_outside").setAttribute("height",height-120);
-				document.getElementById("map_inside").setAttribute("width",width-50);
-				document.getElementById("map_inside").setAttribute("height",height-130);
-				document.getElementById("mapping_time").setAttribute("y",height-20);
-				document.getElementById("mapping_organization").setAttribute("x",width-100);
-				document.getElementById("mapping_organization").setAttribute("y",height-20);
-				var translate = "translate("+(width-1600)+",0)";
-				document.getElementById("northArrow-group").setAttribute("transform",translate);
-			};
-			/**/
+			
 
 			var saveDocProperties = function() {
 				// set title
-				var oldWidth = document.getElementById("title_name").getAttribute("x")*2;
 				var newTitle = $('#canvas_title').val();
 				updateTitle(newTitle);
 				svgCanvas.setDocumentTitle(newTitle);
@@ -3898,7 +3901,7 @@ TODOS
 				// update resolution
 				var width = $('#canvas_width'), w = width.val();
 				var height = $('#canvas_height'), h = height.val();
-				changeSVGTemple(oldWidth,w,h,newTitle);
+				changeSVGTemple(w,h,newTitle);
 
 				if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
 					$.alert(uiStrings.notification.invalidAttrValGiven);
@@ -5188,19 +5191,37 @@ TODOS
 			var options = window.OPTIONS;
 			if(options){
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-				var xmlObj = $.parseXML(str);//xml对象	
+				var xmlObj = $.parseXML(str);//xml对象
+				var xmlString;//xml字符串	
 				var image = $(xmlObj).find("image");
-				image.attr("xlink:href",url);//替换url		  
+				image.attr("xlink:href",url);//替换url	  
 				var img = new Image();	// 创建对象		  		
 				img.src = url;	// 改变图片的src		  
 				img.onload = function(){// 加载完成执行
-					document.getElementById('mapImg').setAttribute("width",img.width);
-					document.getElementById('mapImg').setAttribute("height",img.height);
+					var map_outside = document.getElementById('map_outside');
+					var map_inside = document.getElementById('map_inside');
+					right_gap = left_gap = parseFloat(map_outside.getAttribute("x"));
+					top_gap = parseFloat(map_outside.getAttribute("y"));
+					rect_gap = parseFloat(map_inside.getAttribute("x"))-left_gap;
+					/*var outStroke = parseFloat(map_outside.getAttribute("stroke-width"))||1;//外边框线宽
+					var inStroke = parseFloat(map_inside.getAttribute("stroke-width"))||1;//内边框线宽
+					map_outside.setAttribute("width",this.width+2*rect_gap+inStroke);
+					map_outside.setAttribute("height",this.height+2*rect_gap+inStroke);
+					map_inside.setAttribute("width",this.width+inStroke);
+					map_inside.setAttribute("height",this.height+inStroke);*/
+					var width = this.width+2*(rect_gap+left_gap);
+					var height = this.height+top_gap+bottom_gap+2*rect_gap;
+					$('#canvas_width').attr("width",width);
+					$('#canvas_height').attr("height",height);
+					var title = document.getElementById("canvas_title").value;
+					changeSVGTemple(width,height,title);
+					document.getElementById('mapImg').setAttribute("width",this.width);
+					document.getElementById('mapImg').setAttribute("height",this.height);
 					var date = new Date();
 					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
 					document.getElementById('mapping_organization').innerHTML = options.organization;        
 				};
-				var xmlString;//xml字符串
+				
 				if (window.ActiveXObject){//code for ie
 				    xmlString = xmlObj.xml;
 				}else{// code for Mozilla, Firefox, Opera, etc.
