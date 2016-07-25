@@ -3615,7 +3615,7 @@ TODOS
 					var str = $('#svgcontent')[0].outerHTML; 
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
-					var image = $(xmlObj).find("image");
+					var imageObj = $(xmlObj).find("image");
 					//var height = document.getElementById("svgcontent").getAttribute("height");
 					//var width = document.getElementById("svgcontent").getAttribute("width");
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
@@ -3631,7 +3631,7 @@ TODOS
 						}*/
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
-							image.attr("xlink:href",url);
+							imageObj.attr("xlink:href",url);
 							if (window.ActiveXObject){//code for ie
 							    str = xmlObj.xml;
 							}else{// code for Mozilla, Firefox, Opera, etc.
@@ -3650,14 +3650,14 @@ TODOS
 
 					function downLoad(str){
 						var svgXml = str;
-						var image = new Image();
-						image.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
+						var image1 = new Image();
+						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
 
 						var canvas = document.getElementById('myCanvas');  //准备空画布
 						document.getElementById('myCanvas').setAttribute("width",width*4);
 						document.getElementById('myCanvas').setAttribute("height",height*4);
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-						context.drawImage(image, 0, 0);
+						context.drawImage(image1, 0, 0);
 
 						var a = document.createElement('a');
 						a.href = canvas.toDataURL('image/png');  //将画布内的信息导出为png图片数据
@@ -3666,9 +3666,9 @@ TODOS
 					};
 					
 					function getDataUri(url, callback) {
-						var image = new Image();
+						var image2 = new Image();
 
-					    image.onload = function () {
+					    image2.onload = function () {
 					        var canvas = document.createElement('canvas');
 					        canvas.width = width*4; // or 'width' if you want a special/scaled size
 					        canvas.height = height*4; // or 'height' if you want a special/scaled size
@@ -3679,8 +3679,8 @@ TODOS
 					        var raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
 					        callback(raw);
 					    };
-					    image.crossOrigin = "Anonymous";
-					    image.src = url;
+					    image2.crossOrigin = "Anonymous";
+					    image2.src = url;
 					};
 
 					// Open placeholder window (prevents popup)
