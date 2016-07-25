@@ -3873,15 +3873,15 @@ TODOS
 				preferences = false;
 			};
 			/*动态改变模板(新添加的函数)*/
-			var changeSVGTemple = function(oldWidth,width,height,title){
+			var changeSVGTemple = function(width,height,title){
 				document.getElementById("title_name").innerHTML = title;
 				document.getElementById("title_name").setAttribute("x",width/2);
-				document.getElementById("map_outside").setAttribute("width",width-40);
+				document.getElementById("map_outside").setAttribute("width",width-80);
 				document.getElementById("map_outside").setAttribute("height",height-120);
-				document.getElementById("map_inside").setAttribute("width",width-50);
-				document.getElementById("map_inside").setAttribute("height",height-130);
+				document.getElementById("map_inside").setAttribute("width",width-100);
+				document.getElementById("map_inside").setAttribute("height",height-140);
 				document.getElementById("mapping_time").setAttribute("y",height-20);
-				document.getElementById("mapping_organization").setAttribute("x",width-100);
+				document.getElementById("mapping_organization").setAttribute("x",width-40);
 				document.getElementById("mapping_organization").setAttribute("y",height-20);
 				var translate = "translate("+(width-1600)+",0)";
 				document.getElementById("northArrow-group").setAttribute("transform",translate);
@@ -3890,7 +3890,6 @@ TODOS
 
 			var saveDocProperties = function() {
 				// set title
-				var oldWidth = document.getElementById("title_name").getAttribute("x")*2;
 				var newTitle = $('#canvas_title').val();
 				updateTitle(newTitle);
 				svgCanvas.setDocumentTitle(newTitle);
@@ -3898,7 +3897,7 @@ TODOS
 				// update resolution
 				var width = $('#canvas_width'), w = width.val();
 				var height = $('#canvas_height'), h = height.val();
-				changeSVGTemple(oldWidth,w,h,newTitle);
+				changeSVGTemple(w,h,newTitle);
 
 				if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
 					$.alert(uiStrings.notification.invalidAttrValGiven);
