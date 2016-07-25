@@ -3,7 +3,7 @@
 	<title>辅助决策用图</title>
 	<g class="layer">
 		<title>地图标题与图框</title>
-		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="43" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>
+		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="52" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>
 		<g id="map_box">
 			<rect id="map_outside" height="1080" width="1520" y="80" x="40" stroke-width="4" stroke="#000000" fill="#ffffff"/>
 			<rect id="map_inside" height="1060" width="1500" y="90" x="50" stroke-linecap="null" stroke-width="2" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
@@ -22,8 +22,8 @@
 	<g class="layer" id="organization">
 		<title>单位与时间</title>
 		<g id="organization-group">
-			<text fill="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="40" y="1190" id="mapping_time" font-size="25" font-family="serif" text-anchor="start" xml:space="preserve" stroke="#000000">2016年1月</text>
-			<text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="1560" y="1190" id="mapping_organization" font-size="25" font-family="serif" text-anchor="end" xml:space="preserve">国家地理信息中心</text>
+			<text fill="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="40" y="1180" id="mapping_time" font-size="12" font-family="serif" text-anchor="start" xml:space="preserve" stroke="#000000">2016年1月</text>
+			<text fill="#000000" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="1560" y="1180" id="mapping_organization" font-size="12" font-family="serif" text-anchor="end" xml:space="preserve">国家地理信息中心</text>
 		</g>
 	</g>
 </svg>
