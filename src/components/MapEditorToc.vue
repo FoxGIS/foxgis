@@ -1355,6 +1355,9 @@ a {
   border:0;
   margin: 5px 0;
   box-sizing: border-box;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 .layer a {
@@ -1420,6 +1423,9 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #new-layer-panel{
@@ -1510,7 +1516,9 @@ a {
   border: 1px solid #f2f2f2;
   border-radius: 2px;
   height: 30px;
-  font-size: 16px;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #property-panel-close {

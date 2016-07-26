@@ -174,6 +174,9 @@ export default {
   height: 20px;
   padding: 5px 0px 5px 5px;
   border: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 .property-value select {
@@ -184,6 +187,8 @@ export default {
   border: 1px solid #f2f2f2;
   border-radius: 2px;
   height: 30px;
-  font-size: 16px;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 </style>
