@@ -160,7 +160,7 @@
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
-      "minzoom":6,
+      "minzoom":7,
       "maxzoom":11,
       "layout":{
         "line-cap":"round"
@@ -176,7 +176,7 @@
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
-      "minzoom":6,
+      "minzoom":7,
       "maxzoom":11,
       "layout":{
         "line-cap":"round"
@@ -210,15 +210,15 @@
       "source":"data2012",
       "source-layer":"lrdl",
       "filter":["==","rteg","高速"],
-      "minzoom":5,
-      "maxzoom":11,
+      "minzoom":6,
+      "maxzoom":12,
       "layout":{
         "line-cap":"round"
       },
       "paint":{
         "line-color":"rgb(243,157,109)",
         "line-width":{
-          "stops":[[5,1],[8,3],[10,4],[17,5]]
+          "stops":[[6,1],[8,2],[10,3],[17,5]]
         }
       }
     },
@@ -442,6 +442,7 @@
         "text-max-width": 8
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"#fe001f",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
@@ -473,6 +474,7 @@
         "text-max-width": 8
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"rgb(20,20,20)",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
@@ -494,7 +496,7 @@
           "SimHei Regular"
         ],
         "symbol-placement": "point",
-        "text-allow-overlap":true,
+        "text-allow-overlap":false,
         "text-offset": [
           0,
           1
@@ -515,6 +517,8 @@
       "id":"线状水系注记",
       "source":"data2012",
       "source-layer":"hydl",
+      "minzoom":8,
+      "maxzoom":11,
       "type":"symbol",
       "layout":{
         "symbol-placement":"line",
@@ -533,6 +537,7 @@
       "id":"点状水系注记",
       "source":"data2012",
       "source-layer":"hyda_labelp",
+      "minzoom":7,
       "type":"symbol",
       "layout":{
         "symbol-placement":"point",
@@ -693,7 +698,7 @@
       "type":"fill",
       "paint":{
         "fill-color":"#95d6f3",
-	"fill-outline-color":"rgb(12,127,241)"
+	      "fill-outline-color":"rgb(12,127,241)"
       }
     },
     {
@@ -789,6 +794,39 @@
 
 
     {
+      "id":"天地图_县注记",
+      "source":"data2012",
+      "source-layer":"cagnp",
+      "minzoom":11,
+      "filter":["any",["==","class","AF"],["==","class","AE"]],
+      "type":"symbol",
+      "layout":{
+        "text-line-height": 1.2,
+        "text-size": 18,
+        "icon-image": "circle-stroked-11",
+        "text-ignore-placement": false,
+        "text-max-angle": 38,
+        "text-font": ["STXinwei Regular"],
+        "symbol-placement": "point",
+        "text-offset": [0, 0.5],
+        "icon-size": 0.8,
+        "icon-optional": false,
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": "{name}",
+        "text-letter-spacing": 0.02,
+        "text-max-width": 7,
+        "text-allow-overlap":false
+      },
+      "paint":{
+        "icon-color":"#ff0000",
+        "text-color":"#ff0000",
+        "text-halo-color":"rgb(255,255,255)",
+        "text-halo-width":1.5,
+        "text-halo-blur":1
+      }
+    },
+    {
       "id":"天地图_行政村注记",
       "source":"data2012",
       "source-layer":"cagnp",
@@ -806,6 +844,7 @@
           0.7,
           0.7
         ],
+        "icon-size":0.3,
         "icon-optional": false,
         "text-rotation-alignment": "viewport",
         "text-anchor": "top",
@@ -837,7 +876,7 @@
       "layout":{
         "text-line-height": 1.2,
         "text-size": 8,
-        "icon-size":3,
+        "icon-size":0.3,
         "text-ignore-placement": false,
         "text-max-angle": 38,
         "text-font": ["FangSong Regular"],
@@ -855,6 +894,7 @@
         "symbol-avoid-edges":true
       },
       "paint":{
+        "icon-color":"#000000",
         "text-color":"#0e0d0d",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5
@@ -879,6 +919,7 @@
         "text-max-angle": 38,
         "text-font": ["FangSong Regular"],
         "symbol-placement": "point",
+        "icon-size":0.3,
         "text-offset": [
           0.7,
           0.7
@@ -892,6 +933,7 @@
         "symbol-avoid-edges":true
       },
       "paint":{
+        "icon-color":"#000000",
         "text-color":"#9a9a9a",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1,
@@ -910,8 +952,8 @@
       ],
       "type":"symbol",
       "layout":{
-        "icon-image": "circle-11",
-	"icon-size":0.8,
+        "icon-image": "circle-stroked-11",
+	"icon-size":0.5,
         "text-line-height": 1.2,
         "text-size": 13,
         "text-ignore-placement": false,
@@ -930,46 +972,14 @@
         "text-allow-overlap":false
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"#c31919",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
         "text-halo-blur":1
       }
     },
-    {
-      "id":"天地图_县注记",
-      "source":"data2012",
-      "source-layer":"cagnp",
-      "minzoom":11,
-      "filter":["any",["==","class","AF"],["==","class","AE"]],
-      "type":"symbol",
-      "layout":{
-        "text-line-height": 1.2,
-        "text-size": 18,
-        "icon-image": "circle-stroked-11",
-        "text-ignore-placement": false,
-        "text-max-angle": 38,
-        "text-font": ["STXinwei Regular"],
-        "symbol-placement": "point",
-        "text-offset": [
-          0,
-          0.5
-        ],
-        "icon-optional": false,
-        "text-rotation-alignment": "viewport",
-        "text-anchor": "top",
-        "text-field": "{name}",
-        "text-letter-spacing": 0.02,
-        "text-max-width": 7,
-        "text-allow-overlap":false
-      },
-      "paint":{
-        "text-color":"#c31919",
-        "text-halo-color":"rgb(255,255,255)",
-        "text-halo-width":1.5,
-        "text-halo-blur":1
-      }
-    },
+    
     {
       "id":"天地图_线状水系注记",
       "source":"data2012",
