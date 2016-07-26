@@ -46,7 +46,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var username = options.username;
 		var tem = styleObj.sprite.split("/");
 		var prefix = styleObj.sprite.replace(new RegExp(tem[tem.length-1]+"$"),"");
-		var rectHeight = (parseInt(legendArr.length/2)+2)*30;
+		var rectHeight = (Math.ceil(legendArr.length/2)+2)*30;
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
 		var rect = canv.addSvgElementFromJson({//创建图例矩形框
@@ -56,7 +56,7 @@ svgEditor.addExtension('ext-legend', function() {
 				stroke:"#000000",
 				fill:"#ffffff",
 				'stroke-linejoin':"round",
-				'stroke-width':"1",
+				'stroke-width':"2",
 				x:25,
 				y:85,
 				width:380,
@@ -240,9 +240,10 @@ svgEditor.addExtension('ext-legend', function() {
 			}
 		}
 		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
+		console.log(viewBox);
 		var frameWidth = parseFloat(viewBox[2]);
 		var frameHeight = parseFloat(viewBox[3]);
-		current_layer.setAttribute("transform","translate("+(frameWidth-430)+","+(frameHeight-130-rectHeight)+")");
+		current_layer.setAttribute("transform","translate("+(frameWidth-455)+","+(frameHeight-135-rectHeight)+")");
 		canv.recalculateDimensions(current_layer);
 	}
 	/**

@@ -3658,8 +3658,9 @@ TODOS
 							    str = xmlObj.xml;
 							}else{// code for Mozilla, Firefox, Opera, etc.
 							    str = (new XMLSerializer()).serializeToString(xmlObj);
-							}	
-							downLoad(str);
+							}
+							var quality = parseInt($('#image-slider').val(), 10)/100;	
+							downLoad(str,imgType,quality);
 						});
 					}else{
 						if (window.ActiveXObject){//code for ie
@@ -3667,10 +3668,13 @@ TODOS
 						}else{// code for Mozilla, Firefox, Opera, etc.
 							str = (new XMLSerializer()).serializeToString(xmlObj);
 						}	
-						downLoad(str);
+						downLoad(str,imgType,quality);
 					}
 
-					function downLoad(str){
+					function downLoad(str,imgType,quality){
+						if(imgType==="JPEG"||imgType==="WEBP"){
+							var quality=quality||1;
+						}
 						var svgXml = str;
 						var image1 = new Image();
 						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
@@ -3681,9 +3685,24 @@ TODOS
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
 						context.drawImage(image1, 0, 0);
 
-						canvas.toBlob(function(blob) {
-							saveAs(blob, "MapByMathArtSys.png");
-						});
+						if(imgType==="JPEG"){
+							canvas.toBlob(function(blob) {
+								saveAs(blob, "辅助决策用图.jpg");
+							},"image/jpeg",quality);
+						}else if(imgType==="WEBP"){
+							canvas.toBlob(function(blob) {
+								saveAs(blob, "辅助决策用图.webp");
+							},"image/webp",quality);
+						}else if(imgType==="PNG"){
+							canvas.toBlob(function(blob) {
+								saveAs(blob, "辅助决策用图.png");
+							},"image/png");
+						}else if(imgType==="BMP"){
+							canvas.toBlob(function(blob) {
+								saveAs(blob, "辅助决策用图.bmp");
+							},"image/bmp");
+						}
+						
 						/*var a = document.createElement('a');
 						a.href = canvas.toDataURL('image/png');  //将画布内的信息导出为png图片数据
 						a.download = "MapByMathArtSys";  //设定下载名称
@@ -5208,6 +5227,24 @@ TODOS
 				rect_gap = parseFloat(map_inside.attr("x"))-left_gap;
 				var image = $(xmlObj).find("image");
 				image.attr("xlink:href",url);//替换url	  
+				if (window.ActiveXObject){//code for ie
+				    xmlString = xmlObj.xml;
+				}else{// code for Mozilla, Firefox, Opera, etc.
+				    xmlString = (new XMLSerializer()).serializeToString(xmlObj);
+				}
+				editor.ready(function() {
+					loadSvgString(xmlString,xmlStringLoaded);
+				});   
+			}else{
+				var xmlString = str;
+				editor.ready(function() {
+					loadSvgString(xmlString);
+				});
+				
+			}
+
+			function xmlStringLoaded(flag){
+				if(flag===false){return;}
 				var img = new Image();	// 创建对象		  		
 				img.src = url;	// 改变图片的src		  
 				img.onload = function(){// 加载完成执行
@@ -5217,19 +5254,13 @@ TODOS
 
 					if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
 						$.alert(uiStrings.notification.invalidAttrValGiven);
-						//width.parent().addClass('error');
 						return false;
 					}
-
-					//width.parent().removeClass('error');
 
 					if (h != 'fit' && !svgedit.units.isValidUnit('height', h)) {
 						$.alert(uiStrings.notification.invalidAttrValGiven);
-						//height.parent().addClass('error');
 						return false;
 					}
-
-					//height.parent().removeClass('error');
 
 					if (!svgCanvas.setResolution(w, h)) {
 						$.alert(uiStrings.notification.noContentToFitTo);
@@ -5237,7 +5268,7 @@ TODOS
 					}
 
 					editor.updateCanvas();
-					svgCanvas.zoomChanged(window,"canvas");
+					svgCanvas.zoomChanged(window,"canvas");//设置适应画布缩放
 					changeSVGTemple(w,h);
 					document.getElementById('mapImg').setAttribute("width",this.width);
 					document.getElementById('mapImg').setAttribute("height",this.height);
@@ -5245,18 +5276,7 @@ TODOS
 					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
 					document.getElementById('mapping_organization').innerHTML = options.organization;        
 				};
-				
-				if (window.ActiveXObject){//code for ie
-				    xmlString = xmlObj.xml;
-				}else{// code for Mozilla, Firefox, Opera, etc.
-				    xmlString = (new XMLSerializer()).serializeToString(xmlObj);
-				}   
-			}else{
-				var xmlString = str;
 			}
-			editor.ready(function() {
-				loadSvgString(xmlString);
-			});
 			
 		};
 
