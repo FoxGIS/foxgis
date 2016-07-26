@@ -15,6 +15,7 @@ svgEditor.addExtension('ext-scale', function() {
 	var canv = svgEditor.canvas;
 	
 	function scaleClick(){
+		var scale = calculateScale();
 		drawScale()
 	}
 	function drawScale(){
@@ -52,6 +53,10 @@ svgEditor.addExtension('ext-scale', function() {
 			}
 		});
 		text.textContent = "比例尺：1:200000";
+	}
+
+	function calculateScale(){
+		
 	}
 	return {
 		name: 'Extension Scale',
