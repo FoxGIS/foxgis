@@ -1330,8 +1330,8 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 115px);
-  font-size: 12px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1423,8 +1423,8 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
-  font-size: 12px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1440,8 +1440,8 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
-  font-size: 12px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1519,8 +1519,8 @@ a {
   border: 1px solid #f2f2f2;
   border-radius: 2px;
   height: 30px;
-  font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1565,8 +1565,8 @@ a {
   background-color: #fbfbfd;
   z-index: 1;
   display: none;
-  font-size: 12px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1588,8 +1588,8 @@ a {
   top: 150px;
   z-index: 1;
   display: none;
-  font-size: 12px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 

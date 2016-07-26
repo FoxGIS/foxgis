@@ -35,7 +35,7 @@ export default {
 <style scoped>
 .container {
   font-size: 16px;
-  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
