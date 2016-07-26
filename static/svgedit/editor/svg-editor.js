@@ -3643,12 +3643,9 @@ TODOS
 					var width = parseInt(viewBox.split(' ')[2]);
 					svg.attr("height",height*4);
 					svg.attr("width",width*4);
-					if(document.getElementById("mapImg")){
-						//var url = document.getElementById("mapImg").getAttribute("xlink:href");
-						var options = window.OPTIONS;
-						if(options){
-							var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-						}
+					var options = window.OPTIONS;
+					if(document.getElementById("mapImg")&&options){
+						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
 
@@ -3686,26 +3683,26 @@ TODOS
 						document.getElementById('myCanvas').setAttribute("height",height*4);
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
 						context.drawImage(image1, 0, 0);
-
+						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
 						if(imgType==="JPEG"){
 							canvas.toBlob(function(blob) {
 								$("#spinner").css("display","none");
-								saveAs(blob, "辅助决策用图.jpg");
+								saveAs(blob, filename+".jpg");
 							},"image/jpeg",quality);
 						}else if(imgType==="WEBP"){
 							canvas.toBlob(function(blob) {
 								$("#spinner").css("display","none");
-								saveAs(blob, "辅助决策用图.webp");
+								saveAs(blob, filename+".webp");
 							},"image/webp",quality);
 						}else if(imgType==="PNG"){
 							canvas.toBlob(function(blob) {
 								$("#spinner").css("display","none");
-								saveAs(blob, "辅助决策用图.png");
+								saveAs(blob, filename+".png");
 							},"image/png");
 						}else if(imgType==="BMP"){
 							canvas.toBlob(function(blob) {
 								$("#spinner").css("display","none");
-								saveAs(blob, "辅助决策用图.bmp");
+								saveAs(blob, filename+".bmp");
 							},"image/bmp");
 						}
 						
@@ -5275,7 +5272,12 @@ TODOS
 
 					editor.updateCanvas();
 					svgCanvas.zoomChanged(window,"canvas");//设置适应画布缩放
-					changeSVGTemple(w,h);
+					if(window.OPTIONS.selectedDistrict!==""){
+						var title = window.OPTIONS.selectedDistrict+"行政区划图";
+						changeSVGTemple(w,h,title);
+					}else{
+						changeSVGTemple(w,h);
+					}
 					document.getElementById('mapImg').setAttribute("width",this.width);
 					document.getElementById('mapImg').setAttribute("height",this.height);
 					var date = new Date();

@@ -29,8 +29,19 @@ export default {
             let bounds = treeNode.bbox;
             let adminId = treeNode.id;//行政区划码
             let name = treeNode.name;
+            var fullName;
+            if (/0000$/.test(adminId)) {//省
+              fullName = name;
+            }else if (/00$/.test(adminId)) {
+              var provNode = treeNode.getParentNode();
+              fullName = provNode.name+name;
+            }else {
+              var cityNode = treeNode.getParentNode();
+              var provNode = cityNode.getParentNode();
+              fullName = provNode.name+cityNode.name+name;
+            }
             var vue = this.getZTreeObj("admin-tree").setting.vue;
-            vue.$dispatch('map-bounds-change',{id:adminId,name:name,bounds:bounds});
+            vue.$dispatch('map-bounds-change',{id:adminId,name:name,fullname:fullName,bounds:bounds});
           }
         },
         view:{

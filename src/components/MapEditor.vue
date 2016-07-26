@@ -165,22 +165,23 @@ export default {
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '确定'){
         var options = {}
-        options.API = SERVER_API
-        options.style_id = this.styleId
-        options.username = Cookies.get('username')
-        options.access_token = Cookies.get('access_token')
-        options.zoom = this.$refs.drafmap.map.getZoom()
-        options.scale = 1
-        var controlBound = this.$refs.drafmap.controlBound
-        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']'
-        options.organization = Cookies.get('organization')
-        this.$broadcast('map-layout',options)
-        this.SVGEditorClick()
+        options.API = SERVER_API;
+        options.style_id = this.styleId;
+        options.username = Cookies.get('username');
+        options.access_token = Cookies.get('access_token');
+        options.zoom = this.$refs.drafmap.map.getZoom();
+        options.scale = 1;
+        options.selectedDistrict = this.selectedDistrict;
+        var controlBound = this.$refs.drafmap.controlBound;
+        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
+        options.organization = Cookies.get('organization');
+        this.$broadcast('map-layout',options);
+        this.SVGEditorClick();
         this.patchStyle(this.style);
-        this.hideBoundsBox()
-        document.getElementById("print-button").innerHTML = "输出"
-        document.getElementById("back-button").innerText = '分享'
-        document.getElementById("back-button").style.display = 'block'
+        this.hideBoundsBox();
+        document.getElementById("print-button").innerHTML = "输出";
+        document.getElementById("back-button").innerText = '分享';
+        document.getElementById("back-button").style.display = 'block';
 
       }
     },
@@ -256,11 +257,13 @@ export default {
     return {
       layers: [],
       currentLayer:{},
+      selectedDistrict:"",
       styleId: null
     }
   },
   events: {
     'map-bounds-change': function(options){
+      this.selectedDistrict = options.fullname;
       this.$broadcast('map-bounds-change',options);
     }
   }
