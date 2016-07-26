@@ -203,13 +203,15 @@ TODOS
 
 		/*动态改变模板(新添加的函数)*/
 		var changeSVGTemple = function(width,height,title){
-			document.getElementById("title_name").innerHTML = title;
+			if(title){
+				document.getElementById("title_name").innerHTML = title;
+			}
 			document.getElementById("title_name").setAttribute("x",width/2);
 			document.getElementById("map_outside").setAttribute("width",width-2*left_gap);
 			document.getElementById("map_outside").setAttribute("height",height-top_gap-bottom_gap);
 			document.getElementById("map_inside").setAttribute("width",width-2*(left_gap+rect_gap));
 			document.getElementById("map_inside").setAttribute("height",height-top_gap-bottom_gap-2*rect_gap);
-			document.getElementById("mapping_time").setAttribute("y",height-left_gap);
+			document.getElementById("mapping_time").setAttribute("y",height-20);
 			document.getElementById("mapping_organization").setAttribute("x",width-left_gap);
 			document.getElementById("mapping_organization").setAttribute("y",height-20);
 			var translate = "translate("+(width-1600)+",0)";
@@ -3645,7 +3647,7 @@ TODOS
 						//var url = document.getElementById("mapImg").getAttribute("xlink:href");
 						var options = window.OPTIONS;
 						if(options){
-							var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale*4+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+							var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 						}
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
@@ -3679,10 +3681,13 @@ TODOS
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
 						context.drawImage(image1, 0, 0);
 
-						var a = document.createElement('a');
+						canvas.toBlob(function(blob) {
+							saveAs(blob, "MapByMathArtSys.png");
+						});
+						/*var a = document.createElement('a');
 						a.href = canvas.toDataURL('image/png');  //将画布内的信息导出为png图片数据
 						a.download = "MapByMathArtSys";  //设定下载名称
-						a.click(); //点击触发下载
+						a.click(); //点击触发下载*/
 					};
 					
 					function getDataUri(url, callback) {
@@ -3692,8 +3697,8 @@ TODOS
 					    image2.onload = function () {
 
 					        var canvas = document.createElement('canvas');
-					        canvas.width = width*4; // or 'width' if you want a special/scaled size
-					        canvas.height = height*4; // or 'height' if you want a special/scaled size
+					        canvas.width = this.width; // or 'width' if you want a special/scaled size
+					        canvas.height = this.height; // or 'height' if you want a special/scaled size
 
 					        canvas.getContext('2d').drawImage(this, 0, 0);
 
@@ -5196,28 +5201,44 @@ TODOS
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 				var xmlObj = $.parseXML(str);//xml对象
 				var xmlString;//xml字符串	
+				var map_outside = $(xmlObj).find('#map_outside');
+				var map_inside = $(xmlObj).find('#map_inside');
+				right_gap = left_gap = parseFloat(map_outside.attr("x"));
+				top_gap = parseFloat(map_outside.attr("y"));
+				rect_gap = parseFloat(map_inside.attr("x"))-left_gap;
 				var image = $(xmlObj).find("image");
 				image.attr("xlink:href",url);//替换url	  
 				var img = new Image();	// 创建对象		  		
 				img.src = url;	// 改变图片的src		  
 				img.onload = function(){// 加载完成执行
-					var map_outside = document.getElementById('map_outside');
-					var map_inside = document.getElementById('map_inside');
-					right_gap = left_gap = parseFloat(map_outside.getAttribute("x"));
-					top_gap = parseFloat(map_outside.getAttribute("y"));
-					rect_gap = parseFloat(map_inside.getAttribute("x"))-left_gap;
-					/*var outStroke = parseFloat(map_outside.getAttribute("stroke-width"))||1;//外边框线宽
-					var inStroke = parseFloat(map_inside.getAttribute("stroke-width"))||1;//内边框线宽
-					map_outside.setAttribute("width",this.width+2*rect_gap+inStroke);
-					map_outside.setAttribute("height",this.height+2*rect_gap+inStroke);
-					map_inside.setAttribute("width",this.width+inStroke);
-					map_inside.setAttribute("height",this.height+inStroke);*/
-					var width = this.width+2*(rect_gap+left_gap);
-					var height = this.height+top_gap+bottom_gap+2*rect_gap;
-					$('#canvas_width').attr("width",width);
-					$('#canvas_height').attr("height",height);
-					var title = document.getElementById("canvas_title").value;
-					changeSVGTemple(width,height,title);
+					
+					var w = this.width+2*(rect_gap+left_gap);
+					var h = this.height+top_gap+bottom_gap+2*rect_gap;
+
+					if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
+						$.alert(uiStrings.notification.invalidAttrValGiven);
+						//width.parent().addClass('error');
+						return false;
+					}
+
+					//width.parent().removeClass('error');
+
+					if (h != 'fit' && !svgedit.units.isValidUnit('height', h)) {
+						$.alert(uiStrings.notification.invalidAttrValGiven);
+						//height.parent().addClass('error');
+						return false;
+					}
+
+					//height.parent().removeClass('error');
+
+					if (!svgCanvas.setResolution(w, h)) {
+						$.alert(uiStrings.notification.noContentToFitTo);
+						return false;
+					}
+
+					editor.updateCanvas();
+					svgCanvas.zoomChanged(window,"canvas");
+					changeSVGTemple(w,h);
 					document.getElementById('mapImg').setAttribute("width",this.width);
 					document.getElementById('mapImg').setAttribute("height",this.height);
 					var date = new Date();
