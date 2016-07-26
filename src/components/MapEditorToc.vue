@@ -1330,6 +1330,9 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 115px);
+  font-size: 12px;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #layer-control::-webkit-scrollbar {
@@ -1355,9 +1358,6 @@ a {
   border:0;
   margin: 5px 0;
   box-sizing: border-box;
-  font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
-  color: #333;
 }
 
 .layer a {
@@ -1424,7 +1424,7 @@ a {
   overflow-y: auto;
   display: none;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1441,7 +1441,7 @@ a {
   overflow-y: auto;
   display: none;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1566,7 +1566,7 @@ a {
   z-index: 1;
   display: none;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -1589,7 +1589,7 @@ a {
   z-index: 1;
   display: none;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 

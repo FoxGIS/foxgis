@@ -35,6 +35,8 @@ export default {
 <style scoped>
 .container {
   font-size: 16px;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 </style>

@@ -175,7 +175,7 @@ export default {
   padding: 5px 0px 5px 5px;
   border: none;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 
@@ -188,7 +188,7 @@ export default {
   border-radius: 2px;
   height: 30px;
   font-size: 12px;
-  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  font-family: Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
 </style>
