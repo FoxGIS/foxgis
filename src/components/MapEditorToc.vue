@@ -1440,6 +1440,9 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #btn-createLayer,#btn-cancel{
@@ -1562,6 +1565,9 @@ a {
   background-color: #fbfbfd;
   z-index: 1;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #icon-select-panel .panel{
@@ -1582,6 +1588,9 @@ a {
   top: 150px;
   z-index: 1;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 .meta-title{
