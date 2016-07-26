@@ -3667,7 +3667,8 @@ TODOS
 							str = xmlObj.xml;
 						}else{// code for Mozilla, Firefox, Opera, etc.
 							str = (new XMLSerializer()).serializeToString(xmlObj);
-						}	
+						}
+						var quality = parseInt($('#image-slider').val(), 10)/100;	
 						downLoad(str,imgType,quality);
 					}
 
