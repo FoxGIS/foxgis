@@ -3631,7 +3631,7 @@ TODOS
 					if (!imgType) {
 						return;
 					}
-
+					$("#spinner").css("display","block");
 					var str = $('#svgcontent')[0].outerHTML; 
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
@@ -3672,6 +3672,7 @@ TODOS
 					}
 
 					function downLoad(str,imgType,quality){
+						
 						if(imgType==="JPEG"||imgType==="WEBP"){
 							var quality=quality||1;
 						}
@@ -3687,18 +3688,22 @@ TODOS
 
 						if(imgType==="JPEG"){
 							canvas.toBlob(function(blob) {
+								$("#spinner").css("display","none");
 								saveAs(blob, "辅助决策用图.jpg");
 							},"image/jpeg",quality);
 						}else if(imgType==="WEBP"){
 							canvas.toBlob(function(blob) {
+								$("#spinner").css("display","none");
 								saveAs(blob, "辅助决策用图.webp");
 							},"image/webp",quality);
 						}else if(imgType==="PNG"){
 							canvas.toBlob(function(blob) {
+								$("#spinner").css("display","none");
 								saveAs(blob, "辅助决策用图.png");
 							},"image/png");
 						}else if(imgType==="BMP"){
 							canvas.toBlob(function(blob) {
+								$("#spinner").css("display","none");
 								saveAs(blob, "辅助决策用图.bmp");
 							},"image/bmp");
 						}

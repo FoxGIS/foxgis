@@ -243,6 +243,7 @@ svgEditor.addExtension('ext-legend', function() {
 		console.log(viewBox);
 		var frameWidth = parseFloat(viewBox[2]);
 		var frameHeight = parseFloat(viewBox[3]);
+		//图例的默认起点是（25,85），需要根据画布大小进行偏移到右下角
 		current_layer.setAttribute("transform","translate("+(frameWidth-455)+","+(frameHeight-135-rectHeight)+")");
 		canv.recalculateDimensions(current_layer);
 	}

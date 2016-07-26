@@ -1450,6 +1450,26 @@ ul li.current {
 	margin-top: 5px;
 }
 
+#spinner{
+	position:absolute;
+	top:0px;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	z-index: 10;
+	background-color:#2f2f2f;
+	position: fixed;
+	opacity: 0.6;
+	display:none;
+}
+
+#spin_image{
+	left: calc(50% - 50px);
+    top: calc(50% - 50px);
+    position: absolute;
+    width: 100px;
+    height: 100px;
+}
 /*
 	Adding Icons
 	You can add icons to the context menu by adding

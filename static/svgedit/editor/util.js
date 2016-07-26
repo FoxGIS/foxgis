@@ -5,6 +5,9 @@ if(options){
     var optionsStr = decodeURI(options);
     var options = JSON.parse(optionsStr);
     options.bbox = options.bbox.replace("[","").replace("]","").split(",");
+    for(var i=0;i<options.bbox.length;i++){
+        options.bbox[i]=parseFloat(options.bbox[i]);
+    }
     window.OPTIONS=options;
 }
 function parseURL(url) {  
