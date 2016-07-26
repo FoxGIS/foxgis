@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import mapboxgl from 'mapbox-gl'
 import Cookies from 'js-cookie'
 import { validate } from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
@@ -160,7 +161,15 @@ export default {
     printMap: function(e){
       document.getElementById("back-button").innerText = '返回'
       if(e.target.textContent === '输出'){
-        this.$broadcast('show-bounds-box')
+        if(this.selectedDistrictBounds.length!=0){
+          var bounds = {
+            nw:new mapboxgl.LngLat(this.selectedDistrictBounds[0][0],this.selectedDistrictBounds[1][1]),
+            se:new mapboxgl.LngLat(this.selectedDistrictBounds[1][0],this.selectedDistrictBounds[0][1])
+          }
+          this.$broadcast('show-bounds-box',bounds);
+        }else{
+          this.$broadcast('show-bounds-box');
+        } 
         e.target.innerHTML = '确定'
         document.getElementById("back-button").style.display = 'block'
       }else if(e.target.textContent === '确定'){
@@ -257,12 +266,14 @@ export default {
       layers: [],
       currentLayer:{},
       selectedDistrict:"",
+      selectedDistrictBounds:[],
       styleId: null
     }
   },
   events: {
     'map-bounds-change': function(options){
       this.selectedDistrict = options.name;
+      this.selectedDistrictBounds = options.bounds;
       this.$broadcast('map-bounds-change',options);
     }
   }
