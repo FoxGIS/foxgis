@@ -206,6 +206,8 @@ TODOS
 			if(title){
 				document.getElementById("title_name").innerHTML = title;
 			}
+			document.getElementById('background').setAttribute("width",width);
+			document.getElementById('background').setAttribute("height",height);
 			document.getElementById("title_name").setAttribute("x",width/2);
 			document.getElementById("map_outside").setAttribute("width",width-2*left_gap);
 			document.getElementById("map_outside").setAttribute("height",height-top_gap-bottom_gap);
@@ -5280,6 +5282,8 @@ TODOS
 					}
 					document.getElementById('mapImg').setAttribute("width",this.width);
 					document.getElementById('mapImg').setAttribute("height",this.height);
+					document.getElementById('background').setAttribute("width",w);
+					document.getElementById('background').setAttribute("height",h);
 					var date = new Date();
 					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
 					document.getElementById('mapping_organization').innerHTML = options.organization;        
