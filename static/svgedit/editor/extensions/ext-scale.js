@@ -25,7 +25,7 @@ svgEditor.addExtension('ext-scale', function() {
 	function drawScale(scale){
 		canv.createLayer("比例尺");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
-		var rect = canv.addSvgElementFromJson({//创建图例矩形框
+		/*var rect = canv.addSvgElementFromJson({//创建图例矩形框
 			'element': 'rect',
 			'curStyles': true,
 			'attr': {
@@ -39,13 +39,13 @@ svgEditor.addExtension('ext-scale', function() {
 				height:30,
 				opacity: 1
 			}
-		});
+		});*/
 		var text = canv.addSvgElementFromJson({//创建“图例”文字
 			'element': 'text',
 			'curStyles': true,
 			'attr': {
-				x: 120,
-				y: 106,
+				x: 0,
+				y: 0,
 				id: canv.getNextId(),
 				fill: '#000000',
 				'stroke-width': 0,
@@ -57,6 +57,11 @@ svgEditor.addExtension('ext-scale', function() {
 			}
 		});
 		text.textContent = "比例尺：1:"+scale;
+		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
+		var frameWidth = parseFloat(viewBox[2]);
+		var frameHeight = parseFloat(viewBox[3]);
+		current_layer.setAttribute("transform","translate("+(frameWidth/2)+","+(frameHeight-20)+")");
+		canv.recalculateDimensions(current_layer);
 	}
 
 	function calculateScale(ppi){

@@ -182,7 +182,6 @@ export default {
         document.getElementById("print-button").innerHTML = "输出";
         document.getElementById("back-button").innerText = '分享';
         document.getElementById("back-button").style.display = 'block';
-
       }
     },
     backEditor: function(e){
@@ -263,7 +262,7 @@ export default {
   },
   events: {
     'map-bounds-change': function(options){
-      this.selectedDistrict = options.fullname;
+      this.selectedDistrict = options.name;
       this.$broadcast('map-bounds-change',options);
     }
   }
