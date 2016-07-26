@@ -1355,6 +1355,9 @@ a {
   border:0;
   margin: 5px 0;
   box-sizing: border-box;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 .layer a {
@@ -1420,6 +1423,9 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #new-layer-panel{
@@ -1434,6 +1440,9 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #btn-createLayer,#btn-cancel{
@@ -1510,7 +1519,9 @@ a {
   border: 1px solid #f2f2f2;
   border-radius: 2px;
   height: 30px;
-  font-size: 16px;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #property-panel-close {
@@ -1554,6 +1565,9 @@ a {
   background-color: #fbfbfd;
   z-index: 1;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 #icon-select-panel .panel{
@@ -1574,6 +1588,9 @@ a {
   top: 150px;
   z-index: 1;
   display: none;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+  color: #333;
 }
 
 .meta-title{
