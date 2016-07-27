@@ -804,6 +804,7 @@
         "text-line-height": 1.2,
         "text-size": 18,
         "icon-image": "circle-stroked-11",
+	"icon-optional": false,
         "text-ignore-placement": false,
         "text-max-angle": 38,
         "text-font": ["STXinwei Regular"],
@@ -840,6 +841,7 @@
       "layout":{
         "icon-image": "circle-stroked-11",
 	"icon-size":0.5,
+	"icon-optional": false,
         "text-line-height": 1.2,
         "text-size": 13,
         "text-ignore-placement": false,
