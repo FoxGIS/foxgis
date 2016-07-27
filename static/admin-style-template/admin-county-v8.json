@@ -1,6 +1,8 @@
 {
   "version": 8,
   "name": "admin county",
+  "center": [108.420679, 36.772537],
+  "zoom":3,
   "sources": {
     "data2012": {
       "type": "vector",
@@ -211,7 +213,7 @@
       "source-layer":"lrdl",
       "filter":["==","rteg","高速"],
       "minzoom":6,
-      "maxzoom":12,
+      "maxzoom":11,
       "layout":{
         "line-cap":"round"
       },
