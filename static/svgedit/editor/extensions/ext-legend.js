@@ -46,7 +46,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var username = options.username;
 		var tem = styleObj.sprite.split("/");
 		var prefix = styleObj.sprite.replace(new RegExp(tem[tem.length-1]+"$"),"");
-		var rectHeight = (Math.ceil(legendArr.length/2)+2)*30;
+		var rectHeight = (Math.ceil(legendArr.length/2)+1)*30;
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
 		var rect = canv.addSvgElementFromJson({//创建图例矩形框
