@@ -1,5 +1,7 @@
 {
   "name": "foxgis admin2",
+  "center": [108.420679, 36.772537],
+  "zoom":3,
   "sources": {
     "data2012": {
       "type": "vector",
@@ -8,7 +10,6 @@
   },
   "sprite": "http://218.244.250.70:8090/api/v1/sprites/foxgis/Hk6NFtw8/sprite",
   "glyphs": "http://218.244.250.70:8090/api/v1/fonts/foxgis/{fontstack}/{range}.pbf",
-  "zoom": 6.7311773289985615,
   "layers": [
     {
       "id": "背景",
@@ -679,9 +680,5 @@
   },
   "pitch": 0,
   "bearing": 0,
-  "center": [
-    116.8412500899567,
-    29.978653024644913
-  ],
   "version": 8
 }

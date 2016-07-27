@@ -1225,7 +1225,7 @@ export default {
           }
         }
         
-        if(style.glyphs!==oldStyle.glyphs){//glyth发生变化时，重新请求字体列表  
+        if(style.glyphs&&style.glyphs!==oldStyle.glyphs){//glyth发生变化时，重新请求字体列表  
           var glyphUrl = this.styleObj.glyphs;
           var index = glyphUrl.indexOf("/{fontstack}");
           var fontUrl = glyphUrl.substring(0,index);
@@ -1253,7 +1253,7 @@ export default {
           });
         }
 
-        if(style.sprite!==oldStyle.sprite){//sprite发生变化时，重新请求字体列表
+        if(style.sprite&&style.sprite!==oldStyle.sprite){//sprite发生变化时，重新请求字体列表
           var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
           sprite.pngUrl = this.styleObj.sprite+".png";
           this.spriteObj.pngUrl = sprite.pngUrl;
