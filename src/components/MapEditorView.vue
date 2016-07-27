@@ -272,21 +272,28 @@ export default {
         console.log('bounds must be Array')
       }
       var adminType = this.getAdminType(options.id.toString());//获取行政级别
-      if (adminType === 1) { // province
-        replaceContent = options.name;
-        var url = './static/admin-style-template/admin-prov-v8.json';
-      } else if (adminType === 2) { // city
-        replaceContent = options.name;
-        var url = './static/admin-style-template/admin-city-v8.json';
-      } else if (adminType === 3) { // county
-        replaceContent = options.id;
-        var url = './static/admin-style-template/admin-county-v8.json';
-      } else if (adminType === 0){//country
-        var url = './static/admin-style-template/admin-country-v8.json';
-      } else { // village
-        alert("暂不支持乡镇级");
+      var curr_adiminTyle = this.localStyle.metadata.template.level;
+      var curr_template = this.localStyle.metadata.template.name;
+      if(adminType===curr_adiminTyle){
+        if (adminType === 1) { // province
+          replaceContent = options.name;//省、市级为行政区划名称
+          var url = './static/style-template/'+curr_template+'.json';
+        } else if (adminType === 2) { // city
+          replaceContent = options.name;//省、市级为行政区划名称
+          var url = './static/style-template/'+curr_template+'.json';
+        } else if (adminType === 3) { // county
+          replaceContent = options.id;//县级为行政区划代码
+          var url = './static/style-template/'+curr_template+'.json';
+        } else if (adminType === 0){//country
+          var url = './static/style-template/'+curr_template+'.json';
+        } else { // village
+          alert("暂不支持乡镇级");
+          return;
+        }
+      }else{
         return;
       }
+      
       this.$http.get(url).then(function(res){
         if(typeof(res.data)==="string"){
           var styleStr = res.data;
@@ -297,7 +304,6 @@ export default {
         var newStyle = JSON.parse(result);
         newStyle.style_id = this.localStyle.style_id;
         newStyle.name = this.localStyle.name;
-        //this.map.setStyle(newStyle);
         this.$parent.$broadcast('toc-init', newStyle);
         this.changeStyle(newStyle);
       });   

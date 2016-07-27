@@ -556,6 +556,7 @@ export default {
           break
         }
       }
+      if(!clickLayer){return;}
       if(_.isEqual(this.curPanelLayer,this.filterProperty(clickLayer))&&$("#property-panel").is(":visible")){
         $("#property-panel").hide();
       }else{

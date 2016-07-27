@@ -2,6 +2,9 @@
   "name": "foxgis admin2",
   "center": [108.420679, 36.772537],
   "zoom":3,
+  "metadata":{
+     "template":"defaultStyle"
+  },
   "sources": {
     "data2012": {
       "type": "vector",

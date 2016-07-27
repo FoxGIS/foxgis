@@ -3,6 +3,13 @@
   "name": "admin county",
   "center": [108.420679, 36.772537],
   "zoom":3,
+  "metadata":{
+     "template":{
+        "name":"admin-city-v8",
+	"level":2,
+	"des":"0代表全国，1代表省，2代表市，3代表县"
+     }
+  },
   "sources": {
     "data2012": {
       "type": "vector",

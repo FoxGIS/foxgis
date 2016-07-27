@@ -34,27 +34,36 @@ export default {
     },
     createStyle: function(data){
       var name = data.name
-      var templateId = data.templateId
-      var url = './static/mapStyles/defaultStyle.json'
+      var template = data.template
+      var url = './static/style-template/'+template;
+      var replace = data.replace;
       this.$el.querySelector("#create-loading").style.display = 'block'
       this.$http.get(url).then(function(res){
-        let data = res.data
-        data.name = name
-        var temLayers = data.layers;
+        if(typeof(res.data)==="string"){
+          var styleStr = res.data;
+        }else{
+          var styleStr = JSON.stringify(res.data);
+        }
+        var result = styleStr.replace(/replaceme/g,replace);
+        var style = JSON.parse(result);
+        style.name = name;
+        var temLayers = style.layers;
         for(let i=0;i<temLayers.length;i++){
           var temPaint = temLayers[i].paint;
-          var names = Object.keys(temPaint);
-          for(let j=0;j<names.length;j++){
-            if(names[j].indexOf("color")!==-1){
-              temPaint[names[j]] = util.rgb2hex(temPaint[names[j]]); 
+          if(temPaint){
+            var names = Object.keys(temPaint);
+            for(let j=0;j<names.length;j++){
+              if(names[j].indexOf("color")!==-1){
+                temPaint[names[j]] = util.rgb2hex(temPaint[names[j]]); 
+              }
             }
-          }
+          } 
         }
-        let style = JSON.stringify(data)
+        let newstyle = JSON.stringify(style)
         var username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
         let createURL = SERVER_API.styles + '/' + username
-        this.$http({'url':createURL,'method':'POST','data':style,headers:{'x-access-token':access_token}})
+        this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
         .then(function(res){
           this.$el.querySelector("#create-loading").style.display = 'none'
           document.getElementById("template-container").style.display = 'none'

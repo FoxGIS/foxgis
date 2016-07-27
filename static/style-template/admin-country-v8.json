@@ -1,5 +1,14 @@
 {
   "name": "本地sprite+foxgis字体（黑体）",
+  "center": [108.420679, 36.772537],
+  "zoom":3,
+  "metadata":{
+     "template":{
+        "name":"admin-country-v8",
+	"level":0,
+	"des":"0代表全国，1代表省，2代表市，3代表县"
+     }
+  },
   "sources": {
     "data2012": {
       "type": "vector",

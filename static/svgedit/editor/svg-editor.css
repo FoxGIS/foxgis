@@ -1470,6 +1470,27 @@ ul li.current {
     width: 100px;
     height: 100px;
 }
+
+#legend-panel{
+	position: absolute;
+	width: 600px;
+	height: 400px;
+	z-index: 10;
+	background-color:#d0d0d0; 
+	left: calc(50% - 300px);
+    top: calc(50% - 200px);
+    border-radius: 5px;
+    box-shadow: -2px 7px 29px 4px gray;
+    display: none;
+}
+
+#legend-panel .box{
+	width: 200px;
+	height: 300px;
+	background-color: white;
+	float: left;
+    margin: 50px;
+}
 /*
 	Adding Icons
 	You can add icons to the context menu by adding

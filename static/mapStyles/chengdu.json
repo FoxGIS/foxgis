@@ -3,6 +3,8 @@
   "createdAt": "2016-07-25T02:29:25.128Z",
   "owner": "foxgis",
   "name": "admin county",
+  "center": [108.420679, 36.772537],
+  "zoom":3,
   "sources": {
     "data2012": {
       "type": "vector",

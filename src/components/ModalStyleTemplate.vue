@@ -5,7 +5,7 @@
         <div class="title">新建地图</div>
         <div class="templates">
           <div class="template-item" v-for="item in templates" v-on:click="itemSelect">
-            <div class="item-thumb" v-bind:style="item.thumb" title="{{item.name}}" data-template="{{item.id}}">
+            <div class="item-thumb" v-bind:style="item.thumb" title="{{item.name}}" data-template="{{item.style}}" data-replace = "{{item.replace}}">
               <div class="done"><i class="material-icons">done</i></div>
             </div>
             <div class="item-name">{{item.name}}</div>
@@ -39,7 +39,8 @@ export default {
     createStyle: function(e){
       var checked = this.$el.querySelector('.item-thumb.checked')
       if(checked){
-        var templateId = checked.dataset.template
+        var template = checked.dataset.template
+        var replace = checked.dataset.replace
       }else{
         alert("请选择一个模板")
         return
@@ -49,32 +50,40 @@ export default {
         alert("请输入地图名称")
         return
       }
-      this.$dispatch("style-params",{'name':styleName,'templateId':templateId})
+      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':replace})
     }
   },
   data: function(){
     return {
       templates: [{
-        'name': '中国行政区划图',
+        'name': '省级行政区划图',
         'id': '1',
+        'style':'admin-prov-v8.json',
+        'replace':'四川省',
         'thumb': {
           'background-image':"url('http://www.onegreen.net/maps/Upload_maps/201308/2013081409511905.jpg')"
         }
       },{
         'name': '地级市行政区划图',
          'id': '2',
+         'style':'admin-city-v8.json',
+         'replace':'成都市',
         'thumb': {
           'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
         }
       },{
         'name': '县级行政区划图',
          'id': '3',
-        'thumb': {
+         'style':'admin-county-v8.json',
+         'replace':'510112',
+         'thumb': {
           'background-image':"url('http://www.onegreen.net/maps/Upload_maps/201308/2013081409511905.jpg')"
         }
       },{
         'name': '中国地形图',
          'id': '4',
+         'style':'admin-terrain-v8.json',
+         'replace':'513221',
         'thumb': {
           'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
         }

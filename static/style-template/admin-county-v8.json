@@ -3,6 +3,13 @@
   "name": "admin county",
   "center": [108.420679, 36.772537],
   "zoom":3,
+  "metadata":{
+     "template":{
+        "name":"admin-county-v8",
+	"level":3,
+	"des":"0代表全国，1代表省，2代表市，3代表县"
+     }
+  },
   "sources": {
     "data2012": {
       "type": "vector",
@@ -80,127 +87,7 @@
         ]
       }
     },
-    {
-      "id":"当前省界(4-6)",
-      "source":"data2012",
-      "source-layer":"boua_prov",
-      "minzoom":4,
-      "maxzoom":6,
-      "type":"line",
-      "filter":["==","name","replaceme"],
-      "layout":{
-        "line-join":"round",
-        "line-cap":"round"
-      },
-      "paint":{
-        "line-color":"rgb(0,0,255)",
-        "line-width":2,
-        "line-dasharray":[3,3]
-      }
-    },
-    {
-      "id":"当前省界(6-11)",
-      "source":"data2012",
-      "source-layer":"boua_prov",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"line",
-      "filter":["==","name","replaceme"],
-      "layout":{
-        "line-join":"round",
-        "line-cap":"round"
-      },
-      "paint":{
-        "line-color":"#e38bea",
-        "line-width":10
-      }
-    },
-    {
-      "id":"当前省界光晕",
-      "source":"data2012",
-      "source-layer":"boua_prov",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"line",
-      "filter":["==","name","replaceme"],
-      "layout":{
-        "line-join":"round",
-        "line-cap":"round"
-      },
-      "paint":{
-        "line-color":"#f598f1",
-        "line-width":13,
-        "line-opacity":0.5
-      }
-    },
-    {
-      "id":"地级市填充1",
-      "source":"data2012",
-      "source-layer":"boua_dist",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"fill",
-      "filter":["all",
-        ["==","belong_pro","replaceme"],
-        ["==","color",1]
-      ],
-      "paint":{
-        "fill-color":"#a3eeb9",
-        "fill-outline-color":"rgba(238,170,102,0.5)",
-        "fill-opacity":0.5
-      }
-    },
-    {
-      "id":"地级市填充2",
-      "source":"data2012",
-      "source-layer":"boua_dist",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"fill",
-      "filter":["all",
-        ["==","belong_pro","replaceme"],
-        ["==","color",2]
-      ],
-      "paint":{
-        "fill-color":"#9fec1c",
-        "fill-outline-color":"rgb(238,170,102)",
-        "fill-opacity":0.5
-      }
-    },
-    {
-      "id":"地级市填充3",
-      "source":"data2012",
-      "source-layer":"boua_dist",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"fill",
-      "filter":["all",
-        ["==","belong_pro","replaceme"],
-        ["==","color",3]
-      ],
-      "paint":{
-        "fill-color":"#ec9eba",
-        "fill-outline-color":"rgb(238,170,102)",
-        "fill-opacity":0.5
-      }
-    },
-    {
-      "id":"地级市填充4",
-      "source":"data2012",
-      "source-layer":"boua_dist",
-      "minzoom":6,
-      "maxzoom":11,
-      "type":"fill",
-      "filter":["all",
-        ["==","belong_pro","replaceme"],
-        ["==","color",4]
-      ],
-      "paint":{
-        "fill-color":"#eecbeb",
-        "fill-outline-color":"rgb(238,170,102)",
-        "fill-opacity":0.5
-      }
-    },
+
     {
       "id":"居民地",
       "source":"data2012",
@@ -282,7 +169,7 @@
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
-      "minzoom":6,
+      "minzoom":7,
       "maxzoom":11,
       "layout":{
         "line-cap":"round"
@@ -298,7 +185,7 @@
       "source":"data2012",
       "filter":["all",["!=","gb",420101],["!=","gb",420102],["!=","gb",420201],["!=","rteg","高速"]],
       "source-layer":"lrdl",
-      "minzoom":6,
+      "minzoom":7,
       "maxzoom":11,
       "layout":{
         "line-cap":"round"
@@ -332,7 +219,7 @@
       "source":"data2012",
       "source-layer":"lrdl",
       "filter":["==","rteg","高速"],
-      "minzoom":5,
+      "minzoom":6,
       "maxzoom":11,
       "layout":{
         "line-cap":"round"
@@ -340,8 +227,26 @@
       "paint":{
         "line-color":"rgb(243,157,109)",
         "line-width":{
-          "stops":[[5,1],[8,3],[10,4],[17,5]]
+          "stops":[[6,1],[8,2],[10,3],[17,5]]
         }
+      }
+    },
+    {
+      "id":"县界",
+      "source":"data2012",
+      "source-layer":"boua",
+      "minzoom":7,
+      "maxzoom":11,
+      "type":"line",
+      "filter":["==","pac",replaceme],
+      "layout":{
+        "line-join":"round",
+        "line-cap":"round"
+      },
+      "paint":{
+        "line-color":"rgb(0,0,255)",
+        "line-width":2,
+        "line-dasharray":[3,3]
       }
     },
     {
@@ -546,6 +451,7 @@
         "text-max-width": 8
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"#fe001f",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
@@ -577,6 +483,7 @@
         "text-max-width": 8
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"rgb(20,20,20)",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
@@ -598,7 +505,7 @@
           "SimHei Regular"
         ],
         "symbol-placement": "point",
-        "text-allow-overlap":true,
+        "text-allow-overlap":false,
         "text-offset": [
           0,
           1
@@ -619,6 +526,8 @@
       "id":"线状水系注记",
       "source":"data2012",
       "source-layer":"hydl",
+      "minzoom":8,
+      "maxzoom":11,
       "type":"symbol",
       "layout":{
         "symbol-placement":"line",
@@ -637,6 +546,7 @@
       "id":"点状水系注记",
       "source":"data2012",
       "source-layer":"hyda_labelp",
+      "minzoom":7,
       "type":"symbol",
       "layout":{
         "symbol-placement":"point",
@@ -650,6 +560,105 @@
       }
     },
 
+
+
+    {
+      "id":"天地图_县界",
+      "source":"data2012",
+      "source-layer":"yunnan_xian",
+      "type":"line",
+      "minzoom":11,
+      "filter":["==","xianid","replaceme"],
+      "layout":{
+        "line-join":"round",
+        "line-cap":"round"
+      },
+      "paint":{
+        "line-color":"#e38bea",
+        "line-width":10
+      }
+    },
+    {
+      "id":"天地图_县界光晕",
+      "source":"data2012",
+      "source-layer":"yunnan_xian",
+      "type":"line",
+      "minzoom":11,
+      "filter":["==","xianid","replaceme"],
+      "layout":{
+        "line-join":"round",
+        "line-cap":"round"
+      },
+      "paint":{
+        "line-color":"#f598f1",
+        "line-width":13,
+        "line-opacity":0.5
+      }
+    },
+    {
+      "id":"乡镇填充色1",
+      "source":"data2012",
+      "source-layer":"yunnan_village",
+      "type":"fill",
+      "minzoom":11,
+      "filter":["all",
+        ["==","xianid","replaceme"],
+        ["==","color",1]
+      ],
+      "paint":{
+        "fill-color":"#a3eeb9",
+        "fill-outline-color":"rgba(238,170,102,0.5)",
+        "fill-opacity":0.5
+      }
+    },
+    {
+      "id":"乡镇填充色2",
+      "source":"data2012",
+      "source-layer":"yunnan_village",
+      "type":"fill",
+      "minzoom":11,
+      "filter":["all",
+        ["==","xianid","replaceme"],
+        ["==","color",2]
+      ],
+      "paint":{
+        "fill-color":"#9fec1c",
+        "fill-outline-color":"rgb(238,170,102)",
+        "fill-opacity":0.5
+      }
+    },
+    {
+      "id":"乡镇填充色3",
+      "source":"data2012",
+      "source-layer":"yunnan_village",
+      "type":"fill",
+      "minzoom":11,
+      "filter":["all",
+        ["==","xianid","replaceme"],
+        ["==","color",3]
+      ],
+      "paint":{
+        "fill-color":"#ec9eba",
+        "fill-outline-color":"rgb(238,170,102)",
+        "fill-opacity":0.5
+      }
+    },
+    {
+      "id":"乡镇填充色4",
+      "source":"data2012",
+      "source-layer":"yunnan_village",
+      "type":"fill",
+      "minzoom":11,
+      "filter":["all",
+        ["==","xianid","replaceme"],
+        ["==","color",4]
+      ],
+      "paint":{
+        "fill-color":"#eecbeb",
+        "fill-outline-color":"rgb(238,170,102)",
+        "fill-opacity":0.5
+      }
+    },
     {
       "id":"天地图_居民地",
       "source":"data2012",
@@ -698,7 +707,7 @@
       "type":"fill",
       "paint":{
         "fill-color":"#95d6f3",
-  "fill-outline-color":"rgb(12,127,241)"
+	      "fill-outline-color":"rgb(12,127,241)"
       }
     },
     {
@@ -794,34 +803,34 @@
 
 
     {
-      "id":"天地图_行政村注记",
+      "id":"天地图_县注记",
       "source":"data2012",
       "source-layer":"cagnp",
       "minzoom":11,
-      "filter":["==","class","AK"],
+      "filter":["any",["==","class","AF"],["==","class","AE"]],
       "type":"symbol",
       "layout":{
         "text-line-height": 1.2,
-        "text-size": 12,
+        "text-size": 18,
+        "icon-image": "circle-stroked-11",
+	"icon-optional": false,
         "text-ignore-placement": false,
         "text-max-angle": 38,
-        "text-font": ["FangSong Regular"],
+        "text-font": ["STXinwei Regular"],
         "symbol-placement": "point",
-        "text-offset": [
-          0.7,
-          0.7
-        ],
+        "text-offset": [0, 0.5],
+        "icon-size": 0.8,
         "icon-optional": false,
         "text-rotation-alignment": "viewport",
         "text-anchor": "top",
         "text-field": "{name}",
         "text-letter-spacing": 0.02,
         "text-max-width": 7,
-        "text-allow-overlap":false,
-        "symbol-avoid-edges":true
+        "text-allow-overlap":false
       },
       "paint":{
-        "text-color":"#0e0d0d",
+        "icon-color":"#ff0000",
+        "text-color":"#ff0000",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
         "text-halo-blur":1
@@ -839,8 +848,9 @@
       ],
       "type":"symbol",
       "layout":{
-        "icon-image": "circle-11",
-  "icon-size":0.8,
+        "icon-image": "circle-stroked-11",
+	"icon-size":0.5,
+	"icon-optional": false,
         "text-line-height": 1.2,
         "text-size": 13,
         "text-ignore-placement": false,
@@ -859,6 +869,7 @@
         "text-allow-overlap":false
       },
       "paint":{
+        "icon-color":"#ff0000",
         "text-color":"#c31919",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
@@ -866,37 +877,121 @@
       }
     },
     {
-      "id":"天地图_县注记",
+      "id":"天地图_行政村注记",
       "source":"data2012",
       "source-layer":"cagnp",
       "minzoom":11,
-      "filter":["any",["==","class","AF"],["==","class","AE"]],
+      "filter":["==","class","AK"],
       "type":"symbol",
       "layout":{
+	"icon-image":"circle-stroked-11",
         "text-line-height": 1.2,
-        "text-size": 18,
-        "icon-image": "circle-stroked-11",
+        "text-size": 12,
         "text-ignore-placement": false,
         "text-max-angle": 38,
-        "text-font": ["STXinwei Regular"],
+        "text-font": ["FangSong Regular"],
         "symbol-placement": "point",
         "text-offset": [
-          0,
-          0.5
+          0.7,
+          0.7
         ],
+        "icon-size":0.3,
         "icon-optional": false,
         "text-rotation-alignment": "viewport",
         "text-anchor": "top",
         "text-field": "{name}",
         "text-letter-spacing": 0.02,
         "text-max-width": 7,
-        "text-allow-overlap":false
+        "text-allow-overlap":false,
+        "symbol-avoid-edges":true
       },
       "paint":{
-        "text-color":"#c31919",
+        "icon-color":"#ffffff",
+        "text-color":"#0e0d0d",
         "text-halo-color":"rgb(255,255,255)",
         "text-halo-width":1.5,
         "text-halo-blur":1
+      }
+    },
+    {
+      "id":"行政区内的村注记",
+      "source":"data2012",
+      "minzoom":11,
+      "source-layer":"cagnp",
+      "filter":["all",["any",
+        ["==","class","BA"],
+        ["==","class","BB"],
+        ["==","class","BC"]],
+        ["==","gnid","replaceme000000"]
+      ],
+      "type":"symbol",
+      "layout":{
+	"icon-image":"circle-11",
+        "text-line-height": 1.2,
+        "text-size": 8,
+        "icon-size":0.3,
+        "text-ignore-placement": false,
+        "text-max-angle": 38,
+        "text-font": ["FangSong Regular"],
+        "symbol-placement": "point",
+        "text-offset": [
+          0.7,
+          0.7
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": "{name}",
+        "text-letter-spacing": 0.02,
+        "text-max-width": 7,
+        "text-allow-overlap":false,
+        "symbol-avoid-edges":true
+      },
+      "paint":{
+        "icon-color":"#ffffff",
+        "text-color":"#0e0d0d",
+        "text-halo-color":"rgb(255,255,255)",
+        "text-halo-width":1.5
+      }
+    },
+    {
+      "id":"行政区外的村注记",
+      "source":"data2012",
+      "minzoom":11,
+      "source-layer":"cagnp",
+      "filter":["all",["any",
+        ["==","class","BA"],
+        ["==","class","BB"],
+        ["==","class","BC"]],
+        ["!=","gnid","replaceme000000"]
+      ],
+      "type":"symbol",
+      "layout":{
+        "icon-image":"circle-11",
+        "text-line-height": 1.2,
+        "text-size": 8,
+        "text-ignore-placement": false,
+        "text-max-angle": 38,
+        "text-font": ["FangSong Regular"],
+        "symbol-placement": "point",
+        "icon-size":0.3,
+        "text-offset": [
+          0.7,
+          0.7
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": "{name}",
+        "text-letter-spacing": 0.02,
+        "text-max-width": 7,
+        "text-allow-overlap":false,
+        "symbol-avoid-edges":true
+      },
+      "paint":{
+        "icon-color":"#ffffff",
+        "text-color":"#9a9a9a",
+        "text-halo-color":"rgb(255,255,255)",
+        "text-halo-width":1,
+        "text-halo-blur":0.5
       }
     },
     {
