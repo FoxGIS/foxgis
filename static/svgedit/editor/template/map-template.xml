@@ -7,7 +7,7 @@
 	</g>
 	<g class="layer">
 		<title>地图标题与图框</title>
-		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="52" font-family="serif" stroke-width="0" xml:space="preserve">辅助决策用图</text>
+		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="52" font-family="Microsoft YaHei" stroke-width="0" xml:space="preserve">辅助决策用图</text>
 		<g id="map_box">
 			<rect id="map_outside" height="1080" width="1520" y="80" x="40" stroke-width="4" stroke="#000000" fill="#ffffff"/>
 			<rect id="map_inside" height="1060" width="1500" y="90" x="50" stroke-linecap="null" stroke-width="2" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>

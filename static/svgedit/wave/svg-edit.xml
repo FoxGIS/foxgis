@@ -256,6 +256,11 @@ script src="locale/locale.min.js"></script-->
 					<li style="font-family:cursive">Cursive</li>
 					<li style="font-family:fantasy">Fantasy</li>
 					<li style="font-family:monospace">Monospace</li>
+					<li style="font-family:arial">Arial</li>
+					<li style="font-family:monospace">Monospace</li>
+					<li style="font-family:Arial">Arial</li>
+					<li style="font-family:Microsoft YaHei">Microsoft YaHei</li>
+					<li style="font-family:SimKai">SimKai</li>
 				</ul>
 			</div>
 		</div>
