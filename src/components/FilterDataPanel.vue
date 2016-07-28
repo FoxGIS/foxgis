@@ -22,7 +22,7 @@
       <div class="property-value">
         <select name="source-layer" @change="propertyChange">
           <option value="">选择数据图层</option>
-          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}({{layer.description}})</option>
+          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}</option>
         </select>
       </div>
     </div>
@@ -62,6 +62,7 @@
 </template> 
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   methods: {
     propertyChange:function(e){
@@ -71,7 +72,17 @@ export default {
         if(source===""){this.sourcelayers=[];}
         for(let i=0;i<this.sources.length;i++){
           if(source === this.sources[i].sourceName){
-            this.sourcelayers = this.sources[i].sourceLayers;
+            if(this.sources[i].sourceLayers){
+              this.sourcelayers = this.sources[i].sourceLayers;
+            }else{
+              let access_token = Cookies.get('access_token');
+              this.$http({url:this.sources[i].sourceUrl,method:"GET",headers:{'x-access-token':access_token}}).then(function(res){
+                var data = res.data;
+                this.sourcelayers = data.vector_layers||[];
+              },function(res){
+
+              });
+            } 
           }
         }
       }
