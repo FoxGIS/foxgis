@@ -14,8 +14,8 @@ export default {
         return
       }else{
         var iframe = document.createElement("iframe");
-        iframe.id = "fatherSVG"
-        iframe.src = "./static/svgedit/editor/embedapi.html"
+        iframe.setAttribute('id',"fatherSVG")
+        iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html")
         iframe.setAttribute('style',"width: 100%; height: 100%;")
         $("#svg-wrap").append(iframe);
       }
@@ -25,12 +25,12 @@ export default {
       var iframe = document.getElementById("fatherSVG");
       if(!iframe){
         var iframe = document.createElement("iframe");
-        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
-        iframe.id = "fatherSVG"
+        iframe.setAttribute('id',"fatherSVG")
+        iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html?options="+options)
         iframe.setAttribute('style',"width: 100%; height: 100%;")
         $("#svg-wrap").append(iframe);
       }else{
-        iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
+        iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html?options="+options)
       }   
     }
   }
