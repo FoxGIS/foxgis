@@ -379,10 +379,12 @@ export default {
     },
     style: {
       handler:function(style,oldStyle){
+        console.log("style发生了变化")
         var style_error = validate(style)
         if(style_error.length > 0){
           return
         }
+        this.localStyle = JSON.parse(JSON.stringify(style))
         let comds = diff(oldStyle,style)
         for(var i=0,length=comds.length;i<length;i++){
           switch(comds[i].command){
@@ -395,8 +397,11 @@ export default {
             case 'setStyle':
               if(this.map.setStyle === undefined){
                 this.mapInit(style)
+                break
               }
               this.map.setStyle.apply(this.map,comds[i].args)
+              if(style.zoom){this.map.setZoom(style.zoom);}
+              if(style.center){this.map.setCenter(style.center);}
               break
             case 'addLayer':
               this.map.addLayer.apply(this.map,comds[i].args)
@@ -421,8 +426,6 @@ export default {
               break
           }
         }
-        //this.patchStyle(style)
-        this.localStyle = JSON.parse(JSON.stringify(style))
       },
       deep:true
     }
