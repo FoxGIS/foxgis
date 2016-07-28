@@ -1732,7 +1732,7 @@ TODOS
 							} else {
 								$('#tool_bold').removeClass('push_button_pressed').addClass('tool_button');
 							}
-							$('#font_family').val(font_English2Chinese(elem.getAttribute('font-family'),1));
+							$('#font_family').val(font_English2Chinese(elem.getAttribute('font-family')));
 							$('#font_size').val(elem.getAttribute('font-size'));
 							$('#text').val(elem.textContent);
 							if (svgCanvas.addedNew) {
@@ -2929,40 +2929,21 @@ TODOS
 			};
 
 
-			/*改变字体名称(新添加的函数)
-			*
-			*status: 1-英文转中文;2-中文转英文
-			*/
-			var font_English2Chinese = function(font_family,status){
+			/*改变字体名称(新添加的函数)*/
+			var font_English2Chinese = function(font_family){
 				var out = font_family;
-				var list = [
-					{
-						"English":"KaiTi",
-						"Chinese":"楷体"
-					},{
-						"English":"Microsoft YaHei",
-						"Chinese":"微软雅黑"
-					},{
-						"English":"SimHei",
-						"Chinese":"黑体"
-					},{
-						"English":"SimSun",
-						"Chinese":"宋体"
+				var doc = document.getElementById("font_family_dropdown-list").children;
+				for(var i=0;i<doc.length;i++){
+					var english = doc[i].getAttribute("style").split(":")[1];
+					var chinese = doc[i].textContent;
+					if(font_family == english){
+						out = chinese;
+						break;
+					}else if(font_family == chinese){
+						out = english;
+						break;
 					}
-				];
-				for(var i=0;i<list.length;i++){
-					if(status == 1){//英文转中文
-						if(font_family == list[i].English){
-							out = list[i].Chinese;
-							break;
-						}
-					}else if(status == 2){//中文转英文
-						if(font_family == list[i].Chinese){
-							out = list[i].English;
-							break;
-						}
-					}
-					
+
 				}
 				return out;
 			};
@@ -3039,7 +3020,7 @@ TODOS
 			});
 
 			$('#font_family').change(function() {
-				svgCanvas.setFontFamily(font_English2Chinese(this.value,2));
+				svgCanvas.setFontFamily(font_English2Chinese(this.value));
 			});
 
 			$('#seg_type').change(function() {
