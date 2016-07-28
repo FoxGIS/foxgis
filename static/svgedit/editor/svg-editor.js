@@ -1732,7 +1732,7 @@ TODOS
 							} else {
 								$('#tool_bold').removeClass('push_button_pressed').addClass('tool_button');
 							}
-							$('#font_family').val(elem.getAttribute('font-family'));
+							$('#font_family').val(font_English2Chinese(elem.getAttribute('font-family'),1));
 							$('#font_size').val(elem.getAttribute('font-size'));
 							$('#text').val(elem.textContent);
 							if (svgCanvas.addedNew) {
@@ -2928,6 +2928,45 @@ TODOS
 				svgCanvas.setFontSize(ctl.value);
 			};
 
+
+			/*改变字体名称(新添加的函数)
+			*
+			*status: 1-英文转中文;2-中文转英文
+			*/
+			var font_English2Chinese = function(font_family,status){
+				var out = font_family;
+				var list = [
+					{
+						"English":"KaiTi",
+						"Chinese":"楷体"
+					},{
+						"English":"Microsoft YaHei",
+						"Chinese":"微软雅黑"
+					},{
+						"English":"SimHei",
+						"Chinese":"黑体"
+					},{
+						"English":"SimSun",
+						"Chinese":"宋体"
+					}
+				];
+				for(var i=0;i<list.length;i++){
+					if(status == 1){//英文转中文
+						if(font_family == list[i].English){
+							out = list[i].Chinese;
+							break;
+						}
+					}else if(status == 2){//中文转英文
+						if(font_family == list[i].Chinese){
+							out = list[i].English;
+							break;
+						}
+					}
+					
+				}
+				return out;
+			};
+
 			var changeStrokeWidth = function(ctl) {
 				var val = ctl.value;
 				if (val == 0 && selectedElement && ['line', 'polyline'].indexOf(selectedElement.nodeName) >= 0) {
@@ -3000,7 +3039,7 @@ TODOS
 			});
 
 			$('#font_family').change(function() {
-				svgCanvas.setFontFamily(this.value);
+				svgCanvas.setFontFamily(font_English2Chinese(this.value,2));
 			});
 
 			$('#seg_type').change(function() {
@@ -5273,7 +5312,7 @@ TODOS
 					}
 
 					editor.updateCanvas();
-					svgCanvas.zoomChanged(window,"canvas");//设置适应画布缩放
+					svgCanvas.zoomChanged(window,"100%");//设置100%画布缩放
 					if(window.OPTIONS.selectedDistrict!==""){
 						var title = window.OPTIONS.selectedDistrict+"行政区划图";
 						changeSVGTemple(w,h,title);
@@ -5286,7 +5325,7 @@ TODOS
 					document.getElementById('background').setAttribute("height",h);
 					var date = new Date();
 					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
-					document.getElementById('mapping_organization').innerHTML = options.organization;        
+					document.getElementById('mapping_organization').innerHTML = options.organization;
 				};
 			}
 			
