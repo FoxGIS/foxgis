@@ -32,13 +32,7 @@
     "type": "background",
     "layout": { "visibility": "visible" },
     "paint": {
-      "background-color": {
-        "base": 1,
-        "stops": [
-          [11, "hsl(35, 32%, 91%)"],
-          [13, "hsl(35, 12%, 89%)"]
-        ]
-      }
+      "background-color": "hsl(35, 32%, 91%)"
     },
     "interactive": true
   }, {
