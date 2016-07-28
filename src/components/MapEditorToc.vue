@@ -71,7 +71,8 @@
           <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'">
-              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
+              <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
@@ -125,7 +126,8 @@
           <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
-              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
+              <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
@@ -567,10 +569,6 @@ export default {
         this.fixType(clickLayer)
         this.curPanelLayer = this.filterProperty(clickLayer)
         this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
-        $("input[name='icon-image']").unbind("click");
-        $("input[name='icon-image']").bind("click",this.onShowIconPanel);
-        $("input[name='text-font']").unbind("click");
-        $("input[name='text-font']").bind("click",this.onShowFontPanel);
         this.selectedData={
           'panel_type':'update',
           'id':this.curPanelLayer.id,
