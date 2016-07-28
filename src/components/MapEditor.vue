@@ -9,7 +9,7 @@
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
-      <a class="mdl-navigation__link" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
+      <a class="mdl-navigation__link" v-on:click="backToProject" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
       <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
       <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
       
@@ -139,6 +139,10 @@ export default {
     },
     'styleSaveClick':function(){
       this.patchStyle(this.style);
+    },
+    backToProject:function(){
+      var style = {};
+      this.changeStyle(style);
     },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")
