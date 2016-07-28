@@ -1200,7 +1200,7 @@ export default {
   watch: {
     style: {
       handler: function(style,oldStyle){
-        if(style={}){return;}
+        if(Object.keys(style).length===0){return;}
         console.log('style change to toc')
         let access_token = Cookies.get('access_token');
         this.styleObj = JSON.parse(JSON.stringify(style))
