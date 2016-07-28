@@ -68,7 +68,7 @@ svgEditor.addExtension('ext-legend', function() {
 			'element': 'text',
 			'curStyles': true,
 			'attr': {
-				x: 194,
+				x: 215,
 				y: 106,
 				id: canv.getNextId(),
 				fill: '#000000',
