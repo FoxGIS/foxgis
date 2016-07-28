@@ -30,14 +30,16 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <input type="radio" value="fill" @change="propertyChange">
-        <label for="one">面 </label>
-        <input type="radio" value="line" @change="propertyChange">
-        <label for="two">线</label>
-        <input type="radio" value="circle" @change="propertyChange">
-        <label for="one">圆</label>
+        <!-- <input type="radio" value="circle" @change="propertyChange">
+        <label for="one">圆</label> -->
         <input type="radio" value="symbol" @change="propertyChange">
         <label for="two">点</label>
+        <input type="radio" value="line" @change="propertyChange">
+        <label for="two">线</label>
+        <input type="radio" value="fill" @change="propertyChange">
+        <label for="one">面 </label>
+        <input type="radio" value="raster" @change="propertyChange">
+        <label for="two">栅格</label>
       </div>
     </div> 
 
@@ -54,7 +56,7 @@
     <div class="property-item">
       <div class="property-name"><span >过滤条件</span></div>
       <div class="property-value">
-        <input type="text" name="filter" value="filter" @change="propertyChange">
+        <input type="text" name="filter" value="" @change="propertyChange" disabled>
       </div>
     </div>
 
@@ -114,8 +116,10 @@ export default {
         $(".select-data select[name='source']").val(this.selecteddata.source);
         $(".select-data input[name='minzoom']").val(this.selecteddata.minzoom);
         $(".select-data input[name='maxzoom']").val(this.selecteddata.maxzoom);
+        $(".select-data select[name='source-layer']").val(this.selecteddata['source-layer']);
+        $(".select-data input[name='filter']").val(this.selecteddata.filter);
         //$(".select-data input[name='type']").attr("checked",false);
-        if(this.selecteddata.panel_type==="update"){
+        if(this.selecteddata.panel_type==="update"){//给radio元素赋值
           $(".select-data input[type='radio']").removeAttr("name");
           $("#data-div input[type='radio']").attr("name","type")
           $("#data-div input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
@@ -125,8 +129,7 @@ export default {
           $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }
         
-        $(".select-data select[name='source-layer']").val(this.selecteddata['source-layer']);
-        if(this.selecteddata.panel_type==="update"){
+        if(this.selecteddata.panel_type==="update"){//设置元素的disable属性
           $(".select-data input[name='id']").attr("disabled",true);
           $(".select-data select[name='source']").attr("disabled",true);
           $(".select-data select[name='source-layer']").attr("disabled",true);

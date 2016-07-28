@@ -406,7 +406,7 @@ export default {
           'id':'new_layer',
           'source':'',
           'source-layer':'',
-          'type':'fill',
+          'type':'symbol',
           'minzoom':0,
           'maxzoom':22,
           'filter':[]
@@ -706,6 +706,12 @@ export default {
 
       var minzoom = $("#new-layer-panel input[name='minzoom']").val();
       var maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
+      var filter = $("#new-layer-panel input[name='filter']").val()
+      if(filter!==""){
+        filter = filter.split(",");
+      }else{
+        filter = [];
+      }
       
 
       var ratioDom = $("#new-layer-panel input[name='type']");
@@ -736,8 +742,9 @@ export default {
         'paint':paint
       }
       if(source_layer!==""){layer['source-layer'] = source_layer;}
+      if(filter.length!==0){layer.filter = filter;}
       this.styleObj.layers.push(layer);
-      if(!this.styleObj.sources.hasOwnProperty(layer.source)){
+      if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
         for(let i=0;i<this.sources.length;i++){
           if(this.sources[i].sourceName===layer.source){
             var tilejsonUrl = this.sources[i].sourceUrl;
@@ -1028,7 +1035,7 @@ export default {
         'id':'new_layer',
         'source':'',
         'source-layer':'',
-        'type':'fill',
+        'type':'symbol',
         'minzoom':0,
         'maxzoom':22,
         'filter':[]
