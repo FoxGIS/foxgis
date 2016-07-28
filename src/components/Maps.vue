@@ -47,8 +47,8 @@ export default {
         var result = styleStr.replace(/replaceme/g,replace);
         var style = JSON.parse(result);
         style.name = name;
-        var temLayers = style.layers;
-        for(let i=0;i<temLayers.length;i++){
+        /*var temLayers = style.layers;
+        for(let i=0;i<temLayers.length;i++){//将颜色值转换为16进制
           var temPaint = temLayers[i].paint;
           if(temPaint){
             var names = Object.keys(temPaint);
@@ -58,7 +58,7 @@ export default {
               }
             }
           } 
-        }
+        }*/
         let newstyle = JSON.stringify(style)
         var username = Cookies.get('username')
         let access_token = Cookies.get('access_token')

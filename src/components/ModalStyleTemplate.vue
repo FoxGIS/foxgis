@@ -50,7 +50,7 @@ export default {
         alert("请输入地图名称")
         return
       }
-      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':replace})
+      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':Number(replace)})
     }
   },
   data: function(){
@@ -75,7 +75,7 @@ export default {
         'name': '县级行政区划图',
          'id': '3',
          'style':'admin-county-v8.json',
-         'replace':'510112',
+         'replace':510112,
          'thumb': {
           'background-image':"url('http://www.onegreen.net/maps/Upload_maps/201308/2013081409511905.jpg')"
         }
