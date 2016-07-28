@@ -213,9 +213,9 @@ TODOS
 			document.getElementById("map_outside").setAttribute("height",height-top_gap-bottom_gap);
 			document.getElementById("map_inside").setAttribute("width",width-2*(left_gap+rect_gap));
 			document.getElementById("map_inside").setAttribute("height",height-top_gap-bottom_gap-2*rect_gap);
-			document.getElementById("mapping_time").setAttribute("y",height-20);
+			document.getElementById("mapping_time").setAttribute("y",height-15);
 			document.getElementById("mapping_organization").setAttribute("x",width-left_gap);
-			document.getElementById("mapping_organization").setAttribute("y",height-20);
+			document.getElementById("mapping_organization").setAttribute("y",height-15);
 			var translate = "translate("+(width-1600)+",0)";
 			document.getElementById("northArrow-group").setAttribute("transform",translate);
 		};
