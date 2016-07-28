@@ -16,7 +16,7 @@ export default {
         var iframe = document.createElement("iframe");
         iframe.id = "fatherSVG"
         iframe.src = "./static/svgedit/editor/embedapi.html"
-        iframe.style = "width: 100%; height: 100%;"
+        iframe.setAttribute('style',"width: 100%; height: 100%;")
         $("#svg-wrap").append(iframe);
       }
     },
@@ -26,8 +26,8 @@ export default {
       if(!iframe){
         var iframe = document.createElement("iframe");
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
-        iframe.style = "width: 100%; height: 100%;"
         iframe.id = "fatherSVG"
+        iframe.setAttribute('style',"width: 100%; height: 100%;")
         $("#svg-wrap").append(iframe);
       }else{
         iframe.src = "./static/svgedit/editor/embedapi.html?options="+options;
