@@ -379,7 +379,6 @@ export default {
     },
     style: {
       handler:function(style,oldStyle){
-        console.log("style发生了变化")
         var style_error = validate(style)
         if(style_error.length > 0){
           return

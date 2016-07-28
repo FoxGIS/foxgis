@@ -729,15 +729,27 @@ export default {
       var layer = {
         'id':id,
         "source":source,
-        "source-layer":source_layer,
         'type':type,
         "minzoom":minzoom,
         "maxzoom":maxzoom,
         'layout':layout,
         'paint':paint
       }
-
+      if(source_layer!==""){layer['source-layer'] = source_layer;}
       this.styleObj.layers.push(layer);
+      if(!this.styleObj.sources.hasOwnProperty(layer.source)){
+        for(let i=0;i<this.sources.length;i++){
+          if(this.sources[i].sourceName===layer.source){
+            var tilejsonUrl = this.sources[i].sourceUrl;
+            break;
+          }
+        }
+        this.styleObj.sources[layer.source] = {
+          "url":tilejsonUrl,
+          "type":layer.type==="raster"?"raster":"vector"
+        }
+      }
+      
       this.changeStyle(this.styleObj);
       this.createPanelClose();
     },
@@ -1009,7 +1021,7 @@ export default {
       curPanelLayer: {},
       currentLayer: {},
       styleObj: {},
-      sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source
+      sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source,
       sourceLayers:[],
       selectedData:{
         'panel_type':'',//create or update
@@ -1195,6 +1207,37 @@ export default {
       }
     }
   },
+  attached(){
+    let username = Cookies.get('username');
+    if(username === undefined){
+      return;
+    }
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.tilesets + '/' + username;
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        for(let i = 0;i<data.length;i++){
+          var source = {};
+          source.sourceName = data[i].name;
+          source.sourceUrl = response.request.url+'/'+data[i].tileset_id;
+          var flag=0;//标记source是否重复
+          for(let j = 0;j<this.sources.length;j++){//判断是否有重复source
+            if(this.sources[j].sourceName===source.sourceName){
+              flag=1;
+              break;
+            }
+          } 
+          if(flag===0){
+            this.sources.push(source);
+          }
+        }
+      }
+    }, function(response) {
+      console.log("数据集请求失败");
+    })
+  },
   watch: {
     style: {
       handler: function(style,oldStyle){
@@ -1221,6 +1264,12 @@ export default {
 
               });
             }
+            for(let i = 0;i<this.sources.length;i++){
+              if(this.sources[i].sourceName===source.sourceName){
+                this.sources.splice(i,1);
+                break;
+              }
+            } 
             this.sources.push(source);
           }
         }
@@ -1245,8 +1294,6 @@ export default {
                 fontFamilys[family_name].push(temFont);
               }  
             } 
-            /*var length = Object.keys(fontFamilys).length;
-            fontFamilys.count = length;*/
             this.fontList = fontFamilys;    
           },function(res){
             alert("字体列表请求失败");
