@@ -426,8 +426,6 @@ export default {
               break
           }
         }
-        //this.patchStyle(style)
-
       },
       deep:true
     }
