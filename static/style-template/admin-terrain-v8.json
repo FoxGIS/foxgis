@@ -1404,7 +1404,7 @@
     "source": "composite",
     "id": "山影6",
     "paint": {
-      "fill-color": "rgb(1,1,1)",
+      "fill-color": "hsl(0, 0%, 100%)",
       "fill-opacity": {
         "stops": [
           [15, 0.15],
@@ -1422,7 +1422,7 @@
     "source": "composite",
     "id": "山影5",
     "paint": {
-      "fill-color": "rgb(1,1,1)",
+      "fill-color": "hsl(0, 0%, 100%)",
       "fill-opacity": {
         "stops": [
           [15, 0.15],
@@ -1441,7 +1441,7 @@
     "source": "composite",
     "id": "山影4",
     "paint": {
-      "fill-color": "rgb(89,84,23)",
+      "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
           [15, 0.07],
@@ -1459,7 +1459,7 @@
     "source": "composite",
     "id": "山影3",
     "paint": {
-      "fill-color": "rgb(89,84,23)",
+      "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
           [15, 0.07],
@@ -1477,7 +1477,7 @@
     "source": "composite",
     "id": "山影2",
     "paint": {
-      "fill-color": "rgb(89,84,23)",
+      "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
           [15, 0.08],
@@ -1496,7 +1496,7 @@
     "source": "composite",
     "id": "山影1",
     "paint": {
-      "fill-color": "rgb(89,84,23)",
+      "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
           [15, 0.08],
