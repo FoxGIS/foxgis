@@ -32,7 +32,7 @@
     "type": "background",
     "layout": { "visibility": "visible" },
     "paint": {
-      "background-color": "hsl(35, 32%, 91%)"
+      "background-color": "#87c2e4"
     },
     "interactive": true
   }, {
@@ -1401,6 +1401,7 @@
       "fill-color": "hsl(0, 0%, 100%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.15],
           [17, 0.001]
         ]
@@ -1419,6 +1420,7 @@
       "fill-color": "hsl(0, 0%, 100%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.15],
           [17, 0.001]
         ]
@@ -1438,6 +1440,7 @@
       "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.07],
           [17, 0.001]
         ]
@@ -1456,6 +1459,7 @@
       "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.07],
           [17, 0.001]
         ]
@@ -1474,6 +1478,7 @@
       "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.08],
           [17, 0.001]
         ]
@@ -1493,6 +1498,7 @@
       "fill-color": "hsl(56, 59%, 22%)",
       "fill-opacity": {
         "stops": [
+	  [0,0.08],
           [15, 0.08],
           [17, 0.001]
         ]

@@ -66,23 +66,14 @@ svgEditor.addExtension('ext-scale', function() {
 
 	function calculateScale(ppi){
 		var bbox = options.bbox;
-		console.log(bbox);
 		var center = [(bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2];
-		console.log(center);
 		var diff = (bbox[3]-bbox[1])/20;
-		console.log(diff);
 		var point1 = [center[0],center[1]+diff];
-		console.log(point1);
 		var point2 = [center[0],center[1]-diff];
-		console.log(point2);
 		var topPX = merc.px(point1,Math.ceil(options.zoom));
-		console.log(topPX);
 		var bottomPX = merc.px(point2,Math.ceil(options.zoom));
-		console.log(bottomPX);
 		var topXY = merc.forward(point1);
-		console.log(topXY);
 		var bottomXY = merc.forward(point2);
-		console.log(bottomXY);
 		var pixelDif = Math.abs(topPX[1]-bottomPX[1]);
 		var metersDif = Math.abs(topXY[1]-bottomXY[1]);
 		var scale = parseInt(metersDif/(pixelDif*0.0254/ppi));
