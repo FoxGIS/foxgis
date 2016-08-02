@@ -188,6 +188,7 @@ export default {
         var controlBound = this.$refs.drafmap.controlBound;
         options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
         options.organization = Cookies.get('organization');
+        options.location = Cookies.get('location');
         this.$broadcast('map-layout',options);
         this.SVGEditorClick();
         this.patchStyle(this.style);

@@ -86,6 +86,7 @@ svgEditor.readLang({
 		"new_doc": "新文档",
 		"open_doc": "打开文档",
 		"export_img": "导出",
+		"share_img": "分享",
 		"save_doc": "保存图像",
 		"import_doc": "导入SVG",
 		"align_to_page": "对齐元素到页面",

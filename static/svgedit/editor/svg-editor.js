@@ -664,6 +664,7 @@ TODOS
 					'#tool_clear div,#layer_new': 'new_image',
 					'#tool_save div': 'save',
 					'#tool_export div': 'export',
+					'#tool_share div': 'share',
 					'#tool_open div div': 'open',
 					'#tool_import div div': 'import',
 					'#tool_source': 'source',
@@ -3643,8 +3644,163 @@ TODOS
 				svgCanvas.save(saveOpts);
 			};
 
+			var exportAndShare = function(type){
+				var prompt_text = '请选择输出图片的格式: ';
+				if(type == "share"){
+					prompt_text = '请选择分享图片的格式: ';
+				}
+				$.select(prompt_text, [
+					// See http://kangax.github.io/jstests/toDataUrl_mime_type_test/ for a useful list of MIME types and browser support
+					// 'ICO', // Todo: Find a way to preserve transparency in SVG-Edit if not working presently and do full packaging for x-icon; then switch back to position after 'PNG'
+					'PNG',
+					'JPEG', 'BMP', 'WEBP'/*, 'PDF'*/
+				], function (imgType) { // todo: replace hard-coded msg with uiStrings.notification.
+					if (!imgType) {
+						return;
+					}
+					$("#spinner").css("display","block");
+					var str = $('#svgcontent')[0].outerHTML; 
+					var xmlObj = $.parseXML(str);//xml对象
+					var svg = $(xmlObj).find("svg");
+					var imageObj = $(xmlObj).find("image");
+					//var height = document.getElementById("svgcontent").getAttribute("height");
+					//var width = document.getElementById("svgcontent").getAttribute("width");
+					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
+					var height = parseInt(viewBox.split(' ')[3]);
+					var width = parseInt(viewBox.split(' ')[2]);
+					svg.attr("height",height*4);
+					svg.attr("width",width*4);
+					var options = window.OPTIONS;
+					if(document.getElementById("mapImg")&&options){
+						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+						getDataUri(url, function(dataUri) {
+							url = dataUri;
+							imageObj.attr("xlink:href",url);
+							if (window.ActiveXObject){//code for ie
+							    str = xmlObj.xml;
+							}else{// code for Mozilla, Firefox, Opera, etc.
+							    str = (new XMLSerializer()).serializeToString(xmlObj);
+							}
+							var quality = parseInt($('#image-slider').val(), 10)/100;	
+							downLoad(str,imgType,quality);
+						});
+					}else{
+						if (window.ActiveXObject){//code for ie
+							str = xmlObj.xml;
+						}else{// code for Mozilla, Firefox, Opera, etc.
+							str = (new XMLSerializer()).serializeToString(xmlObj);
+						}
+						var quality = parseInt($('#image-slider').val(), 10)/100;	
+						downLoad(str,imgType,quality);
+					}
+
+					function downLoad(str,imgType,quality){	
+						if(imgType==="JPEG"||imgType==="WEBP"){
+							var quality=quality||1;
+						}
+						var svgXml = str;
+						var image1 = new Image();
+						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
+
+						var canvas = document.getElementById('myCanvas');  //准备空画布
+						document.getElementById('myCanvas').setAttribute("width",width*4);
+						document.getElementById('myCanvas').setAttribute("height",height*4);
+						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+						context.drawImage(image1, 0, 0);
+						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
+						if(imgType==="JPEG"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".jpg");
+								}
+							},"image/jpeg",quality);
+						}else if(imgType==="WEBP"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".webp");
+								}
+							},"image/webp",quality);
+						}else if(imgType==="PNG"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".png");
+								}
+							},"image/png");
+						}else if(imgType==="BMP"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".bmp");
+								}
+							},"image/bmp");
+						}
+					};
+					
+					function getDataUri(url, callback) {
+						var image2 = new Image();
+					    image2.onload = function () {
+					        var canvas = document.createElement('canvas');
+					        canvas.width = this.width; // or 'width' if you want a special/scaled size
+					        canvas.height = this.height; // or 'height' if you want a special/scaled size
+					        canvas.getContext('2d').drawImage(this, 0, 0);
+					        // Get raw image data
+					        var raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+					        callback(raw);
+					    };
+					    image2.crossOrigin = "Anonymous";
+					    image2.src = url;
+					};
+
+					function uploadImg(blob,imgType,filename){
+						var options = window.OPTIONS;
+						var upload_url = options.API.uploads + '/' + options.username+'?access_token='+options.access_token;
+						var location = options.location;
+						if(options.selectedDistrict){
+							location = options.selectedDistrict;
+						}
+						var formData = new FormData();
+						formData.append("image", blob, filename+"."+imgType.toLowerCase());
+						formData.append('year', new Date().getFullYear());
+						formData.append('name', filename);
+						formData.append('location', location);	        
+						var xhr = new XMLHttpRequest();
+						//设置回调函数    
+						xhr.onreadystatechange = function(){
+						    if(xhr.readyState == 4 && xhr.status == 200){    
+						        var b = xhr.responseText;    
+						        if(b){    
+						        	$("#spinner").css("display","none");
+						        }else{  
+						        	$("#spinner").css("display","none");
+						        	alert("分享失败！");
+						        }           
+						    } 
+						};
+						xhr.open('POST', upload_url, true);
+						xhr.send(formData);	
+					}
+				});
+			};
+
+			//新增分享到决策用图模块
+			var clickShare = function(){
+				exportAndShare('share');
+			};
+
 			var clickExport = function() {
-				$.select('Select an image type for export: ', [
+				exportAndShare('export');
+				/*$.select('请选择输出图片的格式: ', [
 					// See http://kangax.github.io/jstests/toDataUrl_mime_type_test/ for a useful list of MIME types and browser support
 					// 'ICO', // Todo: Find a way to preserve transparency in SVG-Edit if not working presently and do full packaging for x-icon; then switch back to position after 'PNG'
 					'PNG',
@@ -3727,11 +3883,6 @@ TODOS
 								saveAs(blob, filename+".bmp");
 							},"image/bmp");
 						}
-						
-						/*var a = document.createElement('a');
-						a.href = canvas.toDataURL('image/png');  //将画布内的信息导出为png图片数据
-						a.download = "MapByMathArtSys";  //设定下载名称
-						a.click(); //点击触发下载*/
 					};
 					
 					function getDataUri(url, callback) {
@@ -3752,7 +3903,7 @@ TODOS
 					    };
 					    image2.crossOrigin = "Anonymous";
 					    image2.src = url;
-					};
+					};*/
 
 					// Open placeholder window (prevents popup)
 					/*var exportWindowName;
@@ -3780,7 +3931,7 @@ TODOS
 						var quality = parseInt($('#image-slider').val(), 10)/100;
 						svgCanvas.rasterExport(imgType, quality, exportWindowName);
 					}*/
-				}, function () {
+				/*}, function () {
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
 						if (!$('#image-slider').length) {
@@ -3790,7 +3941,8 @@ TODOS
 					else {
 						$('#image-slider').parent().remove();
 					}
-				});
+				});*/
+				
 			};
 
 			// by default, svgCanvas.open() is a no-op.
@@ -4641,6 +4793,7 @@ TODOS
 						}
 					}, evt: 'mouseup', key: ['S', true]},
 					{sel: '#tool_export', fn: clickExport, evt: 'mouseup'},
+					{sel: '#tool_share', fn: clickShare, evt: 'mouseup'},
 					{sel: '#tool_open', fn: clickOpen, evt: 'mouseup', key: ['O', true]},
 					{sel: '#tool_import', fn: clickImport, evt: 'mouseup'},
 					{sel: '#tool_source', fn: showSourceEditor, evt: 'click', key: ['U', true]},
