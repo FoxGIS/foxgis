@@ -3,14 +3,19 @@
     <div class="property-item">
       <div class="property-name"><span >样式ID</span></div>
       <div class="property-value">
-        <input type="text" name="id" value="{{selecteddata.id}}" @change="propertyChange">
+        <input type="text" name="id" value="{{selecteddata.id}}" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="text" name="id" value="{{selecteddata.id}}" @change="propertyChange" v-else>
       </div>
     </div>
 
     <div class="property-item">
       <div class="property-name"><span >数据源</span></div>
       <div class="property-value">
-        <select name="source" @change="propertyChange">
+        <select name="source" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.source">
+          <option value="">选择数据源</option>
+          <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
+        </select>
+        <select name="source" @change="propertyChange" v-model="selecteddata.source" v-else>
           <option value="">选择数据源</option>
           <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
         </select>
@@ -20,7 +25,11 @@
     <div class="property-item">
       <div class="property-name"><span >源图层</span></div>
       <div class="property-value">
-        <select name="source-layer" @change="propertyChange">
+        <select name="source-layer" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata['source-layer']">
+          <option value="">选择数据图层</option>
+          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}</option>
+        </select>
+        <select name="source-layer" @change="propertyChange" v-model="selecteddata['source-layer']" v-else>
           <option value="">选择数据图层</option>
           <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}</option>
         </select>
@@ -32,13 +41,17 @@
       <div class="property-value">
         <!-- <input type="radio" value="circle" @change="propertyChange">
         <label for="one">圆</label> -->
-        <input type="radio" value="symbol" @change="propertyChange">
+        <input type="radio" value="symbol" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="radio" value="symbol" v-else>
         <label for="two">点</label>
-        <input type="radio" value="line" @change="propertyChange">
+        <input type="radio" value="line" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="radio" value="line" v-else>
         <label for="two">线</label>
-        <input type="radio" value="fill" @change="propertyChange">
+        <input type="radio" value="fill" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="radio" value="fill" v-else>
         <label for="one">面 </label>
-        <input type="radio" value="raster" @change="propertyChange">
+        <input type="radio" value="raster" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="radio" value="raster" v-else>
         <label for="two">栅格</label>
       </div>
     </div> 
@@ -55,19 +68,19 @@
 
     <div class="property-item" style="border-top: 1px solid #c7c7c7;padding-top: 10px;">
       <div class="property-name"><span >数据过滤</span></div>
-      <div class="property-value" id="field-filters">
+      <div class="property-value field-filters" id="field-filters">
         <a id="add-filter" v-on:click.prevent="addFilter">添加过滤</a>
-        <select name="filter-condition" @change="">
+        <select name="filter-condition" v-model="selecteddata.filter.condition" @change="filterChange($event,$index)">
           <option value="any">或</option>
           <option value="all">且</option>
           <option value="none">非</option>
         </select>
-        <div class="filter-item">
-          <select name="filter-field" @change="">
+        <div class="filter-item" v-for="filter in selecteddata.filter.filters">
+          <select name="filter-field" v-model="filter.field" @change="filterChange($event,$index)">
             <option value="">选择字段</option>
-            <option value="{{field}}" v-for="(field,type) in layerFields">{{field}}</option>
+            <option value="{{field}}" type="{{type}}" v-for="(field,type) in layerfields">{{field}}</option>
           </select>
-          <select name="filter-operator" @change="">
+          <select name="filter-operator" v-model="filter.operator" @change="filterChange($event,$index)">
             <option value="==">等于</option>
             <option value="!=">不等于</option>
             <option value=">">大于</option>
@@ -77,8 +90,8 @@
             <option value="in">包含</option>
             <option value="!in">不包含</option>
           </select>
-          <input type="text" name="filter-value" value="" @change="">
-          <i class="material-icons" v-on:click="deleteFilterItem" title="删除过滤">delete</i>
+          <input type="text" name="filter-value" :value="filter.value" @change="filterChange($event,$index)">
+          <i class="material-icons" v-on:click="deleteFilterItem($event,$index)" title="删除过滤">clear</i>
         </div>
       </div>
     </div>
@@ -112,11 +125,11 @@ export default {
         }
       }
       if(e.target.name==="source-layer"){//当用户更改source-layer时，获取该source-layer中包含哪些字段
-        if(e.target.value===""){this.layerFields={};}
+        if(e.target.value===""){this.layerfields={};}
         var curr_sourcelayer = e.target.value;
-        for(let i=0;i<this.sourcelayers.length;i++){
-          if(curr_sourcelayer===this.sourcelayers[i].id){
-            this.layerFields = this.sourcelayers[i].fields;
+        for(let j=0;j<this.sourcelayers.length;j++){
+          if(curr_sourcelayer===this.sourcelayers[j].id){
+            this.layerfields = this.sourcelayers[j].fields;
             break;
           }
         }
@@ -132,17 +145,46 @@ export default {
       params.value = value;
       this.$dispatch("data-select-change",params);
     },
-    addFilter:function(){
-      var filters = document.getElementById("field-filters");
-      var filter_item = document.getElementsByClassName("filter-item");
-      var new_item = filter_item[0].cloneNode(true);
-      $(new_item).children("i").bind("click",this.deleteFilterItem);
-      filters.appendChild(new_item);
+    filterChange:function(e,index) {
+      if(this.selecteddata.panel_type==="create"){
+        return;
+      }
+      var tem = this.selecteddata.filter;
+      var filter = [];
+      if(e.target.name==="filter-value"){
+        var field = this.selecteddata.filter.filters[index].field;
+        var type = $($("#data-div .filter-item")[index]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+        if(type==="Number"){
+          this.selecteddata.filter.filters[index].value = Number(e.target.value);
+        }
+      }
+      if(tem.filters.length>0){
+        for(let i=0;i<tem.filters.length;i++){
+          if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){continue;}
+          var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
+          filter.push(t);
+        }
+      }
+      if(filter.length>1){
+        filter = [tem.condition].concat(filter);
+      }else if(filter.length===1){
+        filter = filter[0];
+      }
+      var params = {};
+      params.name = 'filter';
+      params.value = filter;
+      this.$dispatch("data-select-change",params);
     },
-    deleteFilterItem:function(e){
-      var filters = document.getElementById("field-filters");
-      var filter_item = e.target.parentNode;
-      filters.removeChild(filter_item);
+    addFilter:function(){
+      var t={field:"",operator:"==",value:""}
+      this.selecteddata.filter.filters.push(t);
+      if(this.selecteddata.panel_type==="create"&&this.selecteddata['source-layer']===""){
+        this.layerfields = {};
+      }
+    },
+    deleteFilterItem:function(e,index){
+      this.selecteddata.filter.filters.splice(index,1);
+      this.filterChange(e,index);
     } 
   },
   /*computed:{
@@ -150,20 +192,12 @@ export default {
   },*/
   data(){
     return {
-      //sourceLayers:[]新建样式图层时动态生成数据图层列表
-      layerFields:{}//字段对象，存储当前vector_layer中的字段
+      
     }
   },
   watch:{
     selecteddata:{
       handler:function(data,olddata){
-        $(".select-data input[name='id']").val(this.selecteddata.id);
-        $(".select-data select[name='source']").val(this.selecteddata.source);
-        $(".select-data input[name='minzoom']").val(this.selecteddata.minzoom);
-        $(".select-data input[name='maxzoom']").val(this.selecteddata.maxzoom);
-        $(".select-data select[name='source-layer']").val(this.selecteddata['source-layer']);
-        $(".select-data input[name='filter']").val(this.selecteddata.filter);
-        //$(".select-data input[name='type']").attr("checked",false);
         if(this.selecteddata.panel_type==="update"){//给radio元素赋值
           $(".select-data input[type='radio']").removeAttr("name");
           $("#data-div input[type='radio']").attr("name","type")
@@ -173,23 +207,11 @@ export default {
           $("#new-layer-panel input[type='radio']").attr("name","type")
           $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }
-        
-        if(this.selecteddata.panel_type==="update"){//设置元素的disable属性
-          $(".select-data input[name='id']").attr("disabled",true);
-          $(".select-data select[name='source']").attr("disabled",true);
-          $(".select-data select[name='source-layer']").attr("disabled",true);
-          $(".select-data input[name='type']").attr("disabled",true);
-        }else{
-          $(".select-data input[name='id']").attr("disabled",false);
-          $(".select-data select[name='source']").attr("disabled",false);
-          $(".select-data select[name='source-layer']").attr("disabled",false);
-          $(".select-data input[name='type']").attr("disabled",false);
-        }
       }
     }
   },
 
-  props:['sources','selecteddata','sourcelayers']
+  props:['sources','selecteddata','sourcelayers','layerfields']
 }
 </script>
 
@@ -289,5 +311,9 @@ select[name="filter-condition"]{
 #field-filters i{
   font-size: 16px;
   cursor: pointer;
+}
+
+#field-filters i:hover{
+  color: red;
 }
 </style>

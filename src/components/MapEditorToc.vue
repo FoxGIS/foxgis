@@ -53,7 +53,7 @@
           <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="text-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -70,7 +70,15 @@
           <b>输出属性</b>
           <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'">
+            <div class="property-value" v-if="name=='text-field'">
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <!-- <option value="">字段</option> -->
+                <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerFields">{{'{'+field+'}'}}</option>
+              </select>
+              <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange'>
+              <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
+            </div>
+            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
               <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
               <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
             </div>
@@ -179,7 +187,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -218,7 +226,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -288,7 +296,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -323,7 +331,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
@@ -347,7 +355,7 @@
 
     <div id="new-layer-panel">
       <div id="property-header">新建图层</div>
-      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers"></foxgis-filter-data>
+      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
     </div>
@@ -409,7 +417,10 @@ export default {
           'type':'symbol',
           'minzoom':0,
           'maxzoom':22,
-          'filter':[]
+          'filter':{
+            'condition':'any',
+            'filters':[]
+          }
         }
         this.sourceLayers=[];
       }
@@ -569,6 +580,28 @@ export default {
         this.fixType(clickLayer)
         this.curPanelLayer = this.filterProperty(clickLayer)
         this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
+        var filter = {condition:'',filters:[]};
+        var tempFilter = this.curPanelLayer.filter||[];
+        if(tempFilter.length!=0){//存在过滤条件
+          if(tempFilter[0]==="all"){
+            filter.condition = "all";
+          }else if(tempFilter[0]==="none"){
+            filter.condition = "none";
+          }else{
+            filter.condition = "any";
+          }
+          if(tempFilter[0]==="any"||tempFilter[0]==="all"||tempFilter[0]==="none"){//存在多个过滤条件
+            for(let i=1;i<tempFilter.length;i++){//根据过滤条件数目新建过滤元素
+              var t={field:tempFilter[i][1],operator:tempFilter[i][0],value:tempFilter[i][2]};
+              filter.filters.push(t);
+            }
+          }else{//只存在一个过滤条件
+            var t={field:tempFilter[1],operator:tempFilter[0],value:tempFilter[2]};
+            filter.filters.push(t);
+          }
+        }else{//没有过滤条件
+          filter.condition = "any";
+        }
         this.selectedData={
           'panel_type':'update',
           'id':this.curPanelLayer.id,
@@ -577,12 +610,19 @@ export default {
           'type':this.curPanelLayer.type||'fill',
           'minzoom':this.curPanelLayer.minzoom||0,
           'maxzoom':this.curPanelLayer.maxzoom||22,
-          'filter':this.curPanelLayer.filter||[]
+          'filter':filter
         }
         if(this.selectedData.source===""){this.sourceLayers=[];}
-        for(let i=0;i<this.sources.length;i++){
-          if(this.selectedData.source === this.sources[i].sourceName){
-            this.sourceLayers = this.sources[i].sourceLayers;
+        for(let j=0;j<this.sources.length;j++){
+          if(this.selectedData.source === this.sources[j].sourceName){
+            this.sourceLayers = this.sources[j].sourceLayers;
+            break;
+          }
+        }
+        if(this.selectedData['source-layer']===""){this.layerFields={};}
+        for(let k=0;k<this.sourceLayers.length;k++){
+          if(this.selectedData['source-layer'] === this.sourceLayers[k].id){
+            this.layerFields = this.sourceLayers[k].fields;
             break;
           }
         }
@@ -706,13 +746,25 @@ export default {
 
       var minzoom = $("#new-layer-panel input[name='minzoom']").val();
       var maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
-      var filter = $("#new-layer-panel input[name='filter']").val()
-      if(filter!==""){
-        filter = filter.split(",");
-      }else{
-        filter = [];
+      var filterElems = $("#new-layer-panel .filter-item");
+      var filterItems = [];
+      for(let i=0;i<filterElems.length;i++){
+        var temp = [];
+        var field = $(filterElems[i]).children("select[name='filter-field']").val();
+        if(field===""){continue;}
+        var operator = $(filterElems[i]).children("select[name='filter-operator']").val();
+        var value = $(filterElems[i]).children("input[name='filter-value']").val();
+        var type = $(filterElems[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+        if(type==="Number"){value=Number(value);}
+        temp=[operator,field,value];
+        filterItems.push(temp);
       }
-      
+      if(filterItems.length>1){
+        var condition = $("#new-layer-panel select[name='filter-condition']").val();
+        var filter = [condition].concat(filterItems);
+      }else if(filterItems.length===1){
+        var filter = filterItems[0];
+      }
 
       var ratioDom = $("#new-layer-panel input[name='type']");
       for(let i=0;i<ratioDom.length;i++){
@@ -742,7 +794,7 @@ export default {
         'paint':paint
       }
       if(source_layer!==""){layer['source-layer'] = source_layer;}
-      if(filter.length!==0){layer.filter = filter;}
+      if(filter){layer.filter = filter;}
       this.styleObj.layers.push(layer);
       if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
         for(let i=0;i<this.sources.length;i++){
@@ -1030,6 +1082,8 @@ export default {
       styleObj: {},
       sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source,
       sourceLayers:[],
+      layerFields:{},//对象，图层里的字段
+      filterObj:{},//数据过滤，包含condition和一个filters数组
       selectedData:{
         'panel_type':'',//create or update
         'id':'new_layer',
@@ -1563,6 +1617,14 @@ a {
   height: 20px;
   padding: 5px 0px 5px 5px;
   border: none;
+}
+
+.property-value input[name='text-field'] {
+  padding: 3px;
+  width: 145px;
+  position: relative;
+  top: -29px;
+  background-color: transparent;
 }
 
 .property-value select {

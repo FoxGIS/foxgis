@@ -33,7 +33,7 @@ svgEditor.addExtension('ext-legend', function() {
 			var legendArr = getLegendArray(layers);	
 			console.log("legend--60--legendArr:");
 			console.log(legendArr);
-			drawLegend(legendArr);
+			setLegend(legendArr);
 		},"json");
 	}
 
@@ -247,6 +247,12 @@ svgEditor.addExtension('ext-legend', function() {
 		current_layer.setAttribute("transform","translate("+(frameWidth-455)+","+(frameHeight-135-rectHeight)+")");
 		canv.recalculateDimensions(current_layer);
 	}
+
+	function setLegend(legendArr){
+		$("#legend-panel").css("display","block");
+		$("#legend-ok").bind("click",onLegendOk);
+		$("#legend-ok").bind("click",onLegendCancel);
+	}
 	/**
  	* 根据地图样式中的layers筛选图例单元,该函数返回已筛选和分组完成的图例数组
  	*
@@ -361,6 +367,16 @@ svgEditor.addExtension('ext-legend', function() {
 		    }
 		}
 		return temdArr;
+	}
+
+	function onLegendOk(){
+
+	}
+
+	function onLegendCancel(){
+		$("#legend-panel").css("display","none");
+		$("#legend-ok").unbind("click",onLegendOk);
+		$("#legend-ok").unbind("click",onLegendCancel);
 	}
 	/*---------*/
 	return {

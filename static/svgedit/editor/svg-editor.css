@@ -1491,6 +1491,21 @@ ul li.current {
 	float: left;
     margin: 50px;
 }
+
+#legend-panel .button{
+	position: absolute;
+	bottom: 15px;
+	width: 60px;
+	height: 27px;
+}
+
+#legend-ok{
+	left: 230px;
+}
+
+#legend-cancel{
+	right:230px;
+}
 /*
 	Adding Icons
 	You can add icons to the context menu by adding

@@ -50,7 +50,7 @@ export default {
         alert("请输入地图名称")
         return
       }
-      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':Number(replace)})
+      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':replace})
     }
   },
   data: function(){
@@ -83,7 +83,7 @@ export default {
         'name': '中国地形图',
          'id': '4',
          'style':'admin-terrain-v8.json',
-         'replace':'513221',
+         'replace':513221,
         'thumb': {
           'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
         }
