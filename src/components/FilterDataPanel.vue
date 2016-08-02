@@ -53,10 +53,33 @@
       </div>
     </div>
 
-    <div class="property-item">
-      <div class="property-name"><span >过滤条件</span></div>
-      <div class="property-value">
-        <input type="text" name="filter" value="" @change="propertyChange" disabled>
+    <div class="property-item" style="border-top: 1px solid #c7c7c7;padding-top: 10px;">
+      <div class="property-name"><span >数据过滤</span></div>
+      <div class="property-value" id="field-filters">
+        <a id="add-filter" v-on:click.prevent="addFilter">添加过滤</a>
+        <select name="filter-condition" @change="">
+          <option value="any">或</option>
+          <option value="all">且</option>
+          <option value="none">非</option>
+        </select>
+        <div class="filter-item">
+          <select name="filter-field" @change="">
+            <option value="">选择字段</option>
+            <option value="{{field}}" v-for="(field,type) in layerFields">{{field}}</option>
+          </select>
+          <select name="filter-operator" @change="">
+            <option value="==">等于</option>
+            <option value="!=">不等于</option>
+            <option value=">">大于</option>
+            <option value=">=">大于等于</option>
+            <option value="<">小于</option>
+            <option value="<=">小于等于</option>
+            <option value="in">包含</option>
+            <option value="!in">不包含</option>
+          </select>
+          <input type="text" name="filter-value" value="" @change="">
+          <i class="material-icons" v-on:click="deleteFilterItem" title="删除过滤">delete</i>
+        </div>
       </div>
     </div>
 
@@ -69,7 +92,7 @@ export default {
   methods: {
     propertyChange:function(e){
       var value = $(e.target).val();
-      if(e.target.name==="source"){
+      if(e.target.name==="source"){//当用户更改source时，获取该source中包含哪些source-layer
         var source = value;
         if(source===""){this.sourcelayers=[];}
         for(let i=0;i<this.sources.length;i++){
@@ -88,6 +111,16 @@ export default {
           }
         }
       }
+      if(e.target.name==="source-layer"){//当用户更改source-layer时，获取该source-layer中包含哪些字段
+        if(e.target.value===""){this.layerFields={};}
+        var curr_sourcelayer = e.target.value;
+        for(let i=0;i<this.sourcelayers.length;i++){
+          if(curr_sourcelayer===this.sourcelayers[i].id){
+            this.layerFields = this.sourcelayers[i].fields;
+            break;
+          }
+        }
+      }
       if(this.selecteddata.panel_type==="create"){
         return;
       }
@@ -98,8 +131,19 @@ export default {
       params.name = e.target.name;
       params.value = value;
       this.$dispatch("data-select-change",params);
-    }
-    
+    },
+    addFilter:function(){
+      var filters = document.getElementById("field-filters");
+      var filter_item = document.getElementsByClassName("filter-item");
+      var new_item = filter_item[0].cloneNode(true);
+      $(new_item).children("i").bind("click",this.deleteFilterItem);
+      filters.appendChild(new_item);
+    },
+    deleteFilterItem:function(e){
+      var filters = document.getElementById("field-filters");
+      var filter_item = e.target.parentNode;
+      filters.removeChild(filter_item);
+    } 
   },
   /*computed:{
     
@@ -107,6 +151,7 @@ export default {
   data(){
     return {
       //sourceLayers:[]新建样式图层时动态生成数据图层列表
+      layerFields:{}//字段对象，存储当前vector_layer中的字段
     }
   },
   watch:{
@@ -204,5 +249,45 @@ export default {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+}
+
+.filter{
+  border-top: 1px solid #c7c7c7;
+  padding-top: 10px;
+}
+
+select[name="filter-condition"]{
+  width: 110px;
+}
+
+.filter-item{
+  width:284px;
+  border: 2px solid #c3c3c3;
+  position: relative;
+  left: -97px;
+  margin-top: 10px;
+}
+.filter-item select,.filter-item input{
+  width: 80px;
+  margin-left: 3px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+#add-filter{
+  background-color: #f78b9e;
+  padding: 4px;
+  border-radius: 3px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+#add-filter:hover{
+  background-color: #f95d5d;
+}
+
+#field-filters i{
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
