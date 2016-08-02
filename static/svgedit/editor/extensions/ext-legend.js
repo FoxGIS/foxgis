@@ -33,7 +33,7 @@ svgEditor.addExtension('ext-legend', function() {
 			var legendArr = getLegendArray(layers);	
 			console.log("legend--60--legendArr:");
 			console.log(legendArr);
-			setLegend(legendArr);
+			drawLegend(legendArr);
 		},"json");
 	}
 
