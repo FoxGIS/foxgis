@@ -49,7 +49,8 @@
                 <div class="title">
                   <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
                   <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p><br>
-                  <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p>
+                  <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p><br>
+                  <p>下载次数：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].downloadNum}}</p>
                 </div>
                 <div class="preView">
                   <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
@@ -648,7 +649,7 @@ span.delete-badge{
 }
 
 .meta-info {
-  margin-top: 10px;
+  margin-top: 5px;
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -662,6 +663,7 @@ span.delete-badge{
   width: 240px;
   height: 18px;
   overflow: hidden;
+  line-height: 12px;
 }
 
 .meta-info i {
