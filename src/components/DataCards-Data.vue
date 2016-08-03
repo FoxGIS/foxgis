@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button>
+      <!-- <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button> -->
     </div>
 
     <div class = "tags">
@@ -222,6 +222,19 @@ export default {
         this.deleteTilesetId = "";
       }
     },
+
+    downloadFile: function(tileset_id) {
+      let username = Cookies.get('username')
+      let access_token = Cookies.get('access_token')
+      let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id + '/raw?access_token='+ access_token
+      var aLink = document.createElement('a')
+      aLink.className = 'download_link'
+      var text = document.createTextNode('&nbsp;')
+      aLink.appendChild(text)
+      aLink.href = url
+      aLink.click()
+    },
+
     parseImgURL:function(upload) {
       
     },
