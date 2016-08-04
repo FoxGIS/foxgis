@@ -2,9 +2,9 @@
 <div class="foxgis-data-cards">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
+    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <!-- <mdl-anchor-button accent raised v-mdl-ripple-effect >添加到地图</mdl-anchor-button> -->
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
     </div>
 
     <div class = "tags">
@@ -18,19 +18,13 @@
 
     <div class="meta">
       <p>
+      上传时间：<span style="width:200px;display: inline-block;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
           <option value="private">私有</option>
           <option value="public">公开</option>
         </select>
-      上传时间：<span style="width:115px;display: inline-block;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
-      中心：<span style="width:80px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].center[1]|currency '' 2 }}]</span>
-      边界：<span style="width: 170px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[0]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[1]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[2]|currency '' 2 }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].bounds[3]|currency '' 2 }}]</span>
-      级别：<span style="width: 35px;display: inline-block;">[{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].minzoom }},{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].maxzoom }}]</span>
-      格式：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format?dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format:'未知' }}</span>
-      </p>
       <div>
-        <mdl-anchor-button colored v-mdl-ripple-effect  @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect  @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>
       </div>
     </div>
 
@@ -39,8 +33,13 @@
         <div class="meta-title title">
           <b>数据属性</b>
         </div>
-        <div class="meta-data content" >
-          <h6>这里是元数据信息</h6>
+        <div class="meta-data content" style="display: flex;flex-wrap: wrap;">
+            <span style="width:300px;">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
+            <span style="width:300px;">最大缩放级别：{{detailsData.maxzoom}}</span>
+            <span style="width:300px;">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
+            <span style="width:300px;">最小缩放级别：{{detailsData.minzoom}}</span>
+            <span style="width:300px;">格式：{{detailsData.format}}</span>
+            <span style="width:300px;">数据大小：{{calculation(detailsData.filesize)}}</span>
         </div>
       </div>
       <div class="description-container">
@@ -57,15 +56,30 @@
           <b>数据版权</b>
         </div>
         <div class="tileset-property content">
-          <span>{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].attribution}}</span>
+          <span>{{detailsData.attribution}}</span>
         </div>
       </div>
       <div class="preview-container">
         <div class="preview-title title">
-          <b>数据预览</b>
+          <b>图层信息</b>
         </div>
         <div class="preview content">
-          <img src="/static/Home_image/北京市.jpg" alt="" style="max-width:100%;max-height:100%;">
+          <table>
+            <tr>
+              <th>id</th>
+              <th>minzoom</th>
+              <th>maxzoom</th>
+              <th>fields</th>
+              <th>description</th>
+            </tr>
+            <tr v-for="u in detailsData.vector_layers">
+              <td>{{u.id}}</td>
+              <td>{{u.minzoom}}</td>
+              <td>{{u.maxzoom}}</td>
+              <td>{{u.fields.length}}</td>
+              <td>{{u.description}}</td>
+            </tr>
+          </table>
         </div>
         
       </div>
@@ -94,22 +108,45 @@ import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e) {
-      //移除之前的active
-      let activeCards = this.$el.querySelector('.active');
-      if(activeCards&&activeCards!==e.target.parentElement){
-        activeCards.className = activeCards.className.replace(' active','');
+    showDetails: function (e,tileset_id) {
+      let username = Cookies.get('username');
+      if(username === undefined){
+        return
       }
-      //给当前的dom添加active
-      let claName = e.target.parentElement.className;
-      if(claName.indexOf('active')!=-1){
-        claName = claName.replace(' active','')
-      }else{
-        claName += ' active';
-        //do somthing
-      }
-      e.target.parentElement.className = claName;
+      let access_token = Cookies.get('access_token');
+      //this.username = username
+      let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+          this.detailsData = response.data;
+          //移除之前的active
+          let activeCards = this.$el.querySelector('.active');
+          if(activeCards&&activeCards!==e.target.parentElement){
+            activeCards.className = activeCards.className.replace(' active','');
+          }
+          //给当前的dom添加active
+          let claName = e.target.parentElement.className;
+          if(claName.indexOf('active')!=-1){
+            claName = claName.replace(' active','')
+          }else{
+            claName += ' active';
+            //do somthing
+          }
+          e.target.parentElement.className = claName;
+      }, function(response) {
+        console.log("数据集请求失败");
+      })
+
     },
+
+    calculation: function(size){//计算文件大小
+      if (size / 1024 > 1024) {
+        size = (size / 1048576).toFixed(2) + 'MB';
+      } else {
+        size = (size / 1024).toFixed(2) + 'KB';
+      }
+      return size;
+    },
+
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
       let tileset_id = this.dataset[index].tileset_id;
@@ -294,7 +331,8 @@ export default {
         title: '确定删除吗？',//对话框标题
         tips:'',//对话框中的提示性文字
       },
-      deleteTilesetId: ""//
+      deleteTilesetId: "",
+      detailsData: {}
     }
   }
 }
@@ -517,4 +555,33 @@ export default {
   z-index: 9999;
   overflow: auto;
 }
+
+.delete-button{
+  position: relative;
+  left: -18px;
+}
+
+.preview-container table {
+  font-family: verdana,arial,sans-serif;
+  font-size:11px;
+  color:#333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
+}
+.preview-container table th {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #dedede;
+}
+.preview-container table td {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #ffffff;
+}
+
 </style>
