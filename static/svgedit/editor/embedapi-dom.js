@@ -71,9 +71,13 @@ $(function () {'use strict';
     $('#save').click(saveSvg);
     $('#exportPNG').click(exportPNG);
     $('#exportPDF').click(exportPDF);
+    var url = window.location.href.replace(/\?(.*)$/, '&$1');
+    if (!!window.ActiveXObject || "ActiveXObject" in window){
+        url = encodeURI(url);
+    }
     $('body').append(
         $('<iframe src="svg-editor.html?extensions=ext-xdomain-messaging.js' +
-            window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
+            url + // Append arguments to this file onto the iframe
             '" id="svgedit" onload="initEmbed();" style="position: absolute;top: 0;width: calc(100% - 12px) ;height: calc(100% - 10px);"></iframe>'
         )
     );
