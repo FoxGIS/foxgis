@@ -33,13 +33,14 @@
         <div class="meta-title title">
           <b>数据属性</b>
         </div>
-        <div class="meta-data content" style="display: flex;flex-wrap: wrap;">
-            <span style="width:300px;">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
-            <span style="width:300px;">最大缩放级别：{{detailsData.maxzoom}}</span>
-            <span style="width:300px;">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
-            <span style="width:300px;">最小缩放级别：{{detailsData.minzoom}}</span>
-            <span style="width:300px;">格式：{{detailsData.format}}</span>
-            <span style="width:300px;">数据大小：{{calculation(detailsData.filesize)}}</span>
+        <div class="meta-data content">
+            <span>中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
+            <span>最大缩放级别：{{detailsData.maxzoom}}</span>
+            <span>范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
+            <span>最小缩放级别：{{detailsData.minzoom}}</span>
+            <span>格式：{{detailsData.format}}</span>
+            <span>数据大小：{{calculation(detailsData.filesize)}}</span>
+            <span style="width:600px;">访问地址：{{detailsData.url}}</span>
         </div>
       </div>
       <div class="description-container">
@@ -76,12 +77,14 @@
               <td>{{u.id}}</td>
               <td>{{u.minzoom}}</td>
               <td>{{u.maxzoom}}</td>
-              <td>{{u.fields.length}}</td>
+              <td style= "cursor:pointer;"><a v-on:click='lookFields(u.fields)'>查看</a></td>
               <td>{{u.description}}</td>
             </tr>
           </table>
         </div>
-        
+        <div class="fields">
+          <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -114,10 +117,11 @@ export default {
         return
       }
       let access_token = Cookies.get('access_token');
-      //this.username = username
+      let that = this;
       let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-          this.detailsData = response.data;
+          that.detailsData = response.data;
+          that.detailsData.url = url;
           //移除之前的active
           let activeCards = this.$el.querySelector('.active');
           if(activeCards&&activeCards!==e.target.parentElement){
@@ -136,6 +140,10 @@ export default {
         console.log("数据集请求失败");
       })
 
+    },
+
+    lookFields:function(fields){
+      this.fieldsData = fields;
     },
 
     calculation: function(size){//计算文件大小
@@ -332,7 +340,8 @@ export default {
         tips:'',//对话框中的提示性文字
       },
       deleteTilesetId: "",
-      detailsData: {}
+      detailsData: {},
+      fieldsData: []
     }
   }
 }
@@ -584,4 +593,27 @@ export default {
   background-color: #ffffff;
 }
 
+.preview-container div.fields {
+  display: flex;
+  flex-wrap:wrap;
+  margin-left:45px; 
+}
+
+.preview-container div.field {
+  border:1px solid #333333;
+  margin:5px;
+  padding:5px;
+  font-family:verdana,arial,sans-serif;
+  font-size:11px;
+  color:#333333;
+}
+
+.meta-container div.meta-data {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.meta-container div.meta-data span {
+  width:300px;
+}
 </style>
