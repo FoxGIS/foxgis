@@ -1473,7 +1473,7 @@ ul li.current {
 
 #legend-panel{
 	position: absolute;
-	width: 600px;
+	width: 700px;
 	height: 400px;
 	z-index: 10;
 	background-color:#d0d0d0; 
@@ -1485,11 +1485,19 @@ ul li.current {
 }
 
 #legend-panel .box{
-	width: 200px;
+	width: 230px;
 	height: 300px;
 	background-color: white;
 	float: left;
-    margin: 50px;
+    margin: 40px;
+    overflow: auto;
+}
+
+#legend-panel #legend-preview{
+	text-align: center;
+	margin-left: 20px;
+	width: 350px;
+	height: 250px;
 }
 
 #legend-panel .button{
@@ -1505,6 +1513,50 @@ ul li.current {
 
 #legend-cancel{
 	right:230px;
+}
+#set-drawing{
+	width: 80px;
+	float: left;
+}
+#preview-drawing{
+	margin: 10px;
+}
+.legend-item input[type='text']{
+	width: 100px;
+    float: left;
+    height: 16px;
+    margin-bottom: 5px;
+    margin-top: 4px;
+    border: 0;
+    background-color: transparent;
+    outline: none;
+    border-bottom: 1px solid gray;
+
+}
+
+.legend-item input[type='checkbox']{
+    margin-top: 6px;
+    margin-bottom: 6px;
+    width: 18px;
+    height: 18px;
+}
+
+#property-set{
+	position: absolute;
+    width: 350px;
+    height: 44px;
+    right: 40px;
+    bottom: 60px;
+}
+
+#property-set span{
+	float: left;
+	font-size: 14px;
+}
+#property-set input{
+	float: left;
+	width: 40px;
+	height: 11px;
 }
 /*
 	Adding Icons

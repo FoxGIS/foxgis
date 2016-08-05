@@ -17,6 +17,18 @@ svgEditor.addExtension('ext-legend', function() {
 	var lastBBox = {};
 	var options = window.OPTIONS;
 	var styleObj = {};
+	var total_legend=0;
+	var previewSnap = Snap("#preview-drawing");
+	var legend_group = previewSnap.g();
+	legend_group.attr('id','legend-group');
+	var selected_count = 0;//记录legend_group中的图例数目
+	var col = 2;//图例显示的列数
+	var colWidth = 150;
+	var rowHeight = 30;
+	$("#preview-drawing").attr({
+		width:col*colWidth+20,
+		height:200
+	});
 	/**
  	* 点击图例按钮的响应函数，向服务器请求地图样式，根据样式筛选图例单元
  	*
@@ -31,12 +43,11 @@ svgEditor.addExtension('ext-legend', function() {
 			styleObj = result;
 			var layers = styleObj.layers;//地图样式图层
 			var legendArr = getLegendArray(layers);	
-			console.log("legend--60--legendArr:");
-			console.log(legendArr);
-			drawLegend(legendArr);
+			total_legend = legendArr.length;
+			//drawLegend(legendArr);
+			setLegend(legendArr);
 		},"json");
 	}
-
 
 	function drawLegend(legendArr){
 		console.log(canv);
@@ -46,7 +57,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var username = options.username;
 		var tem = styleObj.sprite.split("/");
 		var prefix = styleObj.sprite.replace(new RegExp(tem[tem.length-1]+"$"),"");
-		var rectHeight = (Math.ceil(legendArr.length/2)+1)*30;
+		var rectHeight = (Math.ceil(legendArr.length/2)+1)*rowHeight;
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
 		var rect = canv.addSvgElementFromJson({//创建图例矩形框
@@ -240,7 +251,6 @@ svgEditor.addExtension('ext-legend', function() {
 			}
 		}
 		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
-		console.log(viewBox);
 		var frameWidth = parseFloat(viewBox[2]);
 		var frameHeight = parseFloat(viewBox[3]);
 		//图例的默认起点是（25,85），需要根据画布大小进行偏移到右下角
@@ -251,7 +261,99 @@ svgEditor.addExtension('ext-legend', function() {
 	function setLegend(legendArr){
 		$("#legend-panel").css("display","block");
 		$("#legend-ok").bind("click",onLegendOk);
-		$("#legend-ok").bind("click",onLegendCancel);
+		$("#legend-cancel").bind("click",onLegendCancel);
+		$("#set-drawing").css("height",rowHeight*legendArr.length+'px');
+		$("#property-set input[name='col-num']").val(col);
+		$("#property-set input[name='col-width']").val(colWidth);
+		$("#property-set input[name='text-size']").val(12);
+		$("#property-set input[name='legend-zoom']").val(1);
+		$("#property-set input[name='col-num']").bind("change",colChange);
+		$("#property-set input[name='col-width']").bind("change",colWidthChange);
+		$("#property-set input[name='text-size']").bind("change",textSizeChange);
+		$("#property-set input[name='legend-zoom']").bind("change",zoomChange);
+		var legend_item = $("#legend-set .legend-item").clone()[0];
+		$("#legend-set .legend-item").remove();
+		var tem = styleObj.sprite.split("/");
+		var prefix = styleObj.sprite.replace(new RegExp(tem[tem.length-1]+"$"),"");
+		var snap = Snap("#set-drawing");
+		for(var i=0;i<legendArr.length;i++){
+			if(legendArr[i].type === "symbol"){
+				var iconUrl = prefix+legendArr[i].styles[0]['icon-image']+"?access_token="+options.access_token;
+				Snap.load(iconUrl,function(res){
+					var icon_height = $(res.node).attr("height");
+					var icon_width = $(res.node).attr("width");
+					var curr_width = this.styles[0]['icon-size']*icon_width;
+					var curr_height = this.styles[0]['icon-size']*icon_height;
+					$(res.node).attr("width",curr_width);
+					$(res.node).attr("height",curr_height);
+					$(res.node).attr("x",45-curr_width/2);
+					$(res.node).attr("y",this.index*rowHeight+15-curr_height/2);
+					$(res.node).attr("name",'legend'+this.index);
+					this.elem.appendChild(res.node);
+				},{elem:document.getElementById("set-drawing"),styles:legendArr[i].styles,index:i});
+				var elem = $(legend_item).clone();
+				elem.attr("name",'legend'+i);
+				elem.children("input[name='legend-text']").val(legendArr[i].name);
+				$("#legend-set").append(elem);		
+			}else if(legendArr[i].type === "line"){
+				for(var j=0;j<legendArr[i].styles.length;j++){
+					var line_offset = legendArr[i].styles[j]['line-offset'];
+					var line = snap.line(20,(i+1)*rowHeight-15+line_offset,70,(i+1)*rowHeight-15+line_offset);
+					line.attr({
+						name:'legend'+i,
+						stroke: legendArr[i].styles[j]['line-color'],
+						strokeWidth: legendArr[i].styles[j]['line-width'],
+						'stroke-dasharray': legendArr[i].styles[j]['line-dasharray'],
+						'stroke-linejoin': 'round',
+						'stroke-linecap': null,
+						'stroke-opacity': legendArr[i].styles[j]['line-opacity'],
+						fill: 'none',
+						opacity: legendArr[i].styles[j]['line-opacity'],
+					})
+				}
+				var elem = $(legend_item).clone();
+				elem.attr("name",'legend'+i);
+				elem.children("input[name='legend-text']").val(legendArr[i].name);
+				$("#legend-set").append(elem);
+			}else if(legendArr[i].type === "fill"){
+				var rect = snap.rect(20,i*rowHeight+5,50,20);
+				rect.attr({
+					name:'legend'+i,
+					opacity: legendArr[i].styles[0]['fill-opacity'],
+					fill:legendArr[i].styles[0]['fill-color'],
+					strokeWidth:1,
+					stroke:legendArr[i].styles[0]['fill-outline-color'],
+				});
+				var elem = $(legend_item).clone();
+				elem.attr("name",'legend'+i);
+				elem.children("input[name='legend-text']").val(legendArr[i].name);
+				$("#legend-set").append(elem);
+			}
+		}
+
+		var rect = previewSnap.rect(0,0,col*colWidth+20,200);
+		rect.attr({
+			id:"legend-background",
+			stroke:"#000000",
+			fill:"#ffffff",
+			'stroke-linejoin':"round",
+			'strokeWidth':"2",
+			opacity: 1
+		});
+		legend_group.add(rect);
+		var text = previewSnap.text((col*colWidth)/2+10,20,"图    例");
+		text.attr({
+			id:'bacground-text',
+			fill: '#000000',
+			'strokeWidth': 0,
+			'font-size': 18,
+			'text-anchor': 'middle',
+			'font-family':"serif",
+			opacity: 1
+		});
+		legend_group.add(text);
+		//监听事件
+		$("#legend-set input[name='addon']").bind("change",legendSelected);
 	}
 	/**
  	* 根据地图样式中的layers筛选图例单元,该函数返回已筛选和分组完成的图例数组
@@ -370,13 +472,180 @@ svgEditor.addExtension('ext-legend', function() {
 	}
 
 	function onLegendOk(){
-
+		$("#legend-panel").css("display","none");
+		canv.createLayer("图例");
+		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		current_layer.appendChild($("#legend-group").clone()[0])
+		canv.recalculateDimensions(current_layer);
+		init();
 	}
 
 	function onLegendCancel(){
 		$("#legend-panel").css("display","none");
+		init();
+	}
+
+	function legendSelected(e){
+		var name = $(e.target.parentElement).attr('name');
+		var text = $(".legend-item[name="+name+"] input[name='legend-text']").val();
+		var pindex = 0;//当前图例在设置视图中的索引
+		var index = 0;//当前图例在预览视图中的索引
+		/*1、遍历所有的复选框，找出当前操作的图例在设置视图中的索引pindex以及在预览图中的索引index*/
+		$(".legend-item input[type='checkbox']").each(function(i){
+			if(e.target===this){
+				index++;
+				pindex = i+1;
+				return false;
+			}
+			if(this.checked){
+				index++
+			}
+		});
+		if(e.target.checked){//图例选中
+			/*2、根据图例选中前后的位置，将图例偏移至新的位置，并将图例name属性设置为“new-add”*/
+			var oldOpts = {index:pindex-1,col:1,count:total_legend,colWidth:colWidth}
+			var opts = {index:index,col:col,count:selected_count+1,colWidth:colWidth}
+			var current_item = $('#set-drawing [name='+name+']').clone();//获取选中的图例元素
+			translate(oldOpts,opts,current_item);
+			for(var i=0;i<current_item.length;i++){
+				var s = Snap(current_item[i]);
+				s.attr({"name":"new-add"});
+				legend_group.add(s);
+			}
+			/*3、根据文本框的图例内容创建text元素，将其name属性设置为“new-add”，并将其偏移到图例对应位置*/
+			var t = previewSnap.text(80,18,text);
+			t.attr({
+				name:"new-add",
+				fill: '#000000',
+				strokeWidth: 0,
+				'font-size': 12,
+				'text-anchor': 'left',
+				opacity: 1
+			});
+			translate({index:0,col:1,count:1,colWidth:colWidth},opts,$(t.node));
+			legend_group.add(t);
+			/*4、更新预览框中的图例总数目*/
+			selected_count++;
+			/*5、更新该图例之后的所有图例的位置，并更新他们的name属性，使其name属性与其index索引相一致*/
+			for(var j=selected_count;j>index;j--){
+				var oldOpts = {index:j-1,col:col,count:selected_count-1,colWidth:colWidth}
+				var opts = {index:j,col:col,count:selected_count,colWidth:colWidth}
+				var element = $('#preview-drawing [name=legend'+(j-1)+']');
+				translate(oldOpts,opts,element);
+				element.each(function(){
+					this.setAttribute("name","legend"+j);
+				});
+			}
+			/*6、更新新增加的图例的name属性，与之index属性一致*/
+			$("#preview-drawing [name='new-add']").each(function(){
+				this.setAttribute("name","legend"+index);
+			});
+		}else{
+			var current_item = $('#preview-drawing [name=legend'+index+']');
+			current_item.remove();
+			for(var j=index+1;j<=selected_count;j++){
+				var oldOpts = {index:j,col:col,count:selected_count,colWidth:colWidth}
+				var opts = {index:j-1,col:col,count:selected_count-1,colWidth:colWidth}
+				var element = $('#preview-drawing [name=legend'+j+']');
+				translate(oldOpts,opts,element);
+				element.each(function(){
+					this.setAttribute("name","legend"+(j-1));
+				});
+			}
+			selected_count--;
+		}
+
+		updateLegendPreview();
+	}
+
+	function translate(oldOpts,opts,element){//已知图例之前的索引以及新的索引，计算图例元素的偏移量
+		var oldCurrRow = Math.ceil(oldOpts.index/oldOpts.col);//当前行数，索引除以总行数取余
+		var oldCurrCol = (oldOpts.index%oldOpts.col)||oldOpts.col;//当前列数，索引除以总行数向上取整
+		var newCurrRow = Math.ceil(opts.index/opts.col);//当前行数，索引除以总行数取余
+		var newCurrCol = (opts.index%opts.col)||opts.col;//当前列数，索引除以总行数向上取整
+		var x = (newCurrCol-1)*opts.colWidth-(oldCurrCol-1)*oldOpts.colWidth;
+		var y = (newCurrRow-oldCurrRow)*rowHeight;
+		for(var i=0;i<element.length;i++){
+			if(element[i].tagName==="svg"){//svg元素不支持transform属性，只能手动更改x、y坐标
+				var oldX = Number(element[i].getAttribute("x"));
+				var oldY = Number(element[i].getAttribute("y"));
+				element[i].setAttribute("x",oldX+x);
+				element[i].setAttribute("y",oldY+y);
+			}else{
+				element[i].setAttribute("transform","translate("+x+","+y+")");
+				canv.recalculateDimensions(element[i]);
+			}	
+		}
+		
+	}
+
+	function init(){
+		total_legend=0;
+		selected_count = 0;//记录legend_group中的图例数目
+		col = 2;//图例显示的列数
+		colWidth = 150;
+		rowHeight = 30;
+		$(legend_group.node).children().remove();
+		$("#preview-drawing").attr({
+			width:col*colWidth+20,
+			height:200
+		});
 		$("#legend-ok").unbind("click",onLegendOk);
 		$("#legend-ok").unbind("click",onLegendCancel);
+		$("#property-set input[name='col-num']").unbind("change",colChange);
+		$("#property-set input[name='col-width']").unbind("change",colWidthChange);
+		$("#property-set input[name='text-size']").unbind("change",textSizeChange);
+		$("#property-set input[name='legend-zoom']").unbind("change",zoomChange);
+	}
+
+	function updateLegendPreview(){
+		var totalRow = Math.ceil(selected_count/col);
+		$("#legend-preview #preview-drawing").attr({
+			"width":colWidth*col+20,
+			"height":rowHeight*totalRow+30
+		});
+		$("#legend-preview #legend-background").attr({
+			"width":colWidth*col+20,
+			"height":rowHeight*totalRow+30
+		});
+		$("#legend-preview #bacground-text").attr({
+			"x":colWidth*col/2+10,
+			"y":20
+		});
+	}
+	function colChange(e){
+		var oldCol = col;
+		var newCol = parseInt(e.target.value);
+		col = newCol;
+		for(var j=1;j<=selected_count;j++){
+			var oldOpts = {index:j,col:oldCol,count:selected_count,colWidth:colWidth}
+			var opts = {index:j,col:newCol,count:selected_count,colWidth:colWidth}
+			var element = $('#preview-drawing [name=legend'+j+']');
+			translate(oldOpts,opts,element);
+		}
+		updateLegendPreview();
+	}
+
+	function colWidthChange(e){
+		var oldColWidth = colWidth;
+		var newColWidth = parseInt(e.target.value);
+		colWidth = newColWidth;
+		for(var j=1;j<=selected_count;j++){
+			var oldOpts = {index:j,col:col,count:selected_count,colWidth:oldColWidth}
+			var opts = {index:j,col:col,count:selected_count,colWidth:newColWidth}
+			var element = $('#preview-drawing [name=legend'+j+']');
+			translate(oldOpts,opts,element);
+		}
+		updateLegendPreview();
+	}
+
+	function textSizeChange(e){
+		var newSize = parseInt(e.target.value);
+		$("#preview-drawing text[name^='legend']").css("font-size",newSize);
+	}
+
+	function zoomChange(e){
+		
 	}
 	/*---------*/
 	return {
