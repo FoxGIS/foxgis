@@ -507,8 +507,7 @@ export default {
 }
 
 .content {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
 }
 
 .search-bar {
@@ -605,12 +604,14 @@ export default {
   background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%);
   display: flex;
   flex-wrap: wrap;
+  width: 1240px;
+  padding: 0px;
 }
 
 .search-results .panel{
   margin: 0 auto;
   height: 100%;
-  max-width: 1264px;
+  max-width: 1240px;
   flex-wrap: wrap;
   display: flex;
 }
@@ -618,7 +619,7 @@ export default {
 .foxgis-card {
   width: 300px;
   height: 300px;
-  margin: 8px;
+  margin: 5px;
 }
 
 .foxgis-card a {
