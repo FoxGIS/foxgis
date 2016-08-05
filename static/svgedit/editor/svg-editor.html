@@ -56,6 +56,7 @@
   <script src="FileSaver.js"></script>
   <script type="text/javascript" src="sphericalmercator.js"></script>
   <script type="text/javascript" src="spin.min.js"></script>
+  <script type="text/javascript" src="snap.svg-min.js"></script>
 <!--{endif}-->
 
 <!-- always minified scripts -->
@@ -82,14 +83,26 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 </div>
 
 <div id="legend-panel">
-	<div id="legend-set" class="box">
-		<div id="legend-item">
-			<div class="upper"></div>
-			<div class="legend-shape"></div>
+	<div id="legend-set" class="box" style="margin-right:20px;">
+		<svg id="set-drawing"></svg>
+		<div class="legend-item">
+			<input type="text" name="legend-text">
 			<input type="checkbox" name="addon">
 		</div>
 	</div>
-	<div id="legend-preview" class="box"></div>
+	<div id="legend-preview" class="box" style="margin-left:20px;">
+		<svg id="preview-drawing"></svg>
+	</div>
+	<div id="property-set">
+		<span>列数:</span>
+		<input type="text" name="col-num">
+		<span>列宽:</span>
+		<input type="text" name="col-width">
+		<span>字号:</span>
+		<input type="text" name="text-size">
+		<span>缩放:</span>
+		<input type="text" name="legend-zoom">
+	</div>
 	<button id="legend-ok" class="button">确定</button>
 	<button id="legend-cancel" class="button">取消</button>
 </div>
