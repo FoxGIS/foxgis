@@ -64,6 +64,12 @@ export default {
           this.sprite.sprite_id = '';
           this.sprite.pngUrl = '';
           this.sprite.icons = [];
+          for(let s=0;s<this.dataset.length;s++){
+            if(this.dataset[s].sprite_id === sprite_id){
+              this.sprite.description = this.dataset[s].description;
+            }
+          }
+          
           let username = Cookies.get('username');
           let access_token = Cookies.get('access_token');
           let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
@@ -224,7 +230,8 @@ export default {
       sprite:{//每一个卡片一张雪碧图
         sprite_id:'',//该雪碧图的id
         pngUrl:'',//该雪碧图的url
-        icons:[]//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
+        icons:[],//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
+        description:''//该雪碧图的说明文字
       }
     }
   }

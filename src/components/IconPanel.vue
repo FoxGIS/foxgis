@@ -3,7 +3,7 @@
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
-        <input type="text" name="" placeholder="请输入图标说明">
+        <input type="text" value={{dataset.description}} @change="editDescription($event,dataset.sprite_id )">
       </div>
     </div>
     <div class="meta-title">
@@ -20,9 +20,23 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
+  props:['dataset'],
   methods: {
-    
+    editDescription: function(e,sprite_id){//修改图标说明
+      let value = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          let data = response.data;
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
+        }, function(response) {
+          alert("网络错误");
+      });
+    },
   },
   /*computed:{
     
@@ -30,9 +44,9 @@ export default {
   data(){
     return {
     }
-  },
+  }
 
-  props:['dataset']
+  
 }
 </script>
 
