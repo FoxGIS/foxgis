@@ -7,12 +7,12 @@
     </div>
     <div class="meta">
       <p>
+      上传时间：<span>{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
           <option value="private">私有</option>
           <option value="public">公开</option>
         </select>
       <!-- 上传者：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].owner }}</span> -->
-      上传时间：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       </p>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
@@ -321,6 +321,15 @@ export default {
 .meta .mdl-button {
   text-align: right;
   min-width: 0;
+}
+
+.meta span{
+    border: 0;
+    width: 200px;
+    color: #9E9E9E;
+    font-size: 12px;
+    margin: 0;
+    display: inline-block;
 }
 
 .name {

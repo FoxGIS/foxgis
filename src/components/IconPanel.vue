@@ -1,6 +1,12 @@
 <template>
   <div>
     <div class="meta-title">
+      <b>图标说明</b>
+      <div class="description">
+        <input type="text" name="" placeholder="请输入图标说明">
+      </div>
+    </div>
+    <div class="meta-title">
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
     </div>
     <div class="panel" style="text-align:center;">
@@ -66,4 +72,13 @@ export default {
 .panel::-webkit-scrollbar-thumb {
     background-color: #adadad;
 }
+
+.description input{
+  font-size: 16px;
+  margin: 5px 0;
+  border: none;
+  padding: 5px 5px 5px 0;
+  width: 60%;
+}
+
 </style>
