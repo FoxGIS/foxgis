@@ -185,6 +185,7 @@ export default {
 .meta .mdl-button {
   text-align: right;
   min-width: 0;
+  left: -18px;
 }
 
 #pagination {
