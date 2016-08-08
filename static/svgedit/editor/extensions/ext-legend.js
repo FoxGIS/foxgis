@@ -475,7 +475,13 @@ svgEditor.addExtension('ext-legend', function() {
 		$("#legend-panel").css("display","none");
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
-		current_layer.appendChild($("#legend-group").clone()[0])
+		current_layer.appendChild($("#legend-group").clone()[0]);
+		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
+		var frameWidth = parseFloat(viewBox[2]);
+		var frameHeight = parseFloat(viewBox[3]);
+		//图例的默认起点是（25,85），需要根据画布大小进行偏移到右下角
+		current_layer.setAttribute("transform","translate("+(frameWidth-455)+","+(frameHeight-135-rectHeight)+")");
+		canv.recalculateDimensions(current_layer);
 		canv.recalculateDimensions(current_layer);
 		init();
 	}
