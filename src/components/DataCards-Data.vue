@@ -60,7 +60,7 @@
           <span>{{detailsData.attribution}}</span>
         </div>
       </div>
-      <div class="preview-container">
+      <div class="preview-container" v-if="detailsData.vector_layers.length>0">
         <div class="preview-title title">
           <b>图层信息</b>
         </div>
@@ -119,26 +119,30 @@ export default {
       let access_token = Cookies.get('access_token');
       let that = this;
       let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
-      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-          that.detailsData = response.data;
-          that.detailsData.url = url;
-          //移除之前的active
-          let activeCards = this.$el.querySelector('.active');
-          if(activeCards&&activeCards!==e.target.parentElement){
-            activeCards.className = activeCards.className.replace(' active','');
-          }
-          //给当前的dom添加active
-          let claName = e.target.parentElement.className;
-          if(claName.indexOf('active')!=-1){
-            claName = claName.replace(' active','')
-          }else{
-            claName += ' active';
-            //do somthing
-          }
+      //移除之前的active
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards&&activeCards!==e.target.parentElement){
+        activeCards.className = activeCards.className.replace(' active','');
+      }
+      //给当前的dom添加active
+      let claName = e.target.parentElement.className;
+      if(claName.indexOf('active')!=-1){
+        claName = claName.replace(' active','')
+        e.target.parentElement.className = claName;
+      }else{
+        claName += ' active';
+        //do somthing
+        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+            that.detailsData = response.data;
+            that.detailsData.url = url;
+            that.fieldsData = [];
+            e.target.parentElement.className = claName;
+        }, function(response) {
+          console.log("数据集请求失败");
           e.target.parentElement.className = claName;
-      }, function(response) {
-        console.log("数据集请求失败");
-      })
+        })
+      }
+      
 
     },
 
