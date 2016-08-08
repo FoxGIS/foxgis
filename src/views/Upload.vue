@@ -68,7 +68,7 @@
         </p>
       </div>
 
-      <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 68px;padding: 0 6px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
 
     <div class = "tags">
@@ -96,8 +96,8 @@
         文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
       </p>
       <div class="action">
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
 
@@ -1080,12 +1080,13 @@ span {
   margin: 0;
   border: none;
   padding: 5px 5px 5px 0;
-  width: 360px;
+  width: 300px;
 }
 
 #map-property{
   position: absolute;
-  left: 492px;
+  left: 432px;
+  padding: 5px 0 0 0;
 }
 #map-property p{
   margin: 0;
