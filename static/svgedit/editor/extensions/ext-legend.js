@@ -699,7 +699,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var newFont = e.target.value;
 		$("#preview-drawing text[name^='legend']").css("font-family",newFont);
 	}
-	/*---------*/
+	/*---------*/ 
 	return {
 		name: 'Extension Legend',
 		svgicons: svgEditor.curConfig.extPath + 'ext-legend.xml',

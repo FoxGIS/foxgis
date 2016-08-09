@@ -87,6 +87,14 @@ export default {
         'thumb': {
           'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
         }
+      },{
+        'name': '新闻地图',
+         'id': '5',
+         'style':'xinwen-xian-v8.json',
+         'replace':510112,
+        'thumb': {
+          'background-image':"url('http://www.xtrb.cn/epaper/xtrb/res/1/20110727/98401311730106640.jpg')"
+        }
       }]
     }
   }
