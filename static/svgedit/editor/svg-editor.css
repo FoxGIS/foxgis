@@ -1558,6 +1558,13 @@ ul li.current {
 	width: 40px;
 	height: 11px;
 }
+
+#property-set select{
+	float: left;
+	margin: 0;
+    width: 66px;
+    height: 20px;
+}
 /*
 	Adding Icons
 	You can add icons to the context menu by adding

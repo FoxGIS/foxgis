@@ -47,6 +47,7 @@ export default {
         var result = styleStr.replace(/replaceme/g,replace);
         var style = JSON.parse(result);
         style.name = name;
+        style.metadata.replaceField = replace;
         /*var temLayers = style.layers;
         for(let i=0;i<temLayers.length;i++){//将颜色值转换为16进制
           var temPaint = temLayers[i].paint;

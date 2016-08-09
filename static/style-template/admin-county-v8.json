@@ -4,11 +4,12 @@
   "center": [108.420679, 36.772537],
   "zoom":3,
   "metadata":{
-     "template":{
+    "template":{
         "name":"admin-county-v8",
-	"level":3,
-	"des":"0代表全国，1代表省，2代表市，3代表县"
-     }
+		"level":3,
+		"des":"0代表全国，1代表省，2代表市，3代表县"
+     },
+	"replaceField":"replaceme"
   },
   "sources": {
     "data2012": {
@@ -235,6 +236,9 @@
       "id":"县界",
       "source":"data2012",
       "source-layer":"boua",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "minzoom":7,
       "maxzoom":11,
       "type":"line",
@@ -566,6 +570,9 @@
       "id":"天地图_县界",
       "source":"data2012",
       "source-layer":"yunnan_xian",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"line",
       "minzoom":11,
       "filter":["==","xianid","replaceme"],
@@ -582,6 +589,9 @@
       "id":"天地图_县界光晕",
       "source":"data2012",
       "source-layer":"yunnan_xian",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"line",
       "minzoom":11,
       "filter":["==","xianid","replaceme"],
@@ -599,6 +609,9 @@
       "id":"乡镇填充色1",
       "source":"data2012",
       "source-layer":"yunnan_village",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"fill",
       "minzoom":11,
       "filter":["all",
@@ -615,6 +628,9 @@
       "id":"乡镇填充色2",
       "source":"data2012",
       "source-layer":"yunnan_village",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"fill",
       "minzoom":11,
       "filter":["all",
@@ -631,6 +647,9 @@
       "id":"乡镇填充色3",
       "source":"data2012",
       "source-layer":"yunnan_village",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"fill",
       "minzoom":11,
       "filter":["all",
@@ -647,6 +666,9 @@
       "id":"乡镇填充色4",
       "source":"data2012",
       "source-layer":"yunnan_village",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "type":"fill",
       "minzoom":11,
       "filter":["all",
@@ -918,6 +940,9 @@
       "source":"data2012",
       "minzoom":11,
       "source-layer":"cagnp",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "filter":["all",["any",
         ["==","class","BA"],
         ["==","class","BB"],
@@ -958,6 +983,9 @@
       "source":"data2012",
       "minzoom":11,
       "source-layer":"cagnp",
+	  "metadata":{
+		"replaceLayer":true
+	  },
       "filter":["all",["any",
         ["==","class","BA"],
         ["==","class","BB"],

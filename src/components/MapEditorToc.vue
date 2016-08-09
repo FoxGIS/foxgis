@@ -536,7 +536,7 @@ export default {
       for(let i=0,length=layers.length;i<length;i++){
         let layer = layers[i]
         this.fixType(layer)
-        if(layer['metadata']){
+        if(layer['metadata']&&layer['metadata']['mapbox:group']){
           let layername = groups[layer['metadata']['mapbox:group']].name
           let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
 
@@ -728,7 +728,6 @@ export default {
       }
 
       let data = JSON.parse(JSON.stringify(this.styleObj))
-      console.log('property change')
       this.changeStyle(data)
     },
     createNewLayer:function(){
@@ -908,7 +907,6 @@ export default {
           if(dragLayer.items&&dragLayer.items.length>0){
 
             maplayers.splice(dragLayerIndex,dragLayer.items.length)
-            console.log(maplayers.length);
           }else{
             dragLayer = maplayers[i]
             maplayers.splice(dragLayerIndex,1)
@@ -956,7 +954,6 @@ export default {
       this.tocLayers = this.createTocLayer(styleObj)
 
       let data = JSON.parse(JSON.stringify(this.styleObj))
-      console.log('layer change');
       this.changeStyle(data)
     },
     eledragenter: function(e){
@@ -1303,7 +1300,6 @@ export default {
     style: {
       handler: function(style,oldStyle){
         if(Object.keys(style).length===0){return;}
-        console.log('style change to toc')
         let access_token = Cookies.get('access_token');
         this.styleObj = JSON.parse(JSON.stringify(style))
         if(!_.isEqual(style.sources,oldStyle.sources)){//sources发生变化时，重新计算this.sources

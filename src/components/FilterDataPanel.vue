@@ -39,8 +39,8 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <!-- <input type="radio" value="circle" @change="propertyChange">
-        <label for="one">圆</label> -->
+        <input type="radio" value="circle" @change="propertyChange">
+        <label for="one">圆</label>
         <input type="radio" value="symbol" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="symbol" v-else>
         <label for="two">点</label>
@@ -49,7 +49,7 @@
         <label for="two">线</label>
         <input type="radio" value="fill" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="fill" v-else>
-        <label for="one">面 </label>
+        <label for="one">面 </label></br>
         <input type="radio" value="raster" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="raster" v-else>
         <label for="two">栅格</label>
