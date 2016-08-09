@@ -57,7 +57,7 @@ export default {
       let svgContainer = document.getElementById('svg-editor')
       svgContainer.style.display = 'none'
       let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.display = 'block'
+      mapContainer.style.visibility = 'visible'
       this.changeLayout()
       e.currentTarget.className += ' control-active'
     },
@@ -75,7 +75,7 @@ export default {
       let svgContainer = document.getElementById('svg-editor')
       svgContainer.style.display = 'none'
       let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.display = 'block'
+      mapContainer.style.visibility = 'visible'
       this.changeLayout()
       e.currentTarget.className += ' control-active'
     },
@@ -93,9 +93,9 @@ export default {
       svgContainer.style.display = 'block'
       this.$broadcast("loadIframe")
       let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.display = 'none'
-      mapContainer.style.width = "calc(100% - 230px)"
-      mapContainer.style.left = "230px"
+      mapContainer.style.visibility = 'hidden'
+      /*mapContainer.style.width = "calc(100% - 230px)"
+      mapContainer.style.left = "230px"*/
       this.changeLayout()
       document.getElementById("map-tool").style.display = 'none'
       document.getElementById("svgeditor-open").className += ' control-active'
@@ -124,7 +124,7 @@ export default {
       editorContainer.style.display = 'block'
       let svgContainer = document.getElementById('svg-editor')
       svgContainer.style.display = 'none'
-      document.getElementById("map-editorview-container").style.display = 'block'
+      document.getElementById("map-editorview-container").style.visibility = 'visible'
       // 传入style 字符串到textarea
       this.$broadcast('editor-init',this.style)
 
@@ -398,6 +398,5 @@ export default {
 #back-button i {
   vertical-align: middle;
 }
-
 
 </style>
