@@ -34,9 +34,9 @@
           <b>数据属性</b>
         </div>
         <div class="meta-data content">
-            <span>中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
+            <span v-if="detailsData.center.length>0">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
             <span>最大缩放级别：{{detailsData.maxzoom}}</span>
-            <span>范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
+            <span v-if="detailsData.bounds.length>0">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
             <span>最小缩放级别：{{detailsData.minzoom}}</span>
             <span>格式：{{detailsData.format}}</span>
             <span>数据大小：{{calculation(detailsData.filesize)}}</span>
@@ -77,14 +77,15 @@
               <td>{{u.id}}</td>
               <td>{{u.minzoom}}</td>
               <td>{{u.maxzoom}}</td>
-              <td style= "cursor:pointer;"><a v-on:click='lookFields(u.fields)'>查看</a></td>
+              <td style= "cursor:pointer;"><a v-on:click='lookFields(u.fields,$index)'>查看</a></td>
               <td>{{u.description}}</td>
             </tr>
           </table>
+          <div class="fields" style="width: 380px;float: right;">
+            <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
+          </div>
         </div>
-        <div class="fields">
-          <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -135,6 +136,7 @@ export default {
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
             that.detailsData = response.data;
             that.detailsData.url = url;
+            that.fieldsLength = response.data.vector_layers.length;
             that.fieldsData = [];
             e.target.parentElement.className = claName;
         }, function(response) {
@@ -142,12 +144,13 @@ export default {
           e.target.parentElement.className = claName;
         })
       }
-      
-
+  
     },
 
-    lookFields:function(fields){
+    lookFields:function(fields,index){
       this.fieldsData = fields;
+      let height = (index-this.fieldsLength)*37;
+      $('.fields').css("margin",height+'px'+' 0 0 420px')
     },
 
     calculation: function(size){//计算文件大小
@@ -345,7 +348,8 @@ export default {
       },
       deleteTilesetId: "",
       detailsData: {},
-      fieldsData: []
+      fieldsData: [],
+      fieldsLength: 0//被点击的卡片的field的总个数
     }
   }
 }

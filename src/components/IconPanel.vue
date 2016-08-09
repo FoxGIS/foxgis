@@ -1,6 +1,12 @@
 <template>
   <div>
     <div class="meta-title">
+      <b>图标说明</b>
+      <div class="description">
+        <input type="text" value={{dataset.description}} @change="editDescription($event,dataset.sprite_id )">
+      </div>
+    </div>
+    <div class="meta-title">
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
     </div>
     <div class="panel" style="text-align:center;">
@@ -14,9 +20,23 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
+  props:['dataset'],
   methods: {
-    
+    editDescription: function(e,sprite_id){//修改图标说明
+      let value = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          let data = response.data;
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
+        }, function(response) {
+          alert("网络错误");
+      });
+    },
   },
   /*computed:{
     
@@ -24,9 +44,9 @@ export default {
   data(){
     return {
     }
-  },
+  }
 
-  props:['dataset']
+  
 }
 </script>
 
@@ -66,4 +86,13 @@ export default {
 .panel::-webkit-scrollbar-thumb {
     background-color: #adadad;
 }
+
+.description input{
+  font-size: 16px;
+  margin: 5px 0;
+  border: none;
+  padding: 5px 5px 5px 0;
+  width: 60%;
+}
+
 </style>

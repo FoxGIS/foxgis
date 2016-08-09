@@ -7,17 +7,34 @@
     </div>
     <div class="meta">
       <p>
+      上传时间：<span>{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
           <option value="private">私有</option>
           <option value="public">公开</option>
         </select>
       <!-- 上传者：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].owner }}</span> -->
-      上传时间：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
       </p>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
     <div class="details">
-      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
+      <!-- <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel> -->
+      <div class="icon-panel">
+        <div class="meta-title">
+          <b>图标说明</b>
+          <div class="description">
+            <input type="text" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+          </div>
+        </div>
+        <div class="meta-title">
+          <b>图标详情（<b style="color:blue;">{{sprite.icons.length}}</b>）</b>
+        </div>
+        <div class="panel" style="text-align:center;">
+          <a v-for="icon in sprite.icons" class="icon-link" title="{{icon.name}}">
+            <div :style="'background-image:url('+sprite.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -64,6 +81,12 @@ export default {
           this.sprite.sprite_id = '';
           this.sprite.pngUrl = '';
           this.sprite.icons = [];
+          for(let s=0;s<this.dataset.length;s++){
+            if(this.dataset[s].sprite_id === sprite_id){
+              this.sprite.description = this.dataset[s].description;
+            }
+          }
+          
           let username = Cookies.get('username');
           let access_token = Cookies.get('access_token');
           let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
@@ -89,6 +112,23 @@ export default {
 
       
     },
+
+    editDescription: function(e,index){//修改图标说明
+      let value = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let sprite_id = this.dataset[index].sprite_id;
+      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      this.dataset[index].description = value;
+      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          let data = response.data;
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
+        }, function(response) {
+          alert("网络错误");
+      });
+    },
+
     editScope: function(e,index){//修改共享范围
         let scope = e.target.value;
         let username = Cookies.get('username');
@@ -224,7 +264,8 @@ export default {
       sprite:{//每一个卡片一张雪碧图
         sprite_id:'',//该雪碧图的id
         pngUrl:'',//该雪碧图的url
-        icons:[]//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
+        icons:[],//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
+        description:''//该雪碧图的说明文字
       }
     }
   }
@@ -321,6 +362,15 @@ export default {
 .meta .mdl-button {
   text-align: right;
   min-width: 0;
+}
+
+.meta span{
+    border: 0;
+    width: 200px;
+    color: #9E9E9E;
+    font-size: 12px;
+    margin: 0;
+    display: inline-block;
 }
 
 .name {
@@ -421,5 +471,49 @@ export default {
 .delete-button{
   position: relative;
   left: -29px;
+}
+
+.details .icon-link:hover{
+  background-color: #ababab;
+  cursor:pointer;
+  /* margin-left: auto;
+  margin-right: auto; */
+} 
+.details .meta-title{
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-left: 5px;
+}
+.details .panel{
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  background-color: #D8D8D8;
+  overflow: auto;
+  margin: 5px;
+  height: calc(100% - 50px);
+}
+
+.details .panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.details .panel::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+.details .panel::-webkit-scrollbar-thumb {
+    background-color: #adadad;
+}
+
+.details .description input{
+  font-size: 16px;
+  margin: 5px 0;
+  border: none;
+  padding: 5px 5px 5px 0;
+  width: 60%;
 }
 </style>
