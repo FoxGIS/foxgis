@@ -472,14 +472,14 @@ export default {
       let templayer = JSON.parse(JSON.stringify(layer))
       if(templayer.paint !== undefined){
         for(let name in defaultProperty[templayer.type].paint){
-          if(typeof templayer.paint[name] !== 'object' && typeof templayer.paint[name] !== 'function' && templayer.paint[name] !== undefined){
+          if(templayer.paint[name] !== undefined&&!templayer.paint[name].stops){
             defaultProperty[templayer['type']].paint[name] = templayer.paint[name]
           }
         }
       }
       if(templayer.layout !== undefined){
         for(let name in defaultProperty[templayer.type].layout){
-          if(typeof templayer.layout[name] !== 'object' && typeof templayer.layout[name] !== 'function' && templayer.layout[name] !== undefined){
+          if(templayer.layout[name] !== undefined&&!templayer.layout[name].stops){
             defaultProperty[templayer['type']].layout[name] = templayer.layout[name]
           }
         }
@@ -678,7 +678,7 @@ export default {
       if(!isNaN(temp)){
         value = temp
       }else if(typeof value === 'string'){
-        if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"){
+        if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"){//数组（dasharray或offset）
           value = value.split(',')
           for(var i=0,length=value.length;i<length;i++){
             value[i] = Number(value[i])
