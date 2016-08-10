@@ -6,9 +6,9 @@
  */
  
 /* 
-	@创建者：万炎炎
-	@主要功能：添加比例尺按钮及相关函数
-*/
+ *	@创建者：万炎炎
+ *	@主要功能：添加比例尺按钮及相关函数
+ */
 
 svgEditor.addExtension('ext-legend', function() {
 	'use strict';
@@ -30,6 +30,7 @@ svgEditor.addExtension('ext-legend', function() {
 		width:col*colWidth+20,
 		height:200
 	});
+	console.log(canv);
 	/**
  	* 点击图例按钮的响应函数，向服务器请求地图样式，根据样式筛选图例单元
  	*
@@ -38,7 +39,7 @@ svgEditor.addExtension('ext-legend', function() {
  	*/
 	function legendClick(){
 		//alert("调用函数弹出")
-		if(!options){return;}
+		if(!options||$("#legend-panel").is(":visible")){return;}
 		var url = options.API.styles+"/"+options.username+"/"+options.style_id+"?access_token="+options.access_token;
 		$.get(url,function(result){//请求地图样式
 			styleObj = result;
@@ -50,6 +51,12 @@ svgEditor.addExtension('ext-legend', function() {
 		},"json");
 	}
 
+	/**
+ 	* 在SvgEditor中绘制图例。根据legendArr中的图例及其样式，绘制在画布的右下角
+ 	*
+ 	* @参数 {Array} legendArr
+ 	* @返回值 无
+ 	*/
 	function drawLegend(legendArr){
 		console.log(canv);
 		console.log(svgEditor);
@@ -259,8 +266,17 @@ svgEditor.addExtension('ext-legend', function() {
 		canv.recalculateDimensions(current_layer);
 	}
 
+	/**
+ 	* 弹出图例设置对话框，设置图例显示数目、顺序、样式等
+ 	*
+ 	* @参数 {Array} legendArr
+ 	* @返回值 无
+ 	*/
 	function setLegend(legendArr){
 		$("#legend-panel").css("display","block");
+		if($("#preview-drawing #legend-group").children().length!==0){
+			return;
+		}
 		$("#legend-ok").bind("click",onLegendOk);
 		$("#legend-cancel").bind("click",onLegendCancel);
 		$("#set-drawing").css("height",rowHeight*legendArr.length+'px');
@@ -378,6 +394,7 @@ svgEditor.addExtension('ext-legend', function() {
 		legend_group.add(text);
 		//监听事件
 		$("#legend-set input[name='addon']").bind("change",legendSelected);
+		$("#legend-set i[name='legend-up']").bind("click",legendUp);
 	}
 	/**
  	* 根据地图样式中的layers筛选图例单元,该函数返回已筛选和分组完成的图例数组
@@ -420,9 +437,9 @@ svgEditor.addExtension('ext-legend', function() {
 	/**
  	* 根据地图样式图层layer，返回该图层的图例样式
  	*
- 	* @参数 {type} 图层类型，包括symbol、line、fill
- 	* @参数 {styleLayer} 地图的一个样式图层
- 	* @返回值 {layer} 图例的一个样式图层
+ 	* @参数 {String} type 图层类型，包括symbol、line、fill
+ 	* @参数 {Object} styleLayer 地图的一个样式图层
+ 	* @返回值 {Object} layer 图例的一个样式图层
  	*/
 	function getLegendLayer(type,styleLayer){//获取图例的渲染样式层
 	    if(type==="line"){//线
@@ -452,6 +469,12 @@ svgEditor.addExtension('ext-legend', function() {
 	    return layer;
 	}
 
+	/**
+ 	* 利用gl-function计算stops函数在当前级别的值
+ 	*
+ 	* @参数 {Object} parameters 包括type和stops对象
+ 	* @返回值 {Number||Object||String}} 当前级别的值
+ 	*/
 	function getCurrentValue(parameters){
 		if(!parameters.value){
 			return undefined;
@@ -466,9 +489,9 @@ svgEditor.addExtension('ext-legend', function() {
 	/**
  	* 过滤所有的地图样式图层，筛选出需要绘制图例的样式图层
  	*
- 	* @参数 {type} 图层类型，包括symbol、line、fill
- 	* @参数 {typeLayers} 对应类型的所有样式图层，例如pointLayers、lineLayers、polygenLayers
- 	* @返回值 {temdArr} 返回需要绘制图例的所有样式图层
+ 	* @参数 {String} type 图层类型，包括symbol、line、fill
+ 	* @参数 {Array} typeLayers 对应类型的所有样式图层，例如pointLayers、lineLayers、polygenLayers
+ 	* @返回值 {Array} temdArr 返回需要绘制图例的所有样式图层
  	*/
 	function filterLegend(type,typeLayers){
 		var zoom = window.OPTIONS.zoom;//地图级别
@@ -495,10 +518,20 @@ svgEditor.addExtension('ext-legend', function() {
 		return temdArr;
 	}
 
+	/**
+ 	* 图例设置完成，将设置完成的图例添加到画布
+ 	*
+ 	* @参数 无
+ 	* @返回值 无
+ 	*/
 	function onLegendOk(){
 		$("#legend-panel").css("display","none");
+		if(canv.setCurrentLayer("图例")){
+			canv.deleteCurrentLayer();
+		}
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		//current_layer.id = "legend-layer";
 		/*var group = $("#legend-group").clone();
 		var children = group.children();
 		for(var i=0;i<children.length;i++){
@@ -529,17 +562,31 @@ svgEditor.addExtension('ext-legend', function() {
 		//图例的默认起点是（0,0），需要根据画布大小进行偏移到右下角
 		current_layer.setAttribute("transform","translate("+transX+","+transY+")");
 		canv.recalculateDimensions(current_layer);
-		init();
+		//init();
 	}
 
+	/**
+ 	* 图例设置取消
+ 	*
+ 	* @参数 无
+ 	* @返回值 无
+ 	*/
 	function onLegendCancel(){
 		$("#legend-panel").css("display","none");
 		init();
 	}
 
+	/**
+ 	* 图例设置面板中的选择事件，勾选多选框时触发。选择图例或取消选择，并在图例预览中实时预览
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
 	function legendSelected(e){
 		var name = $(e.target.parentElement).attr('name');
 		var text = $(".legend-item[name="+name+"] input[name='legend-text']").val();
+		var font_family = $("#property-set select[name='text-font']").val();
+		var font_size = $("#property-set input[name='text-size']").val();
 		var pindex = 0;//当前图例在设置视图中的索引
 		var index = 0;//当前图例在预览视图中的索引
 		/*1、遍历所有的复选框，找出当前操作的图例在设置视图中的索引pindex以及在预览图中的索引index*/
@@ -570,7 +617,8 @@ svgEditor.addExtension('ext-legend', function() {
 				name:"new-add",
 				fill: '#000000',
 				'stroke-width': 0,
-				'font-size': 12,
+				'font-size': font_size,
+				'font-family':font_family,
 				'text-anchor': 'left',
 				opacity: 1
 			});
@@ -609,6 +657,14 @@ svgEditor.addExtension('ext-legend', function() {
 		updateLegendPreview();
 	}
 
+	/**
+ 	* 设置图例的translate属性，当图例位置发生变化时，计算图例的偏移并更新视图
+ 	*
+ 	* @参数 {Object} oldOpts 位置改变之前的选项，包括索引、图例总数、总列数、列宽
+ 	* @参数 {Object} opts 位置改变之后的选项，包括索引、图例总数、总列数、列宽
+ 	* @参数 {Object} element 设置的图例对象，这是一个DOM元素，一般为svg元素
+ 	* @返回值 无
+ 	*/
 	function translate(oldOpts,opts,element){//已知图例之前的索引以及新的索引，计算图例元素的偏移量
 		var oldCurrRow = Math.ceil(oldOpts.index/oldOpts.col);//当前行数，索引除以总行数取余
 		var oldCurrCol = (oldOpts.index%oldOpts.col)||oldOpts.col;//当前列数，索引除以总行数向上取整
@@ -630,6 +686,12 @@ svgEditor.addExtension('ext-legend', function() {
 		
 	}
 
+	/**
+ 	* 图例设置面板初始化
+ 	*
+ 	* @参数 无
+ 	* @返回值 无
+ 	*/
 	function init(){
 		total_legend=0;
 		selected_count = 0;//记录legend_group中的图例数目
@@ -637,6 +699,7 @@ svgEditor.addExtension('ext-legend', function() {
 		colWidth = 150;
 		rowHeight = 30;
 		$(legend_group.node).children().remove();
+		$("#set-drawing").children().remove();
 		$("#preview-drawing").attr({
 			width:col*colWidth+20,
 			height:200
@@ -649,6 +712,12 @@ svgEditor.addExtension('ext-legend', function() {
 		$("#property-set input[name='legend-zoom']").unbind("change",zoomChange);
 	}
 
+	/**
+ 	* 更新图例预览的视图，主要是更新图例整体的宽高、矩形框的宽高以及“图例”两个字的位置
+ 	*
+ 	* @参数 无
+ 	* @返回值 无
+ 	*/
 	function updateLegendPreview(){
 		var totalRow = Math.ceil(selected_count/col);
 		$("#legend-preview #preview-drawing").attr({
@@ -664,6 +733,66 @@ svgEditor.addExtension('ext-legend', function() {
 			"y":20
 		});
 	}
+
+	/**
+ 	* 图例设置面板中的图例顺序调整事件，点击上移按钮时触发。调整图例的显示顺序
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
+	function legendUp(e){
+		var name = $(e.target.parentElement).attr('name');
+		var index = parseInt(name.replace("legend",""));//当前图例在设置中的索引（从0开始）
+		if(index===0){return;}
+
+		//如果前后两个都是选中状态，则调整预览中的顺序，否则只用调整设置中的顺序
+		if($(".legend-item[name=legend"+(index-1)+"] input[type='checkbox']").attr("checked")&&$(".legend-item[name=legend"+index+"] input[type='checkbox']").attr("checked")){
+			var viewIndex = 0; //当前图例在预览中的索引（从1开始）
+			console.log(viewIndex);
+			$(".legend-item input[type='checkbox']").each(function(){//遍历checkbox，获取viewIndex
+				if(this.checked){
+					viewIndex++;
+				}
+				if($(this.parentElement).attr('name')===name){
+					return false;
+				}
+			});
+			var preItem = $("#preview-drawing [name=legend"+(viewIndex-1)+"]");
+			var currItem = $("#preview-drawing [name=legend"+viewIndex+"]");
+			translate({index:viewIndex-1,col:col,count:selected_count,colWidth:colWidth},{index:viewIndex,col:col,count:selected_count,colWidth:colWidth},preItem);
+			translate({index:viewIndex,col:col,count:selected_count,colWidth:colWidth},{index:viewIndex-1,col:col,count:selected_count,colWidth:colWidth},currItem);
+			preItem.each(function(){
+				this.setAttribute("name","legend"+viewIndex);
+			});
+			currItem.each(function(){
+				this.setAttribute("name","legend"+(viewIndex-1));
+			});
+		}
+
+		var preItem = $("#legend-set .legend-item[name=legend"+(index-1)+"]");//上一个元素
+		var currItem = $("#legend-set .legend-item[name=legend"+index+"]");//当前元素
+		preItem.before(currItem);//交换两个元素的顺序
+		currItem.attr("name","legend"+(index-1));//更新name
+		preItem.attr("name","legend"+index);//更新name
+		
+		var preLegend = $("#set-drawing [name=legend"+(index-1)+"]");
+		var currLegend = $("#set-drawing [name=legend"+index+"]");
+		translate({index:index,col:1,count:total_legend,colWidth:colWidth},{index:index+1,col:1,count:total_legend,colWidth:colWidth},preLegend);
+		translate({index:index+1,col:1,count:total_legend,colWidth:colWidth},{index:index,col:1,count:total_legend,colWidth:colWidth},currLegend);
+		currLegend.each(function(){
+			this.setAttribute("name","legend"+(index-1));
+		});
+		preLegend.each(function(){
+			this.setAttribute("name","legend"+index);
+		});
+	}
+
+	/**
+ 	* 图例设置面板中的列数设置事件，列数改变时触发。调整图例的列数
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
 	function colChange(e){
 		var oldCol = col;
 		var newCol = parseInt(e.target.value);
@@ -677,6 +806,12 @@ svgEditor.addExtension('ext-legend', function() {
 		updateLegendPreview();
 	}
 
+	/**
+ 	* 图例设置面板中的列宽设置事件，列宽改变时触发。调整图例的列宽
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
 	function colWidthChange(e){
 		var oldColWidth = colWidth;
 		var newColWidth = parseInt(e.target.value);
@@ -690,14 +825,30 @@ svgEditor.addExtension('ext-legend', function() {
 		updateLegendPreview();
 	}
 
+	/**
+ 	* 图例设置面板中的文本大小设置事件，文字大小改变时触发。调整图例的文字大小
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
 	function textSizeChange(e){
 		var newSize = parseInt(e.target.value);
-		$("#preview-drawing text[name^='legend']").css("font-size",newSize);
+		$("#preview-drawing text[name^='legend']").each(function(){
+			this.setAttribute("font-size",newSize);
+		});
 	}
 
+	/**
+ 	* 图例设置面板中的字体设置事件，字体改变时触发。调整图例的文字字体
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
 	function fontChange(e){
 		var newFont = e.target.value;
-		$("#preview-drawing text[name^='legend']").css("font-family",newFont);
+		$("#preview-drawing text[name^='legend']").each(function(){
+			this.setAttribute("font-family",newFont);
+		});
 	}
 	/*---------*/ 
 	return {

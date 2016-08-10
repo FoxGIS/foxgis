@@ -1522,7 +1522,7 @@ ul li.current {
 	margin: 10px;
 }
 .legend-item input[type='text']{
-	width: 100px;
+	width: 88px;
     float: left;
     height: 16px;
     margin-bottom: 5px;
@@ -1541,6 +1541,16 @@ ul li.current {
     height: 18px;
 }
 
+.legend-item i{
+	margin-top: 6px;
+    font-style:normal;
+    float: left;
+    cursor: pointer;
+}
+.legend-item i:hover{
+	background-color: #c3c3c3;
+}
+    
 #property-set{
 	position: absolute;
     width: 350px;

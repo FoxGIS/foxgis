@@ -1,5 +1,6 @@
 <template>
   <div>
+    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div id="style-header">
       <span style="color:white;">{{styleObj.name}}</span>
       <i class="material-icons new-layer" v-on:click="showCreateStyle" title="新建样式">create</i>
@@ -732,10 +733,10 @@ export default {
     },
     createNewLayer:function(){
       var id = $("#new-layer-panel input[name='id']").val();
-      if(id===""){alert("样式ID不能为空");return;}
+      if(id===""){this.$broadcast("mailSent",{message:"样式ID不能为空！",timeout:3000});return;}
       var layers = this.styleObj.layers;
       for(let j=0;j<layers.length;j++){
-        if(id===layers[j].id){alert("该样式ID已存在！");return;}
+        if(id===layers[j].id){this.$broadcast("mailSent",{message:"该样式ID已存在！",timeout:3000});return;}
       }
 
       var sourceDom = $("#new-layer-panel select[name='source']")[0];
@@ -773,13 +774,13 @@ export default {
       }
 
       if(source===""||source_layer===""){
-        alert("数据源或源图层不能为空！");
+        this.$broadcast("mailSent",{message:"数据源或源图层不能为空！",timeout:3000});
         return;
       }
       if(maxzoom===""){maxzoom=22;}
       minzoom=Number(minzoom);
       maxzoom=Number(maxzoom);
-      if(maxzoom<minzoom){alert("地图级别设置有误！");return;}
+      if(maxzoom<minzoom){this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});return;}
 
       var layout = this.defaultProperty[type].layout;
       var paint = this.defaultProperty[type].paint;
@@ -837,7 +838,7 @@ export default {
         $("#icon-select-panel").hide();
         this.changeStyle(this.styleObj);
       }else{
-        alert('未选择任何样式');
+        this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
       }
     },
     eledragstart: function(e){
@@ -1353,7 +1354,7 @@ export default {
             } 
             this.fontList = fontFamilys;    
           },function(res){
-            alert("字体列表请求失败");
+            this.$broadcast("mailSent",{message:"字体列表请求失败！",timeout:3000});
           });
         }
 
@@ -1371,7 +1372,7 @@ export default {
             }
             this.spriteObj.icons = sprite.icons;
           },function(){
-            alert("sprite json请求错误");
+            this.$broadcast("mailSent",{message:"sprite json请求错误！",timeout:3000});
           });
         }
 
