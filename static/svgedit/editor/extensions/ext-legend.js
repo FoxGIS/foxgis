@@ -26,11 +26,11 @@ svgEditor.addExtension('ext-legend', function() {
 	var col = 2;//图例显示的列数
 	var colWidth = 150;
 	var rowHeight = 30;
+	var scale = 1;
 	$("#preview-drawing").attr({
 		width:col*colWidth+20,
 		height:200
 	});
-	console.log(canv);
 	/**
  	* 点击图例按钮的响应函数，向服务器请求地图样式，根据样式筛选图例单元
  	*
@@ -58,8 +58,6 @@ svgEditor.addExtension('ext-legend', function() {
  	* @返回值 无
  	*/
 	function drawLegend(legendArr){
-		console.log(canv);
-		console.log(svgEditor);
 		var fill_d = "m74.49659,136.10344c0,0.62855 -0.46923,1.13819 -1.04807,1.13819l-38.51549,0c-0.5788,0 -1.04803,-0.50959 -1.04803,-1.13819l0,-14.39536c0,-0.62855 0.46923,-1.13819 1.04803,-1.13819l38.51549,0c0.5788,0 1.04807,0.50959 1.04807,1.13819l0,14.39536z";
 		var flag = 0;//用于识别图例在那一列，一共两列
 		var username = options.username;
@@ -283,12 +281,15 @@ svgEditor.addExtension('ext-legend', function() {
 		$("#property-set input[name='col-num']").val(col);
 		$("#property-set input[name='col-width']").val(colWidth);
 		$("#property-set input[name='text-size']").val(12);
-		$("#property-set input[name='legend-zoom']").val(1);
+		//$("#property-set input[name='legend-zoom']").val(1);
+		$("#property-set input[name='title-size']").val(18);
 		$("#property-set input[name='col-num']").bind("change",colChange);
 		$("#property-set input[name='col-width']").bind("change",colWidthChange);
 		$("#property-set input[name='text-size']").bind("change",textSizeChange);
 		//$("#property-set input[name='legend-zoom']").bind("change",zoomChange);
 		$("#property-set select[name='text-font']").bind("change",fontChange);
+		$("#property-set input[name='title-size']").bind("change",textSizeChange);
+		$("#property-set select[name='title-font']").bind("change",fontChange);
 		var legend_item = $("#legend-set .legend-item").clone()[0];
 		$("#legend-set .legend-item").remove();
 		var tem = styleObj.sprite.split("/");
@@ -395,6 +396,7 @@ svgEditor.addExtension('ext-legend', function() {
 		//监听事件
 		$("#legend-set input[name='addon']").bind("change",legendSelected);
 		$("#legend-set i[name='legend-up']").bind("click",legendUp);
+		$("#legend-set i[name='legend-down']").bind("click",legendDown);
 	}
 	/**
  	* 根据地图样式中的layers筛选图例单元,该函数返回已筛选和分组完成的图例数组
@@ -531,6 +533,7 @@ svgEditor.addExtension('ext-legend', function() {
 		}
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		console.log(current_layer)
 		//current_layer.id = "legend-layer";
 		/*var group = $("#legend-group").clone();
 		var children = group.children();
@@ -545,18 +548,22 @@ svgEditor.addExtension('ext-legend', function() {
 		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
 		var frameWidth = parseFloat(viewBox[2]);
 		var frameHeight = parseFloat(viewBox[3]);
-		var rectWidth = col*colWidth+20;
-		var rectHeight = Math.ceil(selected_count/col)*rowHeight+30;
+		var rectWidth = (col*colWidth+20)*scale;
+		var rectHeight = (Math.ceil(selected_count/col)*rowHeight+30)*scale;
 		var transX = frameWidth-rectWidth-50;
 		var transY = frameHeight-rectHeight-50;
-		var c = $(current_layer).children("#legend-group").children();
-		for(var i=0;i<c.length;i++){
-			if(c[i].tagName==="svg"){
-				c[i].removeAttribute("name");
-				var temX = parseFloat(c[i].getAttribute("x"));
-				var temY = parseFloat(c[i].getAttribute("y"));
-				c[i].setAttribute("x",temX+transX);
-				c[i].setAttribute("y",temY+transY);
+		console.log("transX:"+transX);console.log("transY:"+transY);
+		if(scale===1){
+			var c = $(current_layer).children("#legend-group").children();
+			console.log(c);
+			for(var i=0;i<c.length;i++){
+				if(c[i].tagName==="svg"){
+					c[i].removeAttribute("name");
+					var temX = parseFloat(c[i].getAttribute("x"));
+					var temY = parseFloat(c[i].getAttribute("y"));
+					c[i].setAttribute("x",temX+transX);
+					c[i].setAttribute("y",temY+transY);
+				}
 			}
 		}
 		//图例的默认起点是（0,0），需要根据画布大小进行偏移到右下角
@@ -709,7 +716,7 @@ svgEditor.addExtension('ext-legend', function() {
 		$("#property-set input[name='col-num']").unbind("change",colChange);
 		$("#property-set input[name='col-width']").unbind("change",colWidthChange);
 		$("#property-set input[name='text-size']").unbind("change",textSizeChange);
-		$("#property-set input[name='legend-zoom']").unbind("change",zoomChange);
+		//$("#property-set input[name='legend-zoom']").unbind("change",zoomChange);
 	}
 
 	/**
@@ -721,8 +728,8 @@ svgEditor.addExtension('ext-legend', function() {
 	function updateLegendPreview(){
 		var totalRow = Math.ceil(selected_count/col);
 		$("#legend-preview #preview-drawing").attr({
-			"width":colWidth*col+20,
-			"height":rowHeight*totalRow+30
+			"width":(colWidth*col+20)*scale,
+			"height":(rowHeight*totalRow+30)*scale
 		});
 		$("#legend-preview #legend-background").attr({
 			"width":colWidth*col+20,
@@ -748,7 +755,6 @@ svgEditor.addExtension('ext-legend', function() {
 		//如果前后两个都是选中状态，则调整预览中的顺序，否则只用调整设置中的顺序
 		if($(".legend-item[name=legend"+(index-1)+"] input[type='checkbox']").attr("checked")&&$(".legend-item[name=legend"+index+"] input[type='checkbox']").attr("checked")){
 			var viewIndex = 0; //当前图例在预览中的索引（从1开始）
-			console.log(viewIndex);
 			$(".legend-item input[type='checkbox']").each(function(){//遍历checkbox，获取viewIndex
 				if(this.checked){
 					viewIndex++;
@@ -787,6 +793,57 @@ svgEditor.addExtension('ext-legend', function() {
 		});
 	}
 
+	/**
+ 	* 图例设置面板中的图例顺序调整事件，点击下移按钮时触发。调整图例的显示顺序
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
+	function legendDown(e){
+		var name = $(e.target.parentElement).attr('name');
+		var index = parseInt(name.replace("legend",""));//当前图例在设置中的索引（从0开始）
+		if(index===total_legend-1){return;}
+
+		//如果前后两个都是选中状态，则调整预览中的顺序，否则只用调整设置中的顺序
+		if($(".legend-item[name=legend"+(index+1)+"] input[type='checkbox']").attr("checked")&&$(".legend-item[name=legend"+index+"] input[type='checkbox']").attr("checked")){
+			var viewIndex = 0; //当前图例在预览中的索引（从1开始）
+			$(".legend-item input[type='checkbox']").each(function(){//遍历checkbox，获取viewIndex
+				if(this.checked){
+					viewIndex++;
+				}
+				if($(this.parentElement).attr('name')===name){
+					return false;
+				}
+			});
+			var laterViewItem = $("#preview-drawing [name=legend"+(viewIndex+1)+"]");//预览窗口中的图例元素
+			var currViewItem = $("#preview-drawing [name=legend"+viewIndex+"]");
+			translate({index:viewIndex+1,col:col,count:selected_count,colWidth:colWidth},{index:viewIndex,col:col,count:selected_count,colWidth:colWidth},laterViewItem);
+			translate({index:viewIndex,col:col,count:selected_count,colWidth:colWidth},{index:viewIndex+1,col:col,count:selected_count,colWidth:colWidth},currViewItem);
+			laterViewItem.each(function(){
+				this.setAttribute("name","legend"+viewIndex);
+			});
+			currViewItem.each(function(){
+				this.setAttribute("name","legend"+(viewIndex+1));
+			});
+		}
+
+		var laterItem = $("#legend-set .legend-item[name=legend"+(index+1)+"]");//上一个元素
+		var currItem = $("#legend-set .legend-item[name=legend"+index+"]");//当前元素
+		currItem.before(laterItem);//交换两个元素的顺序
+		currItem.attr("name","legend"+(index+1));//更新name
+		laterItem.attr("name","legend"+index);//更新name
+		
+		var laterLegend = $("#set-drawing [name=legend"+(index+1)+"]");
+		var currLegend = $("#set-drawing [name=legend"+index+"]");
+		translate({index:index+2,col:1,count:total_legend,colWidth:colWidth},{index:index+1,col:1,count:total_legend,colWidth:colWidth},laterLegend);
+		translate({index:index+1,col:1,count:total_legend,colWidth:colWidth},{index:index+2,col:1,count:total_legend,colWidth:colWidth},currLegend);
+		currLegend.each(function(){
+			this.setAttribute("name","legend"+(index+1));
+		});
+		laterLegend.each(function(){
+			this.setAttribute("name","legend"+index);
+		});
+	}
 	/**
  	* 图例设置面板中的列数设置事件，列数改变时触发。调整图例的列数
  	*
@@ -831,11 +888,26 @@ svgEditor.addExtension('ext-legend', function() {
  	* @参数 {Event} e DOM事件
  	* @返回值 无
  	*/
+
+ 	function zoomChange(e){
+ 		var newScale = parseFloat(e.target.value);
+ 		scale = newScale;
+ 		var g = $("#preview-drawing #legend-group")[0];
+ 		g.setAttribute("transform","scale("+scale+")");
+ 		updateLegendPreview();
+ 	}
 	function textSizeChange(e){
 		var newSize = parseInt(e.target.value);
-		$("#preview-drawing text[name^='legend']").each(function(){
-			this.setAttribute("font-size",newSize);
-		});
+		if(e.target.name==="text-size"){
+			$("#preview-drawing text[name^='legend']").each(function(){
+				this.setAttribute("font-size",newSize);
+			});
+		}
+		if(e.target.name==="title-size"){
+			$("#preview-drawing #bacground-text").each(function(){
+				this.setAttribute("font-size",newSize);
+			});
+		}
 	}
 
 	/**
@@ -846,9 +918,18 @@ svgEditor.addExtension('ext-legend', function() {
  	*/
 	function fontChange(e){
 		var newFont = e.target.value;
-		$("#preview-drawing text[name^='legend']").each(function(){
-			this.setAttribute("font-family",newFont);
-		});
+		if(e.target.name==="text-font"){
+			$("#preview-drawing text[name^='legend']").each(function(){
+				this.setAttribute("font-family",newFont);
+			});
+		}
+		console.log(e.target.name);
+		if(e.target.name==="title-font"){
+			console.log(newFont)
+			$("#preview-drawing #bacground-text").each(function(){
+				this.setAttribute("font-family",newFont);
+			});
+		}
 	}
 	/*---------*/ 
 	return {

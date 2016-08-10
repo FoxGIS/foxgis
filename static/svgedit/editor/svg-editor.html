@@ -83,28 +83,48 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 </div>
 
 <div id="legend-panel">
-	<div id="legend-set" class="box" style="margin-right:20px;">
+	<div id="legend-set" class="box" style="margin-right:10px;">
 		<svg id="set-drawing"></svg>
 		<div class="legend-item">
-			<i name="legend-up" title="上移">↑</i>
+			<i name="legend-up" title="上移" style="margin-right:2px;">↑</i>
+			<i name="legend-down" title="下移">↓</i>
 			<input type="text" name="legend-text">
 			<input type="checkbox" name="addon">
 		</div>
 	</div>
-	<div id="legend-preview" class="box" style="margin-left:20px;">
+	<div id="legend-preview" class="box" style="margin-left:10px;">
 		<svg id="preview-drawing"></svg>
 	</div>
 	<div id="property-set">
+		<b>图例设置:</b>
 		<span>列数:</span>
 		<input type="text" name="col-num">
 		<span>列宽:</span>
-		<input type="text" name="col-width">
+		<input type="text" name="col-width" style="float:none;">
+		<!-- <span>缩放:</span>
+		<input type="text" name="legend-zoom">--></br>
+		<b>文字设置:</b>
 		<span>字号:</span>
 		<input type="text" name="text-size">
-		<!-- <span>缩放:</span>
-		<input type="text" name="legend-zoom"> -->
 		<span>字体:</span>
 		<select name="text-font">
+		  <option value="Serif" style="font-family:Serif;">Serif</option>
+		  <option value="Sans-serif" style="font-family:Sans-serif;">Sans-serif</option>
+		  <option value="Cursive" style="font-family:Cursive;">Cursive</option>
+		  <option value="Fantasy" style="font-family:Fantasy;">Fantasy</option>
+		  <option value="Monospace" style="font-family:Monospace;">Monospace</option>
+		  <option value="Arial" style="font-family:Arial;">Arial</option>
+		  <option value="Microsoft YaHei" style="font-family:Microsoft YaHei;">微软雅黑</option>
+		  <option value="KaiTi" style="font-family:KaiTi;">楷体</option>
+		  <option value="SimSun" style="font-family:SimSun;">宋体</option>
+		  <option value="SimHei" style="font-family:SimHei;">黑体</option>
+		  <option value="Times New Roman" style="font-family:Times New Roman;">Times New Roman</option>
+		</select></br>
+		<b>标题设置:</b>
+		<span>字号:</span>
+		<input type="text" name="title-size">
+		<span>字体:</span>
+		<select name="title-font">
 		  <option value="Serif" style="font-family:Serif;">Serif</option>
 		  <option value="Sans-serif" style="font-family:Sans-serif;">Sans-serif</option>
 		  <option value="Cursive" style="font-family:Cursive;">Cursive</option>
