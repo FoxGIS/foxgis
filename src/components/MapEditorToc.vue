@@ -390,6 +390,7 @@
 import Cookies from 'js-cookie'
 import { changeStyle } from '../vuex/actions'
 import _ from 'lodash'
+import glfun from 'mapbox-gl-function'
 export default {
   vuex: {
     getters: {
@@ -475,6 +476,15 @@ export default {
         for(let name in defaultProperty[templayer.type].paint){
           if(templayer.paint[name] !== undefined&&!templayer.paint[name].stops){
             defaultProperty[templayer['type']].paint[name] = templayer.paint[name]
+          }else if(templayer.paint[name] !== undefined&&templayer.paint[name].stops){
+            var type;
+            if(typeof(defaultProperty[templayer['type']].paint[name])==="number"){
+              type = "exponential";
+            }else{
+              type = "interval";
+            }
+            var opts = {type:type,value:templayer.paint[name]};
+            defaultProperty[templayer['type']].paint[name] = this.getCurrentValue(opts);
           }
         }
       }
@@ -482,6 +492,15 @@ export default {
         for(let name in defaultProperty[templayer.type].layout){
           if(templayer.layout[name] !== undefined&&!templayer.layout[name].stops){
             defaultProperty[templayer['type']].layout[name] = templayer.layout[name]
+          }else if(templayer.layout[name] !== undefined&&templayer.layout[name].stops){
+            var type;
+            if(typeof(defaultProperty[templayer['type']].layout[name])==="number"){
+              type = "exponential";
+            }else{
+              type = "interval";
+            }
+            var opts = {type:type,value:templayer.paint[name]};
+            defaultProperty[templayer['type']].paint[name] = this.getCurrentValue(opts);
           }
         }
       }
@@ -571,7 +590,7 @@ export default {
         }
       }
       if(!clickLayer){return;}
-      if(_.isEqual(this.curPanelLayer,this.filterProperty(clickLayer))&&$("#property-panel").is(":visible")){
+      if((this.curPanelLayer.id===clickLayer.id)&&$("#property-panel").is(":visible")){
         $("#property-panel").hide();
       }else{
         $("#new-layer-panel").hide();
@@ -1031,6 +1050,23 @@ export default {
         //$(".font-item").css("display","none");
         font_item.css("display","block");
       }
+    },
+    /**
+    * 利用gl-function计算stops函数在当前级别的值
+    *
+    * @参数 {Object} parameters 包括type和stops对象
+    * @返回值 {Number||Object||String}} 当前级别的值
+    */
+    getCurrentValue:function(parameters){
+      if(!parameters.value){
+        return undefined;
+      }else if(!glfun.isFunctionDefinition(parameters.value)){
+        return parameters.value;
+      }else{
+        var experiement = glfun.interpolated({type:parameters.type,stops:parameters.value.stops});
+        var zoom = this.$parent.$refs.drafmap.map.getZoom();
+        return experiement(zoom);
+      }
     }
   },
   events: {
@@ -1144,7 +1180,8 @@ export default {
         'cap': '线尾样式',
         'join': '线交叉形式',
         'miter-limit': '切线交叉限制',
-        'round-limit': '圆交叉限制'
+        'round-limit': '圆交叉限制',
+        'radius':'半径'
       },
       propertyGroup:{},
       typeIcon: {
