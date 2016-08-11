@@ -3668,11 +3668,12 @@ TODOS
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
 					var height = parseInt(viewBox.split(' ')[3]);
 					var width = parseInt(viewBox.split(' ')[2]);
-					svg.attr("height",height*4);
-					svg.attr("width",width*4);
+					var scale = parseInt($("#image-resolution input[name='resolution']:checked").val())||4;
+					svg.attr("height",height*scale);
+					svg.attr("width",width*scale);
 					var options = window.OPTIONS;
 					if(document.getElementById("mapImg")&&options){
-						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
 							imageObj.attr("xlink:href",url);
@@ -3703,8 +3704,8 @@ TODOS
 						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
 
 						var canvas = document.getElementById('myCanvas');  //准备空画布
-						document.getElementById('myCanvas').setAttribute("width",width*4);
-						document.getElementById('myCanvas').setAttribute("height",height*4);
+						document.getElementById('myCanvas').setAttribute("width",width*scale);
+						document.getElementById('myCanvas').setAttribute("height",height*scale);
 						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
 						context.drawImage(image1, 0, 0);
 						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
@@ -3790,7 +3791,24 @@ TODOS
 						xhr.open('POST', upload_url, true);
 						xhr.send(formData);	
 					}
+
+
+				}, function () {
+					var sel = $(this);
+					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
+						if (!$('#image-slider').length) {
+							$('<div><label>Quality: <input id="image-slider" type="range" min="1" max="100" value="92" /></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+						}
+					}
+					else {
+						$('#image-slider').parent().remove();
+					}
 				});
+
+				var sel = $("#dialog_content select");
+				if (!$('#image-resolution').length) {
+					$('<div id="image-resolution"><label>分辨率: <input type="radio" value="1" name="resolution"/>72<input type="radio" value="2" name="resolution"/>144<input type="radio" value="3" name="resolution"/>216<input type="radio" value="4" name="resolution" checked/>288</label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+				}
 			};
 
 			//新增分享到决策用图模块
@@ -3903,10 +3921,10 @@ TODOS
 					    };
 					    image2.crossOrigin = "Anonymous";
 					    image2.src = url;
-					};*/
+					};
 
 					// Open placeholder window (prevents popup)
-					/*var exportWindowName;
+					var exportWindowName;
 					function openExportWindow () {
 						var str = uiStrings.notification.loadingImage;
 						if (curConfig.exportWindowType === 'new') {
@@ -3930,8 +3948,8 @@ TODOS
 						}
 						var quality = parseInt($('#image-slider').val(), 10)/100;
 						svgCanvas.rasterExport(imgType, quality, exportWindowName);
-					}*/
-				/*}, function () {
+					}
+				}, function () {
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
 						if (!$('#image-slider').length) {

@@ -974,7 +974,7 @@ span.zoom_tool {
 	overflow: visible;
 }
 
-@media screen and (max-width:1250px) {
+/* @media screen and (max-width:1250px) {
 	.expanded #palette_holder {
 		left: 560px;
 		overflow-x: scroll;
@@ -1004,7 +1004,7 @@ span.zoom_tool {
 	#selected_panel {
 		clear: right;
 	}
-}
+} */
 
 @media screen and (max-width:1100px) {
 	#tools_bottom:not(.expanded) #palette_holder {
@@ -1297,7 +1297,7 @@ ul li.current {
 }
 
 #dialog_content {
-	height: 95px;
+	height: 115px;
 	margin: 10px 10px 5px 10px;
 	background: #DDD;
 	overflow: auto;
@@ -1314,6 +1314,10 @@ ul li.current {
 	line-height: 1.3em;
 }
 
+#dialog_content #image-resolution{
+	margin-top: 5px;
+    text-align: center;
+}
 #dialog_container {
 	position: absolute;
 	font-family: Verdana;
@@ -1322,7 +1326,7 @@ ul li.current {
 	top: 50%;
 	width: 300px;
 	margin-left: -150px;
-	height: 150px;
+	height: 165px;
 	margin-top: -80px;
 	position: fixed;
 	z-index: 50001;

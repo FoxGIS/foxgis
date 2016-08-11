@@ -533,7 +533,6 @@ svgEditor.addExtension('ext-legend', function() {
 		}
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
-		console.log(current_layer)
 		//current_layer.id = "legend-layer";
 		/*var group = $("#legend-group").clone();
 		var children = group.children();
@@ -552,10 +551,8 @@ svgEditor.addExtension('ext-legend', function() {
 		var rectHeight = (Math.ceil(selected_count/col)*rowHeight+30)*scale;
 		var transX = frameWidth-rectWidth-50;
 		var transY = frameHeight-rectHeight-50;
-		console.log("transX:"+transX);console.log("transY:"+transY);
 		if(scale===1){
 			var c = $(current_layer).children("#legend-group").children();
-			console.log(c);
 			for(var i=0;i<c.length;i++){
 				if(c[i].tagName==="svg"){
 					c[i].removeAttribute("name");
@@ -923,9 +920,7 @@ svgEditor.addExtension('ext-legend', function() {
 				this.setAttribute("font-family",newFont);
 			});
 		}
-		console.log(e.target.name);
 		if(e.target.name==="title-font"){
-			console.log(newFont)
 			$("#preview-drawing #bacground-text").each(function(){
 				this.setAttribute("font-family",newFont);
 			});
