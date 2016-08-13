@@ -42,7 +42,7 @@
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
             <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
           </div>
         </div>
       </div>
@@ -67,6 +67,7 @@
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
@@ -88,35 +89,23 @@
               <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
             </div>
             <div class="property-value" v-if="name=='text-anchor'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="center" v-if="value=='center'" selected>中心</option>
-                <option value="center"  v-else>中心</option>
-                <option value="left" v-if="value=='left'" selected>右</option>
-                <option value="left" v-else>右</option>
-                <option value="right" v-if="value=='right'" selected>左</option>
-                <option value="right" v-else>左</option>
-                <option value="top" v-if="value=='top'" selected>下</option>
-                <option value="top" v-else>下</option>
-                <option value="bottom" v-if="value=='bottom'" selected>上</option>
-                <option value="bottom" v-else>上</option>
-                <option value="top-left" v-if="value=='top-left'" selected>右下</option>
-                <option value="top-left" v-else>右下</option>
-                <option value="top-right" v-if="value=='top-right'" selected>左下</option>
-                <option value="top-right" v-else>左下</option>
-                <option value="bottom-left" v-if="value=='bottom-left'" selected>右上</option>
-                <option value="bottom-left" v-else>右上</option>
-                <option value="bottom-right" v-if="value=='bottom-right'" selected>左上</option>
-                <option value="bottom-right" v-else>左上</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="center">中心</option>
+                <option value="left">右</option>
+                <option value="right">左</option>
+                <option value="top">下</option>
+                <option value="bottom">上</option>
+                <option value="top-left">右下</option>
+                <option value="top-right">左下</option>
+                <option value="bottom-left">右上</option>
+                <option value="bottom-right">左上</option>
               </select>
             </div>
-            <div class="property-value" v-if="name=='text-allow-overlap'">
+            <div class="property-value" v-if="name=='text-allow-overlap'||name=='text-ignore-placement'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <div class="property-value" v-if="name=='text-ignore-placement'">
-              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         <div id="icon-div" class="style-set" style="display: none">
@@ -128,8 +117,9 @@
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
-              <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="color" v-model="value"  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
@@ -137,19 +127,13 @@
             <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
               <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
               <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
+              <input type="color" value="{{value}}" v-model='value' v-on:change='propertyChange' v-if="name.indexOf('color')!=-1" name="{{name}}" data-type='layout' />
             </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
-              <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
-            </div>
-            <div class="property-value" v-if="name=='icon-allow-overlap'">
+            <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <div class="property-value" v-if="name=='icon-ignore-placement'">
-              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         <div id="symbol-div" class="style-set" style="display: none">
@@ -160,23 +144,21 @@
             </div>
             <div class="property-value" v-if="name=='symbol-avoid-edges'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+            </div>
+            <div class="property-value" v-if="name=='visibility'">
+              <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
             <div class="property-value" v-if="name=='symbol-placement'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="point" v-if="value=='point'" selected>点</option>
-                <option value="point"  v-else>点</option>
-                <option value="line" v-if="value=='line'" selected>线</option>
-                <option value="line" v-else>线</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="point">点</option>
+                <option value="line">线</option>
               </select>
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
               <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
-            </div>
-            <div class="property-value" v-if="name=='visibility'">
-              <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
           </div>
         </div>
@@ -191,6 +173,7 @@
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
+          <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
@@ -198,24 +181,25 @@
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='fill-translate-anchor'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
-                <option value="map" v-if="value=='map'" selected>地图</option>
-                <option value="map" v-else>地图</option>
-                <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
-                <option value="viewport" v-else>视图窗口</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
+                <option value="map">地图</option>
+                <option value="viewport">视图窗口</option>
               </select>
             </div>
             <div class="property-value" v-if="name=='fill-antialias'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
+          <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         
@@ -230,6 +214,7 @@
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
+          <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='line-translate-anchor'">
@@ -237,14 +222,14 @@
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='line-translate-anchor'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
-                <option value="map" v-if="value=='map'" selected>地图</option>
-                <option value="map" v-else>地图</option>
-                <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
-                <option value="viewport" v-else>视图窗口</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
+                <option value="map">地图</option>
+                <option value="viewport">视图窗口</option>
               </select>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
+          <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
@@ -256,26 +241,20 @@
             </div>
             <div class="property-value" v-if="name=='visibility'">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
             <div class="property-value" v-if="name=='line-cap'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="butt" v-if="value=='butt'" selected>粗</option>
-                <option value="butt" v-else>粗</option>
-                <option value="round"  v-if="value=='round'" selected>圆</option>
-                <option value="round" v-else>圆</option>
-                <option value="square" v-if="value=='square'" selected>方</option>
-                <option value="square" v-else>方</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="butt">粗</option>
+                <option value="round">圆</option>
+                <option value="square">方</option>
               </select>
             </div>
             <div class="property-value" v-if="name=='line-join'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="bevel" v-if="value=='bevel'" selected>斜交叉</option>
-                <option value="bevel" v-else>斜交叉</option>
-                <option value="miter" v-if="value=='miter'" selected>切线交叉</option>
-                <option value="miter" v-else>切线交叉</option>
-                <option value="round" v-if="value=='round'" selected>圆交叉</option>
-                <option value="round" v-else>圆交叉</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                <option value="bevel">斜交叉</option>
+                <option value="miter">切线交叉</option>
+                <option value="round">圆交叉</option>
               </select>
             </div>
             <div class="property-value" v-if="name=='line-round-limit'">
@@ -286,6 +265,7 @@
               <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
               <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         
@@ -300,6 +280,7 @@
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
+          <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='circle-translate-anchor'">
@@ -307,20 +288,21 @@
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='circle-translate-anchor'">
-              <select v-model="selected" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
-                <option value="map" v-if="value=='map'" selected>地图</option>
-                <option value="map" v-else>地图</option>
-                <option value="viewport" v-if="value=='viewport'" selected>视图窗口</option>
-                <option value="viewport"  v-else>视图窗口</option>
+              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
+                <option value="map">地图</option>
+                <option value="viewport">视图窗口</option>
               </select>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
+          <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         
@@ -335,18 +317,22 @@
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
+          <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
           </div>
+          <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false"v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
           </div>
         </div>
         
@@ -381,6 +367,7 @@
     </div>
 
     <foxgis-icon-panel id="icon-select-panel" :dataset="spriteObj"></foxgis-icon-panel>
+    <foxgis-stops-panel id="stops-panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
 
   </div>
 
@@ -477,8 +464,9 @@ export default {
           if(templayer.paint[name] !== undefined&&!templayer.paint[name].stops){
             defaultProperty[templayer['type']].paint[name] = templayer.paint[name]
           }else if(templayer.paint[name] !== undefined&&templayer.paint[name].stops){
-            var type;
-            if(typeof(defaultProperty[templayer['type']].paint[name])==="number"){
+            if(templayer.paint[name].type){
+              var type = templayer.paint[name].type;
+            }else if(typeof(defaultProperty[templayer['type']].paint[name])==="number"){
               type = "exponential";
             }else{
               type = "interval";
@@ -493,14 +481,15 @@ export default {
           if(templayer.layout[name] !== undefined&&!templayer.layout[name].stops){
             defaultProperty[templayer['type']].layout[name] = templayer.layout[name]
           }else if(templayer.layout[name] !== undefined&&templayer.layout[name].stops){
-            var type;
-            if(typeof(defaultProperty[templayer['type']].layout[name])==="number"){
+            if(templayer.layout[name].type){
+              var type = templayer.layout[name].type;
+            }else if(typeof(defaultProperty[templayer['type']].layout[name])==="number"){
               type = "exponential";
             }else{
               type = "interval";
             }
-            var opts = {type:type,value:templayer.paint[name]};
-            defaultProperty[templayer['type']].paint[name] = this.getCurrentValue(opts);
+            var opts = {type:type,value:templayer.layout[name]};
+            defaultProperty[templayer['type']].layout[name] = this.getCurrentValue(opts);
           }
         }
       }
@@ -1064,8 +1053,57 @@ export default {
         return parameters.value;
       }else{
         var experiement = glfun.interpolated({type:parameters.type,stops:parameters.value.stops});
-        var zoom = this.$parent.$refs.drafmap.map.getZoom();
+        if(this.$parent.$refs.drafmap.map.getZoom){  
+          var zoom = this.$parent.$refs.drafmap.map.getZoom();
+        }else{
+          var zoom = this.styleObj.zoom||3;
+        }
         return experiement(zoom);
+      }
+    },
+    openStopsPanel:function(e){
+      if($(e.target).hasClass("open")){
+        $("#stops-panel").hide();
+        $(e.target).removeClass("open");
+        return;
+      }
+      $(".open-stops").removeClass("open");
+      $(e.target).addClass("open");
+      $("#stops-panel").show();
+      var offsetTop = e.target.offsetParent.offsetTop;
+      var containerHeight = e.target.offsetParent.offsetParent.offsetHeight;
+      var pannelHeight = $("#stops-panel")[0].offsetHeight;
+      if((offsetTop+pannelHeight)<=containerHeight){
+        $("#stops-panel").css("top",offsetTop);
+      }else{
+        $("#stops-panel").css("top",containerHeight-pannelHeight-10);
+      }
+
+      var propertyName = e.target.dataset.name;
+      var type = e.target.dataset.type;//layout/paint
+      if(!this.currentLayer[type]){this.currentLayer[type]={};}
+      var value = this.currentLayer[type][propertyName]||this.defaultProperty[this.currentLayer.type][type][propertyName];
+      this.stopsData.property = {
+        name:propertyName,
+        type:type,
+        defaultValue:this.defaultProperty[this.currentLayer.type][type][propertyName]
+      };
+      if(typeof value==="object"&&value.stops){
+        this.stopsData.hasStops=true;
+        this.stopsData.stopsObj = {
+          type:value.type||"",
+          stops:value.stops,
+          base:1
+        };
+        if(value.base){this.stopsData.stopsObj.base = value.base}
+        if(value.property){this.stopsData.stopsObj.property = value.property}
+      }else{
+        this.stopsData.hasStops=false;
+        this.stopsData.stopsObj = {
+          type:"",
+          stops:[],
+          base:1
+        };
       }
     }
   },
@@ -1098,12 +1136,16 @@ export default {
       panel.style.display = 'block'
       $("input[name='icon-image']").bind("click",this.onSelectIcon);
     },
-    'data-select-change':function(options){
+    'layer-property-change':function(options){
       var name = options.name;
       var value = options.value;
       var currentLayer = this.currentLayer;
-      currentLayer[name] = value;
-
+      if(options.type){
+        if(!currentLayer[options.type]){currentLayer[options.type] = {}}
+        currentLayer[options.type][name] = value;
+      }else{
+        currentLayer[name] = value;
+      }
       let data = JSON.parse(JSON.stringify(this.styleObj))
       this.changeStyle(data)
     }
@@ -1128,6 +1170,11 @@ export default {
         'maxzoom':22,
         'filter':[]
       },
+      stopsData:{
+        hasStops:false,
+        stopsObj:{},
+        property:{}
+      },//分级显示设置
       fontList:{},//字体选择面板里的字体列表
       spriteObj:{//图标对象，用于图标选择面板
         pngUrl:"",
@@ -1621,6 +1668,7 @@ a {
 
 #property-panel .property-item {
   margin-top: 10px;
+  position: relative;
 }
 
 #property-panel .property-name {
@@ -1635,11 +1683,12 @@ a {
 #property-panel .property-value {
   margin-left: 100px;
   position: relative;
+  width: 175px;
 }
 
 #property-panel .property-value input[type='color'] {
   position: absolute;
-  right: 33px;
+  right: 10px;
   top: 5px;
   width: 15px;
   height: 15px;
@@ -1706,6 +1755,16 @@ a {
     background-color: #E5E2D3;
 }
 
+#stops-panel{
+  position: absolute;
+  left: 515px;
+  background-color: #fbfbfd;
+  display: none;
+  z-index: 1;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  color: #333;
+}
 #icon-select-panel{
   width: 300px;
   height: 400px;
@@ -1786,5 +1845,12 @@ a {
 .font-family i{
   font-size: 18px;
   vertical-align: middle;
+}
+
+.open-stops{
+  position: absolute;
+  right: 0px;
+  top: 3px;
+  cursor: pointer;
 }
 </style>

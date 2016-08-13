@@ -45,6 +45,7 @@ import IconPanel from './components/IconPanel'
 import FilterData from './components/FilterDataPanel'
 import User from './views/User'
 import SVGEditor from './components/SVGEditor.vue'
+import StopsPanel from './components/stopsPanel.vue'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -73,6 +74,7 @@ Vue.component('foxgis-dialog-input',DialogInput)
 Vue.component('foxgis-icon-panel',IconPanel)
 Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
+Vue.component('foxgis-stops-panel',StopsPanel)
 
 let router = new Router({
   history: false

@@ -20,7 +20,7 @@ svgEditor.addExtension('ext-panning', function() {'use strict';
 		buttons: [{
 			id: 'ext-panning',
 			type: 'mode',
-			title: 'Panning',
+			title: '平移',
 			events: {
 				click: function() {
 					svgCanvas.setMode('ext-panning');

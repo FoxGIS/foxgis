@@ -197,7 +197,7 @@ export default {
     },
     hideBoundsBox: function(){
       this.map.off('dragstart', this.mapDragStart)
-      this.map.off('zoomend',this.mapZoomEnd)
+      //this.map.off('zoomend',this.mapZoomEnd)
       this.map.on('click', this.mapClick)
       var box = this.$el.querySelector("#location-control")
       box.style.display = 'none'

@@ -143,7 +143,7 @@ export default {
       var params = {};
       params.name = e.target.name;
       params.value = value;
-      this.$dispatch("data-select-change",params);
+      this.$dispatch("layer-property-change",params);
     },
     filterChange:function(e,index) {
       if(this.selecteddata.panel_type==="create"){
@@ -173,7 +173,7 @@ export default {
       var params = {};
       params.name = 'filter';
       params.value = filter;
-      this.$dispatch("data-select-change",params);
+      this.$dispatch("layer-property-change",params);
     },
     addFilter:function(){
       var t={field:"",operator:"==",value:""}

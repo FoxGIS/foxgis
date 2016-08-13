@@ -577,7 +577,11 @@ svgEditor.addExtension('ext-legend', function() {
  	*/
 	function onLegendCancel(){
 		$("#legend-panel").css("display","none");
-		init();
+		if(canv.setCurrentLayer("图例")){
+			return;
+		}else{
+			init();
+		}
 	}
 
 	/**
@@ -708,6 +712,9 @@ svgEditor.addExtension('ext-legend', function() {
 			width:col*colWidth+20,
 			height:200
 		});
+		$(".legend-item input[type='checkbox']").each(function(){
+			this.checked=false;
+		})
 		$("#legend-ok").unbind("click",onLegendOk);
 		$("#legend-ok").unbind("click",onLegendCancel);
 		$("#property-set input[name='col-num']").unbind("change",colChange);
