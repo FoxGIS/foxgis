@@ -67,7 +67,7 @@
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
@@ -105,7 +105,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         <div id="icon-div" class="style-set" style="display: none">
@@ -119,7 +119,7 @@
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" v-model="value"  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
@@ -133,7 +133,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         <div id="symbol-div" class="style-set" style="display: none">
@@ -190,7 +190,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
@@ -199,7 +199,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         
@@ -227,7 +227,7 @@
                 <option value="viewport">视图窗口</option>
               </select>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
@@ -265,7 +265,7 @@
               <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
               <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         
@@ -293,7 +293,7 @@
                 <option value="viewport">视图窗口</option>
               </select>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
@@ -302,7 +302,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         
@@ -323,7 +323,7 @@
             <div class="property-value">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
           <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
@@ -332,7 +332,7 @@
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">add</i>
+            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
         
@@ -1849,8 +1849,17 @@ a {
 
 .open-stops{
   position: absolute;
-  right: 0px;
+  right: -5px;
   top: 3px;
+  color: #f17070;
+  background-color: #bdbdbd;
+  border-radius: 4px;
+  padding: 2px;
+  font-size: 20px;
   cursor: pointer;
+}
+
+.open-stops:hover{
+  background-color: gray;
 }
 </style>
