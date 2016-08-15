@@ -14,15 +14,30 @@
 	 <!-- <foxgis-footer></foxgis-footer>-->
 	 <div class="content">
 	 	<div id="layout-content">
-	 	 	<div class="automatic-slider unslider-horizontal">
-	 			<ul class="unslider-wrap unslider-carousel" style="width: 400%; left: -200%;">
-	 				<li class="" v-for="image in images" >
-	 					<img v-bind:src=image.path  title="{{image.title}}" width="" height="">
-	 				</li>
-	 			</ul>
-	 		</div>
+	 	 	<!-- <div class="automatic-slider unslider-horizontal">
+	 	 		 			<ul class="unslider-wrap unslider-carousel" style="width: 400%; left: -200%;">
+	 	 		 				<li class="" v-for="image in images" >
+	 	 		 					<img v-bind:src=image.path  title="{{image.title}}" width="" height="">
+	 	 		 				</li>
+	 	 		 			</ul>
+	 	 		 		</div> -->
+	 	 	<div id="stats-container">
+	 	 		<div id="stats-chart">
+	 	 		</div>
+	 	 	</div>
 	 		<div id = "upload-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>上传排行</span></div>
+	 			<div class="scrollText" >
+	 				<ul style="margin-top: 0px; ">
+	 					<li v-for="message in uploadMessages">
+	 						<input value="{{$index+1}}" disabled></input>
+	 						<span>{{message.name}}上传{{message.total}}幅地图</span>
+	 					</li>
+	 				</ul>
+	 			</div>
+	 		</div>
+	 		<div id = "image-download-rank" class="ranklist">
+	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
 	 			<div class="scrollText" >
 	 				<ul style="margin-top: 0px; ">
 	 					<li v-for="message in uploadMessages">
@@ -32,24 +47,13 @@
 	 				</ul>
 	 			</div>
 	 		</div>
-	 		<div id = "image-download-rank" class="ranklist">
-	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
-	 			<div class="scrollText" >
-	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in mapDownloadMessages">
-	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}已上传{{message.total}}幅地图</span>
-	 					</li>
-	 				</ul>
-	 			</div>
-	 		</div>
 	 		<div id = "user-download-rank" class="ranklist">
-	 			<div class="title"><i class="material-icons">list</i><span>用户下载排行</span></div>
+	 			<div class="title"><i class="material-icons">list</i><span>用户贡献排行</span></div>
 	 			<div class="scrollText" >
 	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in userDowloadMessages">
+	 					<li v-for="message in uploadMessages">
 	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}已上传{{message.total}}幅地图</span>
+	 						<span>{{message.name}}上传{{message.total}}幅地图</span>
 	 					</li>
 	 				</ul>
 	 			</div>
@@ -74,6 +78,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import echarts from 'echarts'
 export default {
 	methods:{
 
@@ -88,29 +93,52 @@ export default {
       if (response.data.length > 0) {
         var data = response.data;
         var messages = [];
+        var xData = [];
+        var yData=[];
         for(let i=0;i<data.length;i++){
         	if(data[i].location){
         		messages.push({"name":data[i].location,"total":data[i].total});
+        		xData.push(data[i].location);
+        		yData.push({value:data[i].total,name:data[i].location});
         	}else if(data[i].organization){
         		messages.push({"name":data[i].organization,"total":data[i].total});
+        		xData.push(data[i].organization);
+        		yData.push({value:data[i].total,name:data[i].organization});
         	}else if(data[i].name){
         		messages.push({"name":data[i].name,"total":data[i].total});
+        		xData.push(data[i].name);
+        		yData.push({value:data[i].total,name:data[i].name});
         	}else if(data[i].owner){
         		messages.push({"name":data[i].owner,"total":data[i].total});
+        		xData.push(data[i].owner);
+        		yData.push({value:data[i].total,name:data[i].owner});
         	}
         }
         this.uploadMessages = messages;
 
-        $('.automatic-slider').unslider({
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('stats-chart'));
+        // 绘制图表
+        myChart.setOption({
+            title: { text: '用户上传饼图' },
+            series: [{
+                name: '上传数量',
+                type: 'pie',
+                data: yData
+            }]
+        });
+        /*$('.automatic-slider').unslider({
 			autoplay: true,
 			delay:5000,
 			infinite: true
-		});//设置图片滚动
+		});//设置图片滚动*/
         //setTimeout("$('#scrollDiv').textSlider({line:5,speed:500,timer:3000})",1000);//设置文字滚动		
       }
     }, function(response) {
       console.log(response)
     })
+
+    
   },
 	
 	data() {
@@ -189,6 +217,22 @@ export default {
 	margin-left: auto;
 }
 
+#stats-container{
+	overflow: auto;
+	margin: 10px 10px 0 10px;
+	padding: 0;
+	width: 740px;
+	height: 520px;
+	background-color: white;
+	float: left;
+	position: relative;
+}
+
+#stats-chart{
+	width: 700px;
+	height: 430px;
+	margin: 20px;
+}
 .automatic-slider{
 	overflow: hidden;
 	width: 95%;
