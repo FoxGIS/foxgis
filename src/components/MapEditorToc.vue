@@ -1052,7 +1052,9 @@ export default {
       }else if(!glfun.isFunctionDefinition(parameters.value)){
         return parameters.value;
       }else{
-        var experiement = glfun.interpolated({type:parameters.type,stops:parameters.value.stops});
+        var params = {type:parameters.type,stops:parameters.value.stops};
+        if(parameters.value.base){params.base = parameters.value.base}
+        var experiement = glfun.interpolated(params);
         if(this.$parent.$refs.drafmap.map.getZoom){  
           var zoom = this.$parent.$refs.drafmap.map.getZoom();
         }else{
@@ -1139,6 +1141,7 @@ export default {
     'layer-property-change':function(options){
       var name = options.name;
       var value = options.value;
+      $(".open-stops").removeClass("open");
       var currentLayer = this.currentLayer;
       if(options.type){
         if(!currentLayer[options.type]){currentLayer[options.type] = {}}
