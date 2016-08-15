@@ -22,7 +22,7 @@
         <div class="meta-title">
           <b>图标说明</b>
           <div class="description">
-            <input type="text" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+            <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
           </div>
         </div>
         <div class="meta-title">
