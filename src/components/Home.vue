@@ -27,7 +27,7 @@
 	 	 	</div>
 	 		<div id = "upload-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>上传排行</span></div>
-	 			<div class="scrollText" >
+	 			<div class="scrollText" style="height: 480px;">
 	 				<ul style="margin-top: 0px; ">
 	 					<li v-for="message in uploadMessages">
 	 						<input value="{{$index+1}}" disabled></input>
@@ -38,7 +38,7 @@
 	 		</div>
 	 		<div id = "image-download-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
-	 			<div class="scrollText" >
+	 			<div class="scrollText" style="height: 240px;">
 	 				<ul style="margin-top: 0px; ">
 	 					<li v-for="message in uploadMessages">
 	 						<input value="{{$index+1}}" disabled></input>
@@ -49,7 +49,7 @@
 	 		</div>
 	 		<div id = "user-download-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>用户贡献排行</span></div>
-	 			<div class="scrollText" >
+	 			<div class="scrollText" style="height: 240px;">
 	 				<ul style="margin-top: 0px; ">
 	 					<li v-for="message in uploadMessages">
 	 						<input value="{{$index+1}}" disabled></input>
@@ -60,15 +60,6 @@
 	 		</div>
 	 	</div>
 	 </div>
-	 
-	 
-	<!-- <div id = "scrollDiv">
-		<div class="scrollText" >
-			<ul style="margin-top: 0px; ">
-			 <li v-for="message in messages"><b>{{message.name}}已上传{{message.total}}幅地图</b></li>
-		    </ul>
-		</div>
-	</div> -->
 	</foxgis-layout>
 
 
@@ -120,9 +111,17 @@ export default {
         var myChart = echarts.init(document.getElementById('stats-chart'));
         // 绘制图表
         myChart.setOption({
-            title: { text: '用户上传饼图' },
+            title: { text: '用户上传饼图',x:'center' },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                top:"10%",
+                data:xData
+            },
             series: [{
                 name: '上传数量',
+                center: ['70%', '60%'],
+                radius:'60%',
                 type: 'pie',
                 data: yData
             }]
@@ -289,7 +288,8 @@ li img{
 	min-height: 25px;
 	line-height: 25px;
 	margin:0px auto;
-	overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .scrollText li{
