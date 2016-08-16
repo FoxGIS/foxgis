@@ -18,25 +18,6 @@
     </div>
     <div class="details">
       <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
-      <!-- <div class="icon-panel">
-        <div class="meta-title">
-          <b>图标说明</b>
-          <div class="description">
-            <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
-          </div>
-        </div>
-        <div class="meta-title">
-          <b>图标详情（<b style="color:blue;">{{sprite.icons.length}}</b>）</b>
-          <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">添加图标</mdl-anchor-button>
-          <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
-        </div>
-        <div class="panel" style="text-align:center;">
-          <a v-for="icon in sprite.icons" class="icon-link" title="{{icon.name}}">
-            <div :style="'background-image:url('+sprite.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
-            </div>
-          </a>
-        </div>
-      </div> -->
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -111,24 +92,6 @@ export default {
         } 
       }
       e.target.parentElement.className = claName;
-
-      
-    },
-
-    editDescription: function(e,index){//修改图标说明
-      let value = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let sprite_id = this.dataset[index].sprite_id;
-      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
-      this.dataset[index].description = value;
-      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          let data = response.data;
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
-        }, function(response) {
-          alert("网络错误");
-      });
     },
 
     editScope: function(e,index){//修改共享范围
@@ -143,6 +106,7 @@ export default {
             alert("编辑错误");
           });
     },
+
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
       let sprite_id = this.dataset[index].sprite_id;
@@ -162,6 +126,7 @@ export default {
           alert("网络错误");
       });
     },
+
     showPreview: function(e, index) {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
@@ -174,38 +139,6 @@ export default {
     hidePreview: function(e) {
       if (e.target.className.indexOf('preview-modal') != -1) {
         e.target.style.display = 'none';
-      }
-    },
-
-    addSprite: function(e,sprite_id){//添加图标
-      this.click_sprite_id = sprite_id;
-      let hidefile = document.getElementById('icon-input');
-      hidefile.click();
-      hidefile.addEventListener('change', this.uploadSprite);  
-    },
-
-    uploadSprite: function(e){
-      let sprite_id = this.click_sprite_id;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let num = 1;
-      for(let i=0;i<e.target.files.length;i++){
-        let spriteName = e.target.files[i].name.split('.')[0];
-        let url = SERVER_API.sprites + '/' + username + "/" + sprite_id + "/" + spriteName;
-        let formData = new FormData();
-        formData.append('file', e.target.files[i]); 
-        this.$http({url:url,method:'PUT',data:formData,headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            if(num === e.target.files.length){
-              alert('已成功添加图标');
-            }else{
-              num++;
-            }   
-          }
-        }, function(response) {
-            alert('未知错误，请稍后再试');
-        });
       }
     },
 
@@ -232,6 +165,7 @@ export default {
         this.deleteUploadId = "";//重置deleteUploadId
       }
     },
+
     nextPage: function (event) {      
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page === allPages){
@@ -302,8 +236,7 @@ export default {
         pngUrl:'',//该雪碧图的url
         icons:[],//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
         description:''//该雪碧图的说明文字
-      },
-      click_sprite_id:''
+      }
     }
   }
 }
@@ -364,7 +297,7 @@ export default {
   transition:0.2s;
 } 
 .details{
-  /* max-height: 0; */
+  max-height: 0;
   opacity: 0;
   overflow: hidden;
   padding: 0;
@@ -377,7 +310,7 @@ export default {
   margin-bottom: 45px;
 }
 .active .details{
-  /* max-height: 1000px; */
+  max-height: 1000px;
   opacity: 1;
   transition:0.5s;
 }
