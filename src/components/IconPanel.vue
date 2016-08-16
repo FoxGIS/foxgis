@@ -14,7 +14,6 @@
     <div class="panel" style="text-align:center;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
-          
         </div>
       </a>
     </div>

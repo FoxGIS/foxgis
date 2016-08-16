@@ -28,7 +28,7 @@
               <option value="map">地图</option>
               <option value="viewport">视图窗口</option>
             </select>
-            <!-- translate-anchor  -->
+            <!-- text-anchor  -->
             <select v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name==='text-anchor'">
               <option value="" >请选择</option>
               <option value="center">中心</option>
@@ -103,6 +103,7 @@ export default {
       this.$el.style.display = 'none';
     },
     doCancel: function(){
+      $(".open-stops").removeClass("open");
       this.$el.style.display = 'none'
     },
     inputChange:function(e,index){

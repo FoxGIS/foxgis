@@ -13,11 +13,11 @@
   "sources": {
     "data2012": {
       "type": "vector",
-      "url": "http://218.244.250.70:8090/api/v1/tilesets/foxgis/admin"
+      "url": "http://192.9.105.205:8090/api/v1/tilesets/foxgis/admin"
     }
   },
-  "sprite": "http://218.244.250.70:8090/api/v1/sprites/foxgis/Hk6NFtw8/sprite",
-  "glyphs": "http://218.244.250.70:8090/api/v1/fonts/foxgis/{fontstack}/{range}.pbf",
+  "sprite": "http://192.9.105.205:8090/api/v1/sprites/foxgis/Hk6NFtw8/sprite",
+  "glyphs": "http://192.9.105.205:8090/api/v1/fonts/foxgis/{fontstack}/{range}.pbf",
   "transition": {
     "duration": 300,
     "delay": 0
