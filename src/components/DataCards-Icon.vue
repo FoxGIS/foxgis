@@ -17,24 +17,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
     <div class="details">
-      <!-- <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel> -->
-      <div class="icon-panel">
-        <div class="meta-title">
-          <b>图标说明</b>
-          <div class="description">
-            <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
-          </div>
-        </div>
-        <div class="meta-title">
-          <b>图标详情（<b style="color:blue;">{{sprite.icons.length}}</b>）</b>
-        </div>
-        <div class="panel" style="text-align:center;">
-          <a v-for="icon in sprite.icons" class="icon-link" title="{{icon.name}}">
-            <div :style="'background-image:url('+sprite.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
-            </div>
-          </a>
-        </div>
-      </div>
+      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -109,24 +92,6 @@ export default {
         } 
       }
       e.target.parentElement.className = claName;
-
-      
-    },
-
-    editDescription: function(e,index){//修改图标说明
-      let value = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let sprite_id = this.dataset[index].sprite_id;
-      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
-      this.dataset[index].description = value;
-      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          let data = response.data;
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
-        }, function(response) {
-          alert("网络错误");
-      });
     },
 
     editScope: function(e,index){//修改共享范围
@@ -141,6 +106,7 @@ export default {
             alert("编辑错误");
           });
     },
+
     uploadNameChange: function(e,index){//修改符号名称
       let value = e.target.value;
       let sprite_id = this.dataset[index].sprite_id;
@@ -160,6 +126,7 @@ export default {
           alert("网络错误");
       });
     },
+
     showPreview: function(e, index) {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
@@ -174,11 +141,13 @@ export default {
         e.target.style.display = 'none';
       }
     },
+
     deleteSprite: function(sprite_id) {//删除符号
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block';
       this.deleteUploadId = sprite_id;
     },
+
     deleteAction: function(status) {
       if (status === 'ok') {
         var username = Cookies.get('username');
@@ -196,6 +165,7 @@ export default {
         this.deleteUploadId = "";//重置deleteUploadId
       }
     },
+
     nextPage: function (event) {      
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page === allPages){
@@ -471,6 +441,14 @@ export default {
 .delete-button{
   position: relative;
   left: -29px;
+}
+
+.add-button{
+  position: relative;
+  left: -29px;
+  float: right;    
+  height: 20px;  
+  line-height: 20px;
 }
 
 .details .icon-link:hover{

@@ -3,13 +3,19 @@
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
-        <input type="text" value={{dataset.description}} @change="editDescription($event,dataset.sprite_id )">
+        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset.description" @change="editDescription($event,dataset.sprite_id )"></mdl-textfield>
       </div>
     </div>
     <div class="meta-title">
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
+      <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
     </div>
+<<<<<<< HEAD
     <div class="icon-container" style="text-align:center;">
+=======
+    <div class="panel" style="text-align:center;max-height: 400px;">
+>>>>>>> 0453c03459eb743c1bf33f1ee181954a0d3e83bd
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -28,13 +34,45 @@ export default {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
         .then(function(response){
           let data = response.data;
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });
         }, function(response) {
           alert("网络错误");
       });
+    },
+
+    addSprite: function(){//添加图标
+      let hidefile = document.getElementById('icon-input');
+      hidefile.click();
+      hidefile.addEventListener('change', this.uploadSprite);  
+    },
+
+    uploadSprite: function(e){
+      let access_token = Cookies.get('access_token');
+      let num = 1;
+      for(let i=0;i<e.target.files.length;i++){
+        let spriteName = e.target.files[i].name.split('.')[0];
+        let url = this.dataset.pngUrl.split('?')[0];
+        let length = url.split('/').length-1;
+        let oldName = url.split('/')[length];
+        url = url.replace(oldName,spriteName);
+        let formData = new FormData();
+        formData.append('file', e.target.files[i]); 
+        this.$http({url:url,method:'PUT',data:formData,headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            if(num === e.target.files.length){
+              alert('已成功添加图标');
+            }else{
+              num++;
+            }   
+          }
+        }, function(response) {
+            alert('未知错误，请稍后再试');
+        });
+      }
     },
   },
   /*computed:{
@@ -92,6 +130,14 @@ export default {
   border: none;
   padding: 5px 5px 5px 0;
   width: 60%;
+}
+
+.add-button{
+  position: relative;
+  left: -29px;
+  float: right;    
+  height: 19px;  
+  line-height: 19px;
 }
 
 </style>

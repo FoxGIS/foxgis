@@ -3782,6 +3782,7 @@ TODOS
 						        var b = xhr.responseText;    
 						        if(b){    
 						        	$("#spinner").css("display","none");
+						        	alert("已成功分享到决策用图！");
 						        }else{  
 						        	$("#spinner").css("display","none");
 						        	alert("分享失败！");
