@@ -3,12 +3,12 @@
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
-        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" v-model="dataset.description" @change="editDescription($event,dataset.sprite_id )"></mdl-textfield>
+        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset.description" @change="editDescription($event,dataset.sprite_id )"></mdl-textfield>
       </div>
     </div>
     <div class="meta-title">
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
-      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite($event,dataset.sprite_id)">添加图标</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
     </div>
     <div class="panel" style="text-align:center;max-height: 400px;">
@@ -39,7 +39,7 @@ export default {
       });
     },
 
-    addSprite: function(e,sprite_id){//添加图标
+    addSprite: function(){//添加图标
       let hidefile = document.getElementById('icon-input');
       hidefile.click();
       hidefile.addEventListener('change', this.uploadSprite);  
