@@ -35,7 +35,6 @@
         </div>
         <div class="meta-data content">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
-            
             <span>最大缩放级别：{{detailsData.maxzoom}}</span>
             <span v-if="detailsData.bounds">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
             <span>最小缩放级别：{{detailsData.minzoom}}</span>

@@ -117,7 +117,7 @@ export default {
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
         .then(function(response){
           let data = response.data;
-          var input = $(".sprite-name");
+          let input = $(".sprite-name");
           for(let i=0;i<input.length;i++){
             input[i].blur();
             input[i].value = this.dataset[i].name;
@@ -131,9 +131,21 @@ export default {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.sprites + '/' + username+'/'+this.dataset[index].sprite_id+'/sprite.png?access_token='+access_token;
-      document.querySelector('#thumbnail').src = url;
-      document.querySelector('.preview-modal').style.display = 'block';
-
+      
+        let image2 = new Image();
+          image2.onload = function () {
+              let canvas = document.createElement('canvas');
+              canvas.width = this.width; // or 'width' if you want a special/scaled size
+              canvas.height = this.height; // or 'height' if you want a special/scaled size
+              canvas.getContext('2d').drawImage(this, 0, 0);
+              // Get raw image data
+              let raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+              document.querySelector('#thumbnail').src = raw;
+              document.querySelector('.preview-modal').style.display = 'block';
+          };
+          image2.crossOrigin = "Anonymous";
+          image2.src = url;
+      
     },
 
     hidePreview: function(e) {
