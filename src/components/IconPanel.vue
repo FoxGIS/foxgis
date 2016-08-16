@@ -9,7 +9,7 @@
     <div class="meta-title">
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
     </div>
-    <div class="panel" style="text-align:center;">
+    <div class="icon-container" style="text-align:center;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -61,7 +61,7 @@ export default {
   margin-bottom: 12px;
   margin-left: 5px;
 }
-.panel{
+.icon-container{
   display: flex;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
@@ -72,17 +72,17 @@ export default {
   height: calc(100% - 50px);
 }
 
-.panel::-webkit-scrollbar {
+.icon-container::-webkit-scrollbar {
   width: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
-.panel::-webkit-scrollbar-track {
+.icon-container::-webkit-scrollbar-track {
   background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
-.panel::-webkit-scrollbar-thumb {
+.icon-container::-webkit-scrollbar-thumb {
     background-color: #adadad;
 }
 

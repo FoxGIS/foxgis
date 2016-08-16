@@ -347,7 +347,7 @@
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
     </div>
 
-    <div id="font-select-panel">
+    <div id="font-select-panel" class="panel">
       <div class="meta-title">
         <b>字体详情</b>
       </div>
@@ -366,8 +366,8 @@
       </div>
     </div>
 
-    <foxgis-icon-panel id="icon-select-panel" :dataset="spriteObj"></foxgis-icon-panel>
-    <foxgis-stops-panel id="stops-panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
+    <foxgis-icon-panel id="icon-select-panel" class="panel" :dataset="spriteObj"></foxgis-icon-panel>
+    <foxgis-stops-panel id="stops-panel" class="panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
 
   </div>
 
@@ -415,6 +415,7 @@ export default {
       }
     },
     styleControlClick:function(e){
+      $(".panel").hide();
       //移除之前的active
       let activeCards = this.$el.querySelector('.style-control-active');
       if(activeCards&&activeCards!==e.target){
@@ -568,8 +569,7 @@ export default {
       return mylayers
     },
     showPropertyPanel:function(layer_id){
-      $("#icon-select-panel").hide();
-      $("#font-select-panel").hide();
+      $(".panel").hide();
       let layers = this.styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
@@ -992,9 +992,10 @@ export default {
     closePanel: function(e){
       let panel = this.$el.querySelector("#property-panel")
       panel.style.display = 'none'
-      $("#icon-select-panel").hide();
+      $(".panel").hide();
     },
     onShowIconPanel:function(e){
+      $(".panel").hide();
       var iconPanel = $("#icon-select-panel");
       if(iconPanel.is(":visible")===true){
         iconPanel.hide();
@@ -1013,6 +1014,7 @@ export default {
       $("#icon-select-panel").hide();
     },
     onShowFontPanel:function(e){
+      $(".panel").hide();
       var fontPanel = $("#font-select-panel");
       if(fontPanel.is(":visible")===true){
         fontPanel.hide();
@@ -1064,6 +1066,7 @@ export default {
       }
     },
     openStopsPanel:function(e){
+      $(".panel").hide();
       if($(e.target).hasClass("open")){
         $("#stops-panel").hide();
         $(e.target).removeClass("open");
@@ -1072,14 +1075,6 @@ export default {
       $(".open-stops").removeClass("open");
       $(e.target).addClass("open");
       $("#stops-panel").show();
-      var offsetTop = e.target.offsetParent.offsetTop;
-      var containerHeight = e.target.offsetParent.offsetParent.offsetHeight;
-      var pannelHeight = $("#stops-panel")[0].offsetHeight;
-      if((offsetTop+pannelHeight)<=containerHeight){
-        $("#stops-panel").css("top",offsetTop);
-      }else{
-        $("#stops-panel").css("top",containerHeight-pannelHeight-10);
-      }
 
       var propertyName = e.target.dataset.name;
       var type = e.target.dataset.type;//layout/paint
@@ -1106,6 +1101,20 @@ export default {
           stops:[],
           base:1
         };
+      }
+
+      var offsetTop = e.target.offsetParent.offsetTop;
+      var containerHeight = e.target.offsetParent.offsetParent.offsetHeight;
+      var pannelHeight;
+      if(this.stopsData.hasStops===false){
+        pannelHeight = 108;
+      }else{
+        pannelHeight = 163+26*this.stopsData.stopsObj.stops.length;
+      }
+      if((offsetTop+pannelHeight)<=containerHeight){
+        $("#stops-panel").css("top",offsetTop);
+      }else{
+        $("#stops-panel").css("top",containerHeight-pannelHeight-10);
       }
     }
   },
@@ -1864,5 +1873,9 @@ a {
 
 .open-stops:hover{
   background-color: gray;
+}
+
+.open-stops.open{
+  background-color: #8ba1f3;
 }
 </style>
