@@ -103,6 +103,7 @@ export default {
       this.$el.style.display = 'none';
     },
     doCancel: function(){
+      $(".open-stops").removeClass("open");
       this.$el.style.display = 'none'
     },
     inputChange:function(e,index){
