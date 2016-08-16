@@ -395,6 +395,7 @@ svgEditor.addExtension('ext-legend', function() {
 		legend_group.add(text);
 		//监听事件
 		$("#legend-set input[name='addon']").bind("change",legendSelected);
+		$("#legend-set input[name='legend-text']").bind("change",textChange);
 		$("#legend-set i[name='legend-up']").bind("click",legendUp);
 		$("#legend-set i[name='legend-down']").bind("click",legendDown);
 	}
@@ -847,6 +848,31 @@ svgEditor.addExtension('ext-legend', function() {
 		laterLegend.each(function(){
 			this.setAttribute("name","legend"+index);
 		});
+	}
+
+	/**
+ 	* 图例设置面板中的文字设置事件，文字改变时触发。调整图例的显示内容
+ 	*
+ 	* @参数 {Event} e DOM事件
+ 	* @返回值 无
+ 	*/
+	function textChange(e){
+		var name = $(e.target.parentElement).attr('name');
+		var index = parseInt(name.replace("legend",""));//当前图例在设置中的索引（从0开始）
+		if(!$(".legend-item[name=legend"+index+"] input[type='checkbox']").attr("checked")){
+			return;
+		}
+		var viewIndex = 0; //当前图例在预览中的索引（从1开始）
+		var value = e.target.value;
+		$(".legend-item input[type='checkbox']").each(function(){//遍历checkbox，获取viewIndex
+			if(this.checked){
+				viewIndex++;
+			}
+			if($(this.parentElement).attr('name')===name){
+				return false;
+			}
+		});
+		$("#preview-drawing text[name='legend"+viewIndex+"']").text(value);
 	}
 	/**
  	* 图例设置面板中的列数设置事件，列数改变时触发。调整图例的列数
