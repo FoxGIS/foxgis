@@ -11,7 +11,11 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
     </div>
+<<<<<<< HEAD
+    <div class="icon-container" style="text-align:center;">
+=======
     <div class="panel" style="text-align:center;max-height: 400px;">
+>>>>>>> 0453c03459eb743c1bf33f1ee181954a0d3e83bd
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -120,7 +124,7 @@ export default {
   margin-bottom: 12px;
   margin-left: 5px;
 }
-.panel{
+.icon-container{
   display: flex;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
@@ -131,17 +135,17 @@ export default {
   height: calc(100% - 50px);
 }
 
-.panel::-webkit-scrollbar {
+.icon-container::-webkit-scrollbar {
   width: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
-.panel::-webkit-scrollbar-track {
+.icon-container::-webkit-scrollbar-track {
   background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
-.panel::-webkit-scrollbar-thumb {
+.icon-container::-webkit-scrollbar-thumb {
     background-color: #adadad;
 }
 

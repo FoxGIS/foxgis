@@ -143,6 +143,9 @@ export default {
     backToProject:function(){
       var style = {};
       this.changeStyle(style);
+      $(".panel").hide();
+      this.$refs.drafmap.map.remove();
+      this.$refs.drafmap.map = {};
     },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")

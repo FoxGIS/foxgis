@@ -180,13 +180,33 @@ export default {
       this.stopsdata.stopsObj.type = "";
       this.stopsdata.stopsObj.base = 1;
       this.stopsdata.stopsObj.stops.push(["",defaultValue]);
+      this.updatePanelPosition();
     },
     addStops:function(){
       var defaultValue = this.stopsdata.property.defaultValue;
       this.stopsdata.stopsObj.stops.push(["",defaultValue]);
+      this.updatePanelPosition();
     },
     deleteStop:function(e,index){
       this.stopsdata.stopsObj.stops.splice(index,1);
+      this.updatePanelPosition();
+    },
+    updatePanelPosition:function(){
+      var offsetTop = $(".dialog")[0].offsetTop;
+      var containerHeight = $(".dialog")[0].offsetParent.offsetHeight;
+      var pannelHeight;
+      if(this.stopsdata.hasStops===false){
+        pannelHeight = 108;
+      }else{
+        pannelHeight = 163+26*this.stopsdata.stopsObj.stops.length;
+      }
+      if((offsetTop+pannelHeight)<=containerHeight){
+        $("#stops-panel").css("top",offsetTop);
+      }else{
+        var top = containerHeight-pannelHeight-10;
+        if(top<0){top=0;}
+        $("#stops-panel").css("top",top);
+      }
     }
   },
   data(){
