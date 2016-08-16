@@ -17,8 +17,8 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
     <div class="details">
-      <!-- <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel> -->
-      <div class="icon-panel">
+      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
+      <!-- <div class="icon-panel">
         <div class="meta-title">
           <b>图标说明</b>
           <div class="description">
@@ -27,6 +27,8 @@
         </div>
         <div class="meta-title">
           <b>图标详情（<b style="color:blue;">{{sprite.icons.length}}</b>）</b>
+          <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">添加图标</mdl-anchor-button>
+          <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
         </div>
         <div class="panel" style="text-align:center;">
           <a v-for="icon in sprite.icons" class="icon-link" title="{{icon.name}}">
@@ -34,7 +36,7 @@
             </div>
           </a>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
   <div id="pagination" v-show="dataset.length>0?true:false">
@@ -174,11 +176,45 @@ export default {
         e.target.style.display = 'none';
       }
     },
+
+    addSprite: function(e,sprite_id){//添加图标
+      this.click_sprite_id = sprite_id;
+      let hidefile = document.getElementById('icon-input');
+      hidefile.click();
+      hidefile.addEventListener('change', this.uploadSprite);  
+    },
+
+    uploadSprite: function(e){
+      let sprite_id = this.click_sprite_id;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let num = 1;
+      for(let i=0;i<e.target.files.length;i++){
+        let spriteName = e.target.files[i].name.split('.')[0];
+        let url = SERVER_API.sprites + '/' + username + "/" + sprite_id + "/" + spriteName;
+        let formData = new FormData();
+        formData.append('file', e.target.files[i]); 
+        this.$http({url:url,method:'PUT',data:formData,headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            if(num === e.target.files.length){
+              alert('已成功添加图标');
+            }else{
+              num++;
+            }   
+          }
+        }, function(response) {
+            alert('未知错误，请稍后再试');
+        });
+      }
+    },
+
     deleteSprite: function(sprite_id) {//删除符号
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block';
       this.deleteUploadId = sprite_id;
     },
+
     deleteAction: function(status) {
       if (status === 'ok') {
         var username = Cookies.get('username');
@@ -266,7 +302,8 @@ export default {
         pngUrl:'',//该雪碧图的url
         icons:[],//该雪碧图包含的所有icon，每个icon包括name和positions两个属性
         description:''//该雪碧图的说明文字
-      }
+      },
+      click_sprite_id:''
     }
   }
 }
@@ -327,7 +364,7 @@ export default {
   transition:0.2s;
 } 
 .details{
-  max-height: 0;
+  /* max-height: 0; */
   opacity: 0;
   overflow: hidden;
   padding: 0;
@@ -340,7 +377,7 @@ export default {
   margin-bottom: 45px;
 }
 .active .details{
-  max-height: 1000px;
+  /* max-height: 1000px; */
   opacity: 1;
   transition:0.5s;
 }
@@ -471,6 +508,14 @@ export default {
 .delete-button{
   position: relative;
   left: -29px;
+}
+
+.add-button{
+  position: relative;
+  left: -29px;
+  float: right;    
+  height: 20px;  
+  line-height: 20px;
 }
 
 .details .icon-link:hover{
