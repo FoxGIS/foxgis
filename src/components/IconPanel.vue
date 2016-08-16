@@ -11,7 +11,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
     </div>
-    <div class="panel" style="text-align:center;max-height: 400px;overflow-y: auto;">
+    <div class="icon-container" style="text-align:center;max-height: 400px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -32,9 +32,7 @@ export default {
       this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
         .then(function(response){
-          let data = response.data;
-          let input = $(".active .mdl-textfield__input");
-          input[0].value = this.dataset.description;
+          
         }, function(response) {
           alert("网络错误");
       });
