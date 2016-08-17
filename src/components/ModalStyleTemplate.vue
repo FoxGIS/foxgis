@@ -56,7 +56,7 @@
         
       </div>
     </div>
-    <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
+    <foxgis-dialog id="delete-dialog_template" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
   </div>
 </template>
 
@@ -138,7 +138,7 @@ export default {
       $("#edit-template_panel .item-thumb").css("background-image","url('"+imageUrl+"')");
     },
     deleteTemplateClick:function(id){
-      this.$el.querySelector("#delete-dialog").style.display = 'block'
+      this.$el.querySelector("#delete-dialog_template").style.display = 'block'
       this.deleteTemplateId = id;
     },
     deleteAction: function(status){
