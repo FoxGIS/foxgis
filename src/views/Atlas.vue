@@ -11,25 +11,25 @@
       </div>
 
       <div class="filter">
-        <div style="width: 570px;">
+        <div style="width: 1000px;">
           <div class="condition">
             <span>主题词：</span>
-            <a v-for="tag in theme_tags" v-if="$index<6"
+            <a v-for="tag in theme_tags"
                   @click="conditionClick($event,1)">{{ tag }}
             </a>
           </div>
           <div class="condition">
             <span>制图区域：</span>
-            <a v-for="location in location_tags" v-if="$index<6"
-                  @click="conditionClick($event,2)">{{ location.data }}
-                  <span>({{ location.num }})</span>
+            <a v-for="location in location_tags"
+                  @click="conditionClick($event,2)">{{ location.location }}
+                  <span>({{ location.total }})</span>
             </a>
           </div>
           <div class="condition">
             <span>制图年份：</span>
-            <a v-for="year in year_tags | orderBy" v-if="$index<6"
-                  @click="conditionClick($event,3)">{{ year.data }}
-                  <span>({{ year.num }})</span>
+            <a v-for="year in year_tags | orderBy"
+                  @click="conditionClick($event,3)">{{ year.year }}
+                  <span>({{ year.total }})</span>
             </a>
           </div>
         </div>
@@ -341,8 +341,30 @@ export default {
       }
     }, function(response) {
       console.log(response)
-    })
-    console.log(this.$parent)
+    });
+
+    //获取制图区域统计信息
+    var locationUrl = SERVER_API.stats+"/location";
+    this.$http({ url: locationUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        let data = response.data
+        this.location_tags = data;
+      }
+    },function(response){
+
+    });
+
+    //获取制图年份统计信息
+    var yearUrl = SERVER_API.stats+"/year";
+    this.$http({ url: yearUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        let data = response.data
+        this.year_tags = data;
+      }
+    },function(response){
+
+    });
+
   },
 
   computed: {
@@ -355,9 +377,7 @@ export default {
     },
      
     total_items: function (){
-      let count = this.displayUploads.length
-      let allCount = this.uploads.length
-      this.$dispatch("upload_nums", allCount)      
+      let count = this.displayUploads.length      
       return count
     },
      
@@ -445,10 +465,10 @@ export default {
         let data1 = []
         let data2 = []
         for(let i=0;i<this.location_tags.length;i++){
-          data1.push(this.location_tags[i].data)
+          data1.push(this.location_tags[i].location)
         }
         for(let j=0;j<this.year_tags.length;j++){
-          data2.push(this.year_tags[j].data)
+          data2.push(this.year_tags[j].year)
         }
         if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 && _.intersection(data2,this.selected_year_tags).length === 0 &&  _.intersection(data1,this.selected_location_tags).length === 0){
           temp=this.uploads;
@@ -469,52 +489,6 @@ export default {
         }
         theme = _.uniq(theme)
         return theme
-    }, 
-
-    year_tags: function(){
-        let year = []
-        let data = []
-        let tempUploads = this.uploads
-        for(let i=0;i<tempUploads.length;i++){
-          year.push(tempUploads[i].year)
-        }
-        let tempYear = year
-        year = _.uniq(year).sort()
-        for(let j=0;j<year.length;j++){
-          let temp = year[j]
-          let num = 0
-          for(let k=0;k<tempYear.length;k++){
-            if(temp === tempYear[k]){
-              num++
-            }
-          }
-          data.push({'data':temp,'num':num})
-        }
-        return data
-    }, 
-
-    location_tags: function(){
-        let location = []
-        let data = []
-        let tempUploads = this.uploads
-        for(let i=0;i<tempUploads.length;i++){
-          if(tempUploads[i].location.length > 0){
-            location.push(tempUploads[i].location)
-          }
-        }
-        let tempLocation = location
-        location = _.uniq(location)
-        for(let j=0;j<location.length;j++){
-          let temp = location[j]
-          let num = 0
-          for(let k=0;k<tempLocation.length;k++){
-            if(temp === tempLocation[k]){
-              num++
-            }
-          }
-          data.push({'data':temp,'num':num})
-        }
-        return data
     }
   },
 
@@ -531,7 +505,9 @@ export default {
       selected_year_tags: [],
       selected_location_tags: [], 
       selected_theme_tags: [],
-      searchKeyWords: ''
+      searchKeyWords: '',
+      location_tags:[],
+      year_tags:[]
     }
   }
 }
