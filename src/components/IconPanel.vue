@@ -3,7 +3,7 @@
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
-        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event)"></mdl-textfield>
+        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event,dataset.sprite_id)"></mdl-textfield>
       </div>
     </div>
     <div class="meta-title">
@@ -25,13 +25,23 @@ import Cookies from 'js-cookie'
 export default {
   props:['dataset'],
   methods: {
-    editDescription: function(e){//修改图标说明
+    editDescription: function(e,sprite_id){//修改图标说明
       let value = e.target.value;
       let access_token = Cookies.get('access_token');
       let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
       this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
         .then(function(response){
+          if(sprite_id){
+            let tempDataset = this.$parent.dataset;
+            for(let i=0;i<tempDataset.length;i++){
+              if(this.dataset.sprite_id === tempDataset[i].sprite_id) {
+                tempDataset[i].description = this.dataset.description;
+              }
+            }
+          }else{
+            
+          }
           
         }, function(response) {
           alert("网络错误");
@@ -71,7 +81,7 @@ export default {
       }
     },
 
-    newSprite: function(){
+    newSprite: function(){//添加成功后更新雪碧图
       let access_token = Cookies.get('access_token');
       let sprite = {pngUrl:"",icons:[]};//初始化sprite对象
       let url = this.dataset.pngUrl.split('?')[0];
