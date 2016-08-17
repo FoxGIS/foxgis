@@ -39,11 +39,11 @@
 	 		<div id = "image-download-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
 	 			<div class="scrollText" style="height: 240px;">
-	 				<ul style="margin-top: 0px; ">
+	 				<ul style="margin-top: 0px;">
 	 					<li v-for="message in mapDownloadInfo">
 	 						<input value="{{$index+1}}" disabled></input>
 	 						<span>{{message.name}}</span>
-	 						<span style="float:right;margin-right:25px;width:140px;text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
+	 						<span style="float:right;margin-right:25px;width:100px;text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
 	 					</li>
 	 				</ul>
 	 			</div>
