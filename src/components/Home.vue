@@ -29,7 +29,7 @@
 	 			<div class="title"><i class="material-icons">list</i><span>上传排行</span></div>
 	 			<div class="scrollText" style="height: 480px;">
 	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in uploadMessages">
+	 					<li v-for="message in uploadInfo">
 	 						<input value="{{$index+1}}" disabled></input>
 	 						<span>{{message.name}}上传{{message.total}}幅地图</span>
 	 					</li>
@@ -40,9 +40,10 @@
 	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
 	 			<div class="scrollText" style="height: 240px;">
 	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in uploadMessages">
+	 					<li v-for="message in mapDownloadInfo">
 	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}已上传{{message.total}}幅地图</span>
+	 						<span>{{message.name}}</span>
+	 						<span style="float:right;margin-right:25px;width:140px;text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
 	 					</li>
 	 				</ul>
 	 			</div>
@@ -51,9 +52,10 @@
 	 			<div class="title"><i class="material-icons">list</i><span>用户贡献排行</span></div>
 	 			<div class="scrollText" style="height: 240px;">
 	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in uploadMessages">
+	 					<li v-for="message in userDowloadInfo">
 	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}上传{{message.total}}幅地图</span>
+	 						<span>{{message.name}}</span>
+	 						<span style="float:right;margin-right:25px;width:140px;text-align:left;">贡献下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
 	 					</li>
 	 				</ul>
 	 			</div>
@@ -75,7 +77,7 @@ export default {
 
 	},
 	
-  ready() {
+  attached() {
     let access_token = Cookies.get('access_token')
     let url = SERVER_API.stats + '/uploads'
     var that = this
@@ -105,7 +107,7 @@ export default {
         		yData.push({value:data[i].total,name:data[i].owner});
         	}
         }
-        this.uploadMessages = messages;
+        this.uploadInfo = messages;
 
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('stats-chart'));
@@ -135,38 +137,51 @@ export default {
       }
     }, function(response) {
       console.log(response)
-    })
+    });
 
-    
+    let mapDownloadUrl = SERVER_API.stats + '/filedownloads'
+    this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        var messages = [];
+        for(let i=0;i<data.length;i++){
+        	messages.push({"name":data[i].name,"downloadNum":data[i].downloadNum});
+        	
+        }
+        this.mapDownloadInfo = messages;
+      }
+    }, function(response) {
+      console.log(response)
+    });
+
+    let userDownloadUrl = SERVER_API.stats + '/userdownloads'
+    this.$http({ url: userDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        var messages = [];
+        for(let i=0;i<data.length;i++){
+        	if(data[i].organization){
+        		messages.push({"name":data[i].organization,"downloadNum":data[i].downloadNum});
+        	}else if(data[i].location){
+        		messages.push({"name":data[i].location,"downloadNum":data[i].downloadNum});
+        	}else if(data[i].name){
+        		messages.push({"name":data[i].name,"downloadNum":data[i].downloadNum});
+        	}else if(data[i].username){
+        		messages.push({"name":data[i].username,"downloadNum":data[i].downloadNum});
+        	}
+        }
+        this.userDowloadInfo = messages;
+      }
+    }, function(response) {
+      console.log(response)
+    });
   },
 	
 	data() {
 		return {
-			images: [{
-				image_id: 'pic1',
-				path:'/static/Home_image/china1.jpg',
-				title:'中国全图'
-			},{
-				image_id: 'pic2',
-				path:'/static/Home_image/北京市.jpg',
-				title:'北京市'
-			},{
-				image_id: 'pic3',
-				path:'/static/Home_image/三亚市三维.jpg',
-				title:'三亚市三维'
-			},{
-				image_id: 'pic4',
-				path:'/static/Home_image/一带一路.jpg',
-				title:'一带一路'
-			},
-			{
-				image_id: 'pic5',
-				path:'/static/Home_image/中国世界遗产.jpg',
-				title:'中国世界遗产'
-			}],
-			uploadMessages:[],
-			mapDownloadMessages:[],
-			userDowloadMessages:[]
+			uploadInfo:[],
+			mapDownloadInfo:[],
+			userDowloadInfo:[]
 		}
 	}
 }
