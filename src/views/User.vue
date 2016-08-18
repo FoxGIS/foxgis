@@ -6,43 +6,53 @@
           <tbody>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
-              <td><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
+              <td v-if="userInfo.username"><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
+              <td v-else><input disabled id="username-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
-              <td><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
+              <td v-if="userInfo.is_verified"><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
+              <td v-else><input disabled id="verify-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
-              <td><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
+              <td v-if="userInfo.name"><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
+              <td v-else><input id="name-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+              <td v-if="userInfo.email"><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+              <td v-else><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
-              <td><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
+              <td v-if="userInfo.telephone"><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
+              <td v-else><input id="phone-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
-              <td><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
+              <td v-if="userInfo.mobile"><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
+              <td v-else><input id="mobile-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
-              <td><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
+              <td v-if="userInfo.location"><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
+              <td v-else><input disabled id="location-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-              <td><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+              <td v-if="userInfo.organization"><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+              <td v-else><input id="organization-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
-              <td><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
+              <td v-if="userInfo.position"><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
+              <td v-else><input id="position-input" @change="infoChange" value=""></td>
             </tr>
             <tr>
               <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
-              <td><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
+              <td v-if="userInfo.createdAt"><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
+              <td v-else><input disabled id="createdAt-input" value=""></td>
             </tr>
           </tbody>
         </table>
