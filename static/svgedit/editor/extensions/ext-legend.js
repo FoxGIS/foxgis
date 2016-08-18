@@ -609,17 +609,19 @@ svgEditor.addExtension('ext-legend', function() {
 				index++
 			}
 		});
+		console.log("pindex:"+pindex);console.log("index:"+index);
 		if(e.target.checked){//图例选中
 			/*2、根据图例选中前后的位置，将图例偏移至新的位置，并将图例name属性设置为“new-add”*/
 			var oldOpts = {index:pindex-1,col:1,count:total_legend,colWidth:colWidth}
 			var opts = {index:index,col:col,count:selected_count+1,colWidth:colWidth}
 			var current_item = $('#set-drawing [name='+name+']').clone();//获取选中的图例元素
-			translate(oldOpts,opts,current_item);
+			console.log(current_item);
 			for(var i=0;i<current_item.length;i++){
 				var s = Snap(current_item[i]);
 				s.attr({"name":"new-add"});
 				legend_group.add(s);
 			}
+			translate(oldOpts,opts,current_item);
 			/*3、根据文本框的图例内容创建text元素，将其name属性设置为“new-add”，并将其偏移到图例对应位置*/
 			var t = previewSnap.text(80,18,text);
 			$(t.node).attr({
@@ -631,8 +633,8 @@ svgEditor.addExtension('ext-legend', function() {
 				'text-anchor': 'left',
 				opacity: 1
 			});
-			translate({index:0,col:1,count:1,colWidth:colWidth},opts,$(t.node));
 			legend_group.add(t);
+			translate({index:0,col:1,count:1,colWidth:colWidth},opts,$(t.node));
 			/*4、更新预览框中的图例总数目*/
 			selected_count++;
 			/*5、更新该图例之后的所有图例的位置，并更新他们的name属性，使其name属性与其index索引相一致*/
@@ -679,6 +681,7 @@ svgEditor.addExtension('ext-legend', function() {
 		var oldCurrCol = (oldOpts.index%oldOpts.col)||oldOpts.col;//当前列数，索引除以总行数向上取整
 		var newCurrRow = Math.ceil(opts.index/opts.col);//当前行数，索引除以总行数取余
 		var newCurrCol = (opts.index%opts.col)||opts.col;//当前列数，索引除以总行数向上取整
+		console.log("translate"+oldCurrRow+"  "+oldCurrCol+"   "+newCurrRow+"   "+newCurrCol);
 		var x = (newCurrCol-1)*opts.colWidth-(oldCurrCol-1)*oldOpts.colWidth;
 		var y = (newCurrRow-oldCurrRow)*rowHeight;
 		for(var i=0;i<element.length;i++){
@@ -689,7 +692,9 @@ svgEditor.addExtension('ext-legend', function() {
 				element[i].setAttribute("y",oldY+y);
 			}else{
 				element[i].setAttribute("transform","translate("+x+","+y+")");
+				console.log("recalculateDimensions");
 				canv.recalculateDimensions(element[i]);
+				console.log("recalculateDimensions over");
 			}	
 		}
 		
