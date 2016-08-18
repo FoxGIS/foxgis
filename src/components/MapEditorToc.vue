@@ -1712,6 +1712,7 @@ a {
   height: 20px;
   padding: 5px 0px 5px 5px;
   border: none;
+  width: 170px;
 }
 
 .property-value input[name='text-field'] {
