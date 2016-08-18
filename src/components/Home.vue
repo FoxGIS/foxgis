@@ -319,7 +319,7 @@ li img{
 
 .scrollText li input{
 	width: 20px;
-    height: 10px;
+    height: 13px;
     text-align: center;
     background-color: gray;
     border: none;
@@ -328,7 +328,7 @@ li img{
 
 .scrollText li:nth-child(1) input,li:nth-child(2) input,li:nth-child(3) input{
 	width: 20px;
-    height: 10px;
+    height: 13px;
     text-align: center;
     background-color: #ff7600;
     border: none;
