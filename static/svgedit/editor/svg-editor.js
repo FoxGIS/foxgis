@@ -3659,7 +3659,7 @@ TODOS
 						return;
 					}
 					$("#spinner").css("display","block");
-					var str = $('#svgcontent')[0].outerHTML; 
+					var str = (new XMLSerializer()).serializeToString($('#svgcontent')[0]);
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
 					var imageObj = $(xmlObj).find("image");
