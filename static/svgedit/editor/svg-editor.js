@@ -3677,11 +3677,7 @@ TODOS
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
 							imageObj.attr("xlink:href",url);
-							if (window.ActiveXObject){//code for ie
-							    str = xmlObj.xml;
-							}else{// code for Mozilla, Firefox, Opera, etc.
-							    str = (new XMLSerializer()).serializeToString(xmlObj);
-							}
+							str = (new XMLSerializer()).serializeToString(xmlObj);
 							var quality = parseInt($('#image-slider').val(), 10)/100;	
 							downLoad(str,imgType,quality);
 						});
