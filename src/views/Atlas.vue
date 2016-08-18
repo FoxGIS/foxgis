@@ -196,6 +196,10 @@ export default {
     },
 
     conditionClick: function(e,type){
+      this.pageConfig.skip = 0
+      this.pageConfig.page_item_num = 8      
+      this.pageConfig.current_page = 1
+      this.pageConfig.first_page = 1
       let str = e.target.textContent.trim()
       str = str.substr(0, str.indexOf('(')).trim()
       if(e.target.className == 'filter condition active'){
@@ -795,7 +799,6 @@ span.delete-badge{
   margin: 0 10px;
   list-style-type: disc;
   cursor: pointer;
-  width: 30px;
 }
 
 #pagination li:not(.page-active):hover {
