@@ -3703,49 +3703,52 @@ TODOS
 						var image1 = new Image();
 						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
 
-						var canvas = document.getElementById('myCanvas');  //准备空画布
-						document.getElementById('myCanvas').setAttribute("width",width*scale);
-						document.getElementById('myCanvas').setAttribute("height",height*scale);
-						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-						context.drawImage(image1, 0, 0);
-						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
-						if(imgType==="JPEG"){
-							canvas.toBlob(function(blob) {
-								if(type === "share"){
-									uploadImg(blob,imgType,filename)
-								}else if(type === "export"){
-									$("#spinner").css("display","none");
-									saveAs(blob, filename+".jpg");
-								}
-							},"image/jpeg",quality);
-						}else if(imgType==="WEBP"){
-							canvas.toBlob(function(blob) {
-								if(type === "share"){
-									uploadImg(blob,imgType,filename)
-								}else if(type === "export"){
-									$("#spinner").css("display","none");
-									saveAs(blob, filename+".webp");
-								}
-							},"image/webp",quality);
-						}else if(imgType==="PNG"){
-							canvas.toBlob(function(blob) {
-								if(type === "share"){
-									uploadImg(blob,imgType,filename)
-								}else if(type === "export"){
-									$("#spinner").css("display","none");
-									saveAs(blob, filename+".png");
-								}
-							},"image/png");
-						}else if(imgType==="BMP"){
-							canvas.toBlob(function(blob) {
-								if(type === "share"){
-									uploadImg(blob,imgType,filename)
-								}else if(type === "export"){
-									$("#spinner").css("display","none");
-									saveAs(blob, filename+".bmp");
-								}
-							},"image/bmp");
+						image1.onload=function(){
+							var canvas = document.getElementById('myCanvas');  //准备空画布
+							document.getElementById('myCanvas').setAttribute("width",width*scale);
+							document.getElementById('myCanvas').setAttribute("height",height*scale);
+							var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+							context.drawImage(image1, 0, 0);
+							var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
+							if(imgType==="JPEG"){
+								canvas.toBlob(function(blob) {
+									if(type === "share"){
+										uploadImg(blob,imgType,filename)
+									}else if(type === "export"){
+										$("#spinner").css("display","none");
+										saveAs(blob, filename+".jpg");
+									}
+								},"image/jpeg",quality);
+							}else if(imgType==="WEBP"){
+								canvas.toBlob(function(blob) {
+									if(type === "share"){
+										uploadImg(blob,imgType,filename)
+									}else if(type === "export"){
+										$("#spinner").css("display","none");
+										saveAs(blob, filename+".webp");
+									}
+								},"image/webp",quality);
+							}else if(imgType==="PNG"){
+								canvas.toBlob(function(blob) {
+									if(type === "share"){
+										uploadImg(blob,imgType,filename)
+									}else if(type === "export"){
+										$("#spinner").css("display","none");
+										saveAs(blob, filename+".png");
+									}
+								},"image/png");
+							}else if(imgType==="BMP"){
+								canvas.toBlob(function(blob) {
+									if(type === "share"){
+										uploadImg(blob,imgType,filename)
+									}else if(type === "export"){
+										$("#spinner").css("display","none");
+										saveAs(blob, filename+".bmp");
+									}
+								},"image/bmp");
+							}
 						}
+						
 					};
 					
 					function getDataUri(url, callback) {

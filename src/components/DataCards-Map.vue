@@ -178,7 +178,7 @@ export default {
 
 .meta p {
   color: #9E9E9E;
-  font-size: .5em;
+  font-size:12px;
   margin: 0;
 }
 
