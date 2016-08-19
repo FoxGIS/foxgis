@@ -415,7 +415,7 @@ export default {
       if(this.selected_year_tags.length>0){
         for(let k=0;k<this.selected_year_tags.length;k++){
           let conditions = this.selected_year_tags[k]
-          for(let u=0,length=tempUploads.length;u<length;u++){
+          for(let u=0;u<tempUploads.length;u++){
             let upload = tempUploads[u]
             if(conditions === upload.year&&temp2.indexOf(upload) === -1){
               temp2.push(upload)
@@ -426,7 +426,7 @@ export default {
       if(this.selected_location_tags.length>0){
         for(let k=0;k<this.selected_location_tags.length;k++){
           let conditions = this.selected_location_tags[k]
-          for(let u=0,length=tempUploads.length;u<length;u++){
+          for(let u=0;u<tempUploads.length;u++){
             let upload = tempUploads[u]
             if(conditions === upload.location&&temp3.indexOf(upload) === -1){
               temp3.push(upload)
@@ -435,50 +435,24 @@ export default {
         }
       }
 
-      if(temp1.length === 0){
-        if(temp2.length === 0){
-          if(temp3.length === 0){
-            temp=tempUploads
-          }else{
-            temp =temp3
-          } 
-        }else{
-          if(temp3.length === 0){
-            temp =temp2
-          }else{
-            temp = _.intersection(temp2,temp3)
-          }
-        }
-      }else{
-        if(temp2.length === 0){
-          if(temp3.length === 0){
-            temp = temp1
-          }else{
-            temp = _.intersection(temp1,temp3)
-          }
-        }else{
-          if(temp3.length === 0){
-            temp = _.intersection(temp1,temp2)
-          }else{
-            temp = _.intersection(temp1,temp2,temp3)
-          }
-        }
+      if(this.selected_location_tags.length===0&&this.selected_year_tags.length===0&&this.selected_theme_tags.length===0){//一个都没选，返回所有值
+        temp=tempUploads;
+      }else if(this.selected_location_tags.length!==0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length!==0){//三个都选了，取交集
+        temp = _.intersection(temp1,temp2,temp3);
+      }else if(this.selected_location_tags.length!==0&&this.selected_year_tags.length===0&&this.selected_theme_tags.length===0){//选中了制图区域
+        temp = temp3;
+      }else if(this.selected_location_tags.length===0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length===0){//选中了年份
+        temp = temp2;
+      }else if(this.selected_location_tags.length===0&&this.selected_year_tags.length===0&&this.selected_theme_tags.length!==0){//选中了主题
+        temp = temp1;
+      }else if(this.selected_location_tags.length!==0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length===0){//选中了区域与年份，取交集
+        temp = _.intersection(temp2,temp3);
+      }else if(this.selected_location_tags.length!==0&&this.selected_year_tags.length===0&&this.selected_theme_tags.length!==0){//选中了区域与主题，取交集
+        temp = _.intersection(temp1,temp3);
+      }else if(this.selected_location_tags.length===0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length!==0){//选中了年份与主题，取交集
+        temp = _.intersection(temp1,temp2);
       }
-
-      if(temp.length===0){
-        let data1 = []
-        let data2 = []
-        for(let i=0;i<this.location_tags.length;i++){
-          data1.push(this.location_tags[i].location)
-        }
-        for(let j=0;j<this.year_tags.length;j++){
-          data2.push(this.year_tags[j].year)
-        }
-        if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 && _.intersection(data2,this.selected_year_tags).length === 0 &&  _.intersection(data1,this.selected_location_tags).length === 0){
-          temp=this.uploads;
-        }
-      }
-      return temp
+      return temp;
     },
 
     theme_tags: function(){

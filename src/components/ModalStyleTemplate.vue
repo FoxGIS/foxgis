@@ -8,14 +8,14 @@
           <div class="template-item" v-for="item in templates" v-on:click="itemSelect">
             <div class="item-thumb" v-bind:style="item.thumb" title="{{item.name}}" data-id="{{item.template_id}}" data-replace = "{{item.replace}}" data-owner = "{{item.owner}}">
               <div class="done"><i class="material-icons">done</i></div>
-              <div class="action">
+              <div class="action" v-if="userRole==='admin'">
                 <a class="edit" title="编辑" v-on:click.prevent="editTemplate(item.template_id)">编辑</a>
                 <a class="delete" title="删除" v-on:click.prevent="deleteTemplateClick(item.template_id)">删除</a>
               </div>
             </div>
             <div class="item-name">{{item.name}}</div>
           </div>
-          <div class="template-item template-new">
+          <div class="template-item template-new" v-if="userRole==='admin'">
             <div class="item-thumb" title="新建模板" v-on:click="newTemplate">
             </div>
             <div class="item-name">新建模板</div>
@@ -27,7 +27,7 @@
         </div>
         <i class="material-icons" id="modal-template-close" v-on:click="closeModal">clear</i>
 
-        <div id="new-template_panel" class="edit-panel">
+        <div id="new-template_panel" class="edit-panel" v-if="userRole==='admin'">
           <div class="item">
             <span class="title">新建模板</span>
             <input type="file" name="template-file" class="textfield" accept=".json">
@@ -40,7 +40,7 @@
           </div>
         </div>
 
-        <div id="edit-template_panel" class="edit-panel">
+        <div id="edit-template_panel" class="edit-panel" v-if="userRole==='admin'">
           <div class="item">
             <span class="title">编辑模板</span>
             <div class="item-thumb" v-bind:style="templateItem.thumb" v-on:click="imageClick">
@@ -112,6 +112,8 @@ export default {
       let url = SERVER_API.templates + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
         var data = res.data;
+        var str = data.thumb['background-image'];
+        data.thumb['background-image'] = str.substr(0,str.length-2)+"?access_token="+access_token+"')";
         this.templates.push(data);
         $("#new-template_panel").hide();
       },function(res){
@@ -145,13 +147,15 @@ export default {
       });
       var formData = new FormData()
       formData.append('upload', image);
+      this.templateItem.thumb['background-image'] = "url('"+window.URL.createObjectURL(image)+"')";
       let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
       this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
         var data = res.data;
         var url = data.thumb['background-image']
-        url = url.substr(0,url.length-2)+"?access_token="+access_token+"')";
-        if(!this.templateItem.thumb){this.templateItem.thumb = {}}
-        this.templateItem.thumb['background-image'] = url;
+        url = url.substring(5,url.length-2)+"?access_token="+access_token;
+        $.ajax(url);
+        /*if(!this.templateItem.thumb){this.templateItem.thumb = {}}
+        this.templateItem.thumb['background-image'] = url;*/
       },function(res){
         this.$broadcast("mailSent",{message:"图像修改失败！",timeout:3000});
       }); 
@@ -212,8 +216,9 @@ export default {
     if(username === undefined){
       return
     }
+    this.userRole = Cookies.get('role');
     let access_token = Cookies.get('access_token');
-    let url = SERVER_API.templates + '/' + username;
+    let url = SERVER_API.templates;
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         var data = response.data
@@ -229,52 +234,12 @@ export default {
     }, function(response) {
       console.log(response)
     });
-    /*this.templates = [{
-        'name': '省级行政区划图',
-        'id': '1',
-        'style':'admin-prov-v8.json',
-        'replace':'四川省',
-        'thumb': {
-          'background-image':"url('http://www.onegreen.net/maps/Upload_maps/201308/2013081409511905.jpg')"
-        }
-      },{
-        'name': '地级市行政区划图',
-         'id': '2',
-         'style':'admin-city-v8.json',
-         'replace':'成都市',
-        'thumb': {
-          'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
-        }
-      },{
-        'name': '县级行政区划图',
-         'id': '3',
-         'style':'admin-county-v8.json',
-         'replace':'510112',
-         'thumb': {
-          'background-image':"url('http://www.onegreen.net/maps/Upload_maps/201308/2013081409511905.jpg')"
-        }
-      },{
-        'name': '中国地形图',
-         'id': '4',
-         'style':'admin-terrain-v8.json',
-         'replace':'513221',
-        'thumb': {
-          'background-image':"url('http://map.hytrip.net/photo/350/5561554E02.jpg')"
-        }
-      },{
-        'name': '新闻地图',
-         'id': '5',
-         'style':'xinwen-xian-v8.json',
-         'replace':510112,
-        'thumb': {
-          'background-image':"url('http://www.xtrb.cn/epaper/xtrb/res/1/20110727/98401311730106640.jpg')"
-        }
-      }]*/
   },
   data: function(){
     return {
       templates: [],
       templateItem:{},
+      userRole:"",
       dialogcontent: {
         title: '确定删除吗？'
       },

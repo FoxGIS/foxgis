@@ -54,6 +54,7 @@ export default {
         let phone = data.phone
         let organization = data.organization
         let location = data.location
+        let role = data.role;
         let days = 0
 
         Cookies.set('access_token',access_token)
@@ -72,6 +73,9 @@ export default {
         }
         if(organization!=undefined){
           Cookies.set('organization',organization)
+        }
+        if(role!=undefined){
+          Cookies.set('role',role);
         }
         
         //跳转不好处理，所以统一跳转到首页
