@@ -683,7 +683,7 @@ export default {
 span.delete-badge{
   position: relative;
   bottom: 187px;
-  left: 303px;
+  left: 295px;
 }
 
 .meta-info {
