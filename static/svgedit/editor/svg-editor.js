@@ -1067,7 +1067,7 @@ TODOS
 
 				// by default, we add the XML prolog back, systems integrating SVG-edit (wikis, CMSs)
 				// can just provide their own custom save handler and might not want the XML prolog
-				svg = '<?xml version="1.0"?>\n' + svg;
+				svg = '<?xml version="1.0" encoding="UTF-8"?>\n' + svg;
 
 				// IE9 doesn't allow standalone Data URLs
 				// https://connect.microsoft.com/IE/feedback/details/542600/data-uri-images-fail-when-loaded-by-themselves

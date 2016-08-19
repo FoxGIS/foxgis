@@ -653,7 +653,6 @@ export default {
     }, function(response) {
       console.log(response)
     })
-    console.log(this.$parent)
   },
 
   computed: {

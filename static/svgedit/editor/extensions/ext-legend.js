@@ -609,13 +609,11 @@ svgEditor.addExtension('ext-legend', function() {
 				index++
 			}
 		});
-		console.log("pindex:"+pindex);console.log("index:"+index);
 		if(e.target.checked){//图例选中
 			/*2、根据图例选中前后的位置，将图例偏移至新的位置，并将图例name属性设置为“new-add”*/
 			var oldOpts = {index:pindex-1,col:1,count:total_legend,colWidth:colWidth}
 			var opts = {index:index,col:col,count:selected_count+1,colWidth:colWidth}
 			var current_item = $('#set-drawing [name='+name+']').clone();//获取选中的图例元素
-			console.log(current_item);
 			for(var i=0;i<current_item.length;i++){
 				var s = Snap(current_item[i]);
 				s.attr({"name":"new-add"});
@@ -681,7 +679,6 @@ svgEditor.addExtension('ext-legend', function() {
 		var oldCurrCol = (oldOpts.index%oldOpts.col)||oldOpts.col;//当前列数，索引除以总行数向上取整
 		var newCurrRow = Math.ceil(opts.index/opts.col);//当前行数，索引除以总行数取余
 		var newCurrCol = (opts.index%opts.col)||opts.col;//当前列数，索引除以总行数向上取整
-		console.log("translate"+oldCurrRow+"  "+oldCurrCol+"   "+newCurrRow+"   "+newCurrCol);
 		var x = (newCurrCol-1)*opts.colWidth-(oldCurrCol-1)*oldOpts.colWidth;
 		var y = (newCurrRow-oldCurrRow)*rowHeight;
 		for(var i=0;i<element.length;i++){
@@ -692,9 +689,7 @@ svgEditor.addExtension('ext-legend', function() {
 				element[i].setAttribute("y",oldY+y);
 			}else{
 				element[i].setAttribute("transform","translate("+x+","+y+")");
-				console.log("recalculateDimensions");
 				canv.recalculateDimensions(element[i]);
-				console.log("recalculateDimensions over");
 			}	
 		}
 		

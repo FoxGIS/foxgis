@@ -6,5 +6,6 @@ window.SERVER_API = {
   fonts: baseURL + '/fonts',
   sprites: baseURL + '/sprites',
   uploads: baseURL + '/uploads',
-  stats:baseURL + '/stats'
+  stats:baseURL + '/stats',
+  templates:baseURL + '/templates'
 }

@@ -33,12 +33,12 @@ export default {
       document.getElementById("template-container").style.display = 'block'
     },
     createStyle: function(data){
-      var name = data.name
-      var template = data.template
-      var url = './static/style-template/'+template;
-      var replace = data.replace;
-      this.$el.querySelector("#create-loading").style.display = 'block'
-      this.$http.get(url).then(function(res){
+      var name = data.name,
+          replace = data.replace;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
+      this.$el.querySelector("#create-loading").style.display = 'block';
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(res){
         if(typeof(res.data)==="string"){
           var styleStr = res.data;
         }else{

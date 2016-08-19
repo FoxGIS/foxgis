@@ -995,12 +995,12 @@ export default {
       $(".panel").hide();
     },
     onShowIconPanel:function(e){
-      $(".panel").hide();
       var iconPanel = $("#icon-select-panel");
       if(iconPanel.is(":visible")===true){
         iconPanel.hide();
         $("#icon-select-panel .icon-link").unbind("click");
       }else{
+        $(".panel").hide();
         iconPanel.show();
         $("#icon-select-panel .icon-link").unbind("click");
         $("#icon-select-panel .icon-link").bind("click",{inputEvent:e},this.iconClick);
@@ -1014,12 +1014,13 @@ export default {
       $("#icon-select-panel").hide();
     },
     onShowFontPanel:function(e){
-      $(".panel").hide();
+      
       var fontPanel = $("#font-select-panel");
       if(fontPanel.is(":visible")===true){
         fontPanel.hide();
         $("#font-select-panel .font-item").unbind("click");
       }else{
+        $(".panel").hide();
         fontPanel.show();
         $("#font-select-panel .font-item").unbind("click");
         $("#font-select-panel .font-item").bind("click",{inputEvent:e},this.fontClick);

@@ -1,15 +1,16 @@
 <template>
   <div>
+    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div class="modal-background">
       <div class="main">
         <div class="title">新建地图</div>
         <div class="templates">
           <div class="template-item" v-for="item in templates" v-on:click="itemSelect">
-            <div class="item-thumb" v-bind:style="item.thumb" title="{{item.name}}" data-template="{{item.style}}" data-replace = "{{item.replace}}">
+            <div class="item-thumb" v-bind:style="item.thumb" title="{{item.name}}" data-id="{{item.template_id}}" data-replace = "{{item.replace}}" data-owner = "{{item.owner}}">
               <div class="done"><i class="material-icons">done</i></div>
               <div class="action">
-                <a class="edit" title="编辑" v-on:click.prevent="editTemplate(item.id)">编辑</a>
-                <a class="delete" title="删除" v-on:click.prevent="deleteTemplateClick(item.id)">删除</a>
+                <a class="edit" title="编辑" v-on:click.prevent="editTemplate(item.template_id)">编辑</a>
+                <a class="delete" title="删除" v-on:click.prevent="deleteTemplateClick(item.template_id)">删除</a>
               </div>
             </div>
             <div class="item-name">{{item.name}}</div>
@@ -78,8 +79,9 @@ export default {
     createStyle: function(e){
       var checked = this.$el.querySelector('.item-thumb.checked')
       if(checked){
-        var template = checked.dataset.template
-        var replace = checked.dataset.replace
+        var template_id = checked.dataset.id;
+        var replace = checked.dataset.replace;
+        var owner = checked.dataset.owner;
       }else{
         alert("请选择一个模板")
         return
@@ -89,7 +91,7 @@ export default {
         alert("请输入地图名称")
         return
       }
-      this.$dispatch("style-params",{'name':styleName,'template':template,'replace':replace})
+      this.$dispatch("style-params",{'name':styleName,'id':template_id,'replace':replace,'owner':owner})
     },
     newTemplate:function(){
       $("#new-template_panel").show();
@@ -98,18 +100,61 @@ export default {
       var files = $("#new-template_panel input[name='template-file']")[0].files;
       var name = $("#new-template_panel #template-name").val();
       var replace = $("#new-template_panel #template-replace").val();
+      if(name===""||replace===""){
+        this.$broadcast("mailSent",{message:"名称与默认值不能为空",timeout:3000});
+      } 
       var formData = new FormData()
       formData.append('upload', files[0]);
       formData.append('name', name);
       formData.append('replace', replace);
-      $("#new-template_panel").hide();
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.templates + '/' + username;
+      this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        this.templates.push(data);
+        $("#new-template_panel").hide();
+      },function(res){
+        this.$broadcast("mailSent",{message:"创建失败",timeout:3000});
+      }); 
     },
     newTemplateCancel:function(){
+      $("#new-template_panel input[name='template-file']").val("");
+      $("#new-template_panel #template-name").val("");
+      $("#new-template_panel #template-replace").val("");
       $("#new-template_panel").hide();
     },
     editTemplateOK:function(){
       var name = $("#edit-template_panel #template-name").val();
       var replace = $("#edit-template_panel #template-replace").val();
+      var image = $("#edit-template_panel #template-image")[0].files[0];
+      var opts = {
+        name:name,
+        replace:replace
+      }
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      var id = this.templateItem.template_id;
+      let url = SERVER_API.templates + '/' + username+'/'+id;
+      this.$http({url:url,method:"PATCH",data:opts,headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        this.templateItem.name = data.name;
+        this.templateItem.replace = data.replace;
+      },function(res){
+        this.$broadcast("mailSent",{message:"修改失败！",timeout:3000});
+      });
+      var formData = new FormData()
+      formData.append('upload', image);
+      let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
+      this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        var url = data.thumb['background-image']
+        url = url.substr(0,url.length-2)+"?access_token="+access_token+"')";
+        if(!this.templateItem.thumb){this.templateItem.thumb = {}}
+        this.templateItem.thumb['background-image'] = url;
+      },function(res){
+        this.$broadcast("mailSent",{message:"图像修改失败！",timeout:3000});
+      }); 
       $("#edit-template_panel").hide();
     },
     editTemplateCancel:function(){
@@ -117,7 +162,7 @@ export default {
     },
     editTemplate:function(id){
       for(let i = 0;i<this.templates.length;i++){
-        if(this.templates[i].id===id){
+        if(this.templates[i].template_id===id){
           this.templateItem = this.templates[i];
         }
       }
@@ -143,27 +188,48 @@ export default {
     },
     deleteAction: function(status){
       if(status === 'ok'){
-        /*let style_id = this.deleteStyleId
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let url = SERVER_API.styles + '/' + username + "/" + style_id
-        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<this.dataset.length;i++){
-              if(this.dataset[i].style_id === style_id){
-                this.dataset.splice(i,1)
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        var id = this.deleteTemplateId;
+        let url = SERVER_API.templates + '/' + username+'/'+id;
+        this.$http({url:url,method:"DELETE",headers:{'x-access-token':access_token}}).then(function(res){
+          if(res.ok){
+            for(let i = 0;i<this.templates.length;i++){
+              if(this.templates[i].template_id === id){
+                this.templates.splice(i,1)
               }
             }
+            this.$broadcast("mailSent",{message:"删除成功！",timeout:3000});
           }
-        },function(response){
-          alert("未知错误，请稍后再试")
-        })*/
+        },function(res){
+          this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
+        });
       }
     }
   },
   attached(){
-    this.templates = [{
+    let username = Cookies.get('username');
+    if(username === undefined){
+      return
+    }
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.templates + '/' + username;
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data
+        for(let i=0;i<data.length;i++){
+          if(data[i].thumb){
+            var url = data[i].thumb['background-image'];
+            url = url.substr(0,url.length-2)+"?access_token="+access_token+"')";
+            data[i].thumb['background-image'] = url;
+          }
+        }
+        this.templates = data;
+      }
+    }, function(response) {
+      console.log(response)
+    });
+    /*this.templates = [{
         'name': '省级行政区划图',
         'id': '1',
         'style':'admin-prov-v8.json',
@@ -203,7 +269,7 @@ export default {
         'thumb': {
           'background-image':"url('http://www.xtrb.cn/epaper/xtrb/res/1/20110727/98401311730106640.jpg')"
         }
-      }]
+      }]*/
   },
   data: function(){
     return {
