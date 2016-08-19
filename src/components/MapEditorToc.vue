@@ -1701,7 +1701,7 @@ a {
 
 #property-panel .property-value input[type='color'] {
   position: absolute;
-  right: 10px;
+  right: 20px;
   top: 5px;
   width: 15px;
   height: 15px;

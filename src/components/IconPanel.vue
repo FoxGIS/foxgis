@@ -11,7 +11,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
     </div>
-    <div class="icon-container" style="text-align:center;max-height: 400px;">
+    <div class="icon-container" style="text-align:center;max-height: 230px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>

@@ -662,7 +662,6 @@ TODOS
 					'#logo': 'logo',
 
 					'#tool_clear div,#layer_new': 'new_image',
-					'#tool_save div': 'save',
 					'#tool_export div': 'export',
 					'#tool_share div': 'share',
 					'#tool_open div div': 'open',
@@ -4300,7 +4299,7 @@ TODOS
 			// NOTE: This code is not used yet until I can figure out how to successfully bind ctrl/meta
 			// in Opera and Chrome
 			if (svgedit.browser.isMac() && !window.opera) {
-				var shortcutButtons = ['tool_clear', 'tool_save', 'tool_source', 'tool_undo', 'tool_redo', 'tool_clone'];
+				var shortcutButtons = ['tool_clear', 'tool_source', 'tool_undo', 'tool_redo', 'tool_clone'];
 				i = shortcutButtons.length;
 				while (i--) {
 					var button = document.getElementById(shortcutButtons[i]);
@@ -4802,14 +4801,6 @@ TODOS
 					{sel: '#tool_image', fn: clickImage, evt: 'mouseup'},
 					{sel: '#tool_zoom', fn: clickZoom, evt: 'mouseup', key: ['Z', true]},
 					{sel: '#tool_clear', fn: clickClear, evt: 'mouseup', key: ['N', true]},
-					{sel: '#tool_save', fn: function() {
-						if (editingsource) {
-							saveSourceEditor();
-						}
-						else {
-							clickSave();
-						}
-					}, evt: 'mouseup', key: ['S', true]},
 					{sel: '#tool_export', fn: clickExport, evt: 'mouseup'},
 					{sel: '#tool_share', fn: clickShare, evt: 'mouseup'},
 					{sel: '#tool_open', fn: clickOpen, evt: 'mouseup', key: ['O', true]},
