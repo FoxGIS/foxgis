@@ -32,10 +32,10 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>
+            <!--<input type="text" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" v-if="name=='background-color'" data-type='paint'/>-->
             <input type="text" value="{{value}}" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
             <!--<input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-            <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <input class="color" value="{{value}}" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
           </div>
         </div>
         <!-- layout -->
@@ -67,7 +67,7 @@
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input class="color" v-on:change='propertyChange' value="{{value}}" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
             </div>
             <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
@@ -89,7 +89,7 @@
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
               <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+              <input class="color" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='text-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
@@ -121,7 +121,7 @@
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" v-model="value"  v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-              <input class="color" v-on:click="tinycolorpicker" v-model="value"  v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input class="color" v-on:change='propertyChange' value="{{value}}" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
             </div>
             <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
@@ -132,7 +132,7 @@
               <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
               <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
               <!--<input type="color" value="{{value}}" v-model='value' v-on:change='propertyChange' v-if="name.indexOf('color')!=-1" name="{{name}}" data-type='layout' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model='value' v-on:change='propertyChange' v-if="name.indexOf('color')!=-1" name="{{name}}" data-type='layout' />
+              <input class="color" value="{{value}}" v-on:change='propertyChange' v-if="name.indexOf('color')!=-1" name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -164,7 +164,7 @@
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout'/>
               <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+              <input class="color" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@
             <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input class="color" value="{{value}}" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
               <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='fill-translate-anchor'">
@@ -228,7 +228,7 @@
             <div class="property-value" v-if="name!=='line-translate-anchor'">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input class="color" value="{{value}}" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
               <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='line-translate-anchor'">
@@ -248,7 +248,7 @@
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <!--<input type="text" value="{{value}}"  v-on:change='propertyChange' name="{{name}}" data-type='layout' />
               <input type="color" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+              <input class="color" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='visibility'">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -297,7 +297,7 @@
             <div class="property-value" v-if="name!=='circle-translate-anchor'">
               <!--<input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
               <input type="color" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />-->
-              <input class="color" v-on:click="tinycolorpicker" value="{{value}}" v-model=value v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input class="color" value="{{value}}" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
               <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='circle-translate-anchor'">
@@ -401,10 +401,6 @@ export default {
     }
   },
   methods: {
-    tinycolorpicker:function(){
-      $('.color').colorPicker();
-      let box = $('.color').data("plugin_tinycolorpicker");
-    },
     showCreateStyle:function(){
       if($("#property-panel").is(":visible")){
         $("#property-panel").hide();
@@ -587,6 +583,25 @@ export default {
     },
     showPropertyPanel:function(layer_id){
       $(".panel").hide();
+      let that = this;
+      $(".color").each(function(){
+        var color = this.value;
+        $(this).colpick({
+          submitText:"确定",
+          layout:'rgbhexhsb',
+          color:color,
+          onSubmit:function(hsb,hex,rgb,el){
+            $(el).css('background-color','#'+hex);
+            $(el).val('#'+hex);
+            $(el).colpickHide();
+            var options = {};
+            options.name = $(el).attr("name");
+            options.type = el.dataset.type;
+            options.value = "#"+hex;
+            that.$emit("layer-property-change",options);
+          }
+        });
+      });
       let layers = this.styleObj.layers
       let clickLayer
       for(let i=0,length=layers.length;i<length;i++){
@@ -704,7 +719,7 @@ export default {
       if(!isNaN(temp)){
         value = temp
       }else if(typeof value === 'string'){
-        if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"){//数组（dasharray或offset）
+        if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"&&value.indexOf("rgb")===-1){//数组（dasharray或offset）
           value = value.split(',')
           for(var i=0,length=value.length;i<length;i++){
             value[i] = Number(value[i])
