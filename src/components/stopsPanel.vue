@@ -64,7 +64,7 @@
             <!--<input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1">-->
             <!-- input color  -->
             <!--<input type="color" v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name.indexOf('color')!==-1"/>-->
-            <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" :value="stop[1]" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
+            <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" v-model="stop[1]" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
             <i class="material-icons" v-on:click="deleteStop($event,$index)" title="删除分级">clear</i>
           </div>
           <div id="stops-add">
@@ -210,21 +210,21 @@ export default {
       }
     },
     bindClick:function(e,index){
+      $(e.target).unbind("click",this.bindClick);
+      var color = e.target.value;
       var that = this;
-      $(".color").each(function(){
-        var color = this.value;
-        $(this).colpick({
-          submitText:"确定",
-          layout:'rgbhexhsb',
-          color:color,
-          onSubmit:function(hsb,hex,rgb,el){
-            $(el).css('background-color','#'+hex);
-            $(el).val('#'+hex);
-            $(el).colpickHide();
-            that.inputChange(e,index);
-          }
-        });
+      $(e.target).colpick({
+        submitText:"确定",
+        layout:'rgbhexhsb',
+        color:color,
+        onSubmit:function(hsb,hex,rgb,el){
+          $(el).css('background-color','#'+hex);
+          $(el).val('#'+hex);
+          $(el).colpickHide();
+          that.inputChange(e,index);
+        }
       });
+      $(e.target).click();
     }
   },
   data(){
