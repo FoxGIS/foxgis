@@ -61,10 +61,9 @@
               <mdl-checkbox :checked.sync="false" @change='inputChange($event,$index)' v-else data-name="{{name}}"></mdl-checkbox>
             </div>
             <!-- input text  -->
-            <!--<input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1">-->
+            <input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1">
             <!-- input color  -->
-            <!--<input type="color" v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name.indexOf('color')!==-1"/>-->
-            <input class="color" v-if="name.indexOf('color')!==-1" @change='inputChange($event,$index)' v-model="stop[1]" name="{{name}}" :style = "'background-color:'+stop[1]" lazy/>
+            <input type="color" v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name.indexOf('color')!==-1"/>
             <i class="material-icons" v-on:click="deleteStop($event,$index)" title="删除分级">clear</i>
           </div>
           <div id="stops-add">
@@ -182,7 +181,6 @@ export default {
       this.stopsdata.stopsObj.base = 1;
       this.stopsdata.stopsObj.stops.push(["",defaultValue]);
       this.updatePanelPosition();
-      this.bindClick();
     },
     addStops:function(){
       var defaultValue = this.stopsdata.property.defaultValue;
@@ -209,25 +207,6 @@ export default {
         if(top<0){top=0;}
         $("#stops-panel").css("top",top);
       }
-    },
-    bindClick:function(){
-      $(".color").each(function(){
-        var color = this.value;
-        $(this).colpick({
-          submitText:"确定",
-          layout:'rgbhexhsb',
-          color:color,
-          onSubmit:function(hsb,hex,rgb,el){
-            $(el).css('background-color','#'+hex);
-            $(el).val('#'+hex);
-            $(el).colpickHide();
-            var options = {};
-            options.name = $(el).attr("name");
-            options.type = el.dataset.type;
-            options.value = "#"+hex;
-          }
-        });
-      });
     }
   },
   data(){
