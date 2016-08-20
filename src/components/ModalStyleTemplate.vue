@@ -146,19 +146,21 @@ export default {
         this.$broadcast("mailSent",{message:"修改失败！",timeout:3000});
       });
       var formData = new FormData()
-      formData.append('upload', image);
-      this.templateItem.thumb['background-image'] = "url('"+window.URL.createObjectURL(image)+"')";
-      let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
-      this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
-        var data = res.data;
-        var url = data.thumb['background-image']
-        url = url.substring(5,url.length-2)+"?access_token="+access_token;
-        $.ajax(url);
-        /*if(!this.templateItem.thumb){this.templateItem.thumb = {}}
-        this.templateItem.thumb['background-image'] = url;*/
-      },function(res){
-        this.$broadcast("mailSent",{message:"图像修改失败！",timeout:3000});
-      }); 
+      if(image){
+        formData.append('upload', image);
+        this.templateItem.thumb['background-image'] = "url('"+window.URL.createObjectURL(image)+"')";
+        let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
+        this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
+          var data = res.data;
+          var url = data.thumb['background-image']
+          url = url.substring(5,url.length-2)+"?access_token="+access_token;
+          $.ajax(url);
+          /*if(!this.templateItem.thumb){this.templateItem.thumb = {}}
+          this.templateItem.thumb['background-image'] = url;*/
+        },function(res){
+          this.$broadcast("mailSent",{message:"图像修改失败！",timeout:3000});
+        });
+      }  
       $("#edit-template_panel").hide();
     },
     editTemplateCancel:function(){
@@ -217,10 +219,11 @@ export default {
       return
     }
     this.userRole = Cookies.get('role');
+    console.log(this.userRole)
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.templates;
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-      if (response.data.length > 0) {
+      if (response.data.length > 0){
         var data = response.data
         for(let i=0;i<data.length;i++){
           if(data[i].thumb){
@@ -379,7 +382,7 @@ export default {
 }
 .edit-panel .item{
   width: 300px;
-  height: 250px;
+  height: 260px;
   background-color: white;
   position: absolute;
   top: calc(50% - 120px);
@@ -440,7 +443,7 @@ export default {
   font-size: 16px;
 }
 #edit-template_panel .item{
-  height: 300px;
+  height: 310px;
   top: calc(50% - 150px);
   left: calc(50% - 140px);
 }
