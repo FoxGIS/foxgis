@@ -292,11 +292,13 @@ export default {
 .stops-item input:nth-child(odd){
   margin-top: 5px;
   width: 50px;
+  border: 1px solid gray;
 }
 
 .stops-item input:nth-child(even){
   margin-top: 5px;
   width: 100px;
+  border: 1px solid gray;
 }
 
 .stops-item select{

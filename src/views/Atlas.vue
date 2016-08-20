@@ -13,24 +13,37 @@
       <div class="filter">
         <div style="width: 1000px;">
           <div class="condition">
-            <span>主题词：</span>
-            <a v-for="tag in theme_tags"
-                  @click="conditionClick($event,1)">{{ tag }}
-            </a>
+            <strong>主题词：</strong>
+            <div class="items">
+              <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag }}
+              </a>
+            </div>
+            <div class="more">
+              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+            </div>
           </div>
           <div class="condition">
-            <span>制图区域：</span>
-            <a v-for="location in location_tags"
-                  @click="conditionClick($event,2)">{{ location.location }}
-                  <span>({{ location.total }})</span>
-            </a>
+            <strong>制图区域：</strong>
+            <div class="items">
+              <a v-for="location in location_tags"
+                    @click="conditionClick($event,2)">{{ location.location }}
+                    <span>({{ location.total }})</span>
+              </a>
+            </div>
+            <div class="more">
+              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+            </div>
           </div>
           <div class="condition">
-            <span>制图年份：</span>
-            <a v-for="year in year_tags | orderBy"
-                  @click="conditionClick($event,3)">{{ year.year }}
-                  <span>({{ year.total }})</span>
-            </a>
+            <strong>制图年份：</strong>
+            <div class="items">
+              <a v-for="year in year_tags | orderBy" @click="conditionClick($event,3)">{{ year.year }}
+                <span>({{ year.total }})</span>
+              </a>
+            </div>
+            <div class="more">
+              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+            </div>
           </div>
         </div>
       </div> 
@@ -194,7 +207,22 @@ export default {
         e.target.style.display = 'none'
       }
     },
-
+    showMore:function(e){
+      var $item = $(e.target).parent(".more").prev();
+      if(e.target.innerHTML==="更多"){
+        $item.css({
+          "max-height":"120px",
+          "overflow":"auto"
+        });
+        e.target.innerHTML = "收起";
+      }else{
+        $item.css({
+          "max-height":"40px",
+          "overflow":"hidden"
+        });
+        e.target.innerHTML = "更多";
+      }
+    },
     conditionClick: function(e,type){
       this.pageConfig.skip = 0
       this.pageConfig.page_item_num = 8      
@@ -287,27 +315,59 @@ export default {
         }else{
           url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
         }
-        this.getHttpData(url,function(data){
-            for(let i=0;i<data.length;i++){
-              if(!data[i].location){
-                data[i].location = "未指定"
-              }
-              if(!data[i].year){
-                data[i].year = "未指定"
-              }
-            }
-            that.uploads = _.concat(that.uploads,data)
-            that.pageConfig.current_page += 1;
-            if(that.pageConfig.current_page > that.show_page_num){
-              that.pageConfig.first_page +=1;
-            }
-        })
+        if(this.selected_year_tags.length>0){
+          url = url+"&year="+this.selected_year_tags.toString();
+        }
+        if(this.selected_location_tags.length>0){
+          url = url+"&location="+this.selected_location_tags.toString();
+        }
+        this.getNewUploads(url);
+        this.pageConfig.current_page += 1;
+        if(this.pageConfig.current_page > this.show_page_num){
+          this.pageConfig.first_page +=1;
+        }
       }else{
         this.pageConfig.current_page += 1;
         if(this.pageConfig.current_page > this.show_page_num){
           this.pageConfig.first_page +=1;
         }
       }
+    },
+    getNewUploads:function(url){
+      let username = Cookies.get('username')
+      if(!username){
+        return 
+      }
+      var that = this
+      let access_token = Cookies.get('access_token')
+      //获取数据列表
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+        if (response.data.length > 0) {
+          let data = response.data
+          data = data.map(function(d) {
+            if (d.size / 1024 > 1024) {
+              d.size = (d.size / 1048576).toFixed(2) + 'MB'
+            } else {
+              d.size = (d.size / 1024).toFixed(2) + 'KB'
+            }
+            var date = new Date(d.createdAt);
+            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            return d
+          })
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              this.uploads[i].location = "未指定"
+            }
+            if(!data[i].year){
+              this.uploads[i].year = "未指定"
+            }
+          }
+          that.uploads = _.concat(that.uploads,data)
+          
+        }
+      }, function(response) {
+        console.log(response)
+      });
     }
     
   },
@@ -452,6 +512,24 @@ export default {
       }else if(this.selected_location_tags.length===0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length!==0){//选中了年份与主题，取交集
         temp = _.intersection(temp1,temp2);
       }
+
+      if(temp.length<80){
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        let skip = temp.length;
+        let url = SERVER_API.uploads + '?limit='+(this.requestCounts-temp.length)+"&skip="+skip;
+        if(this.searchKeyWords.length>0){
+          let search = this.searchKeyWords
+          url = url+'&search='+search;
+        }
+        if(this.selected_year_tags.length>0){
+          url = url+"&year="+this.selected_year_tags.toString();
+        }
+        if(this.selected_location_tags.length>0){
+          url = url+"&location="+this.selected_location_tags.toString();
+        }
+        this.getNewUploads(url);
+      }
       return temp;
     },
 
@@ -515,7 +593,7 @@ export default {
 }
 
 .atlas-search {
-  width: 500px;
+  width: 700px;
   height: 40px;
   background-color: #FFF;
   border: 1px solid #b8b8b8;
@@ -569,7 +647,8 @@ export default {
 }
 
 .filter .condition {
-  margin: 2px 0
+  margin: 2px 0;
+  border: none;
 }
 
 .filter .condition a {
@@ -800,4 +879,40 @@ span.delete-badge{
   vertical-align: middle;
 }
 
+.condition{
+  position: relative;
+  border-bottom: 1px dashed #c3c1c1;
+}
+
+.condition strong{
+  position: absolute;
+  left: 0;
+  top: 3px;
+  width: 80px;
+  height: 18px;
+  color: #666;
+  text-align: right;
+}
+
+.condition .items{
+  padding: 3px 0px 3px 83px;
+  position: relative;
+  zoom: 1;
+  width: 900px;
+  overflow: hidden;
+  max-height: 40px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.condition .more{
+  position: absolute;
+  right: -30px;
+  top: 0px;
+  width: 45px;
+  overflow: hidden;
+}
 </style>
