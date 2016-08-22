@@ -144,6 +144,8 @@ export default {
       var style = {};
       this.changeStyle(style);
       $(".panel").hide();
+      $("#property-panel").hide();
+      $("#new-layer-panel").hide();
       this.$refs.drafmap.map.remove();
       this.$refs.drafmap.map = {};
     },
@@ -168,6 +170,8 @@ export default {
     printMap: function(e){
       document.getElementById("back-button").innerText = '返回'
       if(e.target.textContent === '输出'){
+        $("#property-panel").hide();
+        $("#new-layer-panel").hide();
         if(this.selectedDistrictBounds.length!=0){
           var bounds = {
             nw:new mapboxgl.LngLat(this.selectedDistrictBounds[0][0],this.selectedDistrictBounds[1][1]),
