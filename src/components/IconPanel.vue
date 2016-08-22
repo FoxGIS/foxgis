@@ -48,9 +48,18 @@ export default {
 
     bindDel:function(e){
       if(this.dataset.sprite_id){
+        let className = "";
+        let title = "";
         if($(e.target).parents("#icon-select-panel").length>0){return}
-        let className = e.currentTarget.attributes[0].value;
-        let title = e.currentTarget.attributes[2].value;
+        for(let i=0;i<e.currentTarget.attributes.length;i++){
+          let temp = e.currentTarget.attributes[i].name;
+          if(temp === "class"){
+            className = e.currentTarget.attributes[i].value;
+          }
+          if(temp === "title"){
+            title = e.currentTarget.attributes[i].value;
+          }
+        }
         if(className.indexOf('del')!==-1){
          className = className.replace(' del','');
          let index = this.delSpriteTitle.indexOf(title)
