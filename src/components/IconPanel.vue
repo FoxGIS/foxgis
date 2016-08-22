@@ -12,7 +12,7 @@
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除图标</mdl-anchor-button>
     </div>
-    <div id="icon-container" class="icon-container" style="text-align:center;max-height: 230px;">
+    <div class="icon-container" style="text-align:center;max-height: 230px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -176,6 +176,8 @@ export default {
   overflow: auto;
   margin: 5px;
   height: calc(100% - 50px);
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#adadad;
 }
 
 .icon-container::-webkit-scrollbar {

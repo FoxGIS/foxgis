@@ -1601,6 +1601,8 @@ export default {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+  scrollbar-track-color:#e1f5fe;
+  scrollbar-face-color:#2061C6;
 }
 
 #layer-control::-webkit-scrollbar {
