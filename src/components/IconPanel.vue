@@ -184,6 +184,10 @@ export default {
   width: 6px;
 }
 
+.icon-container::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
 /* 滚动条的滑轨背景颜色 */
 .icon-container::-webkit-scrollbar-track {
   background-color: #f5f5f5;

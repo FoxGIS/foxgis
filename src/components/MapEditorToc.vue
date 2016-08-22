@@ -1611,6 +1611,10 @@ export default {
   width: 6px;
 }
 
+#layer-control::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
 /* 滚动条的滑轨背景颜色 */
 #layer-control::-webkit-scrollbar-track {
   background-color: #e1f5fe;
@@ -1732,6 +1736,10 @@ a {
 
 #property-panel::-webkit-scrollbar {
   width: 6px;
+}
+
+#property-panel::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
@@ -1918,8 +1926,13 @@ a {
   background-color: #ababab;
   cursor:pointer;
 } 
+
 .font-list::-webkit-scrollbar {
   width: 6px;
+}
+
+.font-list::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
