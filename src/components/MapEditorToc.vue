@@ -1245,7 +1245,8 @@ export default {
       fontList:{},//字体选择面板里的字体列表
       spriteObj:{//图标对象，用于图标选择面板
         pngUrl:"",
-        icons:[]
+        icons:[],
+        description:""
       },
       translate: {
         'color': '颜色',
@@ -1532,6 +1533,7 @@ export default {
           this.$http({url:msgUrl,method:"GET",headers:{'x-access-token':access_token}})
           .then(function(res){
             sprite.description = res.data.description;
+            this.spriteObj.description = sprite.description;
           },function(){
             this.$broadcast("mailSent",{message:"sprite msg请求错误！",timeout:3000});
           });
