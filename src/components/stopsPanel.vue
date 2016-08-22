@@ -63,9 +63,9 @@
             <!-- input text  -->
             <input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1&&name.indexOf('color')===-1&&name!=='text-field'&&name!=='text-font'&&name!=='icon-image'">
             <!-- text-font -->
-              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='inputChange($event,$index)' v-on:click='onShowFontPanel($event,$index)' data-type='layout'/>
+              <input type="text" :value="stop[1]" name="{{name}}" v-if="name==='text-font'" v-on:change='inputChange($event,$index)' v-on:click='onShowFontPanel($event,$index)' data-type='layout'/>
             <!-- icon-image -->
-            <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='inputChange($event,$index)' v-on:click='onShowIconPanel($event,$index)' data-type='layout'/>
+            <input type="text" :value="stop[1]" name="{{name}}" v-if="name==='icon-image'" v-on:change='inputChange($event,$index)' v-on:click='onShowIconPanel($event,$index)' data-type='layout'/>
             <!-- input color  -->
             <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" v-model="stop[1]" v-if="name.indexOf('color')!==-1" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
             <!-- text-field -->
@@ -74,8 +74,8 @@
                 <!-- <option value="">字段</option> -->
                 <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerfields">{{'{'+field+'}'}}</option>
               </select>
-              <input type="text" v-model="stop[1]" v-if="stop[1].indexOf('{')==-1"name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)'>
-              <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)' v-else> 
+              <input type="text" :value="stop[1]" v-if="stop[1].indexOf('{')==-1"name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)'>
+              <input type="text" :value="" name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)' v-else> 
             </div>
             <i class="material-icons" v-on:click="deleteStop($event,$index)" title="删除分级">clear</i>
           </div>
@@ -154,6 +154,12 @@ export default {
       }
       if(typeof defaultValue==='string'&&e.target.type!="checkbox"){//数字
         this.stopsdata.stopsObj.stops[index][1] = value;
+        if(name==="text-field"&&value.indexOf("{")!==-1){
+          $(e.target).siblings("input").val("");
+        }
+        if(name==="text-field"&&value.indexOf("{")===-1){
+          $(e.target).siblings("select").val("");
+        }
         this.error="";
         return;
       }
@@ -258,6 +264,36 @@ export default {
       this.inputChange(inputEvent,index);
       $("#icon-select-panel").hide();
     },
+    onShowFontPanel:function(e,index){
+      var fontPanel = $("#font-select-panel");
+      if(fontPanel.is(":visible")===true){
+        fontPanel.hide();
+        $("#font-select-panel .font-item").unbind("click");
+      }else{
+        fontPanel.show();
+        fontPanel.css("left","720px");
+        $("#font-select-panel .font-item").unbind("click");
+        $("#font-select-panel .font-item").bind("click",{inputEvent:e,index:index},this.fontClick);
+      }
+    },
+    fontClick:function(e){
+      var fontName = e.target.title;
+      var inputEvent = e.data.inputEvent;
+      var index = e.data.index;
+      inputEvent.target.value = fontName;
+      this.inputChange(inputEvent,index);
+      $("#font-select-panel").hide();
+    },
+    fontFamilyClick:function(e){
+      
+      var font_item = $(e.target).closest(".font-family").children(".font-item");
+      if(font_item.is(":visible")){
+        font_item.css("display","none");
+      }else{
+        //$(".font-item").css("display","none");
+        font_item.css("display","block");
+      }
+    }
   },
   data(){
     return {
