@@ -47,6 +47,7 @@ export default {
     },
 
     bindDel:function(e){
+
       if(this.dataset.sprite_id){
         let className = "";
         let title = "";
@@ -70,7 +71,13 @@ export default {
           className += ' del';
           this.delSpriteTitle.push(title);
         }
-        e.currentTarget.attributes[0].value = className;
+        for(let i=0;i<e.currentTarget.attributes.length;i++){
+          let temp = e.currentTarget.attributes[i].name;
+          if(temp === "class"){
+            e.currentTarget.attributes[i].value = className;
+          }
+        }
+
       }  
     },
 
