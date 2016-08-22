@@ -1603,10 +1603,16 @@ export default {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+  scrollbar-track-color:#e1f5fe;
+  scrollbar-face-color:#2061C6;
 }
 
 #layer-control::-webkit-scrollbar {
   width: 6px;
+}
+
+#layer-control::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
@@ -1696,6 +1702,8 @@ a {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+  scrollbar-track-color:#e1f5fe;
+  scrollbar-face-color:#2061C6;
 }
 
 #new-layer-panel{
@@ -1713,6 +1721,8 @@ a {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+  scrollbar-track-color:#e1f5fe;
+  scrollbar-face-color:#2061C6;
 }
 
 #btn-createLayer,#btn-cancel{
@@ -1726,6 +1736,10 @@ a {
 
 #property-panel::-webkit-scrollbar {
   width: 6px;
+}
+
+#property-panel::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
@@ -1764,7 +1778,7 @@ a {
 #property-panel .property-value {
   margin-left: 100px;
   position: relative;
-  width: 175px;
+  width: 155px;
 }
 
 #property-panel .property-value input[type='color'] {
@@ -1781,7 +1795,7 @@ a {
   height: 20px;
   padding: 5px 0px 5px 5px;
   border: none;
-  width: 170px;
+  width: 150px;
 }
 
 .property-value input[name='text-field'] {
@@ -1795,7 +1809,7 @@ a {
 .property-value select {
   background-color: rgba(255, 255, 255, 0.9);
   display: inline-block;
-  width: 175px;
+  width: 155px;
   padding: 5px 0px 5px 5px;
   border: 1px solid #f2f2f2;
   border-radius: 2px;
@@ -1895,6 +1909,8 @@ a {
   overflow: auto;
   margin: 5px;
   height: calc(100% - 50px);
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#adadad;
 }
 
 .font-list .font-family{
@@ -1910,8 +1926,13 @@ a {
   background-color: #ababab;
   cursor:pointer;
 } 
+
 .font-list::-webkit-scrollbar {
   width: 6px;
+}
+
+.font-list::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
@@ -1954,6 +1975,6 @@ a {
   height: 20px;
   padding: 5px 0px 5px 5px;
   border: none;
-  width: 170px;
+  width: 150px;
 }
 </style>

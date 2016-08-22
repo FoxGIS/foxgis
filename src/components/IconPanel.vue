@@ -12,7 +12,7 @@
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除图标</mdl-anchor-button>
     </div>
-    <div id="icon-container" class="icon-container" style="text-align:center;max-height: 230px;">
+    <div class="icon-container" style="text-align:center;max-height: 230px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -47,10 +47,20 @@ export default {
     },
 
     bindDel:function(e){
+
       if(this.dataset.sprite_id){
+        let className = "";
+        let title = "";
         if($(e.target).parents("#icon-select-panel").length>0){return}
-        let className = e.currentTarget.attributes[0].value;
-        let title = e.currentTarget.attributes[2].value;
+        for(let i=0;i<e.currentTarget.attributes.length;i++){
+          let temp = e.currentTarget.attributes[i].name;
+          if(temp === "class"){
+            className = e.currentTarget.attributes[i].value;
+          }
+          if(temp === "title"){
+            title = e.currentTarget.attributes[i].value;
+          }
+        }
         if(className.indexOf('del')!==-1){
          className = className.replace(' del','');
          let index = this.delSpriteTitle.indexOf(title)
@@ -61,7 +71,13 @@ export default {
           className += ' del';
           this.delSpriteTitle.push(title);
         }
-        e.currentTarget.attributes[0].value = className;
+        for(let i=0;i<e.currentTarget.attributes.length;i++){
+          let temp = e.currentTarget.attributes[i].name;
+          if(temp === "class"){
+            e.currentTarget.attributes[i].value = className;
+          }
+        }
+
       }  
     },
 
@@ -176,10 +192,16 @@ export default {
   overflow: auto;
   margin: 5px;
   height: calc(100% - 50px);
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#adadad;
 }
 
 .icon-container::-webkit-scrollbar {
   width: 6px;
+}
+
+.icon-container::-webkit-scrollbar:horizontal {
+  height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
