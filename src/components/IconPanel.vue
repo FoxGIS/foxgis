@@ -10,9 +10,10 @@
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite">删除图标</mdl-anchor-button>
     </div>
-    <div class="icon-container" style="text-align:center;max-height: 230px;">
-      <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}">
+    <div id="icon-container" class="icon-container" style="text-align:center;max-height: 230px;">
+      <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
       </a>
@@ -46,6 +47,27 @@ export default {
         }, function(response) {
           alert("网络错误");
       });
+    },
+
+    bindDel:function(e){
+      let className = e.currentTarget.attributes[0].value;
+      if(className.indexOf('del')!==-1){
+       className = className.replace(' del','');
+      }else{
+        className += ' del';
+      }
+      e.currentTarget.attributes[0].value = className;
+    },
+
+    delSprite:function(){//删除图标
+      /*let delUrl = url+"/13";
+      this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
+        .then(function(response){
+          alert("删除成功");
+          
+        }, function(response) {
+          alert("网络错误");
+      });*/
     },
 
     addSprite: function(){//添加图标
@@ -151,6 +173,10 @@ export default {
 /* 滑块颜色 */
 .icon-container::-webkit-scrollbar-thumb {
     background-color: #adadad;
+}
+
+.icon-container .del {
+  background-color:red;
 }
 
 .description input{
