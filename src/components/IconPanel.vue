@@ -10,7 +10,7 @@
       <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
-      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite">删除图标</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除图标</mdl-anchor-button>
     </div>
     <div id="icon-container" class="icon-container" style="text-align:center;max-height: 230px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
@@ -40,10 +40,7 @@ export default {
                 tempDataset[i].description = this.dataset.description;
               }
             }
-          }else{
-            
           }
-          
         }, function(response) {
           alert("网络错误");
       });
@@ -51,23 +48,36 @@ export default {
 
     bindDel:function(e){
       let className = e.currentTarget.attributes[0].value;
+      let title = e.currentTarget.attributes[2].value;
       if(className.indexOf('del')!==-1){
        className = className.replace(' del','');
+       let index = this.delSpriteTitle.indexOf(title)
+       if(index != -1){
+         this.delSpriteTitle.splice(index,1)
+       }
       }else{
         className += ' del';
+        this.delSpriteTitle.push(title);
       }
       e.currentTarget.attributes[0].value = className;
     },
 
     delSprite:function(){//删除图标
-      /*let delUrl = url+"/13";
-      this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
-        .then(function(response){
-          alert("删除成功");
-          
-        }, function(response) {
-          alert("网络错误");
-      });*/
+      let access_token = Cookies.get('access_token');
+      let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
+      for(let i=0;i<this.delSpriteTitle.length;i++){
+        let title = this.delSpriteTitle[i];
+        let delUrl = url+"/"+title;
+        this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
+          .then(function(response){
+            if(response.ok){
+              this.newSprite();
+            } 
+          }, function(response) {
+            alert("删除失败");
+        });
+      }
+      
     },
 
     addSprite: function(){//添加图标
@@ -131,6 +141,7 @@ export default {
   },*/
   data(){
     return {
+      delSpriteTitle:[]
     }
   }
 
