@@ -1432,9 +1432,10 @@ export default {
           var source = {};
           source.sourceName = data[i].name;
           source.sourceUrl = response.request.url+'/'+data[i].tileset_id;
+          source.id = data[i].tileset_id;
           var flag=0;//标记source是否重复
           for(let j = 0;j<this.sources.length;j++){//判断是否有重复source
-            if(this.sources[j].sourceName===source.sourceName){
+            if(this.sources[j].id===source.id){
               flag=1;
               break;
             }
@@ -1461,6 +1462,8 @@ export default {
             source.sourceName = sourceNames[j];
             if(this.styleObj.sources[sourceNames[j]].url){
               source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
+              var t = source.sourceUrl.split("/");
+              source.id = t[t.length-1];
               this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{'x-access-token':access_token}}).then(function(res){
                 var data = res.data;
                 var params = res.request.params;//请求参数
@@ -1474,7 +1477,7 @@ export default {
               });
             }
             for(let i = 0;i<this.sources.length;i++){
-              if(this.sources[i].sourceName===source.sourceName){
+              if(this.sources[i].id===source.id){
                 this.sources.splice(i,1);
                 break;
               }
