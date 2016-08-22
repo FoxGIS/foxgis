@@ -61,10 +61,19 @@
               <mdl-checkbox :checked.sync="false" @change='inputChange($event,$index)' v-else data-name="{{name}}"></mdl-checkbox>
             </div>
             <!-- input text  -->
-            <!--<input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1">-->
+            <input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1&&name.indexOf('color')===-1&&name!=='text-field'">
             <!-- input color  -->
             <!--<input type="color" v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name.indexOf('color')!==-1"/>-->
-            <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" v-model="stop[1]" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
+            <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" v-model="stop[1]" v-if="name.indexOf('color')!==-1" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
+            <!-- text-field -->
+            <div class="text-field" v-if="name=='text-field'">
+              <select v-model="stop[1]" v-on:change='inputChange($event,$index)' name="{{name}}" data-type='layout'>
+                <!-- <option value="">字段</option> -->
+                <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerfields">{{'{'+field+'}'}}</option>
+              </select>
+              <input type="text" v-model="stop[1]" v-if="stop[1].indexOf('{')==-1"name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)'>
+              <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)' v-else> 
+            </div>
             <i class="material-icons" v-on:click="deleteStop($event,$index)" title="删除分级">clear</i>
           </div>
           <div id="stops-add">
@@ -325,14 +334,21 @@ export default {
   height: 21px;
 }
 
-.stops-item input[type='color']{
-  width: 15px;
-  height: 15px;
-  border-radius: 10px;
+.stops-item .text-field input{
   position: absolute;
-  top: 2px;
-  right: 15px;
-  padding: 0;
+  left: 55px;
+  top: 0px;
+  width: 80px;
+  height: 16px;
+  border: none;
+  background-color: transparent;
+}
+
+.stops-item .text-field select{
+  position: absolute;
+  top: 0px;
+  left: 55px;
+  height: 19px;
 }
 
 .stops-item i{
