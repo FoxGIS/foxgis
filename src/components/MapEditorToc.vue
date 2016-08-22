@@ -1056,6 +1056,7 @@ export default {
       }else{
         $(".panel").hide();
         iconPanel.show();
+        iconPanel.css("left","520px");
         $("#icon-select-panel .icon-link").unbind("click");
         $("#icon-select-panel .icon-link").bind("click",{inputEvent:e},this.iconClick);
       }
@@ -1076,6 +1077,7 @@ export default {
       }else{
         $(".panel").hide();
         fontPanel.show();
+        fontPanel.css("left","520px");
         $("#font-select-panel .font-item").unbind("click");
         $("#font-select-panel .font-item").bind("click",{inputEvent:e},this.fontClick);
       }
