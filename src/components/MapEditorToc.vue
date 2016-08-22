@@ -1245,7 +1245,8 @@ export default {
       fontList:{},//字体选择面板里的字体列表
       spriteObj:{//图标对象，用于图标选择面板
         pngUrl:"",
-        icons:[]
+        icons:[],
+        description:""
       },
       translate: {
         'color': '颜色',
@@ -1513,10 +1514,11 @@ export default {
         }
 
         if(style.sprite&&style.sprite!==oldStyle.sprite){//sprite发生变化时，重新请求字体列表
-          var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
+          let sprite = {pngUrl:"",icons:[],description:""};//初始化sprite对象
           sprite.pngUrl = this.styleObj.sprite+".png";
           this.spriteObj.pngUrl = sprite.pngUrl;
           let jsonUrl = this.styleObj.sprite+".json";
+          let msgUrl = jsonUrl.replace("/sprite.json","");
           this.$http({url:jsonUrl,method:"GET",headers:{'x-access-token':access_token}})
           .then(function(res){
             let data = res.data;
@@ -1527,6 +1529,13 @@ export default {
             this.spriteObj.icons = sprite.icons;
           },function(){
             this.$broadcast("mailSent",{message:"sprite json请求错误！",timeout:3000});
+          });
+          this.$http({url:msgUrl,method:"GET",headers:{'x-access-token':access_token}})
+          .then(function(res){
+            sprite.description = res.data.description;
+            this.spriteObj.description = sprite.description;
+          },function(){
+            this.$broadcast("mailSent",{message:"sprite msg请求错误！",timeout:3000});
           });
         }
 

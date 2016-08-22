@@ -61,9 +61,12 @@
               <mdl-checkbox :checked.sync="false" @change='inputChange($event,$index)' v-else data-name="{{name}}"></mdl-checkbox>
             </div>
             <!-- input text  -->
-            <input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1&&name.indexOf('color')===-1&&name!=='text-field'">
+            <input type="text" name="{{name}}" @change='inputChange($event,$index)' :value="stop[1]" v-if="name.indexOf('translate-anchor')===-1&&name!=='text-anchor'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'&&name!=='fill-antialias'&&name.indexOf('allow')===-1&&name.indexOf('ignore')===-1&&name.indexOf('color')===-1&&name!=='text-field'&&name!=='text-font'&&name!=='icon-image'">
+            <!-- text-font -->
+              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='inputChange($event,$index)' v-on:click='onShowFontPanel($event,$index)' data-type='layout'/>
+            <!-- icon-image -->
+            <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='inputChange($event,$index)' v-on:click='onShowIconPanel($event,$index)' data-type='layout'/>
             <!-- input color  -->
-            <!--<input type="color" v-model="stop[1]" name="{{name}}" @change='inputChange($event,$index)' v-if="name.indexOf('color')!==-1"/>-->
             <input class="color" @change='inputChange($event,$index)' @click="bindClick($event,$index)" v-model="stop[1]" v-if="name.indexOf('color')!==-1" name="{{name}}" data-type='paint' :style = "'background-color:'+stop[1]" lazy/>
             <!-- text-field -->
             <div class="text-field" v-if="name=='text-field'">
@@ -234,7 +237,27 @@ export default {
         }
       });
       $(e.target).click();
-    }
+    },
+    onShowIconPanel:function(e,index){
+      var iconPanel = $("#icon-select-panel");
+      if(iconPanel.is(":visible")===true){
+        iconPanel.hide();
+        $("#icon-select-panel .icon-link").unbind("click");
+      }else{
+        iconPanel.show();
+        iconPanel.css("left","720px");
+        $("#icon-select-panel .icon-link").unbind("click");
+        $("#icon-select-panel .icon-link").bind("click",{inputEvent:e,index:index},this.iconClick);
+      }
+    },
+    iconClick:function(e){
+      var iconName = e.target.title;
+      var inputEvent = e.data.inputEvent;
+      var index = e.data.index;
+      inputEvent.target.value = iconName;
+      this.inputChange(inputEvent,index);
+      $("#icon-select-panel").hide();
+    },
   },
   data(){
     return {
