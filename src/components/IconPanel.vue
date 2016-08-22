@@ -3,7 +3,7 @@
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
-        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event,dataset.sprite_id)"></mdl-textfield>
+        <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event)"></mdl-textfield>
       </div>
     </div>
     <div class="meta-title">
@@ -26,14 +26,14 @@ import Cookies from 'js-cookie'
 export default {
   props:['dataset'],
   methods: {
-    editDescription: function(e,sprite_id){//修改图标说明
+    editDescription: function(e){//修改图标说明
       let value = e.target.value;
       let access_token = Cookies.get('access_token');
       let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
       this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
         .then(function(response){
-          if(sprite_id){
+          if(this.dataset.sprite_id){
             let tempDataset = this.$parent.dataset;
             for(let i=0;i<tempDataset.length;i++){
               if(this.dataset.sprite_id === tempDataset[i].sprite_id) {
@@ -47,20 +47,22 @@ export default {
     },
 
     bindDel:function(e){
-      if($(e.target).parents("#icon-select-panel").length>0){return}
-      let className = e.currentTarget.attributes[0].value;
-      let title = e.currentTarget.attributes[2].value;
-      if(className.indexOf('del')!==-1){
-       className = className.replace(' del','');
-       let index = this.delSpriteTitle.indexOf(title)
-       if(index != -1){
-         this.delSpriteTitle.splice(index,1)
-       }
-      }else{
-        className += ' del';
-        this.delSpriteTitle.push(title);
-      }
-      e.currentTarget.attributes[0].value = className;
+      if(this.dataset.sprite_id){
+        if($(e.target).parents("#icon-select-panel").length>0){return}
+        let className = e.currentTarget.attributes[0].value;
+        let title = e.currentTarget.attributes[2].value;
+        if(className.indexOf('del')!==-1){
+         className = className.replace(' del','');
+         let index = this.delSpriteTitle.indexOf(title)
+         if(index != -1){
+           this.delSpriteTitle.splice(index,1)
+         }
+        }else{
+          className += ' del';
+          this.delSpriteTitle.push(title);
+        }
+        e.currentTarget.attributes[0].value = className;
+      }  
     },
 
     delSprite:function(){//删除图标
