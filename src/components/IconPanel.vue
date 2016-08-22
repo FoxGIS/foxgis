@@ -48,6 +48,7 @@ export default {
 
     bindDel:function(e){
       if(this.dataset.sprite_id){
+        if($(e.target).parents("#icon-select-panel").length>0){return}
         let className = e.currentTarget.attributes[0].value;
         let title = e.currentTarget.attributes[2].value;
         if(className.indexOf('del')!==-1){
@@ -61,8 +62,7 @@ export default {
           this.delSpriteTitle.push(title);
         }
         e.currentTarget.attributes[0].value = className;
-      }
-      
+      }  
     },
 
     delSprite:function(){//删除图标
@@ -74,6 +74,7 @@ export default {
         this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
+              this.delSpriteTitle = [];
               this.newSprite();
             } 
           }, function(response) {
@@ -121,7 +122,9 @@ export default {
       let sprite = {pngUrl:"",icons:[]};//初始化sprite对象
       let url = this.dataset.pngUrl.split('?')[0];
       sprite.pngUrl = url;
+      $.ajax(url);
       this.dataset.pngUrl = "";
+      this.dataset.icons = [];
       let length = url.split('/').length-1;
       let oldName = url.split('/')[length];
       let jsonUrl = url.replace(oldName,"sprite.json");
@@ -190,7 +193,7 @@ export default {
 }
 
 .icon-container .del {
-  background-color:red;
+  background-color:#ababab;
 }
 
 .description input{
