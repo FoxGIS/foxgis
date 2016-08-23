@@ -721,7 +721,7 @@ export default {
   position: absolute;
   width: 300px;
   height: 210px;
-  background-color: rgba(128,128,128,0.3);
+  background-color: rgba(251, 245, 202, 0.7);
   top: 0;
   display: none;
 }
