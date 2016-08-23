@@ -20,15 +20,15 @@
       </tr>
       <tr v-for="u in userData">
         <td>{{u.username}}</td>
-        <td v-model="u.name">{{u.name}}</td>
-        <td v-model="u.role">{{u.role}}</td>
-        <td v-model="u.is_verified">{{u.is_verified}}</td>
-        <td v-model="u.email">{{u.email}}</td>
-        <td v-model="u.telephone">{{u.telephone}}</td>
-        <td v-model="u.mobile">{{u.mobile}}</td>
-        <td v-model="u.location">{{u.location}}</td>
-        <td v-model="u.organization">{{u.organization}}</td>
-        <td v-model="u.position">{{u.position}}</td>
+        <td>{{u.name}}</td>
+        <td>{{u.role}}</td>
+        <td>{{u.is_verified}}</td>
+        <td>{{u.email}}</td>
+        <td>{{u.telephone}}</td>
+        <td>{{u.mobile}}</td>
+        <td>{{u.location}}</td>
+        <td>{{u.organization}}</td>
+        <td>{{u.position}}</td>
         <td>{{u.createdAt}}</td>
         <td style= "cursor:pointer;width: 30px;">
           <a v-on:click='showEditBox(u.username)'>编辑</a>
@@ -499,13 +499,13 @@ input:hover{
   background-color:transparent;
 }
 #add-info{
+  top: 230px;
+  left: 600px;
   margin:0 auto;
-  position: absolute; 
+  position: fixed; 
   visibility: hidden; 
   overflow: hidden;
   z-index: 9999;
-  top: 120px;
-  left: 350px;
 }
 #add-info table{
   width:350px;
