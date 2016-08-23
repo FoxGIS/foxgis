@@ -96,15 +96,15 @@
               </a>
               <div class="meta-info">
                 <div class="title">
-                  <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
+                  <p :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
                   <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p><br>
                   <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p><br>
                   <p>下载次数：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].downloadNum}}</p>
                 </div>
                 <div class="preView">
-                  <mdl-anchor-button @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+                  <mdl-anchor-button v-on:click.prevent="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
 
-                  <mdl-anchor-button @click="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
+                  <mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
                 </div>
               </div>
             </foxgis-card>
@@ -263,6 +263,7 @@ export default {
         }
         
       }
+      if(type!==1){this.getNewUploads();}//选中的主题不重新请求
     },
 
     parseImgURL:function(upload) {
@@ -275,12 +276,10 @@ export default {
       let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token
-      var aLink = document.createElement('a')
-      aLink.className = 'download_link'
-      var text = document.createTextNode('&nbsp;')
-      aLink.appendChild(text)
-      aLink.href = url
-      aLink.click()  
+      var iframe = document.createElement("iframe");
+      iframe.src = url;
+      iframe.style = "display:none";
+      document.body.appendChild(iframe); 
     },
 
     prePage: function (event) {
@@ -301,7 +300,8 @@ export default {
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       let that = this
       if(this.pageConfig.current_page === allPages){
-        this.searchKeyWords = document.getElementById("search").value.trim()
+        this.searchKeyWords = document.getElementById("search").value.trim();
+        if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return}
         let url = ''
         let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts
         if(this.pageConfig.skip === skip){
@@ -309,23 +309,23 @@ export default {
         }else{
           this.pageConfig.skip = skip
         }
-        if(this.searchKeyWords.length>0){
-          let search = this.searchKeyWords
-          url = SERVER_API.uploads+'?search='+search+'&limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'   
-        }else{
-          url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
-        }
-        if(this.selected_year_tags.length>0){
-          url = url+"&year="+this.selected_year_tags.toString();
-        }
-        if(this.selected_location_tags.length>0){
-          url = url+"&location="+this.selected_location_tags.toString();
-        }
-        this.getNewUploads(url);
-        this.pageConfig.current_page += 1;
-        if(this.pageConfig.current_page > this.show_page_num){
-          this.pageConfig.first_page +=1;
-        }
+        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
+        this.getHttpData(url,function(data){
+          if(data.length===0){return}
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              data[i].location = "未指定"
+            }
+            if(!data[i].year){
+              data[i].year = "未指定"
+            }
+          }
+          that.uploads = _.concat(that.uploads,data)
+          that.pageConfig.current_page += 1;
+          if(that.pageConfig.current_page > that.show_page_num){
+            that.pageConfig.first_page +=1;
+          }
+        })
       }else{
         this.pageConfig.current_page += 1;
         if(this.pageConfig.current_page > this.show_page_num){
@@ -333,37 +333,57 @@ export default {
         }
       }
     },
-    getNewUploads:function(url){
+    getNewUploads:function(){
       let username = Cookies.get('username')
       if(!username){
         return 
       }
-      var that = this
       let access_token = Cookies.get('access_token')
+      let url = SERVER_API.uploads + '?';
+      if(this.searchKeyWords.length>0){
+        let search = this.searchKeyWords
+        url = url+'&search='+search;
+      }
+      if(this.selected_year_tags.length>0){
+        url = url+"&year="+this.selected_year_tags.toString();
+      }
+      if(this.selected_location_tags.length>0){
+        url = url+"&location="+this.selected_location_tags.toString();
+      }
       //获取数据列表
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
         if (response.data.length > 0) {
-          let data = response.data
+          let data = response.data;
           data = data.map(function(d) {
             if (d.size / 1024 > 1024) {
-              d.size = (d.size / 1048576).toFixed(2) + 'MB'
+              d.size = (d.size / 1048576).toFixed(2) + 'MB';
             } else {
-              d.size = (d.size / 1024).toFixed(2) + 'KB'
+              d.size = (d.size / 1024).toFixed(2) + 'KB';
             }
             var date = new Date(d.createdAt);
             d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-            return d
+            return d;
           })
-          for(let i=0;i<data.length;i++){
-            if(!data[i].location){
-              this.uploads[i].location = "未指定"
+          var temp= [];var flag = 0;//0表示uploads里没有，1表示已经有了
+          for(var m = 0;m<data.length;m++){
+            for(var n = 0;n<this.uploads.length;n++){
+              if(data[m].upload_id === this.uploads[n].upload_id){
+                flag = 1;
+              }
             }
-            if(!data[i].year){
-              this.uploads[i].year = "未指定"
+            if(flag===0){
+              if(!data[m].location){
+                data[m].location = "未指定"
+              }
+              if(!data[m].year){
+                data[m].year = "未指定"
+              }
+              temp.push(data[m]);
+            }else{
+              flag = 0;
             }
           }
-          that.uploads = _.concat(that.uploads,data)
-          
+          this.uploads = _.concat(this.uploads,temp);
         }
       }, function(response) {
         console.log(response)
@@ -511,24 +531,6 @@ export default {
         temp = _.intersection(temp1,temp3);
       }else if(this.selected_location_tags.length===0&&this.selected_year_tags.length!==0&&this.selected_theme_tags.length!==0){//选中了年份与主题，取交集
         temp = _.intersection(temp1,temp2);
-      }
-
-      if(temp.length<80){
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let skip = temp.length;
-        let url = SERVER_API.uploads + '?limit='+(this.requestCounts-temp.length)+"&skip="+skip;
-        if(this.searchKeyWords.length>0){
-          let search = this.searchKeyWords
-          url = url+'&search='+search;
-        }
-        if(this.selected_year_tags.length>0){
-          url = url+"&year="+this.selected_year_tags.toString();
-        }
-        if(this.selected_location_tags.length>0){
-          url = url+"&location="+this.selected_location_tags.toString();
-        }
-        this.getNewUploads(url);
       }
       return temp;
     },
@@ -717,7 +719,7 @@ export default {
   position: absolute;
   width: 300px;
   height: 210px;
-  background-color: rgba(128,128,128,0.3);
+  background-color: rgba(255, 255, 255, 0.7);
   top: 0;
   display: none;
 }
@@ -773,14 +775,18 @@ span.delete-badge{
 }
 
 .meta-info div p {
-  display: inline;
   font-size: 12px;
   font-family:Arial,Helvetica,sans-serif;
   margin-left: 8px;
   width: 240px;
   height: 18px;
-  overflow: hidden;
   line-height: 12px;
+  position: absolute;
+  display:block;/*内联对象需加*/
+  word-break:keep-all;/* 不换行 */
+  white-space:nowrap;/* 不换行 */
+  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+  text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
 .meta-info i {

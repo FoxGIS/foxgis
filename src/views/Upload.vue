@@ -60,7 +60,7 @@
     </div>
 
     <div class="name">
-      <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" />
       <div id="map-property">
         <p>
         比例尺：<span style="color:black;">1:  </span> <input type="text" class="map-scale" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
@@ -492,15 +492,10 @@ export default {
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-      var aLink = document.createElement('a')
-      aLink.className = 'download_link'
-      var text = document.createTextNode('&nbsp;')
-      aLink.appendChild(text)
-      // var evt = document.createEvent("HTMLEvents")
-      // evt.initEvent("click", false, false);
-      aLink.href = url
-      aLink.click()
-      // aLink.dispatchEvent(evt)
+      var iframe = document.createElement("iframe");
+      iframe.src = url;
+      iframe.style = "display:none";
+      document.body.appendChild(iframe);
     },
 
     uploadNameChange: function(e,index){

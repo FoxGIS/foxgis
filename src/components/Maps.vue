@@ -3,10 +3,10 @@
   <h5><i class="material-icons">map</i><span>制图工程</span></h5>
 
   <div class="search">
-    <foxgis-search :placeholder="'搜索'"></foxgis-search>
+    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
     <mdl-button raised colored v-mdl-ripple-effect v-on:click="createMapClick">新建地图</mdl-button>
   </div>
-  <foxgis-data-cards-map :dataset="dataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
+  <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
   <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
@@ -103,6 +103,36 @@ export default {
       }
     }
   },
+  computed:{
+    displayDataset:function(){
+      var temp = this.dataset;
+      var t=[];
+      if(this.searchKeyWords.trim().length===0){
+        return temp;
+      }else{        
+        let keyWords = this.searchKeyWords.trim().split(' ');
+        keyWords = _.uniq(keyWords);
+        for(let u=0;u<temp.length;u++){
+          let tileset = temp[u];
+          let num = 0;
+          for(let w=0;w<keyWords.length;w++){
+            let keyWord = keyWords[w];
+            if(keyWord.indexOf(' ')==-1){
+              if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
+                  num++;
+              }
+            }else{
+              num++;
+            }
+          }
+          if(num == keyWords.length){
+            t.push(tileset)
+          }
+        }
+        return t;
+      }
+    }
+  },
   attached() {
     let username = Cookies.get('username')
     if(username === undefined){
@@ -129,6 +159,7 @@ export default {
   data() {
     return {
       dataset: [],
+      searchKeyWords: '',
       dialogcontent: {
         title: '确定删除吗？'
       },

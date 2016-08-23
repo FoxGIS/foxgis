@@ -3,13 +3,6 @@
 	<foxgis-layout>
 	 <div class="content">
 	 	<div id="layout-content">
-	 	 	<!-- <div class="automatic-slider unslider-horizontal">
-	 	 		 			<ul class="unslider-wrap unslider-carousel" style="width: 400%; left: -200%;">
-	 	 		 				<li class="" v-for="image in images" >
-	 	 		 					<img v-bind:src=image.path  title="{{image.title}}" width="" height="">
-	 	 		 				</li>
-	 	 		 			</ul>
-	 	 		 		</div> -->
 	 	 	<div id="stats-container">
 	 	 		<div id="stats-chart">
 	 	 		</div>
@@ -17,36 +10,36 @@
 	 		<div id = "upload-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>上传排行</span></div>
 	 			<div class="scrollText" style="height: 480px;">
-	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in uploadInfo">
-	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}上传{{message.total}}幅地图</span>
-	 					</li>
-	 				</ul>
+	 				<table>
+	 				  <tr v-for="message in uploadInfo">
+	 				  	<td><input value="{{$index+1}}" disabled></input></td>
+	 				    <td><span title="{{message.name}}上传{{message.total}}幅地图">{{message.name}}上传{{message.total}}幅地图</span></td>
+	 				  </tr>
+	 				</table>
 	 			</div>
 	 		</div>
 	 		<div id = "image-download-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>地图下载排行</span></div>
 	 			<div class="scrollText" style="height: 240px;">
-	 				<ul style="margin-top: 0px;">
-	 					<li v-for="message in mapDownloadInfo">
-	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}</span>
-	 						<span style="position:absolute;right:25px;width:100px;text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
-	 					</li>
-	 				</ul>
+	 				<table>
+	 				  <tr v-for="message in mapDownloadInfo">
+	 				  	<td><input value="{{$index+1}}" disabled></input></td>
+	 				    <td><span title="{{message.name}}">{{message.name}}</span></td>
+	 				    <td><span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span></td>
+	 				  </tr>
+	 				</table>
 	 			</div>
 	 		</div>
 	 		<div id = "user-download-rank" class="ranklist">
 	 			<div class="title"><i class="material-icons">list</i><span>用户贡献排行</span></div>
 	 			<div class="scrollText" style="height: 240px;">
-	 				<ul style="margin-top: 0px; ">
-	 					<li v-for="message in userDowloadInfo">
-	 						<input value="{{$index+1}}" disabled></input>
-	 						<span>{{message.name}}</span>
-	 						<span style="position:absolute;right:25px;width:140px;text-align:left;">贡献下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
-	 					</li>
-	 				</ul>
+	 				<table>
+	 				  <tr v-for="message in userDowloadInfo">
+	 				  	<td><input value="{{$index+1}}" disabled></input></td>
+	 				    <td><span title="{{message.name}}">{{message.name}}</span></td>
+	 				    <td><span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span></td>
+	 				  </tr>
+	 				</table>
 	 			</div>
 	 		</div>
 	 	</div>
@@ -116,13 +109,7 @@ export default {
                 type: 'pie',
                 data: yData
             }]
-        });
-        /*$('.automatic-slider').unslider({
-			autoplay: true,
-			delay:5000,
-			infinite: true
-		});//设置图片滚动*/
-        //setTimeout("$('#scrollDiv').textSlider({line:5,speed:500,timer:3000})",1000);//设置文字滚动		
+        });		
       }
     }, function(response) {
       console.log(response)
@@ -264,20 +251,38 @@ li img{
 	line-height: 25px;
 	margin:0px auto;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
 }
 
-.scrollText li{
-	list-style:none;
+table tr td:nth-child(1){
+	width: 25px;
+}
+#upload-rank table tr td:nth-child(2){
+	width: 185px;
+}
+table tr td:nth-child(2){
+	width: 330px;
+	display:block;/*内联对象需加*/
+	word-break:keep-all;/* 不换行 */
+	white-space:nowrap;/* 不换行 */
+	overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+	text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+}
+
+table tr td:nth-child(3){
+	width: 25px;
+}
+
+.scrollText tr{
 	font-size:14px;
-	line-height:24px;
+	line-height:22px;
 	letter-spacing:1px;
 	margin-left: 16px;
 	white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.scrollText li input{
+.scrollText table input{
 	width: 20px;
     height: 13px;
     text-align: center;
@@ -286,7 +291,7 @@ li img{
     color: white;
 }
 
-.scrollText li:nth-child(1) input,li:nth-child(2) input,li:nth-child(3) input{
+.scrollText tr:nth-child(1) input,tr:nth-child(2) input,tr:nth-child(3) input{
 	width: 20px;
     height: 13px;
     text-align: center;

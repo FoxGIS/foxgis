@@ -289,17 +289,34 @@ export default {
       Vue:that
     });
     uploader.on('filesQueued',function(file){//添加文件到队列
-      this.options.Vue.uploadStatus.total_files = file.length;
-      var totalSize = 0;
+      
+      var fonts = this.options.Vue.fonts;
+      var totalSize = 0;var flag = 0;var existFiles = [];
       for(var i=0;i<file.length;i++){
+        flag = 0;
+        for(let j=0;j<fonts.length;j++){
+          if(file[i].name===fonts[j].filename){
+            flag = 1;
+            break;
+          }
+        }
+        if(flag===1){
+          existFiles.push(file[i].name);
+          this.removeFile(file[i],true);
+          continue;
+        }
         this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
         totalSize+=file[i].size;
+      }
+      if(existFiles.length>0){
+        this.options.Vue.$broadcast('mailSent', { message: existFiles.toString()+"已存在！",timeout:3000 });
       }
       if (totalSize / 1024 > 1024) {
         totalSize = (totalSize / 1048576).toFixed(2) + 'MB';
       } else {
         totalSize = (totalSize / 1024).toFixed(2) + 'KB';
       }
+      this.options.Vue.uploadStatus.total_files = this.options.Vue.uploadStatus.fileIds.length;
       this.options.Vue.uploadStatus.total_size = totalSize;
     });
     uploader.on('uploadStart',function(file){//开始上传

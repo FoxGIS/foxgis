@@ -39,7 +39,8 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <input type="radio" value="circle" @change="propertyChange">
+        <input type="radio" value="circle" v-if="selecteddata.panel_type=='update'" disabled>
+        <input type="radio" value="circle" v-else>
         <label for="one">圆</label>
         <input type="radio" value="symbol" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="symbol" v-else>

@@ -134,7 +134,7 @@ export default {
         name:name,
         replace:replace
       }
-      let username = Cookies.get('username');
+      let username = this.templateItem.owner;
       let access_token = Cookies.get('access_token');
       var id = this.templateItem.template_id;
       let url = SERVER_API.templates + '/' + username+'/'+id;
@@ -180,21 +180,23 @@ export default {
       fileInput.addEventListener('change', this.changeTemplateImage)
     },
     changeTemplateImage:function(e){
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.uploads + '/' + username
       var formData = new FormData()
       formData.append('file', e.target.files[0])
       var imageUrl = window.URL.createObjectURL(e.target.files[0]);
       $("#edit-template_panel .item-thumb").css("background-image","url('"+imageUrl+"')");
     },
     deleteTemplateClick:function(id){
+      for(let i = 0;i<this.templates.length;i++){
+        if(this.templates[i].template_id===id){
+          this.templateItem = this.templates[i];
+        }
+      }
       this.$el.querySelector("#delete-dialog_template").style.display = 'block'
       this.deleteTemplateId = id;
     },
     deleteAction: function(status){
       if(status === 'ok'){
-        let username = Cookies.get('username');
+        let username = this.templateItem.owner;
         let access_token = Cookies.get('access_token');
         var id = this.deleteTemplateId;
         let url = SERVER_API.templates + '/' + username+'/'+id;
@@ -214,10 +216,6 @@ export default {
     }
   },
   attached(){
-    let username = Cookies.get('username');
-    if(username === undefined){
-      return
-    }
     this.userRole = Cookies.get('role');
     console.log(this.userRole)
     let access_token = Cookies.get('access_token');
