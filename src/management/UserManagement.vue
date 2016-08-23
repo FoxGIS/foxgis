@@ -62,13 +62,12 @@
         </tr>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>角色：</b></td>
-          <td v-if="userInfo.role">
+          <td>
             <select id="role-input" v-model="userInfo.role">
               <option value="admin">admin</option>
               <option value="user">user</option>
             </select>
           </td>
-          <td v-else><input id="role-input" value=""></td>
         </tr>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
@@ -87,12 +86,11 @@
         </tr>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
-          <td v-if="userInfo.location">
+          <td>
             <select id="location-input" v-model="userInfo.location">
               <option v-for="province in provinces" value="{{province}}">{{province}}</option>
             </select>
           </td>
-          <td v-else><input id="location-input" value=""></td>
         </tr>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
@@ -328,7 +326,7 @@ export default {
           }else{
             data.is_verified = "已验证";
           }
-          this.userData.push(data);
+          this.userData.unshift(data);
           let popUp = document.getElementById("add-info"); 
           popUp.style.visibility = "hidden"; 
           document.getElementById("backgroundPanel").style.display = "none";
