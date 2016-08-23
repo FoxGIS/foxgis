@@ -49,7 +49,7 @@
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
           <td>
-            <select id="is_verified-input">
+            <select id="is_verified-input" v-model="userInfo.is_verified">>
               <option value='已验证'>已验证</option>
               <option value='未验证'>未验证</option>
             </select>
@@ -63,7 +63,7 @@
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>角色：</b></td>
           <td v-if="userInfo.role">
-            <select id="role-input">
+            <select id="role-input" v-model="userInfo.role">
               <option value="admin">admin</option>
               <option value="user">user</option>
             </select>
@@ -88,7 +88,7 @@
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
           <td v-if="userInfo.location">
-            <select id="location-input">
+            <select id="location-input" v-model="userInfo.location">
               <option v-for="province in provinces" value="{{province}}">{{province}}</option>
             </select>
           </td>
@@ -378,10 +378,12 @@ export default {
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       let data = response.data;
-      if(data.is_verified === false){
-        data.is_verified = "未验证";
-      }else{
-        data.is_verified = "已验证";
+      for(let i=0;i<data.length;i++){
+        if(data[i].is_verified === false){
+          data[i].is_verified = "未验证";
+        }else{
+          data[i].is_verified = "已验证";
+        }
       }
       this.userData=data;
     }, function(response) {
