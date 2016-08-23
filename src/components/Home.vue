@@ -275,7 +275,7 @@ table tr td:nth-child(3){
 
 .scrollText tr{
 	font-size:14px;
-	line-height:24px;
+	line-height:22px;
 	letter-spacing:1px;
 	margin-left: 16px;
 	white-space: nowrap;
