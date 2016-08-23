@@ -96,7 +96,7 @@
               </a>
               <div class="meta-info">
                 <div class="title">
-                  <p>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
+                  <p :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
                   <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p><br>
                   <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p><br>
                   <p>下载次数：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].downloadNum}}</p>
@@ -775,14 +775,18 @@ span.delete-badge{
 }
 
 .meta-info div p {
-  display: inline;
   font-size: 12px;
   font-family:Arial,Helvetica,sans-serif;
   margin-left: 8px;
   width: 240px;
   height: 18px;
-  overflow: hidden;
   line-height: 12px;
+  position: absolute;
+  display:block;/*内联对象需加*/
+  word-break:keep-all;/* 不换行 */
+  white-space:nowrap;/* 不换行 */
+  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+  text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
 .meta-info i {
