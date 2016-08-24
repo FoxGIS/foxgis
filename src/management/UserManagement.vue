@@ -188,8 +188,8 @@
   <!-----------------删除用户------------------------------------>
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <!------------------------------------------------------------->
-  <div id="backgroundPanel"></div>
 </div>
+<div id="backgroundPanel"></div>
 </template>
 
 
@@ -206,7 +206,7 @@ export default {
         }
       }
       let popUp = document.getElementById("user-info"); 
-      popUp.style.visibility = "visible"; 
+      popUp.style.display = "block"; 
       document.getElementById("backgroundPanel").style.display = "block";
     },
 
@@ -217,7 +217,7 @@ export default {
     },
 
     showAddBox:function(){
-      document.getElementById("add-info").style.visibility = "visible"; 
+      document.getElementById("add-info").style.display = "block"; 
       document.getElementById("backgroundPanel").style.display = "block";
     },
 
@@ -265,7 +265,7 @@ export default {
                 }
               }
               let popUp = document.getElementById("user-info"); 
-              popUp.style.visibility = "hidden"; 
+              popUp.style.display = "none"; 
               document.getElementById("backgroundPanel").style.display = "none";
             }
           }, function(response) {
@@ -328,7 +328,7 @@ export default {
           }
           this.userData.unshift(data);
           let popUp = document.getElementById("add-info"); 
-          popUp.style.visibility = "hidden"; 
+          popUp.style.display = "none"; 
           document.getElementById("backgroundPanel").style.display = "none";
         },function(response){
           alert("添加失败");
@@ -340,7 +340,7 @@ export default {
     cancelClick:function(id){
       this.userInfo = {};
       var popUp = document.getElementById(id); 
-      popUp.style.visibility = "hidden"; 
+      popUp.style.display = "none"; 
       document.getElementById("backgroundPanel").style.display = "none";
     },
 
@@ -477,7 +477,7 @@ export default {
   left: 600px;
   margin:0 auto;
   position: fixed; 
-  visibility: hidden; 
+  display: none; 
   overflow: hidden;
   z-index: 9999;
 }
@@ -503,7 +503,7 @@ input:hover{
   left: 600px;
   margin:0 auto;
   position: fixed; 
-  visibility: hidden; 
+  display: none;  
   overflow: hidden;
   z-index: 9999;
 }
