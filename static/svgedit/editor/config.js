@@ -50,7 +50,7 @@ svgEditor.setConfig({
 // EXTENSION CONFIG
 svgEditor.setConfig({
 	extensions: [
-		'ext-overview_window.js', 'ext-markers.js', 'ext-connector.js', 'ext-grid.js', 'ext-panning.js','ext-compass.js',
+		'ext-overview_window.js', 'ext-markers.js', 'ext-connector.js', 'ext-panning.js','ext-compass.js',
 			'ext-legend.js','ext-scale.js'
 	], 
 	noDefaultExtensions: true // noDefaultExtensions can only be meaningfully used in config.js or in the URL
