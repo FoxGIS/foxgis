@@ -26,13 +26,13 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     signout: function(){
-      Cookies.remove('username')
-      Cookies.remove('access_token')
-      Cookies.remove('name')
-      Cookies.remove('phone')
-      Cookies.remove('email')
-      Cookies.remove('location')
-      Cookies.remove('organization')
+      Cookies.remove('super-username')
+      Cookies.remove('super-access_token')
+      Cookies.remove('super-name')
+      Cookies.remove('super-phone')
+      Cookies.remove('super-email')
+      Cookies.remove('super-location')
+      Cookies.remove('super-organization')
       window.location.href = '#!/loginManagement'
     }
   },
@@ -42,13 +42,13 @@ export default {
   },
   attached: function() {
      //判断是否登陆
-    let username = Cookies.get('username')
+    let username = Cookies.get('super-username')
     if(username === undefined){
       window.location.href = "#!/login"
     }else{
       this.username = username
     }
-    let access_token = Cookies.get('access_token');
+    let access_token = Cookies.get('super-access_token');
     let tileset_url = SERVER_API.tilesets + '/' + username;
     let fonts_url = SERVER_API.fonts + '/' + username;
     let sprites_url = SERVER_API.sprites + '/' + username;

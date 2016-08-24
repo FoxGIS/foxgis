@@ -253,7 +253,7 @@ export default {
         };
 
         let username = this.userInfo.username;
-        let access_token = Cookies.get('access_token');
+        let access_token = Cookies.get('super-access_token');
         let url = SERVER_API.users + '/' + username;
         this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
             if(response.ok){
@@ -346,8 +346,8 @@ export default {
 
     deleteAction: function(status) {
       if (status === 'ok') {
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
+        let username = Cookies.get('super-username');
+        let access_token = Cookies.get('super-access_token');
         //let url = SERVER_API.users + '/' + deleteUsername;
         /*this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -367,11 +367,11 @@ export default {
   },
   attached() {
     document.getElementById("navigation-panel").style.display = "none";
-    let username = Cookies.get('username')
+    let username = Cookies.get('super-username')
     if(username === undefined){
       return 
     }
-    let access_token = Cookies.get('access_token')
+    let access_token = Cookies.get('super-access_token')
     let url = SERVER_API.users;
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {

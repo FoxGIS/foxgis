@@ -53,25 +53,25 @@ export default {
         let role = data.role;
         let days = 0
 
-        Cookies.set('access_token',access_token)
-        Cookies.set('username',username)
+        Cookies.set('super-access_token',access_token)
+        Cookies.set('super-username',username)
         if(name!=undefined){
-          Cookies.set('name',name)
+          Cookies.set('super-name',name)
         }
         if(email!=undefined){
-          Cookies.set('email',email)
+          Cookies.set('super-email',email)
         }
         if(phone!=undefined){
-          Cookies.set('phone',phone)
+          Cookies.set('super-phone',phone)
         }
         if(location!=undefined){
-          Cookies.set('location',location)
+          Cookies.set('super-location',location)
         }
         if(organization!=undefined){
-          Cookies.set('organization',organization)
+          Cookies.set('super-organization',organization)
         }
         if(role!=undefined){
-          Cookies.set('role',role);
+          Cookies.set('super-role',role);
         }
         
         //跳转到用户管理界面
