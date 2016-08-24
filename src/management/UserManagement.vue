@@ -37,6 +37,8 @@
       </tr>
     </table>
   </div>
+</div>
+<div id="backgroundPanel">
   <!-----------------------------------编辑面板--------------------------------------------->
   <div id="user-info">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
@@ -185,11 +187,10 @@
     </table>
   </div>
   <!----------------------------------------------------->
-  <!-----------------删除用户------------------------------------>
+</div>
+ <!-----------------删除用户------------------------------------>
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <!------------------------------------------------------------->
-</div>
-<div id="backgroundPanel"></div>
 </template>
 
 
@@ -473,13 +474,9 @@ export default {
   background-color: #ffffff;
 }
 #user-info{
-  top: 230px;
-  left: 600px;
-  margin:0 auto;
-  position: fixed; 
-  display: none; 
-  overflow: hidden;
-  z-index: 9999;
+  max-width: 1000px;
+  margin: 200px auto 0 300px;
+  display: none;
 }
 #user-info table{
   width:350px;
@@ -499,13 +496,9 @@ input:hover{
   background-color:transparent;
 }
 #add-info{
-  top: 230px;
-  left: 600px;
-  margin:0 auto;
-  position: fixed; 
-  display: none;  
-  overflow: hidden;
-  z-index: 9999;
+  max-width: 1000px;
+  margin: 200px auto 0 300px;
+  display: none;
 }
 #add-info table{
   width:350px;
@@ -532,13 +525,16 @@ input:hover{
   overflow: auto;
 }
 #backgroundPanel {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  background-color: rgba(0,0,0,.5);
-  z-index: 100;
-  display: none;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 9999;
+    overflow: auto;
 }
 </style>
