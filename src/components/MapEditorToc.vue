@@ -7,9 +7,9 @@
       <i class="material-icons delete-layer" v-on:click="deleteStyleLayer" title="删除样式">delete</i>
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
-      <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" v-on:click="checkSublayer(layer.id,$index,$event)" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
+      <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
         <a>
-          <label for="{{$index}}" v-on:click="showPropertyPanel(layer.id)" title="{{layer.id}}">
+          <label for="{{$index}}" v-on:click="checkSublayer(layer.id,$index,$event)" title="{{layer.id}}">
             <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
             <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
             <i class="material-icons" v-if="layer.items!==undefined">folder</i>
@@ -55,7 +55,7 @@
           <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="text-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -176,7 +176,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -219,7 +219,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -288,7 +288,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -327,7 +327,7 @@
           <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="style-div" class="style-set" style="display: none">
           <b>绘图属性</b>
@@ -355,7 +355,7 @@
 
     <div id="new-layer-panel">
       <div id="property-header">新建图层</div>
-      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields"></foxgis-filter-data>
+      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
     </div>
@@ -443,7 +443,8 @@ export default {
           'filter':{
             'condition':'any',
             'filters':[]
-          }
+          },
+          'folder':""
         }
         this.sourceLayers=[];
       }
@@ -572,7 +573,8 @@ export default {
     },
     createTocLayer: function(style){
       let styleObj = JSON.parse(JSON.stringify(style))
-      let groups = styleObj['metadata']?styleObj['metadata']['mapbox:groups']:{}
+      let groups = styleObj['metadata']?(styleObj['metadata']['mapbox:groups']?styleObj['metadata']['mapbox:groups']:{}):{}
+      this.Folders = groups;
       let layers = styleObj['layers']
       layers.reverse()
       let mylayers = []
@@ -654,7 +656,14 @@ export default {
           'type':this.curPanelLayer.type||'fill',
           'minzoom':this.curPanelLayer.minzoom||0,
           'maxzoom':this.curPanelLayer.maxzoom||22,
-          'filter':filter
+          'filter':filter,
+          'folder':""
+        }
+        if(this.curPanelLayer.metadata&&this.curPanelLayer.metadata["mapbox:group"]){
+          var folder_id = this.curPanelLayer.metadata["mapbox:group"];
+          this.selectedData.folder = this.Folders[folder_id].name;
+        }else{
+          this.selectedData.folder = "";
         }
         if(this.selectedData.source===""){this.sourceLayers=[];}
         for(let j=0;j<this.sources.length;j++){
@@ -670,31 +679,12 @@ export default {
             break;
           }
         }
-
-        /*$(".color").each(function(){
-          var color = this.value;
-          $(this).colpick({
-            submitText:"确定",
-            layout:'rgbhexhsb',
-            color:color,
-            onSubmit:function(hsb,hex,rgb,el){
-              $(el).css('background-color','#'+hex);
-              $(el).val('#'+hex);
-              $(el).colpickHide();
-              var options = {};
-              options.name = $(el).attr("name");
-              options.type = el.dataset.type;
-              options.value = "#"+hex;
-              that.$emit("layer-property-change",options);
-            }
-          });
-        });*/
       }
     },
     checkSublayer:function(layer_id,index,e){
       //切换active
       let activeLayer = this.$el.querySelector('.layer.active')
-      let ct = e.currentTarget
+      let ct = $(e.target).parents(".layer")[0];
       if(activeLayer&&activeLayer.className.indexOf('active')!==-1){
         activeLayer.className = activeLayer.className.replace(' active','')
       }
@@ -719,6 +709,8 @@ export default {
           }
         }
 
+      }else{
+        this.showPropertyPanel(layer_id);
       }
 
     },
@@ -857,6 +849,24 @@ export default {
       }
       if(source_layer!==""){layer['source-layer'] = source_layer;}
       if(filter){layer.filter = filter;}
+      //处理文件夹
+      if($("#new-layer-panel select[name='folder']").val()){//选择了已有的文件夹
+        layer.metadata = {"mapbox:group": $("#new-layer-panel select[name='folder']").find("option:selected").data("id")}
+      }else if($("#new-layer-panel input[name='folder']").val()){//新建了一个文件夹
+        var folder_id = this.getFolderId();
+        if(this.styleObj.metadata){
+          if(!this.styleObj.metadata["mapbox:groups"]){
+            this.styleObj.metadata["mapbox:groups"] = {};
+          }
+          this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
+          layer.metadata = {"mapbox:group": folder_id}
+        }else{
+          this.styleObj.metadata = {};
+          this.styleObj.metadata["mapbox:groups"] = {};
+          this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
+          layer.metadata = {"mapbox:group": folder_id}
+        }
+      }
       this.styleObj.layers.push(layer);
       if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
         for(let i=0;i<this.sources.length;i++){
@@ -1173,6 +1183,10 @@ export default {
       }else{
         $("#stops-panel").css("top",containerHeight-pannelHeight-10);
       }
+    },
+    getFolderId:function(){
+      return Math.random().toString(16).substr(2);
+      // body...
     }
   },
   events: {
@@ -1217,6 +1231,45 @@ export default {
       }
       let data = JSON.parse(JSON.stringify(this.styleObj))
       this.changeStyle(data)
+    },
+    'layer-folder-change':function(params){//修改文件夹
+      if(params.type==="new folder"){//input
+        var folder_id = this.getFolderId();
+        var keys = Object.keys(this.Folders);
+        var flag=0;
+        for(let i=0;i<keys.length;i++){
+          if(params.name === this.Folders[keys[i]].name){
+            folder_id = keys[i];
+            flag=1;
+            break;
+          }
+        }
+        if(flag===0){//表示新建文件夹
+          if(this.styleObj.metadata){
+            if(!this.styleObj.metadata["mapbox:groups"]){
+              this.styleObj.metadata["mapbox:groups"] = {};
+            }
+            this.styleObj.metadata["mapbox:groups"][folder_id] = {name:params.name,"collapsed": false}
+          }else{
+            this.styleObj.metadata = {};
+            this.styleObj.metadata["mapbox:groups"] = {};
+            this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
+          }
+        }
+      }else if(params.type==="change folder"){//select
+        var folder_id = params.id;
+      }
+      var currentLayer = this.currentLayer;
+      if(params.name===""){
+        delete currentLayer.metadata["mapbox:group"];
+      }else{
+        if(!currentLayer.metadata){
+          currentLayer.metadata = {};
+        }
+        currentLayer.metadata["mapbox:group"] = folder_id;
+      } 
+      let data = JSON.parse(JSON.stringify(this.styleObj))
+      this.changeStyle(data);
     }
   },
   data: function() {
@@ -1239,6 +1292,7 @@ export default {
         'maxzoom':22,
         'filter':[]
       },
+      Folders:{},
       stopsData:{
         hasStops:false,
         stopsObj:{},
@@ -1800,7 +1854,7 @@ a {
 
 .property-value input[name='text-field'] {
   padding: 3px;
-  width: 145px;
+  width: 130px;
   position: relative;
   top: -29px;
   background-color: transparent;
