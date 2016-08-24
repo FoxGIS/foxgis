@@ -3676,20 +3676,84 @@ TODOS
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
 							imageObj.attr("xlink:href",url);
-							str = (new XMLSerializer()).serializeToString(xmlObj);
-							var quality = parseInt($('#image-slider').val(), 10)/100;	
-							downLoad(str,imgType,quality);
+							var quality = parseInt($('#image-slider').val(), 10)/100;
+							if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){//IE10/IE11
+								svg.removeAttr("x");
+								svg.removeAttr("y");
+								ieDownload(svg[0],imgType,quality)
+							}else{
+								str = (new XMLSerializer()).serializeToString(xmlObj);	
+								downLoad(str,imgType,quality);
+							}
 						});
 					}else{
-						if (window.ActiveXObject){//code for ie
-							str = xmlObj.xml;
-						}else{// code for Mozilla, Firefox, Opera, etc.
+						var quality = parseInt($('#image-slider').val(), 10)/100;
+						if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
+							ieDownload()
+						}else{
 							str = (new XMLSerializer()).serializeToString(xmlObj);
-						}
-						var quality = parseInt($('#image-slider').val(), 10)/100;	
-						downLoad(str,imgType,quality);
+							downLoad(str,imgType,quality);
+						}	
 					}
 
+					function ieDownload(svg,imgType,quality){
+						if(imgType==="JPEG"||imgType==="WEBP"){
+							var quality=quality||1;
+						}
+						
+						svg.toDataURL("image/png", {
+						    callback: function(data) {
+						    	var image = new Image();
+						    	image.crossOrigin = "Anonymous";
+						        image.setAttribute("src", data)
+						        image.onload=function(){
+						        	var canvas = document.getElementById('myCanvas');  //准备空画布
+						        	document.getElementById('myCanvas').setAttribute("width",this.width);
+						        	document.getElementById('myCanvas').setAttribute("height",this.height);
+						        	var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+						        	context.drawImage(this, 0, 0);
+						        	var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
+						        	if(imgType==="JPEG"){
+						        		canvas.toBlob(function(blob) {
+						        			if(type === "share"){
+						        				uploadImg(blob,imgType,filename)
+						        			}else if(type === "export"){
+						        				$("#spinner").css("display","none");
+						        				saveAs(blob, filename+".jpg");
+						        			}
+						        		},"image/jpeg",quality);
+						        	}else if(imgType==="WEBP"){
+						        		canvas.toBlob(function(blob) {
+						        			if(type === "share"){
+						        				uploadImg(blob,imgType,filename)
+						        			}else if(type === "export"){
+						        				$("#spinner").css("display","none");
+						        				saveAs(blob, filename+".webp");
+						        			}
+						        		},"image/webp",quality);
+						        	}else if(imgType==="PNG"){
+						        		canvas.toBlob(function(blob) {
+						        			if(type === "share"){
+						        				uploadImg(blob,imgType,filename)
+						        			}else if(type === "export"){
+						        				$("#spinner").css("display","none");
+						        				saveAs(blob, filename+".png");
+						        			}
+						        		},"image/png");
+						        	}else if(imgType==="BMP"){
+						        		canvas.toBlob(function(blob) {
+						        			if(type === "share"){
+						        				uploadImg(blob,imgType,filename)
+						        			}else if(type === "export"){
+						        				$("#spinner").css("display","none");
+						        				saveAs(blob, filename+".bmp");
+						        			}
+						        		},"image/bmp");
+						        	}
+						        }	
+						    }
+						})
+					}
 					function downLoad(str,imgType,quality){	
 						if(imgType==="JPEG"||imgType==="WEBP"){
 							var quality=quality||1;
@@ -3700,10 +3764,10 @@ TODOS
 
 						image1.onload=function(){
 							var canvas = document.getElementById('myCanvas');  //准备空画布
-							document.getElementById('myCanvas').setAttribute("width",width*scale);
-							document.getElementById('myCanvas').setAttribute("height",height*scale);
+							document.getElementById('myCanvas').setAttribute("width",this.width);
+							document.getElementById('myCanvas').setAttribute("height",this.height);
 							var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-							context.drawImage(image1, 0, 0);
+							context.drawImage(this, 0, 0);
 							var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
 							if(imgType==="JPEG"){
 								canvas.toBlob(function(blob) {
