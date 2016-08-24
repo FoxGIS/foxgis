@@ -4,7 +4,7 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/management/userManagement' }"><i class="material-icons">map</i>用户管理</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/management/userManagement' }"><i class="material-icons">map</i>用户管理<span  v-mdl-badge.number="user_nums" ></a>
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
@@ -26,27 +26,27 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     signout: function(){
-      Cookies.remove('super-username')
-      Cookies.remove('super-access_token')
-      Cookies.remove('super-name')
-      Cookies.remove('super-phone')
-      Cookies.remove('super-email')
-      Cookies.remove('super-location')
-      Cookies.remove('super-organization')
-      window.location.href = '#!/loginManagement'
+      Cookies.remove('super-username');
+      Cookies.remove('super-access_token');
+      Cookies.remove('super-name');
+      Cookies.remove('super-phone');
+      Cookies.remove('super-email');
+      Cookies.remove('super-location');
+      Cookies.remove('super-organization');
+      window.location.href = '#!/loginManagement';
     }
   },
   ready() {
     /*global componentHandler */
-    componentHandler.upgradeElement(this.$el.firstElementChild)
+    componentHandler.upgradeElement(this.$el.firstElementChild);
   },
   attached: function() {
      //判断是否登陆
-    let username = Cookies.get('super-username')
+    let username = Cookies.get('super-username');
     if(username === undefined){
-      window.location.href = "#!/login"
+      window.location.href = "#!/loginManagement";
     }else{
-      this.username = username
+      this.username = username;
     }
     let access_token = Cookies.get('super-access_token');
     let tileset_url = SERVER_API.tilesets + '/' + username;
@@ -91,32 +91,12 @@ export default {
   },
   data: function(){
     return {
-      username: '用户',
-      upload_nums:0,
-      sprite_nums:0,
-      tileset_nums:0,
-      map_nums:0,
-      font_nums:0,
-      access:false
+      user_nums:0
     }
   },
   events: {
-    "upload_nums":function(msg) {
-      this.upload_nums = parseInt(msg);
-    },
-
-    "sprite_nums":function(msg) {
-      this.sprite_nums = parseInt(msg);
-    },
-    "tileset_nums":function(msg) {
-      this.tileset_nums = parseInt(msg);
-    },
-    
-    "font_nums":function(msg){
-      this.font_nums = parseInt(msg);
-    },
-    "map_nums":function(msg){
-      this.map_nums = parseInt(msg);
+    "user_nums":function(msg) {
+      this.user_nums= parseInt(msg);
     }
   }
 }

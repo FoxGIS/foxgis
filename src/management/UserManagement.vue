@@ -1,42 +1,40 @@
 <template>
 <mdl-snackbar display-on="mailSent"></mdl-snackbar>
 <mdl-button raised colored v-mdl-ripple-effect style="float: right;margin-right: 20px;margin-top: 15px;" @click="showAddBox" id="add-button">添加用户</mdl-button>
-<div>
-  <div class="wrapper">
-    <table>
-      <tr>
-        <th>用户名</th>
-        <th>姓名</th>
-        <th>角色</th>
-        <th>是否验证</th>
-        <th>邮箱</th>
-        <th>固定电话</th>
-        <th>手机号码</th>
-        <th>位置</th>
-        <th>单位</th>
-        <th>职务/职称</th>
-        <th>注册时间</th>
-        <th>操作</th>
-      </tr>
-      <tr v-for="u in userData">
-        <td>{{u.username}}</td>
-        <td>{{u.name}}</td>
-        <td>{{u.role}}</td>
-        <td>{{u.is_verified}}</td>
-        <td>{{u.email}}</td>
-        <td>{{u.telephone}}</td>
-        <td>{{u.mobile}}</td>
-        <td>{{u.location}}</td>
-        <td>{{u.organization}}</td>
-        <td>{{u.position}}</td>
-        <td>{{u.createdAt}}</td>
-        <td style= "cursor:pointer;width: 30px;">
-          <a v-on:click='showEditBox(u.username)'>编辑</a>
-          <a v-on:click='showDelBox(u.username)'>删除</a>
-        </td>
-      </tr>
-    </table>
-  </div>
+<div class="wrapper">
+  <table>
+    <tr>
+      <th>用户名</th>
+      <th>姓名</th>
+      <th>角色</th>
+      <th>是否验证</th>
+      <th>邮箱</th>
+      <th>固定电话</th>
+      <th>手机号码</th>
+      <th>位置</th>
+      <th>单位</th>
+      <th>职务/职称</th>
+      <th>注册时间</th>
+      <th>操作</th>
+    </tr>
+    <tr v-for="u in userData">
+      <td>{{u.username}}</td>
+      <td>{{u.name}}</td>
+      <td>{{u.role}}</td>
+      <td>{{u.is_verified}}</td>
+      <td>{{u.email}}</td>
+      <td>{{u.telephone}}</td>
+      <td>{{u.mobile}}</td>
+      <td>{{u.location}}</td>
+      <td>{{u.organization}}</td>
+      <td>{{u.position}}</td>
+      <td>{{u.createdAt}}</td>
+      <td style= "cursor:pointer;width: 30px;">
+        <a v-on:click='showEditBox(u.username)'>编辑</a>
+        <a v-on:click='showDelBox(u.username)'>删除</a>
+      </td>
+    </tr>
+  </table>
 </div>
 <div id="backgroundPanel">
   <!-----------------------------------编辑面板--------------------------------------------->
@@ -189,7 +187,7 @@
   <!----------------------------------------------------->
 </div>
  <!-----------------删除用户------------------------------------>
-  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+<foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <!------------------------------------------------------------->
 </template>
 
@@ -258,6 +256,11 @@ export default {
         let url = SERVER_API.users + '/' + username;
         this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
             if(response.ok){
+              if(response.data.is_verified === false){
+                response.data.is_verified = "未验证";
+              }else{
+                response.data.is_verified = "已验证";
+              }
               this.userInfo = response.data;
               for(let i=0;i<this.userData.length;i++){
                 let user = this.userData[i];
@@ -268,24 +271,25 @@ export default {
               let popUp = document.getElementById("user-info"); 
               popUp.style.display = "none"; 
               document.getElementById("backgroundPanel").style.display = "none";
+              this.$broadcast("mailSent",{message:"编辑成功！",timeout:3000});
             }
           }, function(response) {
-            alert("编辑错误");
+            this.$broadcast("mailSent",{message:"编辑失败！",timeout:3000});
         });
       }else if(id === 'add-info'){//添加用户
         let url = SERVER_API.users;
         let options = {};
         let username = document.getElementById('username').value;
         if(username === ''){
-          alert('用户名不能为空');
+          this.$broadcast("mailSent",{message:"用户名不能为空！",timeout:3000});
           return ;
         }else if(username.length>20){
-          alert('用户名过长');
+          this.$broadcast("mailSent",{message:"用户名过长！",timeout:3000});
           return ;
         }
         let password = document.getElementById('password').value;
         if(password.length < 6){
-          alert('密码长度过短');
+          this.$broadcast("mailSent",{message:"密码长度过短！",timeout:3000});
           return ;
         }
         let is_verified = document.getElementById('is_verified').value;
@@ -302,7 +306,7 @@ export default {
         let mobile = document.getElementById('mobile').value;
         let location = document.getElementById('location').value;
         if(location === ''){
-          alert('位置不能为空');
+          this.$broadcast("mailSent",{message:"位置不能为空！",timeout:3000});
           return ;
         }
         let organization = document.getElementById('organization').value;
@@ -331,8 +335,10 @@ export default {
           let popUp = document.getElementById("add-info"); 
           popUp.style.display = "none"; 
           document.getElementById("backgroundPanel").style.display = "none";
+          this.$dispatch("user_nums", this.userData.length);
+          this.$broadcast("mailSent",{message:"用户添加成功！",timeout:3000});
         },function(response){
-          alert("添加失败");
+          this.$broadcast("mailSent",{message:"用户添加失败！",timeout:3000});
         })
       }
       
@@ -349,8 +355,8 @@ export default {
       if (status === 'ok') {
         let username = Cookies.get('super-username');
         let access_token = Cookies.get('super-access_token');
-        //let url = SERVER_API.users + '/' + deleteUsername;
-        /*this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+        let url = SERVER_API.users + '/' + this.deleteUsername;
+        this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
             for(let i = 0;i<this.userData.length;i++){
@@ -359,10 +365,12 @@ export default {
               }
             }
             this.deleteUsername = '';
+            this.$dispatch("user_nums", this.userData.length);
+            this.$broadcast("mailSent",{message:"删除成功！",timeout:3000});
           }
         }, function(response) {
-            alert('未知错误，请稍后再试')
-        });*/
+            this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
+        });
       }
     },
   },
@@ -385,12 +393,10 @@ export default {
         }
       }
       this.userData=data;
+      this.$dispatch("user_nums", this.userData.length);
     }, function(response) {
-      console.log(response)
+      this.$broadcast("mailSent",{message:"用户信息获取失败",timeout:3000});
     });
-  },
-  computed: {
-
   },
   data() {
     return {
