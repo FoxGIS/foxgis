@@ -161,7 +161,9 @@ export default {
       dataset: [],
       searchKeyWords: '',
       dialogcontent: {
-        title: '确定删除吗？'
+        title: '确定删除吗？',
+        textOk:'删除',
+        textCancel:'取消'
       },
       deleteStyleId: '',
       username: ''
