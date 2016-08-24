@@ -240,7 +240,7 @@ export default {
   position: absolute;
   color: gray;
   font-size: 12px;
-  padding: 5px;
+  padding: 2px 5px 5px 5px;
 }
 
 .minzoom-label{
