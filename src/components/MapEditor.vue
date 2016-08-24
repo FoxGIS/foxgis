@@ -9,7 +9,7 @@
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
-      <a class="mdl-navigation__link" v-on:click="backToProject" v-link="{ path: '/studio/maps' }" title="返回工程列表"><i class="material-icons">reply</i></a>
+      <a class="mdl-navigation__link" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></a>
       <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
       <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
       
@@ -23,6 +23,7 @@
       <button v-on:click="printMap" id="print-button">输出</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
+    <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog>
   </div>
 </div>
 </template>
@@ -30,7 +31,7 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import Cookies from 'js-cookie'
-import { validate } from 'mapbox-gl-style-spec'
+import { diff, validate} from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
 import util from '../components/util.js'
 export default {
@@ -141,13 +142,25 @@ export default {
       this.patchStyle(this.style);
     },
     backToProject:function(){
+      if(this.styleSaveStatus===false){
+        $("#delete-dialog").show();
+      }else{
+        this.saveAction('cancel');
+      }
+    },
+    saveAction:function(statas){
+      if(statas==='ok'){
+        this.patchStyle(this.style);
+      }
       var style = {};
+      this.styleSaveStatus = true;
       this.changeStyle(style);
       $(".panel").hide();
       $("#property-panel").hide();
       $("#new-layer-panel").hide();
       this.$refs.drafmap.map.remove();
-      this.$refs.drafmap.map = {};
+      this.$refs.drafmap.map = {};  
+      window.location.href = "#!/studio/maps";
     },
     changeLayout: function(){
       let active = document.getElementsByClassName("control-active")
@@ -224,6 +237,7 @@ export default {
       printbutton.innerText = '输出'
     },
     patchStyle: function(style){
+      this.styleSaveStatus = true;
       let style_id = style.style_id
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
@@ -279,7 +293,13 @@ export default {
       currentLayer:{},
       selectedDistrict:"",
       selectedDistrictBounds:[],
-      styleId: null
+      styleId: null,
+      styleSaveStatus:true,
+      dialogcontent: {
+        title: '存在未保存的改动，是否保存？',
+        textOk:'保存',
+        textCancel:'不保存'
+      }
     }
   },
   events: {
@@ -287,6 +307,17 @@ export default {
       this.selectedDistrict = options.name;
       this.selectedDistrictBounds = options.bounds;
       this.$broadcast('map-bounds-change',options);
+    }
+  },
+  watch:{
+    style: {
+      handler:function(style,oldStyle){
+        if(Object.keys(oldStyle).length===0){return}
+        let comds = diff(oldStyle,style);
+        if(comds.length>0){
+          this.styleSaveStatus = false;
+        }
+      }
     }
   }
 }
@@ -406,4 +437,7 @@ export default {
   vertical-align: middle;
 }
 
+#delete-dialog{
+  display: none;
+}
 </style>

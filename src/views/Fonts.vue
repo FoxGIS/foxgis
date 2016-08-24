@@ -390,8 +390,9 @@ export default {
       fonts: [],
       searchKeyWords: '',
       dialogcontent: {
-        title: '',//对话框标题
-        tips:'',//对话框中的提示性文字
+        title: '确定删除吗？',
+        textOk:'删除',
+        textCancel:'取消'
       },
       deleteFontName: [],
       pageConfig: {
