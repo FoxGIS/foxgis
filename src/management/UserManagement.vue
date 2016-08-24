@@ -202,6 +202,7 @@ export default {
       for(let i=0;i<this.userData.length;i++){
         if(username === this.userData[i].username){
           this.userInfo = this.userData[i];
+          break;
         }
       }
       let popUp = document.getElementById("user-info"); 
@@ -222,24 +223,23 @@ export default {
 
     okClick:function(id){
       if(id === 'user-info'){//编辑用户信息
-        let data = {};
-        let is_verified1 = document.getElementById('is_verified-input').value;
+        let is_verified1  = this.userInfo.is_verified = document.getElementById('is_verified-input').value;
         let verified1 = false;
         if(is_verified1 === '已验证'){
           verified1 = true;
         }else if(is_verified1 === '未验证'){
           verified1 = false; 
         }
-        let name1 = document.getElementById('name-input').value;
-        let role1 = document.getElementById('role-input').value;
-        let email1 = document.getElementById('email-input').value;
-        let telephone1 = document.getElementById('telephone-input').value;
-        let mobile1 = document.getElementById('mobile-input').value;
-        let location1 = document.getElementById('location-input').value;
-        let organization1 = document.getElementById('organization-input').value;
-        let position1 = document.getElementById('position-input').value;
+        let name1 = this.userInfo.name = document.getElementById('name-input').value;
+        let role1 = this.userInfo.role = document.getElementById('role-input').value;
+        let email1 = this.userInfo.email = document.getElementById('email-input').value;
+        let telephone1 = this.userInfo.telephone = document.getElementById('telephone-input').value;
+        let mobile1 = this.userInfo.mobile = document.getElementById('mobile-input').value;
+        let location1 = this.userInfo.location = document.getElementById('location-input').value;
+        let organization1 = this.userInfo.organization = document.getElementById('organization-input').value;
+        let position1 = this.userInfo.position = document.getElementById('position-input').value;
 
-        data = {
+        let data = {
           'name':name1,
           'email':email1,
           'telephone':telephone1,
@@ -256,18 +256,6 @@ export default {
         let url = SERVER_API.users + '/' + username;
         this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
             if(response.ok){
-              if(response.data.is_verified === false){
-                response.data.is_verified = "未验证";
-              }else{
-                response.data.is_verified = "已验证";
-              }
-              this.userInfo = response.data;
-              for(let i=0;i<this.userData.length;i++){
-                let user = this.userData[i];
-                if(user.username === this.userInfo.username){
-                  this.userData[i] = this.userInfo;
-                }
-              }
               let popUp = document.getElementById("user-info"); 
               popUp.style.display = "none"; 
               document.getElementById("backgroundPanel").style.display = "none";
@@ -362,6 +350,7 @@ export default {
             for(let i = 0;i<this.userData.length;i++){
               if(this.userData[i].username === this.deleteUsername){
                 this.userData.splice(i,1);
+                break;
               }
             }
             this.deleteUsername = '';
@@ -451,7 +440,6 @@ export default {
 
 <style scoped>
 .wrapper {
-  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;

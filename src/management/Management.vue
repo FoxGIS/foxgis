@@ -4,7 +4,7 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/management/userManagement' }"><i class="material-icons">map</i>用户管理<span  v-mdl-badge.number="user_nums" ></a>
+        <a class="mdl-navigation__link" v-link="{ path: '/management/userManagement' }"><i class="material-icons">account_circle</i>用户管理<span  v-mdl-badge.number="user_nums" ></a>
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
