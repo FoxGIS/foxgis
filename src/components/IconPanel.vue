@@ -1,5 +1,6 @@
 <template>
   <div>
+    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div class="meta-title">
       <b>图标说明</b>
       <div class="description">
@@ -84,19 +85,24 @@ export default {
     delSprite:function(){//删除图标
       let access_token = Cookies.get('access_token');
       let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
-      for(let i=0;i<this.delSpriteTitle.length;i++){
-        let title = this.delSpriteTitle[i];
-        let delUrl = url+"/"+title;
-        this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
-          .then(function(response){
-            if(response.ok){
-              this.delSpriteTitle = [];
-              this.newSprite();
-            } 
-          }, function(response) {
-            alert("删除失败");
-        });
-      }
+      if(this.delSpriteTitle.length>0){
+       for(let i=0;i<this.delSpriteTitle.length;i++){
+         let title = this.delSpriteTitle[i];
+         let delUrl = url+"/"+title;
+         this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
+           .then(function(response){
+             if(response.ok){
+               this.delSpriteTitle = [];
+               this.newSprite();
+             } 
+           }, function(response) {
+             alert("删除失败");
+         });
+       } 
+     }else{
+      this.$broadcast("mailSent",{message:"请选择图标",timeout:3000});
+     }
+      
       
     },
 
