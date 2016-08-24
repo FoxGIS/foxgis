@@ -253,8 +253,7 @@ export default {
 
 .property-value input[type='text'] {
   display: inline-block;
-  height: 30px;
-  padding: 5px 0px 5px 5px;
+  height: 20px;
   border: none;
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
@@ -265,10 +264,9 @@ export default {
   background-color: rgba(255, 255, 255, 0.9);
   display: inline-block;
   width: 175px;
-  padding: 5px 0px 5px 5px;
   border: 1px solid #f2f2f2;
   border-radius: 2px;
-  height: 40px;
+  height: 30px;
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
