@@ -37,6 +37,8 @@
       </tr>
     </table>
   </div>
+</div>
+<div id="backgroundPanel">
   <!-----------------------------------编辑面板--------------------------------------------->
   <div id="user-info">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
@@ -185,11 +187,10 @@
     </table>
   </div>
   <!----------------------------------------------------->
-  <!-----------------删除用户------------------------------------>
+</div>
+ <!-----------------删除用户------------------------------------>
   <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
   <!------------------------------------------------------------->
-  <div id="backgroundPanel"></div>
-</div>
 </template>
 
 
@@ -206,7 +207,7 @@ export default {
         }
       }
       let popUp = document.getElementById("user-info"); 
-      popUp.style.visibility = "visible"; 
+      popUp.style.display = "block"; 
       document.getElementById("backgroundPanel").style.display = "block";
     },
 
@@ -217,7 +218,7 @@ export default {
     },
 
     showAddBox:function(){
-      document.getElementById("add-info").style.visibility = "visible"; 
+      document.getElementById("add-info").style.display = "block"; 
       document.getElementById("backgroundPanel").style.display = "block";
     },
 
@@ -253,7 +254,7 @@ export default {
         };
 
         let username = this.userInfo.username;
-        let access_token = Cookies.get('access_token');
+        let access_token = Cookies.get('super-access_token');
         let url = SERVER_API.users + '/' + username;
         this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
             if(response.ok){
@@ -265,7 +266,7 @@ export default {
                 }
               }
               let popUp = document.getElementById("user-info"); 
-              popUp.style.visibility = "hidden"; 
+              popUp.style.display = "none"; 
               document.getElementById("backgroundPanel").style.display = "none";
             }
           }, function(response) {
@@ -328,7 +329,7 @@ export default {
           }
           this.userData.unshift(data);
           let popUp = document.getElementById("add-info"); 
-          popUp.style.visibility = "hidden"; 
+          popUp.style.display = "none"; 
           document.getElementById("backgroundPanel").style.display = "none";
         },function(response){
           alert("添加失败");
@@ -340,14 +341,14 @@ export default {
     cancelClick:function(id){
       this.userInfo = {};
       var popUp = document.getElementById(id); 
-      popUp.style.visibility = "hidden"; 
+      popUp.style.display = "none"; 
       document.getElementById("backgroundPanel").style.display = "none";
     },
 
     deleteAction: function(status) {
       if (status === 'ok') {
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
+        let username = Cookies.get('super-username');
+        let access_token = Cookies.get('super-access_token');
         //let url = SERVER_API.users + '/' + deleteUsername;
         /*this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -367,11 +368,11 @@ export default {
   },
   attached() {
     document.getElementById("navigation-panel").style.display = "none";
-    let username = Cookies.get('username')
+    let username = Cookies.get('super-username')
     if(username === undefined){
       return 
     }
-    let access_token = Cookies.get('access_token')
+    let access_token = Cookies.get('super-access_token')
     let url = SERVER_API.users;
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
@@ -473,13 +474,9 @@ export default {
   background-color: #ffffff;
 }
 #user-info{
-  top: 230px;
-  left: 600px;
-  margin:0 auto;
-  position: fixed; 
-  visibility: hidden; 
-  overflow: hidden;
-  z-index: 9999;
+  max-width: 1000px;
+  margin: 200px auto 0 300px;
+  display: none;
 }
 #user-info table{
   width:350px;
@@ -499,13 +496,9 @@ input:hover{
   background-color:transparent;
 }
 #add-info{
-  top: 230px;
-  left: 600px;
-  margin:0 auto;
-  position: fixed; 
-  visibility: hidden; 
-  overflow: hidden;
-  z-index: 9999;
+  max-width: 1000px;
+  margin: 200px auto 0 300px;
+  display: none;
 }
 #add-info table{
   width:350px;
@@ -532,13 +525,16 @@ input:hover{
   overflow: auto;
 }
 #backgroundPanel {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  background-color: rgba(0,0,0,.5);
-  z-index: 100;
-  display: none;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 9999;
+    overflow: auto;
 }
 </style>
