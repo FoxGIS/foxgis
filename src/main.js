@@ -48,6 +48,7 @@ import SVGEditor from './components/SVGEditor.vue'
 import StopsPanel from './components/stopsPanel.vue'
 import UserManagement from './management/UserManagement'
 import LoginManagement from './management/LoginManagement'
+import AtlasDownload from './management/AtlasDownload'
 import Management from './management/Management'
 
 Vue.config.debug = true
@@ -186,6 +187,11 @@ router.map({
           require(['./management/UserManagement.vue'], resolve)
         }
       },
+      '/atlasDownload': {
+        component: function (resolve) {
+          require(['./management/AtlasDownload.vue'], resolve)
+        }
+      }
     }
   },
 })
