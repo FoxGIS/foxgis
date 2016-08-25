@@ -46,10 +46,6 @@ import FilterData from './components/FilterDataPanel'
 import User from './views/User'
 import SVGEditor from './components/SVGEditor.vue'
 import StopsPanel from './components/stopsPanel.vue'
-import UserManagement from './management/UserManagement'
-import LoginManagement from './management/LoginManagement'
-import AtlasDownload from './management/AtlasDownload'
-import Management from './management/Management'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -171,29 +167,7 @@ router.map({
     component: function (resolve) {
       require(['./components/SVGEditor.vue'], resolve)
     }
-  },
-  '/loginManagement': {
-    component: function (resolve) {
-      require(['./management/LoginManagement.vue'], resolve)
-    }
-  },
-  '/management': {
-    component: function (resolve) {
-      require(['./management/Management.vue'], resolve)
-    },
-    subRoutes: {
-      '/userManagement': {
-        component: function (resolve) {
-          require(['./management/UserManagement.vue'], resolve)
-        }
-      },
-      '/atlasDownload': {
-        component: function (resolve) {
-          require(['./management/AtlasDownload.vue'], resolve)
-        }
-      }
-    }
-  },
+  }
 })
 
 
