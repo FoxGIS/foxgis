@@ -43,7 +43,7 @@ export default {
             }
           }
         }, function(response) {
-          alert("网络错误");
+          this.$broadcast("mailSent",{message:"图标说明修改失败！",timeout:3000});
       });
     },
 
@@ -96,7 +96,7 @@ export default {
                this.newSprite();
              } 
            }, function(response) {
-             alert("删除失败");
+             this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
          });
        } 
      }else{
@@ -128,13 +128,12 @@ export default {
           if(response.ok){
             if(num === e.target.files.length){
               this.newSprite();
-              //alert('已成功添加图标');
             }else{
               num++;
             }   
           }
         }, function(response) {
-            alert('未知错误，请稍后再试');
+          this.$broadcast("mailSent",{message:"添加图标失败！",timeout:3000});
         });
       }
     },
@@ -159,14 +158,11 @@ export default {
         }
         this.dataset.icons = sprite.icons;
         this.dataset.pngUrl = sprite.pngUrl;
-      },function(){
-        this.$broadcast("mailSent",{message:"sprite json请求错误！",timeout:3000});
+      },function(response){
+        console.log(response);
       });
     }
   },
-  /*computed:{
-    
-  },*/
   data(){
     return {
       delSpriteTitle:[]

@@ -3,7 +3,8 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" >
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+      <!--<mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>-->
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadSprite((pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
     </div>
     <div class="meta">
       <p>
@@ -146,6 +147,26 @@ export default {
           image2.crossOrigin = "Anonymous";
           image2.src = url;
       
+    },
+
+    downloadSprite: function(index) {
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.sprites + '/' + username + '/' + this.dataset[index].sprite_id + '/raw?access_token='+ access_token;
+      if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
+      //IE10/IE11
+        var aLink = document.createElement('a')
+        aLink.className = 'download_link'
+        var text = document.createTextNode('&nbsp;')
+        aLink.appendChild(text)
+        aLink.href = url
+        aLink.click()
+      }else{//Chrome,Firefox
+        var iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.style = "display:none";
+        document.body.appendChild(iframe);
+      }
     },
 
     hidePreview: function(e) {
@@ -453,7 +474,7 @@ export default {
 
 .delete-button{
   position: relative;
-  left: -29px;
+  left: -18px;
 }
 
 .add-button{
