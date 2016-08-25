@@ -48,7 +48,6 @@ export default {
     },
 
     bindDel:function(e){
-
       if(this.dataset.sprite_id){
         let className = "";
         let title = "";
@@ -85,31 +84,34 @@ export default {
     delSprite:function(){//删除图标
       let access_token = Cookies.get('access_token');
       let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
+      let num = 1;
       if(this.delSpriteTitle.length>0){
-       for(let i=0;i<this.delSpriteTitle.length;i++){
-         let title = this.delSpriteTitle[i];
-         let delUrl = url+"/"+title;
-         this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
+        for(let i=0;i<this.delSpriteTitle.length;i++){
+          let title = this.delSpriteTitle[i];
+          let delUrl = url+"/"+title;
+          this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
            .then(function(response){
              if(response.ok){
-               this.delSpriteTitle = [];
-               this.newSprite();
+                if(num === this.delSpriteTitle.length){
+                  this.delSpriteTitle = [];
+                  this.newSprite();
+                }else{
+                  num++;
+                }  
              } 
            }, function(response) {
              this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
-         });
-       } 
-     }else{
-      this.$broadcast("mailSent",{message:"请选择图标",timeout:3000});
-     }
-      
-      
+          });
+        } 
+      }else{
+        this.$broadcast("mailSent",{message:"请选择图标",timeout:3000});
+      }
     },
 
     addSprite: function(){//添加图标
       let hidefile = document.getElementById('icon-input');
       hidefile.click();
-      hidefile.addEventListener('change', this.uploadSprite);  
+      hidefile.addEventListener('change', this.uploadSprite); 
     },
 
     uploadSprite: function(e){
@@ -162,6 +164,10 @@ export default {
         console.log(response);
       });
     }
+  },
+  attached(){
+    let hidefile = document.getElementById('icon-input');
+    hidefile.addEventListener('change', this.uploadSprite); 
   },
   data(){
     return {
