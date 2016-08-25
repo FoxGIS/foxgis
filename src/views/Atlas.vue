@@ -12,7 +12,7 @@
 
       <div class="filter">
         <div style="width: 1000px;">
-          <div class="condition">
+          <div class="condition" v-if="theme_tags.length>0">
             <strong>主题词：</strong>
             <div class="items">
               <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag }}
@@ -22,7 +22,7 @@
               <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
             </div>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="location_tags.length>0">
             <strong>制图区域：</strong>
             <div class="items">
               <a v-for="location in location_tags"
@@ -34,7 +34,7 @@
               <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
             </div>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="year_tags.length>0">
             <strong>制图年份：</strong>
             <div class="items">
               <a v-for="year in year_tags | orderBy" @click="conditionClick($event,3)">{{ year.year }}
