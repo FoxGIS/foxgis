@@ -25,21 +25,6 @@ svgEditor.addExtension('ext-scale', function() {
 	function drawScale(scale){
 		canv.createLayer("比例尺");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
-		/*var rect = canv.addSvgElementFromJson({//创建图例矩形框
-			'element': 'rect',
-			'curStyles': true,
-			'attr': {
-				stroke:"#000000",
-				fill:"#ffffff",
-				'stroke-linejoin':"round",
-				'stroke-width':"0",
-				x:25,
-				y:85,
-				width:200,
-				height:30,
-				opacity: 1
-			}
-		});*/
 		var text = canv.addSvgElementFromJson({//创建“图例”文字
 			'element': 'text',
 			'curStyles': true,

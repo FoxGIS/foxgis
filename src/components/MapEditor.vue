@@ -259,6 +259,9 @@ export default {
     let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1')
     this.styleId = styleId
     var username = Cookies.get('username')
+    if(username === undefined){
+      window.location.href = "#!/login"
+    }
     let access_token = Cookies.get('access_token')
     if(styleId !== null && access_token !== undefined){
 

@@ -61,6 +61,10 @@ export default {
 	
   attached() {
     let access_token = Cookies.get('access_token')
+    let username = Cookies.get('username')
+    if(username === undefined){
+      window.location.href = "#!/login"
+    }
     let url = SERVER_API.stats + '/uploads'
     var that = this
       //获取数据列表

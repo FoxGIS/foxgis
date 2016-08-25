@@ -492,10 +492,20 @@ export default {
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-      var iframe = document.createElement("iframe");
-      iframe.src = url;
-      iframe.style = "display:none";
-      document.body.appendChild(iframe);
+      if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
+      //IE10/IE11
+        var aLink = document.createElement('a')
+        aLink.className = 'download_link'
+        var text = document.createTextNode('&nbsp;')
+        aLink.appendChild(text)
+        aLink.href = url
+        aLink.click()
+      }else{//Chrome,Firefox
+        var iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.style = "display:none";
+        document.body.appendChild(iframe);
+      }
     },
 
     uploadNameChange: function(e,index){

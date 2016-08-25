@@ -184,11 +184,8 @@
       </tbody>
     </table>
   </div>
-  <!----------------------------------------------------->
-</div>
- <!-----------------删除用户------------------------------------>
+
 <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
-  <!------------------------------------------------------------->
 </template>
 
 

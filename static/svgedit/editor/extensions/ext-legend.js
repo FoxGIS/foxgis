@@ -298,19 +298,6 @@ svgEditor.addExtension('ext-legend', function() {
 		for(var i=0;i<legendArr.length;i++){
 			if(legendArr[i].type === "symbol"){
 				var iconUrl = prefix+legendArr[i].styles[0]['icon-image']+"?access_token="+options.access_token;
-				/*Snap.load(iconUrl,function(res){
-					var icon_height = $(res.node).attr("height");
-					var icon_width = $(res.node).attr("width");
-					var curr_width = this.styles[0]['icon-size']*icon_width;
-					var curr_height = this.styles[0]['icon-size']*icon_height;
-					$(res.node).attr("width",curr_width);
-					$(res.node).attr("height",curr_height);
-					$(res.node).attr("x",45-curr_width/2);
-					$(res.node).attr("y",this.index*rowHeight+15-curr_height/2);
-					$(res.node).attr("name",'legend'+this.index);
-					this.elem.appendChild(res.node);
-					//res.use();
-				},{elem:document.getElementById("set-drawing"),styles:legendArr[i].styles,index:i});*/
 				var res = $.ajax({url:iconUrl,async:false});
 				var svgStr = res.responseText;
 				var newDoc = $.parseXML(svgStr);
@@ -534,16 +521,6 @@ svgEditor.addExtension('ext-legend', function() {
 		}
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
-		//current_layer.id = "legend-layer";
-		/*var group = $("#legend-group").clone();
-		var children = group.children();
-		for(var i=0;i<children.length;i++){
-			current_layer.appendChild(children[i]);
-			if(children[i].tagName==="svg"){
-				canv.groupSvgElem(children[i]);
-			}
-			
-		}*/
 		current_layer.appendChild($("#legend-group").clone()[0]);
 		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
 		var frameWidth = parseFloat(viewBox[2]);
@@ -691,8 +668,7 @@ svgEditor.addExtension('ext-legend', function() {
 				element[i].setAttribute("transform","translate("+x+","+y+")");
 				canv.recalculateDimensions(element[i]);
 			}	
-		}
-		
+		}	
 	}
 
 	/**
