@@ -50,7 +50,7 @@
         <label for="two">线</label>
         <input type="radio" value="fill" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="fill" v-else>
-        <label for="one">面 </label></br>
+        <label for="one">面</label></br>
         <input type="radio" value="raster" v-if="selecteddata.panel_type=='update'" disabled>
         <input type="radio" value="raster" v-else>
         <label for="two">栅格</label>
@@ -157,6 +157,8 @@ export default {
         var type = $($("#data-div .filter-item")[index]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
         if(type==="Number"){
           this.selecteddata.filter.filters[index].value = Number(e.target.value);
+        }else{
+          this.selecteddata.filter.filters[index].value = e.target.value;
         }
       }
       if(tem.filters.length>0){

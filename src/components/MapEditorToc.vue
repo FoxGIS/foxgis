@@ -1223,11 +1223,19 @@ export default {
       var value = options.value;
       $(".open-stops").removeClass("open");
       var currentLayer = this.currentLayer;
-      if(options.type){
-        if(!currentLayer[options.type]){currentLayer[options.type] = {}}
-        currentLayer[options.type][name] = value;
+      if(value===""||value===undefined||value===null||value.length===0){
+        if(options.type){
+          delete currentLayer[options.type][name];
+        }else{
+          delete currentLayer[name];
+        }
       }else{
-        currentLayer[name] = value;
+        if(options.type){
+          if(!currentLayer[options.type]){currentLayer[options.type] = {}}
+          currentLayer[options.type][name] = value;
+        }else{
+          currentLayer[name] = value;
+        }
       }
       let data = JSON.parse(JSON.stringify(this.styleObj))
       this.changeStyle(data)
