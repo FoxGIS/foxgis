@@ -37,7 +37,6 @@
   </table>
 </div>
 <div id="backgroundPanel">
-  <!-----------------------------------编辑面板--------------------------------------------->
   <div id="user-info">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
       <tbody>
@@ -114,8 +113,7 @@
       </tbody>
     </table>
   </div>
-  <!------------------------------------------------------------------->
-  <!--------------------添加面板---------------------------------->
+
   <div id="add-info">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="add-info-table">
       <tbody>
