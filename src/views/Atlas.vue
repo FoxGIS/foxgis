@@ -546,17 +546,17 @@ export default {
     },
 
     theme_tags: function(){
-        let theme = []
-        let tempUploads = this.uploads
-        for(let i=0;i<tempUploads.length;i++){
-          if(tempUploads[i].tags.length>0){
-            for(let j=0;j<tempUploads[i].tags.length;j++){
-              theme.push(tempUploads[i].tags[j])
-            }
+      let theme = []
+      let tempUploads = this.uploads
+      for(let i=0;i<tempUploads.length;i++){
+        if(tempUploads[i].tags.length>0){
+          for(let j=0;j<tempUploads[i].tags.length;j++){
+            theme.push(tempUploads[i].tags[j])
           }
         }
-        theme = _.uniq(theme)
-        return theme
+      }
+      theme = _.uniq(theme)
+      return theme
     }
   },
 
