@@ -1477,7 +1477,7 @@ ul li.current {
 
 #legend-panel{
 	position: absolute;
-	width: 700px;
+	width: 720px;
 	height: 400px;
 	z-index: 10;
 	background-color:#d0d0d0; 
@@ -1489,7 +1489,7 @@ ul li.current {
 }
 
 #legend-panel .box{
-	width: 250px;
+	width: 260px;
 	height: 300px;
 	background-color: white;
 	float: left;
