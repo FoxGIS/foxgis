@@ -67,6 +67,18 @@
       </div>
     </div>
 
+    <div class="property-item">   
+      <div class="property-name"><span >文件夹（可选）</span></div>   
+      <div class="property-value">   
+        <select v-model="selecteddata.folder" v-on:change='folderChange' name="folder">    
+          <option value="" data-id="delete"><b> </b></option>    
+          <option value="{{folder.name}}" data-id="{{id}}" v-for="(id,folder) in folders">{{folder.name}}</option>   
+        </select>    
+        <input type="text" v-if="selecteddata.folder!==''" v-model="" name="folder" v-on:change='folderChange' @focus="inputFocus" @blur="inputBlur">    
+        <input type="text" :value="selecteddata.folder" name="folder" v-on:change='folderChange' @focus="inputFocus" @blur="inputBlur" v-else>   
+      </div>   
+    </div>
+
     <div class="property-item" style="border-top: 1px solid #c7c7c7;padding-top: 10px;">
       <div class="property-name"><span >数据过滤</span></div>
       <div class="property-value field-filters" id="field-filters">
@@ -188,6 +200,33 @@ export default {
     deleteFilterItem:function(e,index){
       this.selecteddata.filter.filters.splice(index,1);
       this.filterChange(e,index);
+    },
+    folderChange:function(e){    
+      if(this.selecteddata.panel_type==="create"){    
+        return;   
+      }   
+      if(this.selecteddata.panel_type==="update"){    
+        var params = {};    
+        if(e.target.tagName==="INPUT"){   
+          params.type = "new folder";   
+          params.name = e.target.value;   
+          this.$dispatch("layer-folder-change",params);   
+          this.selecteddata.folder = e.target.value;    
+        }   
+        if(e.target.tagName==="SELECT"){    
+          params.type = "change folder";    
+          params.id = $(e.target).find("option:selected").data("id");   
+          params.name = e.target.value;   
+          this.$dispatch("layer-folder-change",params);   
+          this.selecteddata.folder = e.target.value;    
+        }   
+      }   
+    },    
+    inputFocus:function(e){   
+      $(e.target).css("background-color","white");    
+    },    
+    inputBlur:function(e){    
+      $(e.target).css("background-color","transparent");    
     } 
   },
   /*computed:{
@@ -214,7 +253,7 @@ export default {
     }
   },
 
-  props:['sources','selecteddata','sourcelayers','layerfields']
+  props:['sources','selecteddata','sourcelayers','layerfields','folders']
 }
 </script>
 
@@ -318,5 +357,14 @@ select[name="filter-condition"]{
 
 #field-filters i:hover{
   color: red;
+}
+
+.property-value input[name='folder']{   
+  position: absolute;    
+  left: 1px;   
+  height: 18px;    
+  width: 140px;    
+  margin-top: 1px;   
+  background-color: transparent;   
 }
 </style>
