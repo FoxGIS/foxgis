@@ -5,8 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!-- <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传符号</mdl-button>
-    <input type="file" multiple style="display:none" id="icon-input" accept=".zip"> -->
     <div id="picker" >上传符号</div>
   </div>
   <div class='progress-bar' style="display:none">
@@ -166,7 +164,7 @@ export default {
 
       }
     }, function(response) {
-      console.log("符号请求失败");
+      this.$broadcast('mailSent', { message: '符号请求失败！',timeout:3000 });
     });
   },
 

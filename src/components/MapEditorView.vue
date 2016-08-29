@@ -173,7 +173,6 @@ export default {
       this.localStyle.center = [center.lng,center.lat]
       this.localStyle.zoom = zoom
       let data = JSON.parse(JSON.stringify(this.localStyle))
-      console.log('zoom change');
       this.changeStyle(data)
     },
     mapDragStart: function(e){
@@ -196,7 +195,6 @@ export default {
       let center = this.map.getCenter()
       this.localStyle.center = [center.lng,center.lat]
       let data = JSON.parse(JSON.stringify(this.localStyle))
-      console.log('center change');
       this.changeStyle(data)
     },
     hideBoundsBox: function(){
@@ -237,8 +235,7 @@ export default {
 
           }
         },function(response){
-          console.log(response);
-          console.log("更新style发生未知错误")
+          this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
         })
     },
     // 给定 admin code，返回 admin 级别
@@ -273,7 +270,7 @@ export default {
       if(Object.prototype.toString.call(bounds) === '[object Array]'){
         this.map.fitBounds(bounds)
       }else{
-        console.log('bounds must be Array')
+        this.$broadcast('mailSent', { message: '地图范围错误！',timeout:3000 });
       }
       if(!this.localStyle.metadata||!this.localStyle.metadata.replaceField){
         return;

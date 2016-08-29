@@ -23,7 +23,6 @@ export default {
       if(styleError.length > 0){
         return
       }
-      console.log('code editor');
       this.changeStyle(style)
     }
   },

@@ -1,5 +1,6 @@
 <template>
 <div class="data">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">map</i><span>制图工程</span></h5>
 
   <div class="search">
@@ -48,18 +49,6 @@ export default {
         var style = JSON.parse(result);
         style.name = name;
         style.metadata.replaceField = replace;
-        /*var temLayers = style.layers;
-        for(let i=0;i<temLayers.length;i++){//将颜色值转换为16进制
-          var temPaint = temLayers[i].paint;
-          if(temPaint){
-            var names = Object.keys(temPaint);
-            for(let j=0;j<names.length;j++){
-              if(names[j].indexOf("color")!==-1){
-                temPaint[names[j]] = util.rgb2hex(temPaint[names[j]]); 
-              }
-            }
-          } 
-        }*/
         let newstyle = JSON.stringify(style)
         var username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -71,11 +60,11 @@ export default {
           let styleid = res.data.style_id
           window.location.href="#!mapeditor/"+styleid
         },function(res){
-          console.log(res);
+          this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
           //window.location.href="#!mapeditor"
         });
       },function(res){
-        console.log(res);
+        this.$broadcast('mailSent', { message: '模板获取失败！',timeout:3000 });
       })
     },
     deleteStyle: function(style_id){
@@ -152,7 +141,7 @@ export default {
 
       }
     },function(response){
-      console.log(response)
+      this.$broadcast('mailSent', { message: '地图列表获取失败！',timeout:3000 });
     })
 
   },

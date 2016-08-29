@@ -235,7 +235,7 @@ export default {
       }
       this.userInfo = data;
     }, function(response) {
-      console.log(response)
+      this.$broadcast('mailSent', { message: '用户信息获取失败！',timeout:3000 });
     });
   },
   data() {

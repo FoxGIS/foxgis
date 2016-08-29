@@ -1,5 +1,6 @@
 <template>
 <div class="atlas">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <foxgis-layout>
     <div class="content">
       <div class="search-bar" id="searchButton">
@@ -190,7 +191,7 @@ export default {
             let data = response.data
             callback(data)
         }, function(response) {
-          console.log(response)
+          this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
         })
     },
 
@@ -396,7 +397,7 @@ export default {
           this.uploads = _.concat(this.uploads,temp);
         }
       }, function(response) {
-        console.log(response)
+        this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
       });
     }
     
@@ -434,7 +435,7 @@ export default {
         }
       }
     }, function(response) {
-      console.log(response)
+      this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
     });
 
     //获取制图区域统计信息

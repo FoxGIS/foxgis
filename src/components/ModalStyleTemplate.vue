@@ -155,8 +155,6 @@ export default {
           var url = data.thumb['background-image']
           url = url.substring(5,url.length-2)+"?access_token="+access_token;
           $.ajax(url);
-          /*if(!this.templateItem.thumb){this.templateItem.thumb = {}}
-          this.templateItem.thumb['background-image'] = url;*/
         },function(res){
           this.$broadcast("mailSent",{message:"图像修改失败！",timeout:3000});
         });
@@ -217,7 +215,6 @@ export default {
   },
   attached(){
     this.userRole = Cookies.get('role');
-    console.log(this.userRole)
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.templates;
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
@@ -233,7 +230,7 @@ export default {
         this.templates = data;
       }
     }, function(response) {
-      console.log(response)
+      this.$broadcast("mailSent",{message:"获取模板失败！",timeout:3000});
     });
   },
   data: function(){

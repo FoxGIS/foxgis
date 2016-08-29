@@ -161,7 +161,7 @@ export default {
         this.dataset.icons = sprite.icons;
         this.dataset.pngUrl = sprite.pngUrl;
       },function(response){
-        console.log(response);
+        this.$broadcast('mailSent', { message: '符号列表获取失败！',timeout:3000 });
       });
     }
   },

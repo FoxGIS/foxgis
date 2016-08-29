@@ -140,7 +140,7 @@ export default {
             that.fieldsData = [];
             e.target.parentElement.className = claName;
         }, function(response) {
-          console.log("数据集请求失败");
+          this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
           e.target.parentElement.className = claName;
         })
       }
