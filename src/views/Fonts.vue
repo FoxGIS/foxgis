@@ -83,7 +83,7 @@ import util from '../components/util.js'
 export default {
   methods: {
 
-    showDetails: function (e,fontname) {
+    showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
       //移除之前的active
       let activeCards = this.$el.querySelector('.active')
       if(activeCards&&activeCards!==e.target.parentElement){
@@ -110,13 +110,13 @@ export default {
       e.target.parentElement.className= claName
     },
 
-    parseImgURL:function(font) {
+    parseImgURL:function(font) {//返回缩略图的url
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.fonts + '/' + font.owner + "/" + font.fontname + "/thumbnail?access_token=" + access_token
       return url
     },
 
-    deleteAction: function(status) {
+    deleteAction: function(status) {//删除字体
       if (status === 'ok') {
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -140,14 +140,14 @@ export default {
       }
     },
 
-    deleteFont: function(e,index) {
+    deleteFont: function(e,index) {//弹出删除对话框
       let fontname = this.displayFonts[index].fontname
       this.dialogcontent.title = "确定删除吗？"
       document.getElementById('delete-dialog').style.display = 'block'
       this.deleteFontName.push(fontname)
     },
 
-    downloadFont: function(fontname) {
+    downloadFont: function(fontname) {//下载字体
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.fonts + '/' + username + '/' + fontname + '/raw?access_token='+ access_token
@@ -167,7 +167,7 @@ export default {
       }
     },
 
-    editScope: function(e,index){
+    editScope: function(e,index){//编辑共享范围
         let scope = e.target.value
         let username = Cookies.get('username')
         let access_token = Cookies.get('access_token')
@@ -185,7 +185,7 @@ export default {
         )
     },
 
-    nextPage: function (event) {
+    nextPage: function (event) {//“下一页”按钮的点击方法
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page === allPages){
         return
@@ -197,7 +197,7 @@ export default {
       }
     },
 
-    prePage: function (event) {
+    prePage: function (event) {//“上一页”按钮的点击方法
       if(this.pageConfig.current_page === 1){
         return
       }
@@ -207,7 +207,7 @@ export default {
       }
     },
 
-    setPage: function (page) {
+    setPage: function (page) {//“页码”的点击方法
       this.pageConfig.current_page = page+1;
     }
 
