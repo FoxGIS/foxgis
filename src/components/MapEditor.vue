@@ -206,6 +206,7 @@ export default {
         options.zoom = this.$refs.drafmap.map.getZoom();
         options.scale = 1;
         options.selectedDistrict = this.selectedDistrict;
+        options.templateName = this.style.metadata.template.name;
         var controlBound = this.$refs.drafmap.controlBound;
         options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
         options.organization = Cookies.get('organization');

@@ -5521,7 +5521,8 @@ TODOS
 					editor.updateCanvas();
 					svgCanvas.zoomChanged(window,"100%");//设置100%画布缩放
 					if(window.OPTIONS.selectedDistrict!==""){
-						var title = window.OPTIONS.selectedDistrict+"行政区划图";
+						var templateName = window.OPTIONS.templateName;
+						var title = window.OPTIONS.selectedDistrict+templateName;
 						changeSVGTemple(w,h,title);
 					}else{
 						changeSVGTemple(w,h);
