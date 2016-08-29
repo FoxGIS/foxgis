@@ -5,8 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!-- <mdl-button raised colored v-mdl-ripple-effect id="upload-button" @click="uploadFileClick">上传数据</mdl-button>
-    <input type="file" multiple style="display:none" id="file" accept=".json,.mbtiles,.zip,*.*"> -->
     <div id="picker" >上传数据</div>
   </div>
 
@@ -174,7 +172,7 @@ export default {
         this.dataset = data;
       }
     }, function(response) {
-      console.log("数据集请求失败");
+      this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
     })
   },
   data() {

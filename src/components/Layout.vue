@@ -2,16 +2,13 @@
 <div class="foxgis-layout">
   <div class="mdl-layout mdl-js-layout">
     <header class="mdl-layout__header mdl-layout__header--seamed">
-      <!-- <img class="mdl-layout-icon" src="../assets/logo.png"></img> -->
       <div class="mdl-layout__header-row">
-        <!-- <span class="mdl-layout-title">辅助决策用图系统</span> -->
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
           <a class="mdl-navigation__link" v-link="{ path: '/atlas' }" v-bind:class="username==undefined?'disabled':''">图集</a>
           <a class="mdl-navigation__link" v-link="{ path: '/studio' }" v-bind:class="username==undefined?'disabled':''">制图</a>
           <a class="mdl-navigation__link" href="/static/用户手册.docx" v-bind:class="username==undefined?'disabled':''">帮助</a>
-          <!-- <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a> -->
           <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==undefined">登录</a>
           <a class="mdl-navigation__link" v-on:click="showUserCenter" v-else>{{username}}</a>
         </nav>
@@ -21,18 +18,6 @@
         <a v-on:click.prevent="signout">注销</a>
       </div>
     </header>
-
-<!--     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
-      <span class="mdl-layout-title">辅助决策用图系统</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: 'home' }">首页</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'atlas' }">图集</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'studio' }">制图</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'blog' }">社区</a>
-        <a class="mdl-navigation__link" v-link="{ path: 'login' }" v-if="username==null">登录</a>
-        <a class="mdl-navigation__link" v-else>{{username}}</a>
-      </nav>
-    </div> -->
 
     <div class="mdl-layout--content">
       <slot>Layout content</slot>

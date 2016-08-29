@@ -1,9 +1,9 @@
 <template>
 <div class="foxgis-data-cards">
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" >
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
       <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
-      <!--<mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 88px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>-->
       <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadSprite((pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
     </div>
     <div class="meta">
@@ -13,7 +13,6 @@
           <option value="private">私有</option>
           <option value="public">公开</option>
         </select>
-      <!-- 上传者：<span style="width:30px;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].owner }}</span> -->
       </p>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "delete-button" @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
@@ -88,7 +87,7 @@ export default {
             }
           },function(){
             //请求失败
-            console.log("spriteList获取失败");
+            this.$broadcast('mailSent', { message: '符号列表获取失败！',timeout:3000 });
           });
         } 
       }

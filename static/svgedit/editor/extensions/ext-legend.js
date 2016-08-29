@@ -13,7 +13,6 @@
 svgEditor.addExtension('ext-legend', function() {
 	'use strict';
 	var canv = svgEditor.canvas;
-	console.log(canv);
 	var svgroot = canv.getRootElem();
 	var lastBBox = {};
 	var options = window.OPTIONS;

@@ -8,7 +8,6 @@
         <mdl-textfield floating-label='密码' type='password' id='password' @keyup.enter='login' pattern='(\w|[$,@]){6,}'></mdl-textfield>
         <mdl-button class='login-button' v-mdl-ripple-effect accent raised @keyup.enter='login' @click='login'>登录</mdl-button>
         <div class='tips'>
-          <!-- <a href='' >注册</a> -->
           <!-- <a href='' >找回密码</a> -->
         </div>
 
@@ -18,7 +17,6 @@
       </foxgis-card>
       <div class="footer">
         <div>主管：国家测绘地理信息局 主办：国家基础地理信息中心</div>
-        <!-- <div>技术支持：北京吉威数源信息技术有限公司</div> -->
         <div>地址：北京海淀区莲花池西路28号    邮编：100830    E-mail:office@ngcc.cn</div>
         <div>京ICP备12031976号-2    京公网安备11010802010297号</div>
         <div>网站保留所有权，未经许可不得复制、镜像</div>

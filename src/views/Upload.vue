@@ -5,8 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!-- <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传决策用图</mdl-button>
-    <input type="file" multiple style="display:none" id="file" accept=".png,.jpg,.jpeg,.tif,.tiff"> -->
     <div id="picker" >上传决策用图</div>
   </div>
   <div class='progress-bar' style="display:none">
@@ -475,7 +473,6 @@ export default {
           if(response.ok){
             for(let i = 0;i<this.uploads.length;i++){
               if(this.uploads[i].upload_id === upload_id){
-                console.log('delete uploads')
                 this.uploads.splice(i,1)
               }
             }
@@ -656,7 +653,7 @@ export default {
 
       }
     }, function(response) {
-      console.log(response)
+      this.$broadcast('mailSent', { message: '获取列表失败！',timeout:3000 });
     })
   },
 
@@ -1304,11 +1301,6 @@ span {
 #page-next {
   margin-left: 10px;
   vertical-align: middle;
-}
-
-.download_link {
-  display: block;
-  background: url("../../static/BtnNew.png") 0 0 repeat;
 }
 
 #batch-btn-box{

@@ -198,17 +198,6 @@ export default {
 	height: 430px;
 	margin: 20px;
 }
-.automatic-slider{
-	overflow: hidden;
-	width: 95%;
-	height: calc(100% - 24px);
-	margin-left: auto;
-	margin-right: auto;
-}
-li img{
-	width:100%;
-	height:100%;
-}
 
 .ranklist{
 	background-color: white;
@@ -283,7 +272,7 @@ table tr td:nth-child(3){
 	letter-spacing:1px;
 	margin-left: 16px;
 	white-space: nowrap;
-    text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 
 .scrollText table input{

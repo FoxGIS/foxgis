@@ -3,7 +3,6 @@
   <foxgis-layout>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
-      <!-- <span class="mdl-layout-title">制图工作室</span> -->
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程<span  v-mdl-badge.number="map_nums" ></a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据<span  v-mdl-badge.number="tileset_nums" ></span></a>

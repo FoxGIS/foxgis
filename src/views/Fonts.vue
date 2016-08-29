@@ -5,8 +5,6 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <!-- <mdl-button raised colored v-mdl-ripple-effect @click="fontClick" id="font-button">上传字体</mdl-button>
-    <input type="file" multiple style="display:none" id="file" accept=".ttf,.otf"> -->
     <div id="picker" >上传字体</div>
   </div>
   
@@ -388,9 +386,8 @@ export default {
         that.fonts = data
       }
     }, function(response) {
-      console.log(response)
+      this.$broadcast('mailSent', { message: '字体列表获取失败！',timeout:3000 });
     })
-    console.log(this.$parent)
   },
 
   data() {

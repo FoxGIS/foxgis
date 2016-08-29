@@ -11,7 +11,6 @@
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></a>
       <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
-      <!-- <a class="mdl-navigation__link" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i></a> -->
       
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
@@ -249,7 +248,6 @@ export default {
             this.$broadcast("mailSent",{message:"样式已保存！",timeout:3000});
           }
         },function(response){
-          console.log(response);
           this.$broadcast("mailSent",{message:"样式保存失败！发生未知错误！",timeout:3000});
         })
     }
@@ -272,22 +270,12 @@ export default {
         let initStyle = JSON.parse(JSON.stringify(data))
         var tocdata = initStyle;
         this.$broadcast('toc-init', tocdata)
-        console.log('mapeditor init')
         this.changeStyle(initStyle)
       },function(){
-        alert("style 信息错误")
+        this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
       })
     }else{
-      let url = './static/streets-v8.json'
-      this.$http.get(url).then(function(res){
-        let data = res.data
-        let initStyle = JSON.parse(JSON.stringify(data))
-        var tocdata = JSON.parse(JSON.stringify(data))
-        this.$broadcast('toc-init', tocdata)
-        this.changeStyle(initStyle)
-      },function(res){
-        console.log(res)
-      })
+      this.$broadcast('mailSent', { message: '地图样式获取失败！',timeout:3000 });
     }
   },
   data: function(){
