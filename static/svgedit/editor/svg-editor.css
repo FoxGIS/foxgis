@@ -1526,15 +1526,15 @@ ul li.current {
 	margin: 10px;
 }
 .legend-item input[type='text']{
-	width: 85px;
-    float: left;
-    height: 16px;
-    margin-bottom: 5px;
-    margin-top: 4px;
-    border: 0;
-    background-color: transparent;
-    outline: none;
-    border-bottom: 1px solid gray;
+	width: 84px;
+  float: left;
+  height: 16px;
+  margin-bottom: 5px;
+  margin-top: 4px;
+  border: 0;
+  background-color: transparent;
+  outline: none;
+  border-bottom: 1px solid gray;
 
 }
 

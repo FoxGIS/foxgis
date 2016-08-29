@@ -265,7 +265,7 @@ table tr td:nth-child(1){
 	width: 185px;
 }
 table tr td:nth-child(2){
-	width: 330px;
+	width: 320px;
 	display:block;/*内联对象需加*/
 	word-break:keep-all;/* 不换行 */
 	white-space:nowrap;/* 不换行 */
