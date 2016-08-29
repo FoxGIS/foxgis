@@ -356,10 +356,26 @@ export default {
         url = url+'&search='+search;
       }
       if(this.selected_year_tags.length>0){
-        url = url+"&year="+this.selected_year_tags.toString();
+        var yTags = [];
+        for(var i=0;i<this.selected_year_tags.length;i++){
+          if(this.selected_year_tags[i]==="未指定"){
+            yTags.push("null");
+          }else{
+            yTags.push(this.selected_year_tags[i]);
+          } 
+        }
+        url = url+"&year="+yTags.toString();
       }
       if(this.selected_location_tags.length>0){
-        url = url+"&location="+this.selected_location_tags.toString();
+        var lTags = [];
+        for(var j=0;j<this.selected_location_tags.length;j++){
+          if(this.selected_location_tags[j]==="未指定"){
+            lTags.push("null");
+          }else{
+            lTags.push(this.selected_location_tags[j]);
+          }
+        }
+        url = url+"&location="+lTags.toString();
       }
       //获取数据列表
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
@@ -443,10 +459,15 @@ export default {
     this.$http({ url: locationUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         let data = response.data
+        for(let i=0;i<data.length;i++){
+          if(!data[i].location){
+            data[i].location = "未指定"
+          }
+        }
         this.location_tags = data;
       }
     },function(response){
-
+      this.$broadcast('mailSent', { message: '获取制图地区失败！',timeout:3000 });
     });
 
     //获取制图年份统计信息
@@ -454,10 +475,15 @@ export default {
     this.$http({ url: yearUrl, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         let data = response.data
+        for(let i=0;i<data.length;i++){
+          if(!data[i].year){
+            data[i].year = "未指定"
+          }
+        }
         this.year_tags = data;
       }
     },function(response){
-
+      this.$broadcast('mailSent', { message: '获取制图年份失败！',timeout:3000 });
     });
 
   },
