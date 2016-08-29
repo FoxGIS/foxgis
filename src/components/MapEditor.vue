@@ -19,7 +19,7 @@
     <foxgis-svgeditor id="svg-editor"></foxgis-svgeditor>
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
     <div id="map-tool">
-      <button v-on:click="backEditor" id="back-button">分享</button>
+      <button v-on:click="backEditor" style="background-color:#888;" disabled="true" id="back-button">返回</button>
       <button v-on:click="printMap" id="print-button">输出</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
@@ -180,8 +180,7 @@ export default {
     'setTocLayer': function(layerId){
       this.$broadcast('toc-layer-change',layerId)
     },
-    printMap: function(e){
-      document.getElementById("back-button").innerText = '返回'
+    printMap: function(e){  
       if(e.target.textContent === '输出'){
         $("#property-panel").hide();
         $("#new-layer-panel").hide();
@@ -195,7 +194,9 @@ export default {
           this.$broadcast('show-bounds-box');
         } 
         e.target.innerHTML = '确定'
-        document.getElementById("back-button").style.display = 'block'
+        document.getElementById("back-button").disabled = false;
+        document.getElementById("back-button").style.background = '#ff4081'; 
+        document.getElementById("back-button").style.display = 'block';
       }else if(e.target.textContent === '确定'){
         var options = {}
         options.API = SERVER_API;
@@ -214,21 +215,19 @@ export default {
         this.patchStyle(this.style);
         this.hideBoundsBox();
         document.getElementById("print-button").innerHTML = "输出";
-        document.getElementById("back-button").innerText = '分享';
+        document.getElementById("back-button").disabled = true;
+        document.getElementById("back-button").style.background = '#888888';
         document.getElementById("back-button").style.display = 'block';
       }
     },
     backEditor: function(e){
-
-      if(e.target.textContent === '分享'){
-        return
-      }
       var operator = document.getElementById("print-button")
       if(operator.innerText === '确定'){
         // return to editor
         this.hideBoundsBox()
         operator.innerHTML = "输出"
-        document.getElementById("back-button").innerText = '分享'
+        document.getElementById("back-button").disabled = true  
+        document.getElementById("back-button").style.background = '#888888';    
       }
     },
     hideBoundsBox: function(e){
