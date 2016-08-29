@@ -142,7 +142,7 @@ export default {
       }) */
     },
 
-    editScale:function(e, index) {
+    editScale:function(e, index) {//编辑比例尺
       // body...
       let tempUploads = this.displayUploads;
       let scale = e.target.value;
@@ -163,7 +163,7 @@ export default {
       )
     },
 
-    editLocation: function(e, index) {
+    editLocation: function(e, index) {//编辑制图区域
         let tempUploads = this.displayUploads
         let location = e.target.value
         let username = Cookies.get('username')
@@ -183,7 +183,7 @@ export default {
         )
     },
 
-    editTime: function(e, index) {
+    editTime: function(e, index) {//编辑制图年份
         let tempUploads = this.displayUploads
         let year = e.target.value
         if(e.target.value.length == 0){
@@ -208,7 +208,7 @@ export default {
         )
     },
 
-    editScope: function(e,index){
+    editScope: function(e,index){//编辑共享范围
         let tempUploads = this.displayUploads
         let scope = e.target.value
         let username = Cookies.get('username')
@@ -227,7 +227,7 @@ export default {
         )
     },
 
-    batchProcess:function(){
+    batchProcess:function(){//显示批量编辑弹框
       //以下判断用户是否有勾选
       var t = 0;
       for(var i = 0;i<this.displayUploads.length;i++){
@@ -243,7 +243,7 @@ export default {
         this.$el.querySelector('#batch-process-dialog').style.display = 'block';
       }
     },
-    batchProcessAction:function(status){
+    batchProcessAction:function(status){//执行批量编辑
       if(status !== 'ok'){
         return;
       }
@@ -310,23 +310,13 @@ export default {
         this.$el.querySelector('#batch-process-dialog #scope-select').value="不修改";
     },
 
-    calculation:function(size){
-      let s = size/1024
-      if (s>=1024) {
-        s=s/1024
-        return s.toFixed(2)+"Mb"
-      }else{
-        return s.toFixed(2)+"Kb"
-      }
-    },
-
-    parseImgURL:function(upload) {
+    parseImgURL:function(upload) {//返回缩略图的url
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
     },
 
-    showPreview: function(e, index) {
+    showPreview: function(e, index) {//显示图片预览
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
@@ -335,13 +325,13 @@ export default {
 
     },
 
-    hidePreview: function(e) {
+    hidePreview: function(e) {//隐藏图片预览
       if (e.target.className.indexOf('modal') != -1) {
         e.target.style.display = 'none'
       }
     },
 
-    patchUpload: function(upload_id,data){
+    patchUpload: function(upload_id,data){//更新卡片的某个属性值
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
@@ -356,16 +346,15 @@ export default {
       });
     },
 
-    deleteTag: function(pId, tag_id) {
+    deleteTag: function(pId, tag_id) {//删除主题词
       let patchTags = this.displayUploads[pId].tags
       let upload_id = this.displayUploads[pId].upload_id
       patchTags.splice(tag_id, 1)
       this.patchUpload(upload_id,{'tags':patchTags})
     },
 
-    addTag: function(e, index) {
+    addTag: function(e, index) {//添加主题词
       if (e.target.value) {
-
         let patchUpload = this.displayUploads[index]
         let upload_id = this.displayUploads[index].upload_id
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
@@ -379,7 +368,6 @@ export default {
     },
 
     cardSelect:function(){
-
       $(".card-checkbox").css("display","block");
       this.$el.querySelector('#select-all').disabled="";
     },
@@ -391,7 +379,7 @@ export default {
       }
     },
 
-    inverseSelect:function(){
+    inverseSelect:function(){//反选
       for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked==true){
           this.displayUploads[i].checked=false;
@@ -401,7 +389,7 @@ export default {
       }
     },
 
-    conditionClick: function(e,type){
+    conditionClick: function(e,type){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
       let str = e.target.textContent.trim()
       str = str.substr(0, str.indexOf('(')).trim()
       if(e.target.className == 'filter condition active'){
@@ -422,7 +410,6 @@ export default {
             this.selected_theme_tags.splice(index,1)
           }
         }
-
       }else{
         e.target.className = 'filter condition active'
         if(type == 3){
@@ -435,16 +422,15 @@ export default {
           this.selected_theme_tags.push(e.target.textContent.trim())
           this.selected_theme_tags = _.uniq(this.selected_theme_tags)
         }
-
       }
     },
 
-    deleteUpload: function(upload_id) {
+    deleteUpload: function(upload_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block'
       this.deleteUploadId.push(upload_id);
     },
-    batchDeleteUpload:function(){
+    batchDeleteUpload:function(){//显示批量删除弹框
       var t = 0;
       var deleteIds = [];
       for(var i = 0;i<this.displayUploads.length;i++){
@@ -461,7 +447,7 @@ export default {
         this.deleteUploadId = deleteIds;
       }
     },
-    deleteAction: function(status) {
+    deleteAction: function(status) {//删除决策用图
       if (status === 'ok') {
         var username = Cookies.get('username')
         var access_token = Cookies.get('access_token')
@@ -485,7 +471,7 @@ export default {
       }
     },
 
-    downloadUpload: function(upload_id) {
+    downloadUpload: function(upload_id) {//下载决策用图
       let username = Cookies.get('username')
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
@@ -505,13 +491,13 @@ export default {
       }
     },
 
-    uploadNameChange: function(e,index){
+    uploadNameChange: function(e,index){//修改图片名称
       let value = e.target.value
       let upload_id = this.displayUploads[index].upload_id
       this.patchUpload(upload_id,{'name':value})
     },
 
-    nextPage: function (event) {
+    nextPage: function (event) {//“下一页”按钮的点击方法
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page === allPages){
         return
@@ -523,7 +509,7 @@ export default {
       }
     },
 
-    prePage: function (event) {
+    prePage: function (event) {//“上一页”按钮的点击方法
       if(this.pageConfig.current_page === 1){
         return
       }
@@ -533,7 +519,7 @@ export default {
       }
     },
 
-    setPage: function (page) {
+    setPage: function (page) {//“页码”的点击方法
       this.pageConfig.current_page = page+1;
     }
   },
@@ -666,14 +652,14 @@ export default {
         return cop_page_num > 5 ? 5 : cop_page_num
      },
 
-     total_items: function (){
+     total_items: function (){//返回uploads数组的数量
       let count = this.displayUploads.length
       let allCount = this.uploads.length
       this.$dispatch("upload_nums", allCount)
       return count
      },
 
-    displayUploads: function(){
+    displayUploads: function(){//返回满足筛选条件的uploads数组
       let temp = []
       let temp1 = []
       let temp2 = []
@@ -803,7 +789,7 @@ export default {
       return temp
     },
 
-    theme_tags: function(){
+    theme_tags: function(){//返回已选的“主题词”数组
         let theme = []
         let k=0
         let tempUploads = this.uploads
@@ -838,7 +824,7 @@ export default {
         return theme
     },
 
-    year_tags: function(){
+    year_tags: function(){//返回已选的“制图年份”数组
         let year = []
         let data = []
         let tempUploads = this.uploads
@@ -877,7 +863,7 @@ export default {
         return data
     },
 
-    location_tags: function(){
+    location_tags: function(){//返回已选的“制图区域”数组
         let location = []
         let data = []
         let tempUploads = this.uploads

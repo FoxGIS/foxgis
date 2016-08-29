@@ -148,7 +148,7 @@ export default {
     return '#searchButton'
   },
   methods: {
-    search: function(){
+    search: function(){//获取数据，每次请求80个数据
       document.querySelector('.modal2').style.display = 'block'
       this.searchKeyWords = document.getElementById("search").value.trim()
       this.pageConfig.skip = 0
@@ -195,7 +195,7 @@ export default {
         })
     },
 
-    showPreview: function(e, index) {
+    showPreview: function(e, index) {//显示图片预览
       let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token
@@ -203,12 +203,12 @@ export default {
       document.querySelector('.modal').style.display = 'block'
     },
 
-    hidePreview: function(e) {
+    hidePreview: function(e) {//隐藏图片预览
       if (e.target.className.indexOf('modal') != -1) {
         e.target.style.display = 'none'
       }
     },
-    showMore:function(e){
+    showMore:function(e){//隐藏或显示“标签”的“更多”按钮
       var $item = $(e.target).parent(".more").prev();
       if(e.target.innerHTML==="更多"){
         $item.css({
@@ -224,7 +224,7 @@ export default {
         e.target.innerHTML = "更多";
       }
     },
-    conditionClick: function(e,type){
+    conditionClick: function(e,type){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
       this.pageConfig.skip = 0
       this.pageConfig.page_item_num = 8      
       this.pageConfig.current_page = 1
@@ -254,7 +254,7 @@ export default {
         e.target.className = 'filter condition active'
         if(type == 3){
           this.selected_year_tags.push(str)
-          this.selected_year_tags = _.uniq(this.selected_year_tags)
+          this.selected_year_tags = _.uniq(this.selected_year_tags)//_.uniq(array)方法返回没有重复项的数组
         }else if(type == 2){
           this.selected_location_tags.push(str)
           this.selected_location_tags = _.uniq(this.selected_location_tags)
@@ -267,13 +267,13 @@ export default {
       if(type!==1){this.getNewUploads();}//选中的主题不重新请求
     },
 
-    parseImgURL:function(upload) {
+    parseImgURL:function(upload) {//返回缩略图的url
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token
       return url
     },
 
-    downloadUpload: function(e,index) {
+    downloadUpload: function(e,index) {//下载方法
       let username = this.displayUploads[index].owner
       let access_token = Cookies.get('access_token')
       let url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token
@@ -293,7 +293,7 @@ export default {
       } 
     },
 
-    prePage: function (event) {
+    prePage: function (event) {//“上一页”按钮的点击方法
       if(this.pageConfig.current_page === 1){
         return
       }
@@ -303,11 +303,11 @@ export default {
       }
     },
     
-    setPage: function (page) {
+    setPage: function (page) {//“页码”的点击方法
       this.pageConfig.current_page = page+this.pageConfig.first_page;
     },
 
-    nextPage: function (event) {
+    nextPage: function (event) {//“下一页”按钮的点击方法
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       let that = this
       if(this.pageConfig.current_page === allPages){
@@ -344,7 +344,7 @@ export default {
         }
       }
     },
-    getNewUploads:function(){
+    getNewUploads:function(){//选中“制图区域”和“制图年份”后重新请求数据的方法
       let username = Cookies.get('username')
       if(!username){
         return 
@@ -488,7 +488,7 @@ export default {
 
   },
 
-  computed: {
+  computed: {//计算属性
     show_page_num: function (){
       let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
       if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
