@@ -183,6 +183,7 @@ export default {
       if(e.target.textContent === '输出'){
         $("#property-panel").hide();
         $("#new-layer-panel").hide();
+        $(".panel").hide();
         if(this.selectedDistrictBounds.length!=0){
           var bounds = {
             nw:new mapboxgl.LngLat(this.selectedDistrictBounds[0][0],this.selectedDistrictBounds[1][1]),

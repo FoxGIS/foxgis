@@ -164,6 +164,16 @@ export default {
         url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt'
       }
       this.getHttpData(url,function(data){
+          data = data.map(function(d) {
+            if (d.size / 1024 > 1024) {
+              d.size = (d.size / 1048576).toFixed(2) + 'MB'
+            } else {
+              d.size = (d.size / 1024).toFixed(2) + 'KB'
+            }
+            var date = new Date(d.createdAt);
+            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            return d
+          })
           for(let i=0;i<data.length;i++){
             if(!data[i].location){
               data[i].location = "未指定"
@@ -323,6 +333,16 @@ export default {
         url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt'
         this.getHttpData(url,function(data){
           if(data.length===0){return}
+          data = data.map(function(d) {
+            if (d.size / 1024 > 1024) {
+              d.size = (d.size / 1048576).toFixed(2) + 'MB'
+            } else {
+              d.size = (d.size / 1024).toFixed(2) + 'KB'
+            }
+            var date = new Date(d.createdAt);
+            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            return d
+          })
           for(let i=0;i<data.length;i++){
             if(!data[i].location){
               data[i].location = "未指定"

@@ -77,12 +77,9 @@
               <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange'>
               <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
             </div>
-            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
+            <div class="property-value" v-if="name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
               <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
               <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
-            </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input class="color" v-model="value" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='text-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
@@ -122,7 +119,6 @@
             <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
               <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
               <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
-              <input class="color" v-model="value" v-on:change='propertyChange' v-on:click="colorPickerClick" v-if="name.indexOf('color')!=-1" name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -134,7 +130,7 @@
         <div id="symbol-div" class="style-set" style="display: none">
           <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name.indexOf('color')==-1&&name!=='visibility'">
+            <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
               <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name=='symbol-avoid-edges'">
@@ -150,9 +146,6 @@
                 <option value="point">点</option>
                 <option value="line">线</option>
               </select>
-            </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input class="color" v-model="value" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
           </div>
         </div>
@@ -226,11 +219,8 @@
           <b>输出属性</b>
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name.indexOf('color')==-1&&name!=='visibility'">
+            <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'">
               <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' />
-            </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input class="color" v-model="value" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='layout' :style = "'background-color:'+value" lazy/>
             </div>
             <div class="property-value" v-if="name=='visibility'">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -381,6 +371,7 @@ export default {
     }
   },
   methods: {
+    //颜色选择器
     colorPickerClick:function(e){
       $(e.target).unbind("click",this.colorPickerClick);
       var color = e.target.value;
@@ -402,10 +393,11 @@ export default {
       });
       $(e.target).click();
     },
+    //点击新建图层，显示新建图层面板，初始化面板参数
     showCreateStyle:function(){
       if($("#property-panel").is(":visible")){
         $("#property-panel").hide();
-        $("#icon-select-panel").hide();
+        $(".panel").hide();
       }
       var newLayerPanel = $("#new-layer-panel");
       if(newLayerPanel.is(":visible")){
@@ -429,6 +421,7 @@ export default {
         this.sourceLayers=[];
       }
     },
+    //属性面板的tab菜单
     styleControlClick:function(e){
       $(".panel").hide();
       //移除之前的active
@@ -471,8 +464,8 @@ export default {
         }
       }
     },
+    //将样式图层中没有的属性字段用defaultProperty中的默认值补充，目前只支持 defaultProperty 中的属性
     filterProperty: function(layer){
-      //目前只支持 defaultProperty 中的属性
       let defaultProperty = JSON.parse(JSON.stringify(this.defaultProperty))
       let templayer = JSON.parse(JSON.stringify(layer))
       if(templayer.paint !== undefined){
@@ -513,6 +506,7 @@ export default {
       templayer.layout = defaultProperty[templayer['type']].layout
       return templayer
     },
+    //将面板图层中的样式图层进行分组，用于属性面板的tab菜单
     resolvePropertyGroup:function(panelLayer){
       if(panelLayer.type==="symbol"){
         var group = {
@@ -551,6 +545,7 @@ export default {
         return panelLayer;
       }
     },
+    //根据样式中的layers创建TocLayers，用户显示样式图层列表及文件夹
     createTocLayer: function(style){
       let styleObj = JSON.parse(JSON.stringify(style))
       let groups = styleObj['metadata']?(styleObj['metadata']['mapbox:groups']?styleObj['metadata']['mapbox:groups']:{}):{}
@@ -584,6 +579,7 @@ export default {
       }
       return mylayers
     },
+    //点击图层列表时，显示当前图层的属性设置面板
     showPropertyPanel:function(layer_id){
       $(".panel").hide();
       let that = this;
@@ -661,6 +657,7 @@ export default {
         }
       }
     },
+    //点击文件夹时检查文件夹的展开状态以及图层列表
     checkSublayer:function(layer_id,index,e){
       //切换active
       let activeLayer = this.$el.querySelector('.layer.active')
@@ -694,6 +691,7 @@ export default {
       }
 
     },
+    
     propertyChange:function(e){
       let currentLayer = this.currentLayer
       let layers = this.styleObj.layers
