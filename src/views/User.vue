@@ -1,61 +1,78 @@
 <template>
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="wrapper">
-      <div id="user-info">
-        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
-          <tbody>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
-              <td v-if="userInfo.username"><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
-              <td v-else><input disabled id="username-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
-              <td v-if="userInfo.is_verified"><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
-              <td v-else><input disabled id="verify-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
-              <td v-if="userInfo.name"><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
-              <td v-else><input id="name-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-              <td v-if="userInfo.email"><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
-              <td v-else><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
-              <td v-if="userInfo.telephone"><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
-              <td v-else><input id="phone-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
-              <td v-if="userInfo.mobile"><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
-              <td v-else><input id="mobile-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
-              <td v-if="userInfo.location"><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
-              <td v-else><input disabled id="location-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-              <td v-if="userInfo.organization"><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
-              <td v-else><input id="organization-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
-              <td v-if="userInfo.position"><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
-              <td v-else><input id="position-input" @change="infoChange" value=""></td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
-              <td v-if="userInfo.createdAt"><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
-              <td v-else><input disabled id="createdAt-input" value=""></td>
-            </tr>
-          </tbody>
-        </table>
+    <div id="user-info">
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
+        <tbody>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
+            <td v-if="userInfo.username"><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
+            <td v-else><input disabled id="username-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
+            <td v-if="userInfo.is_verified"><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
+            <td v-else><input disabled id="verify-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr v-if="userInfo.showPasswordPanel === false" @click="changePassword" title="点此修改密码">
+            <td class="mdl-data-table__cell--non-numeric"><b>密码：</b></td>
+            <td><input disabled value="******"></td>
+          </tr>
+          <tr v-if="userInfo.showPasswordPanel === true">
+            <td class="mdl-data-table__cell--non-numeric"><b>旧密码：</b></td>
+            <td><input id="old-password-input" type="password" @change="changePassword" value=""></td>
+          </tr>
+          <tr v-if="userInfo.showPasswordPanel === true">
+            <td class="mdl-data-table__cell--non-numeric"><b>新密码：</b></td>
+            <td><input id="new-password-input" type="password" @change="changePassword" value=""></td>
+          </tr>
+          <tr v-if="userInfo.showPasswordPanel === true">
+            <td class="mdl-data-table__cell--non-numeric"><b>确认密码：</b></td>
+            <td><input id="new2-password-input" type="password" @change="changePassword" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
+            <td v-if="userInfo.name"><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
+            <td v-else><input id="name-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
+            <td v-if="userInfo.email"><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+            <td v-else><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
+            <td v-if="userInfo.telephone"><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
+            <td v-else><input id="phone-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
+            <td v-if="userInfo.mobile"><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
+            <td v-else><input id="mobile-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
+            <td v-if="userInfo.location"><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
+            <td v-else><input disabled id="location-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
+            <td v-if="userInfo.organization"><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+            <td v-else><input id="organization-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
+            <td v-if="userInfo.position"><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
+            <td v-else><input id="position-input" @change="infoChange" value=""></td>
+          </tr>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
+            <td v-if="userInfo.createdAt"><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
+            <td v-else><input disabled id="createdAt-input" value=""></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -65,6 +82,59 @@
 import Cookies from 'js-cookie'
 export default {
   methods:{
+    changePassword:function(e){
+      this.userInfo.showPasswordPanel = true;
+      let url = SERVER_API.users;
+      let username = Cookies.get('username');
+      /*--------用户修改的是密码-----------*/
+      if(e.target.id === "old-password-input"){
+        this.password = document.getElementById('old-password-input').value;
+        url += '/'+username;
+        this.$http.post(url,{'username':username,'password':this.password}).then(function(response){
+          let data = response.data;
+          this.isChangePassword = true;
+        },function(response){
+          document.getElementById('old-password-input').value = "";
+          this.isChangePassword = false;
+          this.$broadcast('mailSent', { message: '密码输入错误！请重新输入',timeout:3000 });
+        });
+      }
+
+      if(e.target.id === "new-password-input" && this.isChangePassword === true){
+        this.newpassword = document.getElementById('new-password-input').value;
+        if(this.newpassword.length < 6){
+          document.getElementById('new-password-input').value = "";
+          this.$broadcast("mailSent",{message:"密码长度过短！最少6位",timeout:3000});
+          return ;
+        }
+      }
+
+      if(e.target.id === "new2-password-input" && this.isChangePassword === true){
+        this.new2password = document.getElementById('new2-password-input').value;
+        if(this.newpassword !== this.new2password){
+          document.getElementById('new2-password-input').value = "";
+          this.$broadcast("mailSent",{message:"两次输入的密码不同！请重新输入",timeout:3000});
+          return ;
+        }else{
+          url = url + '/' + username + "/password";
+          let access_token = Cookies.get('access_token');
+          let data = {
+            'oldPassword':this.password,
+            'newPassword':this.newpassword
+          };
+          this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
+              if(response.ok){
+                let token = response.data.access_token;
+                Cookies.set('access_token',token);
+                this.$broadcast("mailSent",{message:"密码修改成功",timeout:3000});
+              }
+            }, function(response) {
+              his.$broadcast("mailSent",{message:"密码修改失败",timeout:3000});
+          });
+        }
+      }
+      /*------------------------------------*/
+    },
     infoChange:function(e){
       var info = e.target.value;
       var data = {};
@@ -233,6 +303,7 @@ export default {
       }else{
         data.is_verified = "已验证";
       }
+      data.showPasswordPanel = false;
       this.userInfo = data;
     }, function(response) {
       this.$broadcast('mailSent', { message: '用户信息获取失败！',timeout:3000 });
@@ -240,7 +311,11 @@ export default {
   },
   data() {
     return {
-      userInfo:{}
+      userInfo:{},
+      isChangePassword:false,   //是否允许修改密码
+      password:"",
+      newpassword:"",
+      new2password:""
     }
   }
 }
