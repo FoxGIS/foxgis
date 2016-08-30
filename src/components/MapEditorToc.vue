@@ -817,8 +817,12 @@ export default {
         }
       }
 
-      if(source===""||source_layer===""){
-        this.$broadcast("mailSent",{message:"数据源或源图层不能为空！",timeout:3000});
+      if(source===""){
+        this.$broadcast("mailSent",{message:"数据源不能为空！",timeout:3000});
+        return;
+      }
+      if(type!=="raster"&&source_layer===""){
+        this.$broadcast("mailSent",{message:"源图层不能为空！",timeout:3000});
         return;
       }
       if(maxzoom===""){maxzoom=22;}
@@ -1339,6 +1343,12 @@ export default {
         'text-halo-color': '字体光晕颜色',
         'text-halo-width': '字体光晕宽度',
         'text-halo-blur': '光晕模糊度',
+        'contrast': '对比度',
+        'hue-rotate': '色相旋转',
+        'brightness-min': '最小亮度',
+        'brightness-max': '最大亮度',
+        'saturation': '饱和度',
+        'fade-duration': '淡出时效',
         'placement': '符号位置',
         'spacing': '符号间隔',
         'avoid-edges':'避免边缘',
