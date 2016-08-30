@@ -614,11 +614,13 @@ export default {
           }
           if(tempFilter[0]==="any"||tempFilter[0]==="all"||tempFilter[0]==="none"){//存在多个过滤条件
             for(let i=1;i<tempFilter.length;i++){//根据过滤条件数目新建过滤元素
-              var t={field:tempFilter[i][1],operator:tempFilter[i][0],value:tempFilter[i][2]};
+              var str = tempFilter[i].slice(2,tempFilter[i].length).toString();
+              var t={field:tempFilter[i][1],operator:tempFilter[i][0],value:str};
               filter.filters.push(t);
             }
           }else{//只存在一个过滤条件
-            var t={field:tempFilter[1],operator:tempFilter[0],value:tempFilter[2]};
+            var str = tempFilter.slice(2,tempFilter.length).toString();
+            var t={field:tempFilter[1],operator:tempFilter[0],value:str};
             filter.filters.push(t);
           }
         }else{//没有过滤条件
@@ -787,8 +789,18 @@ export default {
         var operator = $(filterElems[i]).children("select[name='filter-operator']").val();
         var value = $(filterElems[i]).children("input[name='filter-value']").val();
         var type = $(filterElems[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-        if(type==="Number"){value=Number(value);}
-        temp=[operator,field,value];
+        if(operator==="in"||operator==="!in"){//值为数组
+          value = value.split(",")
+          if(type==="Number"){
+            for(var p=0;p<value.length;p++){
+              value[p] = Number(value[p]);
+            }
+          }
+          temp = _.concat([operator,field],value)
+        }else{
+          if(type==="Number"){value=Number(value);}
+          temp = [operator,field,value]
+        }
         filterItems.push(temp);
       }
       if(filterItems.length>1){

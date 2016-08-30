@@ -162,21 +162,26 @@ export default {
       if(this.selecteddata.panel_type==="create"){
         return;
       }
+      if(e.target.name==="filter-value"){this.selecteddata.filter.filters[index].value=e.target.value;}
       var tem = this.selecteddata.filter;
       var filter = [];
-      if(e.target.name==="filter-value"){
-        var field = this.selecteddata.filter.filters[index].field;
-        var type = $($("#data-div .filter-item")[index]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-        if(type==="Number"){
-          this.selecteddata.filter.filters[index].value = Number(e.target.value);
-        }else{
-          this.selecteddata.filter.filters[index].value = e.target.value;
-        }
-      }
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
           if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){continue;}
-          var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
+          var field = this.selecteddata.filter.filters[index].field;
+          var type = $($("#data-div .filter-item")[index]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
+            var valueArr = tem.filters[i].value.split(",")
+            if(type==="Number"){
+              for(var p=0;p<valueArr.length;p++){
+                valueArr[p] = Number(valueArr[p]);
+              }
+            }
+            var t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr)
+          }else{
+            if(type==="Number"){tem.filters[i].value=Number(tem.filters[i].value);}
+            var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
+          }
           filter.push(t);
         }
       }

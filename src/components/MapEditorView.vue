@@ -278,19 +278,14 @@ export default {
       var replaceField = this.localStyle.metadata.replaceField;
       var adminType = this.getAdminType(options.id.toString());//获取点击的行政级别
       var curr_adiminTyle = this.localStyle.metadata.template.level;//当前模板的行政级别
-      var curr_template = this.localStyle.metadata.template.name;//当前模板的名称
       if(adminType===curr_adiminTyle){//当前模板级别与点击级别一样才替换
         if (adminType === 1) { // province
           replaceContent = options.name;//省、市级为行政区划名称
-          //var url = './static/style-template/'+curr_template+'.json';
         } else if (adminType === 2) { // city
           replaceContent = options.name;//省、市级为行政区划名称
-          //var url = './static/style-template/'+curr_template+'.json';
         } else if (adminType === 3) { // county
           replaceContent = options.id;//县级为行政区划代码
-          //var url = './static/style-template/'+curr_template+'.json';
         } else if (adminType === 0){//country
-          //var url = './static/style-template/'+curr_template+'.json';
         } else { // village
           alert("暂不支持乡镇级");
           return;
@@ -311,19 +306,6 @@ export default {
       this.localStyle.metadata.replaceField = replaceContent;
       this.$parent.$broadcast('toc-init', this.localStyle);
       this.changeStyle(this.localStyle);
-      /*this.$http.get(url).then(function(res){
-        if(typeof(res.data)==="string"){
-          var styleStr = res.data;
-        }else{
-          var styleStr = JSON.stringify(res.data);
-        }
-        var result = styleStr.replace(/replaceme/g,replaceContent);
-        var newStyle = JSON.parse(result);
-        newStyle.style_id = this.localStyle.style_id;
-        newStyle.name = this.localStyle.name;
-        this.$parent.$broadcast('toc-init', newStyle);
-        this.changeStyle(newStyle);
-      });   */
     },
     'show-bounds-box': function(bounds){
       let controlBox = document.getElementById("location-control")
