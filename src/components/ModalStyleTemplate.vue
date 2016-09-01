@@ -62,7 +62,7 @@
 
         <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
           <div class="item">
-            <span class="title">新建模板</span>
+            <span class="title">自定义模板</span>
             <foxgis-template-wizard id="template-wizard"></foxgis-template-wizard>
           </div>
         </div>
