@@ -15,6 +15,11 @@
             </div>
             <div class="item-name">{{item.name}}</div>
           </div>
+          <div class="template-item template-new">
+            <div class="item-thumb" title="自定义模板" v-on:click="customTemplate">
+            </div>
+            <div class="item-name">自定义模板</div>
+          </div>
           <div class="template-item template-new" v-if="userRole==='admin'">
             <div class="item-thumb" title="新建模板" v-on:click="newTemplate">
             </div>
@@ -52,6 +57,13 @@
               <mdl-button accent raised v-mdl-ripple-effect v-on:click="editTemplateOK">确定</mdl-button>
               <mdl-button raised colored v-mdl-ripple-effect v-on:click="editTemplateCancel">取消</mdl-button>       
             </div>
+          </div>
+        </div>
+
+        <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
+          <div class="item">
+            <span class="title">新建模板</span>
+            <foxgis-template-wizard id="template-wizard"></foxgis-template-wizard>
           </div>
         </div>
         
@@ -92,6 +104,9 @@ export default {
         return
       }
       this.$dispatch("style-params",{'name':styleName,'id':template_id,'replace':replace,'owner':owner})
+    },
+    customTemplate:function(){
+      $("#template-wizard_panel").show();
     },
     newTemplate:function(){
       $("#new-template_panel").show();
@@ -453,5 +468,9 @@ export default {
 
 #edit-template_panel .item-thumb:hover{
   opacity: 0.7;
+}
+
+#template-wizard_panel{
+  display: none;
 }
 </style>

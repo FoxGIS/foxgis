@@ -2,6 +2,7 @@ require('material-design-lite/material.min.js')
 require('material-design-lite/material.min.css')
 require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
+require('mapbox-gl-draw/dist/mapbox-gl-draw.css')
 
 
 import Vue from 'vue'
@@ -39,6 +40,7 @@ import FilterData from './components/FilterDataPanel'
 import User from './views/User'
 import SVGEditor from './components/SVGEditor.vue'
 import StopsPanel from './components/stopsPanel.vue'
+import TemplateWizard from './components/TemplateWizard.vue'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -63,6 +65,7 @@ Vue.component('foxgis-icon-panel',IconPanel)
 Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
 Vue.component('foxgis-stops-panel',StopsPanel)
+Vue.component('foxgis-template-wizard',TemplateWizard)
 
 let router = new Router({
   history: false
