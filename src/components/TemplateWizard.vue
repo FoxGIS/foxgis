@@ -1,16 +1,30 @@
 <template>
   <div>
     <div class="dialog">
+
       <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield" :value=""></mdl-textfield>
+
       <mdl-textfield label="模板类型" floating-label="模板类型" id="template-type" class="textfield" :value=""></mdl-textfield>
-      <mdl-select label="共享范围" id="scope-select" class="textfield" :value="admin" :options="adminOptions"></mdl-select>
+
+      <div class="select">
+        <div>共享范围</div>
+        <select id="scope-select" class="select-item">
+          <option value="{{d}}" v-for="d in adminOptions">{{d}}</option>
+        </select>
+      </div>
+
     </div>
     <div class="dialog">
       <b>选择数据源</b>
 
       <mdl-textfield label="数据源名称" floating-label="数据源名称" id="sources-name" class="textfield" :value=""></mdl-textfield>
 
-      <mdl-select label="数据源类型" id="dataType-select" class="textfield" :value="dataType" :options="dataTypeOptions"></mdl-select>
+      <div class="select">
+        <div>数据源类型</div>
+        <select id="dataType-select" class="select-item">
+          <option value="{{d}}" v-for="d in dataTypeOptions">{{d}}</option>
+        </select>
+      </div>
 
       <div class="select">
         <span>url来源：</span>
@@ -20,7 +34,12 @@
         <label for="other">其他</label>
       </div>
       <mdl-textfield v-if="sources_checked === 'other'" label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-select v-if="sources_checked === 'self'" label="数据源地址" id="sources-url" class="textfield" :value="sourcesUrl" :options="sourcesOptions"></mdl-select>
+      <div class="select" v-if="sources_checked === 'self'">
+        <div>数据源地址</div>
+        <select id="sources-url" class="select-item">
+          <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
+        </select>
+      </div>
 
       <div class="select">
         <span>url来源：</span>
@@ -30,7 +49,12 @@
         <label for="other">其他</label>
       </div>
       <mdl-textfield v-if="sprite_checked === 'other'" label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-select v-if="sprite_checked === 'self'" label="符号库地址" id="sprite-url" class="textfield" :value="spriteUrl" :options="spriteOptions"></mdl-select>
+      <div class="select" v-if="sprite_checked === 'self'">
+        <div>符号库地址</div>
+        <select id="sprite-url" class="select-item">
+          <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
+        </select>
+      </div>
 
       <div class="select">
         <span>url来源：</span>
@@ -40,8 +64,13 @@
         <label for="other">其他</label>
       </div>
       <mdl-textfield v-if="glyphs_checked === 'other'" label="字体地址" floating-label="字体地址" id="glyphs-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-select v-if="glyphs_checked === 'self'" label="字体地址" id="glyphs-url" class="textfield" :value="glyphsUrl" :options="glyphsOptions"></mdl-select>
-
+      <div class="select" v-if="glyphs_checked === 'self'">
+        <div>字体地址</div>
+        <select id="glyphs-url" class="select-item">
+          <option value="{{g}}" v-for="g in glyphsOptions">{{g}}</option>
+        </select>
+      </div>
+      
     </div>
   </div>
   <div class="action">
@@ -142,22 +171,7 @@ export default{
       panelHidden:function(){
         $("#template-wizard_panel #template-name").val('');
         $("#template-wizard_panel #template-type").val('');
-        this.admin='0';
         $("#template-wizard_panel #sources-name").val('');
-        this.dataType='vector';
-        if(this.sources_checked === 'self'){
-          this.sourcesUrl = this.sourcesOptions[0].name;
-          $("#template-wizard_panel #sources-url").val(this.sourcesUrl);
-        }
-        if(this.sprite_checked === 'self'){
-          this.spriteUrl = this.spriteOptions[0].name;
-          $("#template-wizard_panel #sprite-url").val(this.spriteUrl);
-        }
-        if(this.glyphs_checked === 'self'){
-          this.glyphsUrl = this.glyphsOptions[0];
-          $("#template-wizard_panel #glyphs-url").val(this.glyphsUrl);
-        }
-
         if(this.sources_checked === 'other'){
           $("#template-wizard_panel #sources-url").val('');
         }
@@ -173,6 +187,9 @@ export default{
     attached(){
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
+      this.glyphsOptions=[];
+      this.spriteOptions=[];
+      this.sourcesOptions=[];
       //获取数据源数据
       let tilesetsUrl = SERVER_API.tilesets + '/' + username;
       this.$http({ url: tilesetsUrl, method: 'GET', headers: { 'x-access-token': access_token } })
@@ -186,7 +203,6 @@ export default{
               }
               this.sourcesOptions.push(options);
             }
-            this.sourcesUrl = this.sourcesOptions[0].name;
           }
         }, function(response) {
           alert('获取数据源数据错误!');
@@ -201,7 +217,6 @@ export default{
             for(let i=0;i<data.length;i++){
               this.glyphsOptions.push(data[i].fontname);
             }
-            this.glyphsUrl = this.glyphsOptions[0];
           }
         }, function(response) {
           alert('获取字体数据错误!');
@@ -220,7 +235,6 @@ export default{
               }
               this.spriteOptions.push(options);
             }
-            this.spriteUrl = this.spriteOptions[0].name;
           }
         }, function(response) {
           alert('获取符号库数据错误!');
@@ -229,15 +243,10 @@ export default{
     },
     data(){
       return {
-      admin: '0',
       adminOptions: ['0','1', '2','3'],
-      dataType: 'vector',
       dataTypeOptions: ['vector','raster'],
-      glyphsUrl: '',
       glyphsOptions: [],
-      spriteUrl: '',
       spriteOptions: [],
-      sourcesUrl: '',
       sourcesOptions: [],
       sprite_checked: [],
       glyphs_checked: [],
@@ -259,6 +268,15 @@ export default{
   color: #3f51b5;
   font-size: 12px;
   visibility: visible;
+}
+.select .select-item{
+  position: relative;
+  font-size: 16px;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 200px;
+  max-width: 100%;
+  margin: 0 0 20px 0;
 }
 .action{
   text-align: center;
