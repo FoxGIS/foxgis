@@ -277,6 +277,9 @@ export default{
   width: 200px;
   max-width: 100%;
   margin: 0 0 20px 0;
+  border: 1px solid #f2f2f2;
+  border-radius: 2px;
+  height: 30px;
 }
 .action{
   text-align: center;
