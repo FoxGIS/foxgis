@@ -80,19 +80,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-  export default{
-    methods:{
-      inputChange:function(){
-        console.log(this.admin);
-        // body...
-      }
-    },
-    data(){
-      return {
-      admin: 'zero',
-      adminOptions: [{name:"0",value:"zero"},{name:"1",value:"first"},{name:"2",value:"second"},{name:"3",value:"third"}]
-=======
 import Cookies from 'js-cookie'
 export default{
     methods: {
@@ -263,8 +250,7 @@ export default{
       sourcesOptions: [],
       sprite_checked: [],
       glyphs_checked: [],
-      sources_checked: [],
->>>>>>> 6a58482a1b12fac59af726c131b85d03971c732d
+      sources_checked: []
       }
     }
 }
