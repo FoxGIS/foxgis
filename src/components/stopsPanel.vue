@@ -88,7 +88,7 @@
         <span>当前无分级，<a v-on:click.prevent="setStops">设置分级</a>？</span>
       </div>
       <span v-if="this.error!=''" style="font-size:12px;color:red;">{{error}}</span>
-      <div class="action">
+      <div class="action" v-if="stopsdata.hasStops">
         <mdl-button raised colored v-mdl-ripple-effect v-on:click="doOk">√</mdl-button>
         <mdl-button accent raised v-mdl-ripple-effect v-on:click="doCancel">×</mdl-button>
       </div>

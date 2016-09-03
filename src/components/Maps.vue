@@ -34,38 +34,56 @@ export default {
       document.getElementById("template-container").style.display = 'block'
     },
     createStyle: function(data){
-      var name = data.name,
-          replace = data.replace;
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
-      this.$el.querySelector("#create-loading").style.display = 'block';
-      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(res){
-        if(typeof(res.data)==="string"){
-          var styleStr = res.data;
-        }else{
-          var styleStr = JSON.stringify(res.data);
-        }
-        var result = styleStr.replace(/replaceme/g,replace);
-        var style = JSON.parse(result);
-        style.name = name;
-        style.metadata.replaceField = replace;
-        let newstyle = JSON.stringify(style)
-        var username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let createURL = SERVER_API.styles + '/' + username
+      if(data.type === "empty"){
+        let newstyle = JSON.stringify(data.json);
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        let createURL = SERVER_API.styles + '/' + username;
         this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
         .then(function(res){
-          this.$el.querySelector("#create-loading").style.display = 'none'
-          document.getElementById("template-container").style.display = 'none'
-          let styleid = res.data.style_id
-          window.location.href="#!mapeditor/"+styleid
+          this.$el.querySelector("#create-loading").style.display = 'none';
+          document.getElementById("template-container").style.display = 'none';
+          let styleid = res.data.style_id;
+          window.location.href="#!mapeditor/"+styleid;
         },function(res){
           this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
           //window.location.href="#!mapeditor"
         });
-      },function(res){
-        this.$broadcast('mailSent', { message: '模板获取失败！',timeout:3000 });
-      })
+      }else{
+        var name = data.name;
+        var replace = data.replace;
+        var url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
+        this.$el.querySelector("#create-loading").style.display = 'block';
+        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(res){
+          if(typeof(res.data)==="string"){
+            var styleStr = res.data;
+          }else{
+            var styleStr = JSON.stringify(res.data);
+          }
+          var result = styleStr.replace(/replaceme/g,replace);
+          var style = JSON.parse(result);
+          style.name = name;
+          style.metadata.replaceField = replace;
+          let newstyle = JSON.stringify(style);
+          var username = Cookies.get('username');
+          let access_token = Cookies.get('access_token');
+          let createURL = SERVER_API.styles + '/' + username;
+          this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
+          .then(function(res){
+            this.$el.querySelector("#create-loading").style.display = 'none';
+            document.getElementById("template-container").style.display = 'none';
+            let styleid = res.data.style_id;
+            window.location.href="#!mapeditor/"+styleid;
+          },function(res){
+            this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
+            //window.location.href="#!mapeditor"
+          });
+        },function(res){
+          this.$broadcast('mailSent', { message: '模板获取失败！',timeout:3000 });
+        })
+      }
+      
     },
     deleteStyle: function(style_id){
       this.$el.querySelector("#delete-dialog").style.display = 'block'

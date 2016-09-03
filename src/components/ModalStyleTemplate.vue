@@ -15,14 +15,12 @@
             </div>
             <div class="item-name">{{item.name}}</div>
           </div>
-          <div class="template-item template-new">
-            <div class="item-thumb" title="自定义模板" v-on:click="customTemplate">
-            </div>
-            <div class="item-name">自定义模板</div>
+          <div class="template-item template-empty">
+            <div class="item-thumb" title="空模板" v-on:click="itemSelect" data-type="empty"></div>
+            <div class="item-name">空模板</div>
           </div>
           <div class="template-item template-new" v-if="userRole==='admin'">
-            <div class="item-thumb" title="新建模板" v-on:click="newTemplate">
-            </div>
+            <div class="item-thumb" title="新建模板" v-on:click="newTemplate"></div>
             <div class="item-name">新建模板</div>
           </div>
         </div>
@@ -40,7 +38,7 @@
             <mdl-textfield label="替换字段默认值" floating-label="默认值" id="template-replace" class="textfield"></mdl-textfield>
             <div class="action">
               <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
-              <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>       
+              <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>
             </div>
           </div>
         </div>
@@ -55,18 +53,18 @@
             <mdl-textfield label="替换字段默认值" floating-label="默认值" id="template-replace" class="textfield" :value="templateItem.replace"></mdl-textfield>
             <div class="action">
               <mdl-button accent raised v-mdl-ripple-effect v-on:click="editTemplateOK">确定</mdl-button>
-              <mdl-button raised colored v-mdl-ripple-effect v-on:click="editTemplateCancel">取消</mdl-button>       
+              <mdl-button raised colored v-mdl-ripple-effect v-on:click="editTemplateCancel">取消</mdl-button>
             </div>
           </div>
         </div>
 
         <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
-          <div class="item">
-            <span class="title">新建模板</span>
+          <div class="template-wizard_item">
+            <span class="title">空模板</span>
             <foxgis-template-wizard id="template-wizard"></foxgis-template-wizard>
           </div>
         </div>
-        
+
       </div>
     </div>
     <foxgis-dialog id="delete-dialog_template" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
@@ -95,17 +93,23 @@ export default {
         var replace = checked.dataset.replace;
         var owner = checked.dataset.owner;
       }else{
-        alert("请选择一个模板")
-        return
+        this.$broadcast("mailSent",{message:"请选择一个模板",timeout:3000});
+        return;
       }
-      var styleName = this.$el.querySelector('#style-name').value
+      var styleName = this.$el.querySelector('#style-name').value;
       if(styleName === ''){
-        alert("请输入地图名称")
-        return
+        this.$broadcast("mailSent",{message:"请输入地图名称",timeout:3000});
+        return;
       }
-      this.$dispatch("style-params",{'name':styleName,'id':template_id,'replace':replace,'owner':owner})
+      if(checked.dataset.type === "empty"){
+        this.customTemplate();
+      }else{
+        this.$dispatch("style-params",{'name':styleName,'id':template_id,'replace':replace,'owner':owner});
+      } 
     },
     customTemplate:function(){
+      let styleName = this.$el.querySelector('#style-name').value;
+      $("#template-wizard_panel #template-name").val(styleName);
       $("#template-wizard_panel").show();
     },
     newTemplate:function(){
@@ -383,6 +387,17 @@ export default {
   background-color: #e8e5e5;
 }
 
+ .template-empty .item-thumb{
+  background-image:url('../../static/新建.png');
+  background-size: contain;
+  background-position: center;
+  cursor: pointer;
+} 
+
+.template-empty .item-thumb:hover{
+  background-color: #e8e5e5;
+}
+
 .edit-panel{
   position: absolute;
   top: 0px;
@@ -472,5 +487,33 @@ export default {
 
 #template-wizard_panel{
   display: none;
+}
+
+.edit-panel .template-wizard_item{
+  width: 300px;
+  background-color: white;
+  position: absolute;
+  left: calc(50% - 140px);
+  border-radius: 4px;
+  height: auto;
+  max-height: 485px;
+  overflow: auto;
+}
+.template-wizard_item .title {
+  margin-left: 20px;
+  position: relative;
+  top: 10px;
+  font-size: 16px;
+}
+.template-wizard_item::-webkit-scrollbar {
+  width: 6px;
+}
+/* 滚动条的滑轨背景颜色 */
+.template-wizard_item::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+/* 滑块颜色 */
+.template-wizard_item::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
 }
 </style>
