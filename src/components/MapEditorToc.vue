@@ -650,6 +650,7 @@ export default {
             break;
           }
         }
+        if(!this.sourceLayers){return}
         if(this.selectedData['source-layer']===""){this.layerFields={};}
         for(let k=0;k<this.sourceLayers.length;k++){
           if(this.selectedData['source-layer'] === this.sourceLayers[k].id){
