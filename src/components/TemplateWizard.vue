@@ -226,17 +226,6 @@ export default{
     },
     data(){
       return {
-<<<<<<< HEAD
-        adminOptions: ['0','1', '2','3'],
-        dataTypeOptions: ['vector','raster'],
-        glyphsOptions: [],
-        spriteOptions: [],
-        sourcesOptions: [],
-        sprite_checked: [],
-        glyphs_checked: [],
-        sources_checked: [],
-        templateJson:{
-=======
       levels: [
         {
           name:'全国',
@@ -267,7 +256,6 @@ export default{
       glyphs_checked: [],
       sources_checked: [],
       json: {
->>>>>>> 634b01bd754cab947e7877c3521d97f9fd9a32e7
           "version": 8,
           "name": "",
           "center": [108.420679, 36.772537],
@@ -275,24 +263,11 @@ export default{
           "metadata":{
             "template":{
               "type":"",
-<<<<<<< HEAD
-              "level":"",
-              "des":"0代表全国，1代表省，2代表市，3代表县"
-            },
-          },
-          "sources": {
-            sources_name: {
-              "type": "",
-              "url": ""
-            }
-          },
-=======
               "level":0,
               "des":"0代表全国，1代表省，2代表市，3代表县"
             },
           },
           "sources": {},
->>>>>>> 634b01bd754cab947e7877c3521d97f9fd9a32e7
           "sprite": "",
           "glyphs": "",
           "transition": {
