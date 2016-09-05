@@ -75,7 +75,7 @@
   </div>
   <div class="action">
     <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
-    <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>       
+    <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>      
   </div>
 </template>
 
@@ -243,14 +243,48 @@ export default{
     },
     data(){
       return {
-      adminOptions: ['0','1', '2','3'],
-      dataTypeOptions: ['vector','raster'],
-      glyphsOptions: [],
-      spriteOptions: [],
-      sourcesOptions: [],
-      sprite_checked: [],
-      glyphs_checked: [],
-      sources_checked: []
+        adminOptions: ['0','1', '2','3'],
+        dataTypeOptions: ['vector','raster'],
+        glyphsOptions: [],
+        spriteOptions: [],
+        sourcesOptions: [],
+        sprite_checked: [],
+        glyphs_checked: [],
+        sources_checked: [],
+        templateJson:{
+          "version": 8,
+          "name": "",
+          "center": [108.420679, 36.772537],
+          "zoom":3,
+          "metadata":{
+            "template":{
+              "type":"",
+              "level":"",
+              "des":"0代表全国，1代表省，2代表市，3代表县"
+            },
+          },
+          "sources": {
+            sources_name: {
+              "type": "",
+              "url": ""
+            }
+          },
+          "sprite": "",
+          "glyphs": "",
+          "transition": {
+            "duration": 300,
+            "delay": 0
+          },
+          "layers": [
+            {
+              "id":"背景",
+              "type":"background",
+              "paint":{
+                "background-color":"#87c2e4"
+              }
+            }
+          ]
+        }
       }
     }
 }

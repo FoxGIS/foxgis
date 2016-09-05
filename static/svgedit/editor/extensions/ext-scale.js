@@ -18,6 +18,7 @@ svgEditor.addExtension('ext-scale', function() {
 		size:256
 	});
 	function scaleClick(){
+		canv.setMode("select");
 		var ppi = 288;
 		var scale = calculateScale(ppi);
 		drawScale(scale)

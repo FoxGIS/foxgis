@@ -91,6 +91,9 @@ export default {
       Vue:that
     });
     uploader.on('filesQueued',function(file){//添加文件到队列
+      if(file.length===0){
+        this.options.Vue.$broadcast('mailSent', { message: "你已上传过该文件！",timeout:3000 });
+      }
       this.options.Vue.uploadStatus.total_files = file.length;
       var totalSize = 0;
       for(var i=0;i<file.length;i++){

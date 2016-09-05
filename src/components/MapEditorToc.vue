@@ -839,8 +839,14 @@ export default {
         'type':type,
         "minzoom":minzoom,
         "maxzoom":maxzoom,
-        'layout':layout,
-        'paint':paint
+        'layout':{},
+        'paint':{}
+      }
+      if(layer.type==="symbol"){
+        layer.layout = {
+          "text-field":"",
+          "text-font":["SimHei Regular"]
+        }
       }
       if(source_layer!==""){layer['source-layer'] = source_layer;}
       if(filter){layer.filter = filter;}
@@ -1461,13 +1467,13 @@ export default {
             'symbol-spacing': 250,
             'symbol-avoid-edges':false,
             'visibility': 'visible',
-            'icon-image':'{icon-image}',
+            'icon-image':'',
             'icon-size': 1,
             'icon-offset':[0,0],
             'icon-rotate':0,
             'icon-allow-overlap':false,
             'icon-ignore-placement':false,
-            'text-field':'{text-field}',
+            'text-field':'',
             'text-font':['SimHei Regular'],
             'text-size': 16,
             'text-max-width': 10,
