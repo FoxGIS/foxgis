@@ -119,10 +119,15 @@ export default {
     },
     newTemplateOK:function(){
       var files = $("#new-template_panel input[name='template-file']")[0].files;
+      if(files.length===0){
+        this.$broadcast("mailSent",{message:"模板文件不能为空！",timeout:3000});
+        return;
+      }
       var name = $("#new-template_panel #template-name").val();
       var replace = $("#new-template_panel #template-replace").val();
       if(name===""||replace===""){
         this.$broadcast("mailSent",{message:"名称与默认值不能为空",timeout:3000});
+        return;
       } 
       var formData = new FormData()
       formData.append('upload', files[0]);

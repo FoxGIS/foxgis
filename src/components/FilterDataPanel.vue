@@ -168,8 +168,8 @@ export default {
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
           if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){continue;}
-          var field = this.selecteddata.filter.filters[index].field;
-          var type = $($("#data-div .filter-item")[index]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+          var field = this.selecteddata.filter.filters[i].field;
+          var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
           if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
             var valueArr = tem.filters[i].value.split(",")
             if(type==="Number"){
@@ -185,10 +185,8 @@ export default {
           filter.push(t);
         }
       }
-      if(filter.length>1){
+      if(filter.length>0){
         filter = [tem.condition].concat(filter);
-      }else if(filter.length===1){
-        filter = filter[0];
       }
       var params = {};
       params.name = 'filter';

@@ -38,6 +38,7 @@ svgEditor.addExtension('ext-legend', function() {
  	*/
 	function legendClick(){
 		//alert("调用函数弹出")
+		canv.setMode("select");
 		if(!options||$("#legend-panel").is(":visible")){return;}
 		var url = options.API.styles+"/"+options.username+"/"+options.style_id+"?access_token="+options.access_token;
 		$.get(url,function(result){//请求地图样式
@@ -741,21 +742,6 @@ svgEditor.addExtension('ext-legend', function() {
 			events: {
 				click: legendClick
 			}
-		}],
-		mouseDown: function() {
-			if (svgCanvas.getMode() == 'ext-panning') {
-				svgEditor.setPanning(true);
-				return {started: true};
-			}
-		},
-		mouseUp: function() {
-			if (svgCanvas.getMode() == 'ext-panning') {
-				svgEditor.setPanning(false);
-				return {
-					keep: false,
-					element: null
-				};
-			}
-		}
+		}]
 	};//return结束
 });
