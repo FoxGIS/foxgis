@@ -59,8 +59,7 @@
         </div>
 
         <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
-          <div class="template-wizard_item">
-            <span class="title">空模板</span>
+          <div class="item" style="height: auto;">
             <foxgis-template-wizard id="template-wizard"></foxgis-template-wizard>
           </div>
         </div>
@@ -489,31 +488,4 @@ export default {
   display: none;
 }
 
-.edit-panel .template-wizard_item{
-  width: 300px;
-  background-color: white;
-  position: absolute;
-  left: calc(50% - 140px);
-  border-radius: 4px;
-  height: auto;
-  max-height: 485px;
-  overflow: auto;
-}
-.template-wizard_item .title {
-  margin-left: 20px;
-  position: relative;
-  top: 10px;
-  font-size: 16px;
-}
-.template-wizard_item::-webkit-scrollbar {
-  width: 6px;
-}
-/* 滚动条的滑轨背景颜色 */
-.template-wizard_item::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
-}
-/* 滑块颜色 */
-.template-wizard_item::-webkit-scrollbar-thumb {
-  background-color: #2061C6;
-}
 </style>
