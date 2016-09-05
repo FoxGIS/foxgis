@@ -60,7 +60,7 @@
 
         <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
           <div class="item" style="height: auto;">
-            <foxgis-template-wizard id="template-wizard"></foxgis-template-wizard>
+            <foxgis-template-wizard></foxgis-template-wizard>
           </div>
         </div>
 
@@ -487,10 +487,6 @@ export default {
 
 #edit-template_panel .item-thumb:hover{
   opacity: 0.7;
-}
-
-#template-wizard_panel{
-  display: none;
 }
 
 </style>

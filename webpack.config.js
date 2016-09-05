@@ -46,19 +46,24 @@ module.exports = {
       loader: 'file'
     }, {
       test: /\.js$/,
-      include: path.resolve(__dirname, 'node_modules/mapbox-gl/js/render/shaders.js'),
+      include: path.resolve(__dirname, 'node_modules/mapbox-gl/node_modules/mapbox-gl-shaders/index.js'),
       loader: 'transform/cacheable?brfs'
     }, {
       test: /\.js$/,
       include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
       loader: 'worker'
+    }],
+    postLoaders:[{
+      include: /node_modules\/mapbox-gl-shaders/,
+      loader: 'transform',
+      query: 'brfs'
     }]
   },
   devServer: {
     historyApiFallback: true,
     noInfo: true
   },
-  devtool: 'eval-source-map'
+  devtool: 'cheap-source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
