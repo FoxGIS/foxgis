@@ -48,39 +48,38 @@ export default {
         return
       }
       let name = this.$el.querySelector('#name').value
-      /*if(name === ''){
+      if(name === ''){
         this.showError('姓名不能为空')
         return 
-      }*/
+      }
       let email = this.$el.querySelector('#email').value
       let emailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
-      /*if(email === ''){
+      if(email === ''){
         this.showError('邮箱不能为空')
         return 
       }else if(!emailReg.test(email)){
         this.showError('请输入正确的邮箱地址')
         return 
-      }*/
+      }
       let phoneReg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
       let phone = this.$el.querySelector('#phone').value
-      /*if(phone === ''){
+      if(phone === ''){
         this.showError('手机不能为空')
         return 
       }else if(!phoneReg.test(phone)){
         this.showError('请输入正确的电话格式')
         return
-      }*/
-      /*let location = this.$el.querySelector('#location').value*/
+      }
       let location = document.getElementById('location').selectedOptions[0].value
       if(location === ''){
         this.showError('位置不能为空')
         return 
       }
       let organization = this.$el.querySelector('#organization').value
-      /*if(organization === ''){
+      if(organization === ''){
         this.showError('单位不能为空')
         return 
-      }*/
+      }
       let registerbutton = e.target.parentElement
       registerbutton.disabled = true
       let options = {
@@ -139,7 +138,11 @@ export default {
   attached() {
     //隐藏error info
     let errorContainer = this.$el.querySelector('#error-info')
-    errorContainer.style.display = 'none'
+    errorContainer.style.display = 'none' 
+    //判断是否为firefox浏览器
+    if (navigator.userAgent.indexOf('Firefox') >= 0){ 
+      $('.register').css('height','530px')
+    }
   },
   data() {
     return {
