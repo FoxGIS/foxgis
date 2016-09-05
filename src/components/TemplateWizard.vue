@@ -1,28 +1,40 @@
 <template>
   <div class="dialog step1">
     <b>模板信息</b>
+
     <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield" :value=""></mdl-textfield>
+
     <mdl-textfield label="模板类型" floating-label="模板类型" id="template-type" class="textfield" :value=""></mdl-textfield>
+    <mdl-tooltip for="tip-button1">例如：行政区划，地形，新闻</mdl-tooltip>
+    <mdl-button class="tip-button" id="tip-button1" fab primary>
+      <i class="material-icons">info</i>
+    </mdl-button>
+
     <div class="select">
       <div>行政区级别</div>
       <select id="scope-select" class="select-item">
         <option value="{{level.value}}" v-for="level in levels">{{level.name}}</option>
       </select>
     </div>
+
     <div class="action">
       <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('one')">下一步</mdl-button>
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>       
     </div>
   </div>
+
   <div class="dialog step2">
     <b>选择数据源</b>
+
     <mdl-textfield label="数据源名称" floating-label="数据源名称" id="sources-name" class="textfield" :value=""></mdl-textfield>
+
     <div class="select">
       <div>数据源类型</div>
       <select id="dataType-select" class="select-item">
         <option value="{{d.value}}" v-for="d in dataTypeOptions">{{d.name}}</option>
       </select>
     </div>
+
     <div class="select">
       <span>url来源：</span>
       <input type="radio" value="self" v-model="sources_checked" checked>
@@ -31,12 +43,21 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield v-if="sources_checked === 'other'" label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
+    <mdl-tooltip v-if="sources_checked === 'other'" for="tip-button2">选择数据来源</mdl-tooltip>
+    <mdl-button v-if="sources_checked === 'other'"  class="tip-button" id="tip-button2" fab primary>
+      <i class="material-icons">info</i>
+    </mdl-button>
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
         <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
       </select>
+      <mdl-tooltip for="tip-button2">选择数据来源</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button2" fab primary >
+        <i class="material-icons">info</i>
+      </mdl-button>
     </div>
+
     <div class="action">
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('two')">上一步</mdl-button>
       <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('two')">下一步</mdl-button>        
@@ -45,6 +66,7 @@
 
   <div class="dialog step3">
     <b>配置符号库和字体</b>
+
     <div class="select">
       <span>url来源：</span>
       <input type="radio" value="self" v-model="sprite_checked" checked>
@@ -53,12 +75,21 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield v-if="sprite_checked === 'other'" label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
+    <mdl-tooltip v-if="sprite_checked === 'other'" for="tip-button3">选择符号库地址</mdl-tooltip>
+    <mdl-button v-if="sprite_checked === 'other'" class="tip-button" id="tip-button3" fab primary>
+      <i class="material-icons">info</i>
+    </mdl-button>
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
         <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
       </select>
+      <mdl-tooltip for="tip-button3">选择符号库地址</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button3" fab primary>
+        <i class="material-icons">info</i>
+      </mdl-button>
     </div>
+
     <div class="select">
       <span>url来源：</span>
       <input type="radio" value="self" @change="changeGlyphsUrl" v-model="glyphs_checked" checked>
@@ -67,6 +98,11 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield label="字体地址" floating-label="字体地址" id="glyphs-url" class="textfield" :value=""></mdl-textfield>
+    <mdl-tooltip for="tip-button4">选择字体来源</mdl-tooltip>
+    <mdl-button class="tip-button" id="tip-button4" fab primary>
+      <i class="material-icons">info</i>
+    </mdl-button>
+
     <div class="action">
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('three')">上一步</mdl-button> 
       <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>      
@@ -336,5 +372,12 @@ export default{
   top: 5px;
   cursor: pointer;
   font-size: 16px;
+}
+.mdl-button--primary.mdl-button--primary.mdl-button--fab {
+  height: 16px;
+  width: 16px;
+  min-width: 16px;
+  color: #3f51b5;
+  background-color: #fff;
 }
 </style>

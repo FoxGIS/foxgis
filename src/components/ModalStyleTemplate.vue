@@ -110,6 +110,9 @@ export default {
       let styleName = this.$el.querySelector('#style-name').value;
       $("#template-wizard_panel #template-name").val(styleName);
       $("#template-wizard_panel").show();
+      $('#template-wizard_panel .step1').css('display','block');
+      $('#template-wizard_panel .step2').css('display','none');
+      $('#template-wizard_panel .step3').css('display','none');
     },
     newTemplate:function(){
       $("#new-template_panel").show();
