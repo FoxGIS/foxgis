@@ -16,7 +16,9 @@
             <div class="item-name">{{item.name}}</div>
           </div>
           <div class="template-item template-empty">
-            <div class="item-thumb" title="空模板" v-on:click="itemSelect" data-type="empty"></div>
+            <div class="item-thumb" title="空模板" v-on:click="itemSelect" data-type="empty">
+              <div class="done"><i class="material-icons">done</i></div>
+            </div>
             <div class="item-name">空模板</div>
           </div>
           <div class="template-item template-new" v-if="userRole==='admin'">
@@ -387,7 +389,6 @@ export default {
   background-image:url('../../static/新建.png');
   background-size: contain;
   background-position: center;
-  cursor: pointer;
 } 
 
 .template-new .item-thumb:hover{
@@ -400,10 +401,6 @@ export default {
   background-position: center;
   cursor: pointer;
 } 
-
-.template-empty .item-thumb:hover{
-  background-color: #e8e5e5;
-}
 
 .edit-panel{
   position: absolute;

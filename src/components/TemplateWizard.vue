@@ -325,15 +325,18 @@ export default{
 }
 </script>
 <style scoped>
+.dialog{
+  padding: 10px;
+}
 .dialog b{
   margin-left: 20px;
 }
 .dialog .textfield{
   width: 200px;
-  margin-left: 50px;
+  margin-left: 30px;
 }
 .dialog .select{
-  margin-left: 50px;
+  margin-left: 30px;
   color: #3f51b5;
   font-size: 12px;
   visibility: visible;
