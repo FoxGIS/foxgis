@@ -67,7 +67,7 @@
     </ul>
   </div>
 
-  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog>
+  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
 
 </div>
 </template>
@@ -77,7 +77,7 @@
 import Vue from 'vue'
 import _ from 'lodash'
 import Cookies from 'js-cookie'
-import util from '../components/util.js'
+import util from '../../components/util.js'
 export default {
   methods: {
 

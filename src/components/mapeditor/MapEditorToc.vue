@@ -358,7 +358,7 @@
 
 <script>
 import Cookies from 'js-cookie'
-import { changeStyle } from '../vuex/actions'
+import { changeStyle } from '../../vuex/actions'
 import _ from 'lodash'
 import glfun from 'mapbox-gl-function'
 export default {

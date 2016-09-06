@@ -76,7 +76,7 @@ export default {
 <style scoped>
 .mdl-layout__header {
   height: 100px;
-  background-image: url('../assets/header.jpg');
+  background-image: url('../../assets/header.jpg');
   background-size: contain;
   background-repeat: no-repeat;
   background-color: #3861CB;

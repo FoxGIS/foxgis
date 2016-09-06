@@ -10,7 +10,7 @@
   <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
   <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
-  <foxgis-dialog id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog>
+  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
 </div>
 </template>
 
@@ -18,8 +18,8 @@
 <script>
 
 import Cookies from 'js-cookie'
-import util from './util.js'
-import { changeStyle } from '../vuex/actions'
+import util from '../../components/util.js'
+import { changeStyle } from '../../vuex/actions'
 export default {
   vuex: {
     getters: {

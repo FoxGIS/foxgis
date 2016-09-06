@@ -1,13 +1,12 @@
 <template>
 <div class="data">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <h5><i class="material-icons">layers</i><span>数据</span></h5>
+  <h5><i class="material-icons">place</i><span>符号库</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传数据</div>
+    <div id="picker" >上传符号</div>
   </div>
-
   <div class='progress-bar' style="display:none">
     <div class="activebar bar" :style="uploadStatus.percentage"></div>
     <div class="bufferbar bar"></div>
@@ -17,25 +16,19 @@
     </span>
   </div>
 
-  <foxgis-data-cards-data :dataset="displayDataset"></foxgis-data-cards-data>
-  
+  <foxgis-data-cards-icon :dataset.sync="displayDataset"></foxgis-data-cards-icon>
 </div>
 </template>
 
 
 <script>
+import util from '../../components/util.js'
 import Cookies from 'js-cookie'
-import util from './util.js'
+import _ from 'lodash'
 export default {
-  methods: {
-    downloadUpload: function(upload_id) {
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token
-      window.open(url)
-    }
-  },
+  methods:{
 
+  },
   computed:{
     displayDataset:function(){
       var temp = this.dataset;
@@ -46,12 +39,12 @@ export default {
         let keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<temp.length;u++){
-          let tileset = temp[u];
+          let sprite = temp[u];
           let num = 0;
           for(let w=0;w<keyWords.length;w++){
             let keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
-              if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
+              if(sprite.name&&sprite.name.indexOf(keyWord)!=-1){
                   num++;
               }
             }else{
@@ -59,24 +52,23 @@ export default {
             }
           }
           if(num == keyWords.length){
-            t.push(tileset)
+            t.push(sprite)
           }
         }
         return t;
       }
     }
   },
-
-  attached() {
+  attached(){
     let username = Cookies.get('username');
     if(username === undefined){
       return
     }
-    let access_token = Cookies.get('access_token')
-    //this.username = username
-    let url = SERVER_API.tilesets + '/' + username
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.sprites + '/' + username;
     var that = this
       //获取数据列表
+
     var uploader = WebUploader.create({
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
@@ -86,7 +78,9 @@ export default {
       compress:false,//是否压缩
       prepareNextFile:true,//自动准备下一个文件
       accept:{//接受的文件格式
-        
+        title: 'SVG Icons',
+        extensions: 'zip',
+        mimeTypes: 'application/zip'
       },
       Vue:that
     });
@@ -127,20 +121,24 @@ export default {
     });
     uploader.on( 'uploadSuccess', function( file,response) {//上传成功    
       this.options.Vue.uploadStatus.current_file +=1;
+      let activeCards = this.options.Vue.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       var data = response;
-      data.createdAt = util.dateFormat(new Date(data.createdAt));
-      data.checked = false;//为新增加的文件添加checked属性
-      this.options.Vue.dataset.unshift(data);
-      if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-        $('.progress-bar').css('display','none');
-        $('.webuploader-pick').css('background-color','#3F51B5');
-        $('#picker input').removeAttr('disabled');
-        this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
-        this.options.Vue.uploadStatus.current_file=1;
-        this.options.Vue.uploadStatus.total_files=0;
-        this.options.Vue.uploadStatus.progress=0;
-        this.options.Vue.uploadStatus.percentage="width:0";
-      }    
+        data.createdAt = util.dateFormat(new Date(data.createdAt));
+        data.checked = false;//为新增加的文件添加checked属性
+        this.options.Vue.dataset.unshift(data);
+        if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
+          $('.progress-bar').css('display','none');
+          $('.webuploader-pick').css('background-color','#3F51B5');
+          $('#picker input').removeAttr('disabled');
+          this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
+          this.options.Vue.uploadStatus.current_file=1;
+          this.options.Vue.uploadStatus.total_files=0;
+          this.options.Vue.uploadStatus.progress=0;
+          this.options.Vue.uploadStatus.percentage="width:0";
+        }    
     });
     uploader.on( 'uploadError', function( file,reason) {//上传失败
       this.options.Vue.uploadStatus.current_file +=1;
@@ -156,28 +154,23 @@ export default {
       }
     });
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-
       if (response.data.length > 0) {
         var data = response.data;
         data = data.map(function(d) {
-          if (d.filesize / 1024 > 1024) {
-            d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB';
-          } else {
-            d.filesize = (d.filesize / 1024).toFixed(2) + 'KB';
-          }
-          d.createdAt = util.dateFormat(new Date(d.createdAt));
-
+          d.createdAt = util.dateFormat(new Date(d.createdAt))
           return d;
         });
         for(let i=0;i<data.length;i++){
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
         }
         this.dataset = data;
+
       }
     }, function(response) {
-      this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
-    })
+      this.$broadcast('mailSent', { message: '符号请求失败！',timeout:3000 });
+    });
   },
+
   data() {
     return {
       dataset: [],
@@ -194,15 +187,16 @@ export default {
   },
 
   events:{
-    "delete_tileset":function(msg){
+    "delete_sprite":function(msg){
       for(let i = 0;i<this.dataset.length;i++){
-        if(this.dataset[i].tileset_id === msg){
+        if(this.dataset[i].sprite_id === msg){
           this.dataset.splice(i,1);
         }
       }
     }
   }
 }
+
 </script>
 
 
@@ -232,21 +226,14 @@ h5 {
 span {
   vertical-align: middle;
 }
-
+#upload-progress{
+  width:calc(100% - 130px);;
+}
 .search {
   margin-top: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 .foxgis-search {

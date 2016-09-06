@@ -5,9 +5,9 @@
     <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield" :value=""></mdl-textfield>
 
     <mdl-textfield label="模板类型" floating-label="模板类型" id="template-type" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip for="tip-button1">例如：行政区划，地形，新闻</mdl-tooltip>
-    <mdl-button class="tip-button" id="tip-button1" fab primary>
-      <i class="material-icons">info</i>
+    <mdl-tooltip for="template-type_help">{{toolTips.templateType}}</mdl-tooltip>
+    <mdl-button class="tip-button" id="template-type_help" fab primary>
+      <i class="material-icons">help</i>
     </mdl-button>
 
     <div class="select">
@@ -18,8 +18,8 @@
     </div>
 
     <div class="action">
+      <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>      
       <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('one')">下一步</mdl-button>
-      <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>       
     </div>
   </div>
 
@@ -27,6 +27,10 @@
     <b>选择数据源</b>
 
     <mdl-textfield label="数据源名称" floating-label="数据源名称" id="sources-name" class="textfield" :value=""></mdl-textfield>
+    <mdl-tooltip for="source-name_help">{{toolTips.sourceName}}</mdl-tooltip>
+    <mdl-button class="tip-button" id="source-name_help" fab primary>
+      <i class="material-icons">help</i>
+    </mdl-button>
 
     <div class="select">
       <div>数据源类型</div>
@@ -43,18 +47,18 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield v-if="sources_checked === 'other'" label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sources_checked === 'other'" for="tip-button2">选择数据来源</mdl-tooltip>
-    <mdl-button v-if="sources_checked === 'other'"  class="tip-button" id="tip-button2" fab primary>
-      <i class="material-icons">info</i>
+    <mdl-tooltip v-if="sources_checked === 'other'" for="source-url_help"><span>{{toolTips.sourceUrl.remote}}</span></mdl-tooltip>
+    <mdl-button v-if="sources_checked === 'other'"  class="tip-button" id="source-url_help" fab primary>
+      <i class="material-icons">help</i>
     </mdl-button>
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
         <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="tip-button2">选择数据来源</mdl-tooltip>
-      <mdl-button class="tip-button" id="tip-button2" fab primary >
-        <i class="material-icons">info</i>
+      <mdl-tooltip for="source-url_help">{{toolTips.sourceUrl.local}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="source-url_help" fab primary >
+        <i class="material-icons">help</i>
       </mdl-button>
     </div>
 
@@ -75,18 +79,18 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield v-if="sprite_checked === 'other'" label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sprite_checked === 'other'" for="tip-button3">选择符号库地址</mdl-tooltip>
-    <mdl-button v-if="sprite_checked === 'other'" class="tip-button" id="tip-button3" fab primary>
-      <i class="material-icons">info</i>
+    <mdl-tooltip v-if="sprite_checked === 'other'" for="sprite-url_help">{{toolTips.spriteUrl.remote}}</mdl-tooltip>
+    <mdl-button v-if="sprite_checked === 'other'" class="tip-button" id="sprite-url_help" fab primary>
+      <i class="material-icons">help</i>
     </mdl-button>
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
         <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="tip-button3">选择符号库地址</mdl-tooltip>
-      <mdl-button class="tip-button" id="tip-button3" fab primary>
-        <i class="material-icons">info</i>
+      <mdl-tooltip for="sprite-url_help">{{toolTips.spriteUrl.local}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="sprite-url_help" fab primary>
+        <i class="material-icons">help</i>
       </mdl-button>
     </div>
 
@@ -98,9 +102,9 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield label="字体地址" floating-label="字体地址" id="glyphs-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip for="tip-button4">选择字体来源</mdl-tooltip>
+    <mdl-tooltip for="tip-button4">{{toolTips.glyphUrl}}</mdl-tooltip>
     <mdl-button class="tip-button" id="tip-button4" fab primary>
-      <i class="material-icons">info</i>
+      <i class="material-icons">help</i>
     </mdl-button>
 
     <div class="action">
@@ -319,6 +323,19 @@ export default{
               }
             }
           ]
+        },
+        toolTips:{
+          "templateType":"地图模板的类型。例如：行政区划图、新闻地图、地形图。",
+          "sourceName":"数据源名称。尽量使用英文字母与数字，不要使用特殊字符，例如：data2012",
+          "sourceUrl":{
+            "local":"选择本地数据管理模块中上传的数据源",
+            "remote":"选择其他用户公开的数据源，请确保能正确访问数据源的tilejson。例如：http://foxgis.com/api/v1/ tilesets/{username}/{tileset_id}"
+          },
+          "spriteUrl":{
+            "local":"选择本地符号库管理模块中上传的符号库",
+            "remote":"选择其他用户公开的符号库，请确保能正确访问到符号库。例如：http://foxgis.com/api/v1/ sprites/{username}/{sprite_id}/sprite"
+          },
+          "glyphUrl":"选择字体库。默认为本系统的字体库，也可指定其他用户的字体库，例如：http://foxgis.com /api/v1/fonts/{username} /{fontstack}/{range}.pbf"
         }
       }
     }

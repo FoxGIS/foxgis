@@ -2,16 +2,16 @@
   <div>
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div class="meta-title">
-      <b>图标说明</b>
+      <b>符号说明</b>
       <div class="description">
         <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event)"></mdl-textfield>
       </div>
     </div>
     <div class="meta-title">
-      <b>图标详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
-      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加图标</mdl-anchor-button>
+      <b>符号详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加符号</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
-      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除图标</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除符号</mdl-anchor-button>
     </div>
     <div class="icon-container" style="text-align:center;max-height: 230px;">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
