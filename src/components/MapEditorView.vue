@@ -454,7 +454,7 @@ export default {
 #layer-container {
   background-color: #2061C6;
   color: white;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .layer {
@@ -466,6 +466,9 @@ export default {
   cursor: pointer;
 }
 
+.layer:hover{
+  background-color: #0257af;
+}
 .layer i {
   font-size: 1px;
   line-height: 16px;

@@ -5,7 +5,7 @@
   "author": "jingsam <jingsam@163.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --host 192.168.1.109 --inline --hot",
+    "dev": "webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "copy": "mkdirp deploy && ncp index.html deploy/index.html && ncp static deploy/static && ncp build deploy/build",
     "deploy": "npm run build && npm run copy",

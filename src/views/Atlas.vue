@@ -227,6 +227,7 @@ export default {
         });
         e.target.innerHTML = "收起";
       }else{
+        $item.scrollTop(0);
         $item.css({
           "max-height":"40px",
           "overflow":"hidden"
