@@ -2,7 +2,7 @@
 <div>
   <foxgis-layout>
     <div class='wrapper'>
-      <foxgis-card class='login'>
+      <foxgis-data-cards class='login'>
         <div id='error-info'></div>
         <mdl-textfield floating-label='用户名' id='username'></mdl-textfield>
         <mdl-textfield floating-label='密码' type='password' id='password' @keyup.enter='login' pattern='(\w|[$,@]){6,}'></mdl-textfield>
@@ -11,7 +11,7 @@
         <div class='sign-up'>
           <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>
         </div>
-      </foxgis-card>
+      </foxgis-data-cards>
       <div class="footer">
         <div>主管：国家测绘地理信息局 主办：国家基础地理信息中心</div>
         <div>地址：北京海淀区莲花池西路28号    邮编：100830    E-mail:office@ngcc.cn</div>
