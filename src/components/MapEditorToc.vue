@@ -978,7 +978,7 @@ export default {
           dragLayerIndex = i
 
           //判断是否是组，是组则移除整组
-          if(dragLayer.items&&dragLayer.items.length>0){
+          if(dragLayer&&dragLayer.items&&dragLayer.items.length>0){
 
             maplayers.splice(dragLayerIndex,dragLayer.items.length)
           }else{

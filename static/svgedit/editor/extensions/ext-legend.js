@@ -96,6 +96,7 @@ svgEditor.addExtension('ext-legend', function() {
 				else {
 					var svgcontent = document.importNode(newDoc.documentElement, true);
 				}
+				$(svgcontent).children("title").remove();
 				var icon_height = svgcontent.getAttribute("height");
 				var icon_width = svgcontent.getAttribute("width");
 				var curr_width = legendArr[i].styles[0]['icon-size']*icon_width;
