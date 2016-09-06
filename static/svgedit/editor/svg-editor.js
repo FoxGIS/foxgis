@@ -3011,11 +3011,12 @@ TODOS
 					populateLayers();
 				};
 				if (destLayer) {
-					if (promptMoveLayerOnce) {
+					/*if (promptMoveLayerOnce) {
 						moveToLayer(true);
 					} else {
 						$.confirm(confirmStr, moveToLayer);
-					}
+					}*/
+					$.confirm(confirmStr, moveToLayer);
 				}
 			});
 
