@@ -1,7 +1,7 @@
 <template>
 <div>
   <div id="svg-wrap">
-    <!-- <iframe src="../node_modules/svgedit/editor/embedapi.html"></iframe> -->
+    
   </div>
 </div>
 </template>

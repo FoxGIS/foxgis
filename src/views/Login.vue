@@ -7,9 +7,6 @@
         <mdl-textfield floating-label='用户名' id='username'></mdl-textfield>
         <mdl-textfield floating-label='密码' type='password' id='password' @keyup.enter='login' pattern='(\w|[$,@]){6,}'></mdl-textfield>
         <mdl-button class='login-button' v-mdl-ripple-effect accent raised @keyup.enter='login' @click='login'>登录</mdl-button>
-        <div class='tips'>
-          <!-- <a href='' >找回密码</a> -->
-        </div>
 
         <div class='sign-up'>
           <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>

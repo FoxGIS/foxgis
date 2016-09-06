@@ -32,12 +32,6 @@
     </ul>
   </div>
 
-  <div class="modal preview-modal" @click="hidePreview">
-    <div class="image-container" >
-       <img id='thumbnail'>
-    </div>
-  </div>
-
   <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
 </div>
 </template>
@@ -48,7 +42,7 @@ import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e,sprite_id) {
+    showDetails: function (e,sprite_id) {//卡片点击事件，显示卡片详情(e:event事件，sprite_id:卡片的id)
       //移除之前的active
       let activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.target.parentElement){
@@ -95,16 +89,18 @@ export default {
     },
 
     editScope: function(e,index){//修改共享范围
-        let scope = e.target.value;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let sprite_id = this.dataset[index].sprite_id;
-        let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
-        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
-  
-          },function(response){
-            alert("编辑错误");
-          });
+      let scope = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let sprite_id = this.dataset[index].sprite_id;
+      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+          if(response.ok){
+            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          }
+        },function(response){
+          this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
+        });
     },
 
     uploadNameChange: function(e,index){//修改符号名称
@@ -116,39 +112,21 @@ export default {
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
         .then(function(response){
-          let data = response.data;
-          let input = $(".sprite-name");
-          for(let i=0;i<input.length;i++){
-            input[i].blur();
-            input[i].value = this.dataset[i].name;
-          }
+          if(response.ok){
+            let data = response.data;
+            let input = $(".sprite-name");
+            for(let i=0;i<input.length;i++){
+              input[i].blur();
+              input[i].value = this.dataset[i].name;
+            }
+            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          } 
         }, function(response) {
-          alert("网络错误");
+          this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
       });
     },
 
-    showPreview: function(e, index) {
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.sprites + '/' + username+'/'+this.dataset[index].sprite_id+'/sprite.png?access_token='+access_token;
-      
-        let image2 = new Image();
-          image2.onload = function () {
-              let canvas = document.createElement('canvas');
-              canvas.width = this.width; // or 'width' if you want a special/scaled size
-              canvas.height = this.height; // or 'height' if you want a special/scaled size
-              canvas.getContext('2d').drawImage(this, 0, 0);
-              // Get raw image data
-              let raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
-              document.querySelector('#thumbnail').src = raw;
-              document.querySelector('.preview-modal').style.display = 'block';
-          };
-          image2.crossOrigin = "Anonymous";
-          image2.src = url;
-      
-    },
-
-    downloadSprite: function(index) {
+    downloadSprite: function(index) {//下载符号库
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.sprites + '/' + username + '/' + this.dataset[index].sprite_id + '/raw?access_token='+ access_token;
@@ -168,19 +146,13 @@ export default {
       }
     },
 
-    hidePreview: function(e) {
-      if (e.target.className.indexOf('preview-modal') != -1) {
-        e.target.style.display = 'none';
-      }
-    },
-
-    deleteSprite: function(sprite_id) {//删除符号
+    deleteSprite: function(sprite_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block';
       this.deleteUploadId = sprite_id;
     },
 
-    deleteAction: function(status) {
+    deleteAction: function(status) {//删除事件
       if (status === 'ok') {
         var username = Cookies.get('username');
         var access_token = Cookies.get('access_token');
@@ -190,18 +162,19 @@ export default {
         .then(function(response){
           if(response.ok){
             this.$dispatch("delete_sprite", sprite_id);
+            this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
           }
         }, function(response) {
-            alert('未知错误，请稍后再试');
+            this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
         });
         this.deleteUploadId = "";//重置deleteUploadId
       }
     },
 
-    nextPage: function (event) {      
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+    nextPage: function (event) {//下一页点击事件
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
-        return
+        return;
       }
       this.pageConfig.current_page += 1;
       let activeCards = this.$el.querySelector('.active');
@@ -213,9 +186,9 @@ export default {
       }
     },
 
-    prePage: function (event) {     
+    prePage: function (event) {//上一页点击事件
       if(this.pageConfig.current_page === 1){
-        return
+        return;
       }
       this.pageConfig.current_page -= 1;
       let activeCards = this.$el.querySelector('.active');
@@ -227,7 +200,7 @@ export default {
       }
     },
 
-    setPage: function (page) {
+    setPage: function (page) {//页码点击事件
       let activeCards = this.$el.querySelector('.active');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');
@@ -279,7 +252,6 @@ export default {
 
 <style scoped>
 .card {
-/*  height: 120px;*/
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
@@ -322,7 +294,6 @@ export default {
 .active .name {
   padding-bottom: 24px;
   border-bottom: 1px solid #e0e0e0;
-  /* padding: 12px 12px 15px; */
 }
 
 .active .name input {
@@ -352,10 +323,7 @@ export default {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
   margin: 24px -24px;
 }
-/* .active{
-  box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 24px -24px;
-} */
+
 .meta p {
   color: #9E9E9E;
   font-size: 12px;
@@ -368,12 +336,12 @@ export default {
 }
 
 .meta span{
-    border: 0;
-    width: 200px;
-    color: #9E9E9E;
-    font-size: 12px;
-    margin: 0;
-    display: inline-block;
+  border: 0;
+  width: 200px;
+  color: #9E9E9E;
+  font-size: 12px;
+  margin: 0;
+  display: inline-block;
 }
 
 .name {
@@ -458,19 +426,6 @@ export default {
   overflow: auto;
 }
 
-.image-container {
-  max-width: 800px;
-  margin: 200px auto 0 auto;
-}
-
-.image-container img {
-  clear: both;
-  display: block;
-  margin: 0 auto;
-  max-width: 800px;
-  max-height: 541px;
-}
-
 .delete-button{
   position: relative;
   left: -18px;
@@ -487,8 +442,6 @@ export default {
 .details .icon-link:hover{
   background-color: #ababab;
   cursor:pointer;
-  /* margin-left: auto;
-  margin-right: auto; */
 } 
 .details .meta-title{
   margin-top: 12px;
@@ -517,7 +470,7 @@ export default {
 
 /* 滑块颜色 */
 .details .panel::-webkit-scrollbar-thumb {
-    background-color: #adadad;
+  background-color: #adadad;
 }
 
 .details .description input{

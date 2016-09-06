@@ -46,7 +46,7 @@ export default {
       });
     },
 
-    bindDel:function(e){
+    bindDel:function(e){//给每个符号绑定点击事件，为了“删除符号”功能
       if(this.dataset.sprite_id){
         let className = "";
         let title = "";
@@ -76,7 +76,6 @@ export default {
             e.currentTarget.attributes[i].value = className;
           }
         }
-
       }  
     },
 
@@ -107,13 +106,13 @@ export default {
       }
     },
 
-    addSprite: function(){//添加图标
+    addSprite: function(){//显示文件选择框
       let hidefile = document.getElementById('icon-input');
       hidefile.click();
       hidefile.addEventListener('change', this.uploadSprite); 
     },
 
-    uploadSprite: function(e){
+    uploadSprite: function(e){//添加图标方法
       let access_token = Cookies.get('access_token');
       let num = 1;
       for(let i=0;i<e.target.files.length;i++){
@@ -182,14 +181,14 @@ export default {
 .icon-link:hover{
   background-color: #ababab;
   cursor:pointer;
-  /* margin-left: auto;
-  margin-right: auto; */
 } 
+
 .meta-title{
   margin-top: 12px;
   margin-bottom: 12px;
   margin-left: 5px;
 }
+
 .icon-container{
   display: flex;
   -webkit-flex-wrap: wrap;
@@ -218,7 +217,7 @@ export default {
 
 /* 滑块颜色 */
 .icon-container::-webkit-scrollbar-thumb {
-    background-color: #adadad;
+  background-color: #adadad;
 }
 
 .icon-container .del {

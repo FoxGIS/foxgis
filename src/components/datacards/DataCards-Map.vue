@@ -29,13 +29,13 @@
 export default {
   props: ['dataset'],
   methods: {
-    deleteStyle: function(style_id){
-      this.$dispatch('delete-style',style_id)
+    deleteStyle: function(style_id){//删除卡片
+      this.$dispatch('delete-style',style_id);
     },
-    nextPage: function (event) {      
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+    nextPage: function (event) {//下一页点击事件
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
-        return
+        return;
       }
       this.pageConfig.current_page += 1;
       let activeCards = this.$el.querySelector('.active');
@@ -47,9 +47,9 @@ export default {
       }
     },
 
-    prePage: function (event) {     
+    prePage: function (event) {//上一页点击事件
       if(this.pageConfig.current_page === 1){
-        return
+        return;
       }
       this.pageConfig.current_page -= 1;
       let activeCards = this.$el.querySelector('.active');
@@ -61,7 +61,7 @@ export default {
       }
     },
 
-    setPage: function (page) {
+    setPage: function (page) {//页码点击事件
       let activeCards = this.$el.querySelector('.active');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');

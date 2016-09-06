@@ -1187,7 +1187,6 @@ export default {
     },
     getFolderId:function(){
       return Math.random().toString(16).substr(2);
-      // body...
     }
   },
   events: {
@@ -1691,7 +1690,7 @@ export default {
 
 /* 滑块颜色 */
 #layer-control::-webkit-scrollbar-thumb {
-    background-color: #2061C6;
+  background-color: #2061C6;
 }
 
 a {
@@ -1709,7 +1708,6 @@ a {
   display: inline-block;
   line-height: 25px;
   width: 100%;
-/*  height: 25px;*/
   padding-left: 5px;
 }
 
@@ -1818,7 +1816,7 @@ a {
 
 /* 滑块颜色 */
 #property-panel::-webkit-scrollbar-thumb {
-    background-color: #2061C6;
+  background-color: #2061C6;
 }
 
 #property-header {
@@ -2011,7 +2009,7 @@ a {
 
 /* 滑块颜色 */
 .font-list::-webkit-scrollbar-thumb {
-    background-color: #adadad;
+  background-color: #adadad;
 }
 
 .font-family i{
