@@ -52,7 +52,7 @@
       <div class="search-results mdl-grid">
         <div class="panel">
           <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
-            <foxgis-card>
+            <foxgis-data-cards>
               <a>
                 <div class="header-info">
                   <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
@@ -108,7 +108,7 @@
                   <mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
                 </div>
               </div>
-            </foxgis-card>
+            </foxgis-data-cards>
           </div>
         </div>
       </div>
