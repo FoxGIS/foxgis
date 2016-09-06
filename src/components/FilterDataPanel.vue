@@ -187,6 +187,8 @@ export default {
       }
       if(filter.length>0){
         filter = [tem.condition].concat(filter);
+      }else{
+        filter = ["all"]
       }
       var params = {};
       params.name = 'filter';
