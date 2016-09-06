@@ -35,7 +35,6 @@
 </template>
 
 <script>
-/*global mapboxgl */
 import mapboxgl from 'mapbox-gl'
 import Draw from 'mapbox-gl-draw'
 import { diff, validate} from 'mapbox-gl-style-spec'
@@ -84,37 +83,22 @@ export default {
       let name = this.controlBound.dragButton
       let map = this.map
       if(name.indexOf("dragresize-lt")!=-1){
-
         this.controlBound.nw = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top])
-
       }else if(name.indexOf("dragresize-rt")!=-1){
-
         this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
         this.controlBound.se = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height])
-
       }else if(name.indexOf("dragresize-lb")!=-1){
-
         this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
         this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top])
-
       }else if(name.indexOf("dragresize-rb")!=-1){
-
         this.controlBound.se = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top])
-
       }else if(name.indexOf("dragresize-t")!=-1){
-
         this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
-
       }else if(name.indexOf("dragresize-b")!=-1){
-
         this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top])
-
       }else if(name.indexOf("dragresize-r")!=-1){
-
         this.controlBound.se = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height])
-
       }else if(name.indexOf("dragresize-l")!=-1){
-
         this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
       }
     },
@@ -160,7 +144,6 @@ export default {
     },
     //地图缩放后，重新计算框所在的位置
     mapZoomEnd: function(e){
-
       var controlBox = this.$el.querySelector("#location-control")
       if(controlBox.style.display === 'block'){
         var plt = this.map.project(this.controlBound.nw)

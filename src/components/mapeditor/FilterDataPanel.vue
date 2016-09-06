@@ -108,8 +108,7 @@
         </div>
       </div>
     </div>
-
-  </div><!-- new-layer-panel结束 -->
+  </div>
 </template> 
 
 <script>
@@ -234,9 +233,6 @@ export default {
       $(e.target).css("background-color","transparent");    
     } 
   },
-  /*computed:{
-    
-  },*/
   data(){
     return {
       
@@ -263,7 +259,6 @@ export default {
 </script>
 
 <style scoped>
-
 .select-data .property-item {
   margin-top: 10px;
 }

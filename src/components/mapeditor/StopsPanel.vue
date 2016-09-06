@@ -99,7 +99,7 @@
 <script>
 export default {
   methods: {
-    doOk: function(){
+    doOk: function(){//点击确定触发的方法
       var tem=this.stopsdata.stopsObj;
       for(var i=0;i<tem.stops.length;i++){
         if(tem.stops[i][0]===""){
@@ -115,9 +115,9 @@ export default {
       this.$dispatch("layer-property-change",opts);
       this.$el.style.display = 'none';
     },
-    doCancel: function(){
+    doCancel: function(){//点击取消触发的方法
       $(".open-stops").removeClass("open");
-      this.$el.style.display = 'none'
+      this.$el.style.display = 'none';
     },
     inputChange:function(e,index){
       var targetDom = e.target;

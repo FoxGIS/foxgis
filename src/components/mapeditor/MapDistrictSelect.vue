@@ -9,10 +9,6 @@
 
 <script>
 export default {
-  methods:{
-    
-  },
-
   ready: function(){
     var that=this;
     this.$http({url:'/static/adminTree.json',method:'GET'}).then(function(response){

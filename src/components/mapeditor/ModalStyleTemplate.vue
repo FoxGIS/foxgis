@@ -77,14 +77,13 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     closeModal: function(){
-      this.$el.style.display = 'none'
+      this.$el.style.display = 'none';
     },
     itemSelect: function(e){
-      let checked = this.$el.querySelector('.item-thumb.checked')
+      let checked = this.$el.querySelector('.item-thumb.checked');
       if(checked){
-        checked.className = checked.className.replace(' checked','')
+        checked.className = checked.className.replace(' checked','');
       }
-
       e.target.className += " checked"
     },
     createStyle: function(e){
