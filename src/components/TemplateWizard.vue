@@ -123,12 +123,12 @@ export default{
         if(step === 'one'){
           let template_name = $("#template-wizard_panel #template-name").val();
           if(template_name===""){
-            alert('模板名称不能为空');
+            this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
             return;
           } 
           let template_type = $("#template-wizard_panel #template-type").val();
           if(template_type===""){
-            alert('模板类型不能为空');
+            this.$parent.$broadcast("mailSent",{message:"模板类型不能为空",timeout:3000});
             return;
           } 
           let level = parseInt($("#template-wizard_panel #scope-select").val());
@@ -142,13 +142,13 @@ export default{
           let username = Cookies.get('username');
           let sources_name = $("#template-wizard_panel #sources-name").val();
           if(sources_name===""){
-            alert('数据源名称不能为空');
+            this.$parent.$broadcast("mailSent",{message:"数据源名称不能为空",timeout:3000});
             return;
           } 
           let dataType_select = $("#template-wizard_panel #dataType-select").val();
           let sources_url = $("#template-wizard_panel #sources-url").val();
           if(sources_url===""){
-            alert('数据源地址不能为空');
+            this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
           } 
           if(this.sources_checked === 'self'){
@@ -190,12 +190,12 @@ export default{
         let username = Cookies.get('username');
         let sprite_url  = $("#template-wizard_panel #sprite-url").val();
         if(sprite_url===""){
-          alert('符号库地址不能为空');
+          this.$parent.$broadcast("mailSent",{message:"符号库地址不能为空",timeout:3000});
           return;
         } 
         let glyphs_url  = $("#template-wizard_panel #glyphs-url").val();
         if(glyphs_url===""){
-          alert('字体地址不能为空');
+          this.$parent.$broadcast("mailSent",{message:"字体地址不能为空",timeout:3000});
           return;
         } 
         if(this.sprite_checked === 'self'){
@@ -242,7 +242,7 @@ export default{
             }
           }
         }, function(response) {
-          alert('获取数据源数据错误!');
+          this.$parent.$broadcast("mailSent",{message:"获取数据源数据错误!",timeout:3000});
         })
 
       //获取符号库数据
@@ -260,7 +260,7 @@ export default{
             }
           }
         }, function(response) {
-          alert('获取符号库数据错误!');
+          this.$parent.$broadcast("mailSent",{message:"获取符号库数据错误!",timeout:3000});
         })
       
     },
