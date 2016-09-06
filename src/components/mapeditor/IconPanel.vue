@@ -1,6 +1,5 @@
 <template>
   <div>
-    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div class="meta-title">
       <b>符号说明</b>
       <div class="description">
@@ -43,7 +42,7 @@ export default {
             }
           }
         }, function(response) {
-          this.$broadcast("mailSent",{message:"图标说明修改失败！",timeout:3000});
+          this.$parent.$broadcast("mailSent",{message:"图标说明修改失败！",timeout:3000});
       });
     },
 
@@ -100,11 +99,11 @@ export default {
                 }  
              } 
            }, function(response) {
-             this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
+             this.$parent.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
           });
         } 
       }else{
-        this.$broadcast("mailSent",{message:"请选择图标",timeout:3000});
+        this.$parent.$broadcast("mailSent",{message:"请选择图标",timeout:3000});
       }
     },
 
@@ -135,7 +134,7 @@ export default {
             }   
           }
         }, function(response) {
-          this.$broadcast("mailSent",{message:"添加图标失败！",timeout:3000});
+          this.$parent.$broadcast("mailSent",{message:"添加图标失败！",timeout:3000});
         });
       }
     },
@@ -161,7 +160,7 @@ export default {
         this.dataset.icons = sprite.icons;
         this.dataset.pngUrl = sprite.pngUrl;
       },function(response){
-        this.$broadcast('mailSent', { message: '符号列表获取失败！',timeout:3000 });
+        this.$parent.$broadcast('mailSent', { message: '符号列表获取失败！',timeout:3000 });
       });
     }
   },

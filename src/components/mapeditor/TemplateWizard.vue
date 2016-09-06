@@ -45,12 +45,15 @@
       <label for="self">本地</label>
       <input type="radio" value="other" v-model="sources_checked">
       <label for="other">其他</label>
+    </div>  
+    <div v-if="sources_checked === 'other'">
+      <mdl-textfield label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
+      <mdl-tooltip for="source-url_help">{{toolTips.sourceUrl.remote}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="source-url_help" fab primary>
+        <i class="material-icons">help</i>
+      </mdl-button>
     </div>
-    <mdl-textfield v-if="sources_checked === 'other'" label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sources_checked === 'other'" for="source-url_help"><span>{{toolTips.sourceUrl.remote}}</span></mdl-tooltip>
-    <mdl-button v-if="sources_checked === 'other'"  class="tip-button" id="source-url_help" fab primary>
-      <i class="material-icons">help</i>
-    </mdl-button>
+
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
@@ -78,11 +81,15 @@
       <input type="radio" value="other" v-model="sprite_checked">
       <label for="other">其他</label>
     </div>
-    <mdl-textfield v-if="sprite_checked === 'other'" label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sprite_checked === 'other'" for="sprite-url_help">{{toolTips.spriteUrl.remote}}</mdl-tooltip>
-    <mdl-button v-if="sprite_checked === 'other'" class="tip-button" id="sprite-url_help" fab primary>
-      <i class="material-icons">help</i>
-    </mdl-button>
+
+    <div v-if="sprite_checked === 'other'">
+      <mdl-textfield label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
+      <mdl-tooltip for="sprite-url_help">{{toolTips.spriteUrl.remote}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="sprite-url_help" fab primary>
+        <i class="material-icons">help</i>
+      </mdl-button>
+    </div>
+
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
@@ -123,12 +130,12 @@ export default{
         if(step === 'one'){
           let template_name = $("#template-wizard_panel #template-name").val();
           if(template_name===""){
-            alert('模板名称不能为空');
+            this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
             return;
           } 
           let template_type = $("#template-wizard_panel #template-type").val();
           if(template_type===""){
-            alert('模板类型不能为空');
+            this.$parent.$broadcast("mailSent",{message:"模板类型不能为空",timeout:3000});
             return;
           } 
           let level = parseInt($("#template-wizard_panel #scope-select").val());
@@ -142,13 +149,13 @@ export default{
           let username = Cookies.get('username');
           let sources_name = $("#template-wizard_panel #sources-name").val();
           if(sources_name===""){
-            alert('数据源名称不能为空');
+            this.$parent.$broadcast("mailSent",{message:"数据源名称不能为空",timeout:3000});
             return;
           } 
           let dataType_select = $("#template-wizard_panel #dataType-select").val();
           let sources_url = $("#template-wizard_panel #sources-url").val();
           if(sources_url===""){
-            alert('数据源地址不能为空');
+            this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
           } 
           if(this.sources_checked === 'self'){
@@ -190,12 +197,12 @@ export default{
         let username = Cookies.get('username');
         let sprite_url  = $("#template-wizard_panel #sprite-url").val();
         if(sprite_url===""){
-          alert('符号库地址不能为空');
+          this.$parent.$broadcast("mailSent",{message:"符号库地址不能为空",timeout:3000});
           return;
         } 
         let glyphs_url  = $("#template-wizard_panel #glyphs-url").val();
         if(glyphs_url===""){
-          alert('字体地址不能为空');
+          this.$parent.$broadcast("mailSent",{message:"字体地址不能为空",timeout:3000});
           return;
         } 
         if(this.sprite_checked === 'self'){
@@ -242,7 +249,7 @@ export default{
             }
           }
         }, function(response) {
-          alert('获取数据源数据错误!');
+          this.$parent.$broadcast("mailSent",{message:"获取数据源数据错误!",timeout:3000});
         })
 
       //获取符号库数据
@@ -260,7 +267,7 @@ export default{
             }
           }
         }, function(response) {
-          alert('获取符号库数据错误!');
+          this.$parent.$broadcast("mailSent",{message:"获取符号库数据错误!",timeout:3000});
         })
       
     },
@@ -333,7 +340,7 @@ export default{
           },
           "spriteUrl":{
             "local":"选择本地符号库管理模块中上传的符号库",
-            "remote":"选择其他用户公开的符号库，请确保能正确访问到符号库。例如：http://foxgis.com/api/v1/ sprites/{username}/{sprite_id}/sprite"
+            "remote":"选择其他用户公开的符号库，请确保能正确访问到符号库。例如：http://foxgis.com/api/v1/ sprites/{username}/{sprite_id} /sprite"
           },
           "glyphUrl":"选择字体库。默认为本系统的字体库，也可指定其他用户的字体库，例如：http://foxgis.com /api/v1/fonts/{username} /{fontstack}/{range}.pbf"
         }
