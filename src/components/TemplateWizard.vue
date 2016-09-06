@@ -41,19 +41,21 @@
       <label for="self">本地</label>
       <input type="radio" value="other" v-model="sources_checked">
       <label for="other">其他</label>
+    </div>  
+    <div v-if="sources_checked === 'other'">
+      <mdl-textfield label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
+      <mdl-tooltip for="tip-button2">选择数据来源</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button2" fab primary>
+        <i class="material-icons">info</i>
+      </mdl-button>
     </div>
-    <mdl-textfield v-if="sources_checked === 'other'" label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sources_checked === 'other'" for="tip-button2">选择数据来源</mdl-tooltip>
-    <mdl-button v-if="sources_checked === 'other'"  class="tip-button" id="tip-button2" fab primary>
-      <i class="material-icons">info</i>
-    </mdl-button>
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
         <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="tip-button2">选择数据来源</mdl-tooltip>
-      <mdl-button class="tip-button" id="tip-button2" fab primary >
+      <mdl-tooltip for="tip-button3">选择数据来源</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button3" fab primary >
         <i class="material-icons">info</i>
       </mdl-button>
     </div>
@@ -74,18 +76,20 @@
       <input type="radio" value="other" v-model="sprite_checked">
       <label for="other">其他</label>
     </div>
-    <mdl-textfield v-if="sprite_checked === 'other'" label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip v-if="sprite_checked === 'other'" for="tip-button3">选择符号库地址</mdl-tooltip>
-    <mdl-button v-if="sprite_checked === 'other'" class="tip-button" id="tip-button3" fab primary>
-      <i class="material-icons">info</i>
-    </mdl-button>
+    <div v-if="sprite_checked === 'other'">
+      <mdl-textfield label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
+      <mdl-tooltip for="tip-button4">选择符号库地址</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button4" fab primary>
+        <i class="material-icons">info</i>
+      </mdl-button>
+    </div>
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
         <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="tip-button3">选择符号库地址</mdl-tooltip>
-      <mdl-button class="tip-button" id="tip-button3" fab primary>
+      <mdl-tooltip for="tip-button5">选择符号库地址</mdl-tooltip>
+      <mdl-button class="tip-button" id="tip-button5" fab primary>
         <i class="material-icons">info</i>
       </mdl-button>
     </div>
@@ -98,8 +102,8 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield label="字体地址" floating-label="字体地址" id="glyphs-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip for="tip-button4">选择字体来源</mdl-tooltip>
-    <mdl-button class="tip-button" id="tip-button4" fab primary>
+    <mdl-tooltip for="tip-button6">选择字体来源</mdl-tooltip>
+    <mdl-button class="tip-button" id="tip-button6" fab primary>
       <i class="material-icons">info</i>
     </mdl-button>
 

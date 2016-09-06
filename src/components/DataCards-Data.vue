@@ -67,11 +67,11 @@
         <div class="preview content">
           <table>
             <tr>
-              <th>id</th>
-              <th>minzoom</th>
-              <th>maxzoom</th>
-              <th>fields</th>
-              <th>description</th>
+              <th>图层标识</th>
+              <th>最小缩放级别</th>
+              <th>最大缩放级别</th>
+              <th>字段</th>
+              <th>详情</th>
             </tr>
             <tr v-for="u in detailsData.vector_layers">
               <td>{{u.id}}</td>
