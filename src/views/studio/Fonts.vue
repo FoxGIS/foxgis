@@ -80,7 +80,6 @@ import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 export default {
   methods: {
-
     showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
       //移除之前的active
       let activeCards = this.$el.querySelector('.active')
@@ -129,9 +128,10 @@ export default {
                   this.fonts.splice(i,1)
                 }
               }
+              this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 })
             }
           }, function(response) {
-            alert('未知错误，请稍后再试')
+            this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 })
           });
         }
         this.deleteFontName = []//重置deleteFontName
@@ -177,8 +177,9 @@ export default {
             let scope = data.scope
             let days = 30
             Cookies.set('scope',scope,{ expires: days })
+            this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 })
           },function(response){
-            alert("编辑错误")
+            this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 })
           }
         )
     },
@@ -473,7 +474,6 @@ span {
 }
 
 .card {
-/*  height: 120px;*/
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;

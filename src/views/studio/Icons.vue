@@ -26,11 +26,8 @@ import util from '../../components/util.js'
 import Cookies from 'js-cookie'
 import _ from 'lodash'
 export default {
-  methods:{
-
-  },
   computed:{
-    displayDataset:function(){
+    displayDataset:function(){//过滤搜索到的卡片
       var temp = this.dataset;
       var t=[];
       if(this.searchKeyWords.trim().length===0){
@@ -164,7 +161,6 @@ export default {
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
         }
         this.dataset = data;
-
       }
     }, function(response) {
       this.$broadcast('mailSent', { message: '符号请求失败！',timeout:3000 });

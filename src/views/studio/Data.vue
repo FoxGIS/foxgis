@@ -70,12 +70,12 @@ export default {
   attached() {
     let username = Cookies.get('username');
     if(username === undefined){
-      return
+      return;
     }
-    let access_token = Cookies.get('access_token')
+    let access_token = Cookies.get('access_token');
     //this.username = username
-    let url = SERVER_API.tilesets + '/' + username
-    var that = this
+    let url = SERVER_API.tilesets + '/' + username;
+    var that = this;
       //获取数据列表
     var uploader = WebUploader.create({
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
@@ -156,7 +156,6 @@ export default {
       }
     });
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-
       if (response.data.length > 0) {
         var data = response.data;
         data = data.map(function(d) {
@@ -166,7 +165,6 @@ export default {
             d.filesize = (d.filesize / 1024).toFixed(2) + 'KB';
           }
           d.createdAt = util.dateFormat(new Date(d.createdAt));
-
           return d;
         });
         for(let i=0;i<data.length;i++){
@@ -284,11 +282,11 @@ span {
 }
 
 .progress-bar .bar{
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    transition: width .2s cubic-bezier(.4,0,.2,1);
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: width .2s cubic-bezier(.4,0,.2,1);
 }
 /* 上传文件按钮 */
 #picker{

@@ -16,7 +16,6 @@
 
 
 <script>
-
 import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 import { changeStyle } from '../../vuex/actions'
@@ -48,7 +47,6 @@ export default {
           window.location.href="#!mapeditor/"+styleid;
         },function(res){
           this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
-          //window.location.href="#!mapeditor"
         });
       }else{
         var name = data.name;
@@ -77,7 +75,6 @@ export default {
             window.location.href="#!mapeditor/"+styleid;
           },function(res){
             this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
-            //window.location.href="#!mapeditor"
           });
         },function(res){
           this.$broadcast('mailSent', { message: '模板获取失败！',timeout:3000 });
