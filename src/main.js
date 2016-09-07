@@ -2,7 +2,6 @@ require('material-design-lite/material.min.js')
 require('material-design-lite/material.min.css')
 require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
-require('mapbox-gl-draw/dist/mapbox-gl-draw.css')
 
 
 import Vue from 'vue'
@@ -46,7 +45,6 @@ import IconPanel from './components/mapeditor/IconPanel'
 import FilterData from './components/mapeditor/FilterDataPanel'
 import StopsPanel from './components/mapeditor/stopsPanel.vue'
 import TemplateWizard from './components/mapeditor/TemplateWizard.vue'
-import GlDraw from './components/mapeditor/GlDraw.vue'
 
 Vue.config.debug = true
 Vue.use(Router)
@@ -72,7 +70,6 @@ Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
 Vue.component('foxgis-stops-panel',StopsPanel)
 Vue.component('foxgis-template-wizard',TemplateWizard)
-Vue.component('foxgis-gl-draw',GlDraw)
 
 let router = new Router({
   history: false

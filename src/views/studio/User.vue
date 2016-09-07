@@ -78,7 +78,6 @@
 
 
 <script>
-
 import Cookies from 'js-cookie'
 export default {
   methods:{
@@ -142,11 +141,11 @@ export default {
       /*--------用户修改的是用户名-----------*/
       if(e.target.id === "username-input"){//暂时禁止修改
         if(info === ''){
-          alert('用户名不能为空');
+          this.$broadcast('mailSent', { message: '用户名不能为空',timeout:3000 });
           e.target.value = this.userInfo.username;
           return;
         }else if(info.length>20){
-          alert('用户名过长');
+          this.$broadcast('mailSent', { message: '用户名过长',timeout:3000 });
           e.target.value = this.userInfo.username;
           return; 
         }
@@ -161,7 +160,7 @@ export default {
         }else if(info === '未验证'){
           data.is_verified = false; 
         }else{
-          alert("输入错误！请输入“已验证”或“未验证”");
+          this.$broadcast('mailSent', { message: "输入错误！请输入“已验证”或“未验证”",timeout:3000 });
           e.target.value = this.userInfo.is_verified;
           return;
         }
@@ -171,11 +170,11 @@ export default {
       /*--------用户修改的是姓名-----------*/
       if(e.target.id === "name-input"){
         if(info === ''){
-          alert('姓名不能为空');
+          this.$broadcast('mailSent', { message: '姓名不能为空',timeout:3000 });
           e.target.value = this.userInfo.name;
           return;
         }else if(info.length>10){
-          alert('姓名过长');
+          this.$broadcast('mailSent', { message: '姓名过长',timeout:3000 });
           e.target.value = this.userInfo.name;
           return; 
         }
@@ -187,15 +186,9 @@ export default {
       /*--------用户修改的是固定电话-----------*/
       if(e.target.id === "phone-input"){
         if(info!=""){
-          /*let reg = /^[0-9]*$/;
-          let isok = reg.test(info);
-          if(!isok){
-            alert("电话格式不正确，请重新输入");
-            e.target.value = this.userInfo.telephone;
-            return;
-          }*/
+          
         }else{
-          alert("电话不能为空！");
+          this.$broadcast('mailSent', { message: '电话不能为空！',timeout:3000 });
           e.target.value = this.userInfo.telephone;
           return;
         }
@@ -209,12 +202,12 @@ export default {
           let reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
           let isok = reg.test(info);
           if(!isok){
-            alert("电话格式不正确，请重新输入");
+            this.$broadcast('mailSent', { message: '电话格式不正确，请重新输入',timeout:3000 });
             e.target.value = this.userInfo.mobile;
             return;
           }
         }else{
-          alert("电话不能为空！");
+          this.$broadcast('mailSent', { message: '电话不能为空！',timeout:3000 });
           e.target.value = this.userInfo.mobile;
           return;
         }
@@ -228,12 +221,12 @@ export default {
          let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
          let isok= reg.test(info);
            if (!isok) {
-              alert("邮箱格式不正确，请重新输入！");
-              e.target.value = this.userInfo.email;
-              return;
-           }
+            this.$broadcast('mailSent', { message: '邮箱格式不正确，请重新输入！',timeout:3000 });
+            e.target.value = this.userInfo.email;
+            return;
+          }
         }else{
-          alert("邮箱地址不能为空！");
+          this.$broadcast('mailSent', { message: '邮箱地址不能为空！',timeout:3000 });
           e.target.value = this.userInfo.email;
           return;
         }
@@ -244,7 +237,7 @@ export default {
       /*--------用户修改的是位置-----------*/
       if(e.target.id === "location-input"){
         if(info === ''){
-          alert('位置名不能为空');
+          this.$broadcast('mailSent', { message: '位置名不能为空',timeout:3000 });
           e.target.value = this.userInfo.location;
           return;
         }
@@ -254,8 +247,8 @@ export default {
       /*------------------------------------*/
       /*--------用户修改的是单位-----------*/
       if(e.target.id === "organization-input"){
-        if(info===""){          
-          alert("单位名称不能为空！");
+        if(info===""){
+          this.$broadcast('mailSent', { message: '单位名称不能为空！',timeout:3000 });
           e.target.value = this.userInfo.organization;
           return;
         }
@@ -265,8 +258,8 @@ export default {
       /*------------------------------------*/
       /*--------用户修改的是职务/职称-----------*/
       if(e.target.id === "position-input"){
-        if(info===""){          
-          alert("职位名称不能为空！");
+        if(info===""){
+          this.$broadcast('mailSent', { message: '职位名称不能为空！',timeout:3000 });
           e.target.value = this.userInfo.position;
           return;
         }
@@ -282,22 +275,22 @@ export default {
             this.$broadcast('mailSent', { message: message+'修改成功！',timeout:3000 });
           }
         }, function(response) {
-          alert("网络错误");
+          this.$broadcast('mailSent', { message: message+'修改失败！',timeout:3000 });
       });
     }
   
   },
   attached() {
-    let username = Cookies.get('username')
+    let username = Cookies.get('username');
     if(username === undefined){
-      return 
+      return ;
     }
-    let access_token = Cookies.get('access_token')
-    let url = SERVER_API.users + '/' + username
-    var that = this
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.users + '/' + username;
+    var that = this;
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-      var data = response.data;
+      let data = response.data;
       if(data.is_verified === false){
         data.is_verified = "未验证";
       }else{
@@ -325,23 +318,23 @@ export default {
 
 <style scoped>
 .wrapper {
-    position:absolute;
-    width:100%;
-    height:100%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    text-align: center;
+  position:absolute;
+  width:100%;
+  height:100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  text-align: center;
 }
 #user-info{
-    margin: auto;
+  margin: auto;
 }
 #user-info table{
   width:350px;
@@ -349,7 +342,6 @@ export default {
 }
 
 #user-info input{
-
   width:190px;
   outline:none;
   border:0;

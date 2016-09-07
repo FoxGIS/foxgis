@@ -126,8 +126,8 @@
 import Cookies from 'js-cookie'
 export default{
     methods: {
-      nextStep:function(step){
-        if(step === 'one'){
+      nextStep:function(step){//点击下一步执行的方法
+        if(step === 'one'){//step1跳到step2
           let template_name = $("#template-wizard_panel #template-name").val();
           if(template_name===""){
             this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
@@ -145,7 +145,7 @@ export default{
           $('.step1').css('display','none');
           $('.step2').css('display','block');
         }
-        if(step === 'two'){
+        if(step === 'two'){//step2跳到step3
           let username = Cookies.get('username');
           let sources_name = $("#template-wizard_panel #sources-name").val();
           if(sources_name===""){
@@ -171,17 +171,17 @@ export default{
           $('.step3').css('display','block');
         }
       },
-      preStep:function(step){
-        if(step === 'two'){
+      preStep:function(step){//点击上一步执行的方法
+        if(step === 'two'){//step2跳到step1
           $('.step2').css('display','none');
           $('.step1').css('display','block');
         }
-        if(step === 'three'){
+        if(step === 'three'){//step3跳到step2
           $('.step3').css('display','none');
           $('.step2').css('display','block');
         }
       },
-      changeGlyphsUrl:function(){
+      changeGlyphsUrl:function(){//获取字体的url
         if(this.glyphs_checked === 'other'){
           $("#template-wizard_panel #glyphs-url").val('');
         }else if(this.glyphs_checked === 'self'){
@@ -190,10 +190,10 @@ export default{
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
         }
       },
-      newTemplateCancel:function(){
+      newTemplateCancel:function(){//取消按钮的方法
         this.panelHidden();
       },
-      newTemplateOK:function(){
+      newTemplateOK:function(){//确定按钮的方法
         let username = Cookies.get('username');
         let sprite_url  = $("#template-wizard_panel #sprite-url").val();
         if(sprite_url===""){
@@ -213,7 +213,7 @@ export default{
         this.$dispatch("style-params",{'name':this.json.name,'type':'empty','json':this.json});
         this.panelHidden();
       },
-      panelHidden:function(){
+      panelHidden:function(){//隐藏面板
         $("#template-wizard_panel #template-name").val('');
         $("#template-wizard_panel #template-type").val('');
         $("#template-wizard_panel #sources-name").val('');
@@ -297,11 +297,11 @@ export default{
           value:'raster'
         }
       ],
-      spriteOptions: [],
-      sourcesOptions: [],
-      sprite_checked: [],
-      glyphs_checked: [],
-      sources_checked: [],
+      spriteOptions: [],        //本地符号库数据
+      sourcesOptions: [],       //本地数据源数据
+      sprite_checked: [],       //取值self:本地，other:其他
+      glyphs_checked: [],       //取值self:本地，other:其他
+      sources_checked: [],      //取值self:本地，other:其他
       json: {
           "version": 8,
           "name": "",

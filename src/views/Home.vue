@@ -45,8 +45,6 @@
 	 	</div>
 	 </div>
 	</foxgis-layout>
-
-
 </div>
 </template>
 
@@ -55,10 +53,6 @@
 import Cookies from 'js-cookie'
 import echarts from 'echarts'
 export default {
-	methods:{
-
-	},
-	
   attached() {
     let access_token = Cookies.get('access_token')
     let username = Cookies.get('username')
@@ -126,7 +120,6 @@ export default {
         var messages = [];
         for(let i=0;i<data.length;i++){
         	messages.push({"name":data[i].name,"downloadNum":data[i].downloadNum});
-        	
         }
         this.mapDownloadInfo = messages;
       }
