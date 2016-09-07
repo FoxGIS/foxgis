@@ -79,6 +79,7 @@ export default {
       this.changeLayout()
       e.currentTarget.className += ' control-active'
     },
+    //svg编辑器点击事件
     'SVGEditorClick': function(e){
       if(document.getElementById("svgeditor-open").className.indexOf('control-active')!==-1){
         return;
@@ -94,8 +95,6 @@ export default {
       this.$broadcast("loadIframe")
       let mapContainer = document.getElementById("map-editorview-container")
       mapContainer.style.visibility = 'hidden'
-      /*mapContainer.style.width = "calc(100% - 230px)"
-      mapContainer.style.left = "230px"*/
       this.changeLayout()
       document.getElementById("map-tool").style.display = 'none'
       document.getElementById("svgeditor-open").className += ' control-active'
@@ -137,9 +136,11 @@ export default {
       mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px"
       document.getElementById("map-tool").style.display = 'none'
     },
+    //保存样式方法
     'styleSaveClick':function(){
       this.patchStyle(this.style);
     },
+    //返回工程列表方法
     backToProject:function(){
       if(this.styleSaveStatus===false){
         $("#delete-dialog").show();
@@ -165,9 +166,6 @@ export default {
       let active = document.getElementsByClassName("control-active")
       active[0].className = active[0].className.replace(' control-active','')
       let mapContainer = document.getElementById("map-editorview-container")
-      /*if(mapContainer.style.display == 'none'){
-        mapContainer = document.getElementById("map-layout-container")
-      }*/
       //之前改变过map时，还原map
       if(mapContainer.style.left === "380px"){
         mapContainer.style.width = mapContainer.getBoundingClientRect().width + 150 + "px"
@@ -263,7 +261,6 @@ export default {
     }
     let access_token = Cookies.get('access_token')
     if(styleId !== null && access_token !== undefined){
-
       let url = SERVER_API.styles + '/' + username + '/' + styleId
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
@@ -393,7 +390,6 @@ export default {
   left: 30px;
   display: none;
 }
-
 
 #map-tool {
   position: absolute;

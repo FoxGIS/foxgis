@@ -130,17 +130,8 @@ export default {
 
 
 <style scoped>
-.mdl-layout {
-  /*height: calc(100% - 100px);*/
-}
-
-/*.mdl-layout__content {
-  height: calc(100% - 100px);
-}*/
-
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-color: #e4e4e4;
-  /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/
 }
 
 .mdl-navigation {
@@ -160,10 +151,10 @@ export default {
 }
 
 .mdl-badge {
-    position: absolute;
-    white-space: nowrap;
-    margin-right: 24px;
-    right: 76px;
+  position: absolute;
+  white-space: nowrap;
+  margin-right: 24px;
+  right: 76px;
 }
 
 .mdl-badge:after {
