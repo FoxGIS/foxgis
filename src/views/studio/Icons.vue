@@ -23,6 +23,7 @@
 
 <script>
 import util from '../../components/util.js'
+import commonMethod from '../../components/method.js'
 import Cookies from 'js-cookie'
 import _ from 'lodash'
 export default {
@@ -59,14 +60,12 @@ export default {
   attached(){
     let username = Cookies.get('username');
     if(username === undefined){
-      return
+      return;
     }
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.sprites + '/' + username;
-    var that = this
-      //获取数据列表
-
-    var uploader = WebUploader.create({
+    let that = this;
+    let option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -80,76 +79,9 @@ export default {
         mimeTypes: 'application/zip'
       },
       Vue:that
-    });
-    uploader.on('filesQueued',function(file){//添加文件到队列
-      if(file.length===0){
-        this.options.Vue.$broadcast('mailSent', { message: "你已上传过该文件！",timeout:3000 });
-      }
-      this.options.Vue.uploadStatus.total_files = file.length;
-      var totalSize = 0;
-      for(var i=0;i<file.length;i++){
-        this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
-        totalSize+=file[i].size;
-      }
-      if (totalSize / 1024 > 1024) {
-        totalSize = (totalSize / 1048576).toFixed(2) + 'MB';
-      } else {
-        totalSize = (totalSize / 1024).toFixed(2) + 'KB';
-      }
-      this.options.Vue.uploadStatus.total_size = totalSize;
-    });
-    uploader.on('uploadStart',function(file){//开始上传
-      $('.progress-bar').css('display','block');
-      $('.webuploader-pick').css('background-color','#9E9E9E');
-      $('#picker input').attr('disabled','disabled');
-      //this.options.Vue.uploadStatus.current_file +=1;
-    });
-    uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
-      var fileIds = this.options.Vue.uploadStatus.fileIds;
-      this.options.Vue.uploadStatus.progress=0;
-      for(var i=0;i<fileIds.length;i++){
-        if(fileIds[i].id === file.id){
-          fileIds[i].status = percentage;
-        }
-        this.options.Vue.uploadStatus.progress+=parseInt((fileIds[i].status*100/fileIds.length));
-      }
-      this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
-      //$('.progress-bar .activebar').css( 'width', );
-    });
-    uploader.on( 'uploadSuccess', function( file,response) {//上传成功    
-      this.options.Vue.uploadStatus.current_file +=1;
-      let activeCards = this.options.Vue.$el.querySelector('.active');
-      if(activeCards){
-        activeCards.className = activeCards.className.replace(' active','');
-      }//去掉active card
-      var data = response;
-        data.createdAt = util.dateFormat(new Date(data.createdAt));
-        data.checked = false;//为新增加的文件添加checked属性
-        this.options.Vue.dataset.unshift(data);
-        if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-          $('.progress-bar').css('display','none');
-          $('.webuploader-pick').css('background-color','#3F51B5');
-          $('#picker input').removeAttr('disabled');
-          this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
-          this.options.Vue.uploadStatus.current_file=1;
-          this.options.Vue.uploadStatus.total_files=0;
-          this.options.Vue.uploadStatus.progress=0;
-          this.options.Vue.uploadStatus.percentage="width:0";
-        }    
-    });
-    uploader.on( 'uploadError', function( file,reason) {//上传失败
-      this.options.Vue.uploadStatus.current_file +=1;
-      this.options.Vue.$broadcast('mailSent', { message: '上传失败！请重新上传'+reason,timeout:3000 });
-      if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-        $('.progress-bar').css('display','none');//所有状态初始化
-        $('.webuploader-pick').css('background-color','#3F51B5');
-        $('#picker input').removeAttr('disabled');
-        this.options.Vue.uploadStatus.current_file=1;
-        this.options.Vue.uploadStatus.total_files=0;
-        this.options.Vue.uploadStatus.progress=0;
-        this.options.Vue.uploadStatus.percentage="width:0";
-      }
-    });
+    }
+    commonMethod.uploaderData(option,'icons');
+
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
       if (response.data.length > 0) {
         var data = response.data;
@@ -267,11 +199,11 @@ span {
 }
 
 .progress-bar .bar{
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    transition: width .2s cubic-bezier(.4,0,.2,1);
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: width .2s cubic-bezier(.4,0,.2,1);
 }
 /* 上传文件按钮 */
 #picker{

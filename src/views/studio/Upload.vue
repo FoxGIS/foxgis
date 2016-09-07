@@ -97,20 +97,9 @@
         <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
       </div>
     </div>
-
   </div>
 
-  <div id="pagination" v-show="displayUploads.length>0?true:false">
-    <ul>
-      <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
-        <span><i class="material-icons">navigate_before</i></span>
-      </li>
-      <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-      <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
-        <span><i class="material-icons">navigate_next</i></span>
-      </li>
-    </ul>
-  </div>
+  <foxgis-pagination v-show="displayUploads.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
 
   <div class="modal" @click="hidePreview">
     <div class="image-container" >
@@ -129,6 +118,7 @@ import Vue from 'vue'
 import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../../components/util.js'
+import commonMethod from '../../components/method.js'
 export default {
   methods: {
     editScale:function(e, index) {//编辑比例尺
@@ -477,33 +467,8 @@ export default {
       let value = e.target.value;
       let upload_id = this.displayUploads[index].upload_id;
       this.patchUpload(upload_id,{'name':value});
-    },
-
-    nextPage: function (event) {//“下一页”按钮的点击方法
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
-      if(this.pageConfig.current_page === allPages){
-        return;
-      }
-      this.pageConfig.current_page += 1;
-
-      if(this.pageConfig.current_page > this.show_page_num){
-        this.pageConfig.first_page +=1;
-      }
-    },
-
-    prePage: function (event) {//“上一页”按钮的点击方法
-      if(this.pageConfig.current_page === 1){
-        return;
-      }
-      this.pageConfig.current_page -= 1;
-      if(this.pageConfig.current_page < this.pageConfig.first_page){
-        this.pageConfig.first_page -=1;
-      }
-    },
-
-    setPage: function (page) {//“页码”的点击方法
-      this.pageConfig.current_page = page+1;
     }
+
   },
 
   attached() {
@@ -514,8 +479,7 @@ export default {
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.uploads + '/' + username;
     var that = this;
-      //获取数据列表
-    var uploader = WebUploader.create({
+    let option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -533,85 +497,21 @@ export default {
         year:new Date().getFullYear(),
         location:Cookies.get('location')?Cookies.get('location'):''
       }
-    });
-    uploader.on('filesQueued',function(file){//添加文件到队列
-      this.options.Vue.uploadStatus.total_files = file.length;
-      var totalSize = 0;
-      for(var i=0;i<file.length;i++){
-        this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
-        totalSize+=file[i].size;
-      }
-      if (totalSize / 1024 > 1024) {
-        totalSize = (totalSize / 1048576).toFixed(2) + 'MB';
-      } else {
-        totalSize = (totalSize / 1024).toFixed(2) + 'KB';
-      }
-      this.options.Vue.uploadStatus.total_size = totalSize;
-    });
-    uploader.on('uploadStart',function(file){//开始上传
-      $('.progress-bar').css('display','block');
-      $('.webuploader-pick').css('background-color','#9E9E9E');
-      $('#picker input').attr('disabled','disabled');
-      //this.options.Vue.uploadStatus.current_file +=1;
-    });
-    uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
-      var fileIds = this.options.Vue.uploadStatus.fileIds;
-      this.options.Vue.uploadStatus.progress=0;
-      for(var i=0;i<fileIds.length;i++){
-        if(fileIds[i].id === file.id){
-          fileIds[i].status = percentage;
-        }
-        this.options.Vue.uploadStatus.progress+=parseInt((fileIds[i].status*100/fileIds.length));
-      }
-      this.options.Vue.uploadStatus.percentage="width:"+this.options.Vue.uploadStatus.progress + '%';
-    });
-    uploader.on( 'uploadSuccess', function( file,response) {//上传成功
-      this.options.Vue.uploadStatus.current_file +=1;
-      var data = response;
-        if (data.size / 1024 > 1024) {
-          data.size = (data.size / 1048576).toFixed(2) + 'MB'
-        } else {
-          data.size = (data.size / 1024).toFixed(2) + 'KB'
-        }
-        data.upload_at = util.dateFormat(new Date(data.upload_at));
-        data.checked = false;//为新增加的文件添加checked属性
-        this.options.Vue.uploads.unshift(data);
-        if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-          $('.progress-bar').css('display','none');
-          $('.webuploader-pick').css('background-color','#3F51B5');
-          $('#picker input').removeAttr('disabled');
-          this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
-          this.options.Vue.uploadStatus.current_file=1;
-          this.options.Vue.uploadStatus.total_files=0;
-          this.options.Vue.uploadStatus.progress=0;
-          this.options.Vue.uploadStatus.percentage="width:0";
-        }
-    });
-    uploader.on( 'uploadError', function( file,reason) {//上传失败
-      this.options.Vue.uploadStatus.current_file +=1;
-      this.options.Vue.$broadcast('mailSent', { message: '上传失败！请重新上传'+reason,timeout:3000 });
-      if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-        $('.progress-bar').css('display','none');//所有状态初始化
-        $('.webuploader-pick').css('background-color','#3F51B5');
-        $('#picker input').removeAttr('disabled');
-        this.options.Vue.uploadStatus.current_file=1;
-        this.options.Vue.uploadStatus.total_files=0;
-        this.options.Vue.uploadStatus.progress=0;
-        this.options.Vue.uploadStatus.percentage="width:0";
-      }
-    });
-
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    }
+    commonMethod.uploaderData(option,'upload');
+      
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data
+        var data = response.data;
         data = data.map(function(d) {
           if (d.size / 1024 > 1024) {
-            d.size = (d.size / 1048576).toFixed(2) + 'MB'
+            d.size = (d.size / 1048576).toFixed(2) + 'MB';
           } else {
-            d.size = (d.size / 1024).toFixed(2) + 'KB'
+            d.size = (d.size / 1024).toFixed(2) + 'KB';
           }
-          d.createdAt = util.dateFormat(new Date(d.createdAt))
-          return d
+          d.createdAt = util.dateFormat(new Date(d.createdAt));
+          return d;
         });
         for(let i=0;i<data.length;i++){
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
@@ -624,33 +524,25 @@ export default {
   },
 
   computed: {
-     show_page_num: function (){
-        let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num)
-        if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
-          this.pageConfig.current_page = cop_page_num
-        }
-        return cop_page_num > 5 ? 5 : cop_page_num
-     },
-
-     total_items: function (){//返回uploads数组的数量
-      let count = this.displayUploads.length
-      let allCount = this.uploads.length
-      this.$dispatch("upload_nums", allCount)
-      return count
-     },
+    total_items: function (){//返回uploads数组的数量
+      let count = this.displayUploads.length;
+      let allCount = this.uploads.length;
+      this.$dispatch("upload_nums", allCount);
+      return count;
+    },
 
     displayUploads: function(){//返回满足筛选条件的uploads数组
-      let temp = []
-      let temp1 = []
-      let temp2 = []
-      let temp3 = []
-      let tempUploads = this.uploads
+      let temp = [];
+      let temp1 = [];
+      let temp2 = [];
+      let temp3 = [];
+      let tempUploads = this.uploads;
       if(this.searchUploads.length>0){
-        tempUploads = this.searchUploads
+        tempUploads = this.searchUploads;
       }
 
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0 && this.searchKeyWords.trim().length===0){
-        return tempUploads.slice(0)
+        return tempUploads.slice(0);
       }
       if(this.searchUploads.length === 0 && this.searchKeyWords.trim().length!==0){
       //用户进行了搜索，但结果为空
@@ -659,14 +551,14 @@ export default {
 
       if(this.selected_theme_tags.length>0){
         for(let k=0;k<this.selected_theme_tags.length;k++){
-          let conditions = this.selected_theme_tags[k]
+          let conditions = this.selected_theme_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u]
+            let upload = tempUploads[u];
             if(upload.tags.length>0){
               for(let i=0;i<upload.tags.length;i++){
                 if(conditions === upload.tags[i]&&temp1.indexOf(upload) === -1){
-                  temp1.push(upload)
-                  break
+                  temp1.push(upload);
+                  break;
                 }
               }
             }
@@ -675,22 +567,22 @@ export default {
       }
       if(this.selected_year_tags.length>0){
         for(let k=0;k<this.selected_year_tags.length;k++){
-          let conditions = this.selected_year_tags[k]
+          let conditions = this.selected_year_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u]
+            let upload = tempUploads[u];
             if(conditions === upload.year&&temp2.indexOf(upload) === -1){
-              temp2.push(upload)
+              temp2.push(upload);
             }
           }
         }
       }
       if(this.selected_location_tags.length>0){
         for(let k=0;k<this.selected_location_tags.length;k++){
-          let conditions = this.selected_location_tags[k]
+          let conditions = this.selected_location_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u]
+            let upload = tempUploads[u];
             if(conditions === upload.location&&temp3.indexOf(upload) === -1){
-              temp3.push(upload)
+              temp3.push(upload);
             }
           }
         }
@@ -699,26 +591,26 @@ export default {
       if(temp1.length == 0){
         if(temp2.length == 0){
           if(temp3.length == 0){
-            temp=this.searchUploads
+            temp=this.searchUploads;
           }else{
             if(this.searchUploads.length == 0){
-              temp =temp3
+              temp =temp3;
             }else{
-              temp = _.intersection(temp3,this.searchUploads)
+              temp = _.intersection(temp3,this.searchUploads);
             }
           }
         }else{
           if(temp3.length == 0){
             if(this.searchUploads.length == 0){
-              temp =temp2
+              temp =temp2;
             }else{
-              temp = _.intersection(temp2,this.searchUploads)
+              temp = _.intersection(temp2,this.searchUploads);
             }
           }else{
             if(this.searchUploads.length == 0){
-              temp = _.intersection(temp2,temp3)
+              temp = _.intersection(temp2,temp3);
             }else{
-              temp = _.intersection(temp2,temp3,this.searchUploads)
+              temp = _.intersection(temp2,temp3,this.searchUploads);
             }
           }
         }
@@ -726,56 +618,56 @@ export default {
         if(temp2.length == 0){
           if(temp3.length == 0){
             if(this.searchUploads.length == 0){
-              temp = temp1
+              temp = temp1;
             }else{
-              temp = _.intersection(temp1,this.searchUploads)
+              temp = _.intersection(temp1,this.searchUploads);
             }
           }else{
             if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp3)
+              temp = _.intersection(temp1,temp3);
             }else{
-              temp = _.intersection(temp1,temp3,this.searchUploads)
+              temp = _.intersection(temp1,temp3,this.searchUploads);
             }
           }
         }else{
           if(temp3.length == 0){
             if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp2)
+              temp = _.intersection(temp1,temp2);
             }else{
-              temp = _.intersection(temp1,temp2,this.searchUploads)
+              temp = _.intersection(temp1,temp2,this.searchUploads);
             }
           }else{
             if(this.searchUploads.length == 0){
-              temp = _.intersection(temp1,temp2,temp3)
+              temp = _.intersection(temp1,temp2,temp3);
             }else{
-              temp = _.intersection(temp1,temp2,temp3,this.searchUploads)
+              temp = _.intersection(temp1,temp2,temp3,this.searchUploads);
             }
           }
         }
       }
       if(temp.length===0){
-        let data1 = []
-        let data2 = []
+        let data1 = [];
+        let data2 = [];
         for(let i=0;i<this.location_tags.length;i++){
-          data1.push(this.location_tags[i].data)
+          data1.push(this.location_tags[i].data);
         }
         for(let j=0;j<this.year_tags.length;j++){
-          data2.push(this.year_tags[j].data)
+          data2.push(this.year_tags[j].data);
         }
         if(_.intersection(this.theme_tags,this.selected_theme_tags).length === 0 && _.intersection(data2,this.selected_year_tags).length === 0 &&  _.intersection(data1,this.selected_location_tags).length === 0){
           temp=this.uploads;
         }
       }
-      return temp
+      return temp;
     },
 
     theme_tags: function(){//返回已选的“主题词”数组
-        let theme = []
-        let k=0
-        let tempUploads = this.uploads
+        let theme = [];
+        let k=0;
+        let tempUploads = this.uploads;
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
+            tempUploads = this.searchUploads;
           }else{
             //theme的元素发生变化后检测selected_theme_tags是否需要更改
             for(let i=0;i<this.selected_theme_tags.length;i++){
@@ -789,8 +681,8 @@ export default {
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].tags.length>0){
             for(let j=0;j<tempUploads[i].tags.length;j++){
-              theme.push(tempUploads[i].tags[j])
-              k++
+              theme.push(tempUploads[i].tags[j]);
+              k++;
             }
           }
         }
@@ -801,119 +693,119 @@ export default {
             this.selected_theme_tags.splice(i,1);
           }
         }
-        return theme
+        return theme;
     },
 
     year_tags: function(){//返回已选的“制图年份”数组
-        let year = []
-        let data = []
-        let tempUploads = this.uploads
+        let year = [];
+        let data = [];
+        let tempUploads = this.uploads;
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
+            tempUploads = this.searchUploads;
           }else{
             for(let i=0;i<this.selected_year_tags.length;i++){
               if(year.indexOf(this.selected_year_tags[i])===-1){
                 this.selected_year_tags.splice(i,1);
               }
             }
-            return year
+            return year;
           }
         }
         for(let i=0;i<tempUploads.length;i++){
-          year.push(tempUploads[i].year)
+          year.push(tempUploads[i].year);
         }
-        let tempYear = year
-        year = _.uniq(year).sort()
+        let tempYear = year;
+        year = _.uniq(year).sort();
         for(let j=0;j<year.length;j++){
-          let temp = year[j]
-          let num = 0
+          let temp = year[j];
+          let num = 0;
           for(let k=0;k<tempYear.length;k++){
             if(temp === tempYear[k]){
-              num++
+              num++;
             }
           }
-          data.push({'data':temp,'num':num})
+          data.push({'data':temp,'num':num});
         }
         for(let i=0;i<this.selected_year_tags.length;i++){
           if(year.indexOf(this.selected_year_tags[i])===-1){
             this.selected_year_tags.splice(i,1);
           }
         }
-        return data
+        return data;
     },
 
     location_tags: function(){//返回已选的“制图区域”数组
-        let location = []
-        let data = []
-        let tempUploads = this.uploads
+        let location = [];
+        let data = [];
+        let tempUploads = this.uploads;
         if(this.searchKeyWords.trim().length>0){
           if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads
+            tempUploads = this.searchUploads;
           }else{
             for(let i=0;i<this.selected_location_tags.length;i++){
               if(location.indexOf(this.selected_location_tags[i])===-1){
                 this.selected_location_tags.splice(i,1);
               }
             }
-            return location
+            return location;
           }
         }
         for(let i=0;i<tempUploads.length;i++){
           if(tempUploads[i].location.length > 0){
-            location.push(tempUploads[i].location)
+            location.push(tempUploads[i].location);
           }
         }
-        let tempLocation = location
-        location = _.uniq(location)
+        let tempLocation = location;
+        location = _.uniq(location);
         for(let j=0;j<location.length;j++){
-          let temp = location[j]
-          let num = 0
+          let temp = location[j];
+          let num = 0;
           for(let k=0;k<tempLocation.length;k++){
             if(temp === tempLocation[k]){
-              num++
+              num++;
             }
           }
-          data.push({'data':temp,'num':num})
+          data.push({'data':temp,'num':num});
         }
         for(let i=0;i<this.selected_location_tags.length;i++){
           if(location.indexOf(this.selected_location_tags[i])===-1){
             this.selected_location_tags.splice(i,1);
           }
         }
-        return data
+        return data;
     },
 
     searchUploads: function(){
-      let temp = []
+      let temp = [];
       if(this.searchKeyWords != ''){
-        let keyWords = this.searchKeyWords.trim().split(' ')
-        keyWords = _.uniq(keyWords)
+        let keyWords = this.searchKeyWords.trim().split(' ');
+        keyWords = _.uniq(keyWords);
         for(let u=0;u<this.uploads.length;u++){
-          let upload = this.uploads[u]
-          let num = 0
+          let upload = this.uploads[u];
+          let num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w]
+            let keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(upload.name&&upload.name.indexOf(keyWord)!=-1 || upload.location&&upload.location.indexOf(keyWord)!=-1 || upload.year&&upload.year.toString().indexOf(keyWord)!=-1){
-                  num++
+                  num++;
               }else{
                 for(let k=0;k<upload.tags.length;k++){
                   if(upload.tags[k].indexOf(keyWord)!=-1){
-                    num++
+                    num++;
                   }
                 }
               }
             }else{
-              num++
+              num++;
             }
           }
           if(num == keyWords.length){
-            temp.push(upload)
+            temp.push(upload);
           }
         }
       }
-      return temp
+      return temp;
     }
 
   },
@@ -1214,57 +1106,6 @@ span {
   border-radius: 5px;
   max-width:100%;
   height:auto;
-}
-
-#pagination {
-  text-align: center;
-  display: block;
-}
-
-#pagination li.disabled {
-  color: #9c9696;
-}
-
-#pagination .material-icons {
-  vertical-align: middle;
-}
-
-#pagination ul {
-  padding: 10px;
-  display: inline-block;
-}
-
-#pagination li {
-  display: inline-block;
-  margin: 0 10px;
-  list-style-type: disc;
-  cursor: pointer;
-  width: 30px;
-}
-
-#pagination li:not(.page-active):hover {
-  background-color: #eaa5bd;
-  font-weight: bold;
-}
-
-#pagination li.page-active {
-  background-color: #ff4081;
-  font-weight: bolder;
-}
-
-#pagination li span {
-  padding: 6px;
-  line-height: 30px;
-  font-size: 1.2em;
-}
-
-#page-pre {
-  margin-right: 10px;
-}
-
-#page-next {
-  margin-left: 10px;
-  vertical-align: middle;
 }
 
 #batch-btn-box{

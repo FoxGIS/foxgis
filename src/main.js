@@ -29,6 +29,7 @@ import Search from './components/common/Search'
 import DialogPrompt from './components/common/Dialog-Prompt'
 import DialogInput from './components/common/Dialog-Input'
 import Loading from './components/common/Loading'
+import Pagination from './components/common/Pagination'
 import SVGEditor from './components/common/SVGEditor.vue'
 
 import DataCardsMap from './components/datacards/DataCards-Map'
@@ -53,6 +54,7 @@ Vue.use(Resource)
 
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-search', Search)
+Vue.component('foxgis-pagination', Pagination)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-data-cards-map', DataCardsMap)
 Vue.component('foxgis-data-cards-data', DataCardsData)
