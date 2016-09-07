@@ -185,29 +185,40 @@ export default {
         )
     },
 
-    nextPage: function (event) {//“下一页”按钮的点击方法
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+    nextPage: function (event) {//下一页点击事件
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
-        return
+        return;
       }
       this.pageConfig.current_page += 1;
-
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
     },
 
-    prePage: function (event) {//“上一页”按钮的点击方法
+    prePage: function (event) {//上一页点击事件
       if(this.pageConfig.current_page === 1){
-        return
+        return;
       }
       this.pageConfig.current_page -= 1;
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
       }
     },
 
-    setPage: function (page) {//“页码”的点击方法
+    setPage: function (page) {//页码点击事件
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       this.pageConfig.current_page = page+1;
     }
 

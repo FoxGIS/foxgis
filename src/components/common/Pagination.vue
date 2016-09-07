@@ -17,7 +17,7 @@ export default {
   props:['pageConfig','total_items'],
   methods: {
     nextPage: function (event) {//“下一页”按钮的点击方法
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num)
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
         return;
       }

@@ -305,7 +305,10 @@ export default {
         return;
       }
       this.pageConfig.current_page += 1;
-
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
@@ -316,12 +319,20 @@ export default {
         return;
       }
       this.pageConfig.current_page -= 1;
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
       }
     },
 
-    setPage: function (page) {//页面点击事件
+    setPage: function (page) {//页码点击事件
+      let activeCards = this.$el.querySelector('.active');
+      if(activeCards){
+        activeCards.className = activeCards.className.replace(' active','');
+      }//去掉active card
       this.pageConfig.current_page = page+1;
     }
   },
