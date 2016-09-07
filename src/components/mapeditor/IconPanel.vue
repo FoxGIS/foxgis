@@ -164,8 +164,7 @@ export default {
     }
   },
   attached(){
-    let hidefile = document.getElementById('icon-input');
-    hidefile.addEventListener('change', this.uploadSprite); 
+    
   },
   data(){
     return {
