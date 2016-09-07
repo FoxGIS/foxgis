@@ -30,7 +30,7 @@
       <span v-if="map.getZoom">级别：{{map.getZoom()}}</span>
       <span v-if="map.getCenter">中心：{{map.getCenter().lng}},{{map.getCenter().lat}}</span>
     </div>
-    <foxgis-gl-draw :map="map" :draw="draw"></foxgis-gl-draw>
+    <foxgis-gl-draw :map="map" :draw="draw" :style="localStyle"></foxgis-gl-draw>
   </div>
 </template>
 
