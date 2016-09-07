@@ -70,7 +70,13 @@
 
 <script>
 import Draw from 'mapbox-gl-draw'
+import { changeStyle } from '../../vuex/actions'
 export default {
+  vuex: {
+    actions: {
+      changeStyle
+    }
+  },
   methods:{
     addTriangle:function() {
       var triangle = 
@@ -139,14 +145,12 @@ export default {
             "line-width":2
           },
         }
-        this.map.addLayer(layer1)
-        this.map.addLayer(layer2)
-        this.map.addLayer(layer3)
-        this.map.addLayer(layer4)
+        this.style.layers.push(layer1);
+        this.changeStyle(this.style);
       // body...
     }
   },
-  props: ['map','draw'],
+  props: ['map','draw','style'],
   data(){
     return {
     }
