@@ -132,6 +132,7 @@
 import _ from 'lodash'
 import Cookies from 'js-cookie'
 import util from '../components/util.js'
+import commonMethod from '../components/method.js'
 export default {
   el() {
     return '#searchButton';
@@ -332,20 +333,7 @@ export default {
       var username = this.displayUploads[index].owner;
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token;
-      if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
-      //IE10/IE11
-        var aLink = document.createElement('a');
-        aLink.className = 'download_link';
-        var text = document.createTextNode('&nbsp;');
-        aLink.appendChild(text);
-        aLink.href = url;
-        aLink.click();
-      }else{//Chrome,Firefox
-        var iframe = document.createElement("iframe");
-        iframe.src = url;
-        iframe.style = "display:none";
-        document.body.appendChild(iframe);
-      } 
+      commonMethod.downloadUpload(url);
     },
 
     getNewUploads:function(){//选中“制图区域”和“制图年份”后重新请求数据的方法

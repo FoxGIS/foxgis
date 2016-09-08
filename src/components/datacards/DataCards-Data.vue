@@ -98,6 +98,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import commonMethod from '../../components/method.js'
 export default {
   props: ['dataset'],
   methods: {
@@ -276,20 +277,7 @@ export default {
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id + '/raw?access_token='+ access_token;
-      if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
-      //IE10/IE11
-        var aLink = document.createElement('a');
-        aLink.className = 'download_link';
-        var text = document.createTextNode('&nbsp;');
-        aLink.appendChild(text);
-        aLink.href = url;
-        aLink.click();
-      }else{//Chrome,Firefox
-        var iframe = document.createElement("iframe");
-        iframe.src = url;
-        iframe.style = "display:none";
-        document.body.appendChild(iframe);
-      }
+      commonMethod.downloadUpload(url);
     }
   },
 
