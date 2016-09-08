@@ -27,14 +27,14 @@ export default {
   props:['dataset'],
   methods: {
     editDescription: function(e){//修改图标说明
-      let value = e.target.value;
-      let access_token = Cookies.get('access_token');
-      let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
+      var value = e.target.value;
+      var access_token = Cookies.get('access_token');
+      var url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
       this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(this.dataset.sprite_id){
-          let tempDataset = this.$parent.dataset;
+          var tempDataset = this.$parent.dataset;
           for(let i=0;i<tempDataset.length;i++){
             if(this.dataset.sprite_id === tempDataset[i].sprite_id) {
               tempDataset[i].description = this.dataset.description;
@@ -48,13 +48,13 @@ export default {
 
     bindDel:function(e){//给每个符号绑定点击事件，为了“删除符号”功能
       if(this.dataset.sprite_id){
-        let className = "";
-        let title = "";
+        var className = "";
+        var title = "";
         if($(e.target).parents("#icon-select-panel").length>0){
           return;
         }
         for(let i=0;i<e.currentTarget.attributes.length;i++){
-          let temp = e.currentTarget.attributes[i].name;
+          var temp = e.currentTarget.attributes[i].name;
           if(temp === "class"){
             className = e.currentTarget.attributes[i].value;
           }
@@ -64,7 +64,7 @@ export default {
         }
         if(className.indexOf('del')!==-1){
          className = className.replace(' del','');
-         let index = this.delSpriteTitle.indexOf(title);
+         var index = this.delSpriteTitle.indexOf(title);
          if(index != -1){
            this.delSpriteTitle.splice(index,1);
          }
@@ -73,7 +73,7 @@ export default {
           this.delSpriteTitle.push(title);
         }
         for(let i=0;i<e.currentTarget.attributes.length;i++){
-          let temp = e.currentTarget.attributes[i].name;
+          var temp = e.currentTarget.attributes[i].name;
           if(temp === "class"){
             e.currentTarget.attributes[i].value = className;
           }
@@ -82,13 +82,13 @@ export default {
     },
 
     delSprite:function(){//删除图标
-      let access_token = Cookies.get('access_token');
-      let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
-      let num = 1;
+      var access_token = Cookies.get('access_token');
+      var url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
+      var num = 1;
       if(this.delSpriteTitle.length>0){
         for(let i=0;i<this.delSpriteTitle.length;i++){
-          let title = this.delSpriteTitle[i];
-          let delUrl = url+"/"+title;
+          var title = this.delSpriteTitle[i];
+          var delUrl = url+"/"+title;
           this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
@@ -109,21 +109,21 @@ export default {
     },
 
     addSprite: function(){//显示文件选择框
-      let hidefile = document.getElementById('icon-input');
+      var hidefile = document.getElementById('icon-input');
       hidefile.click();
       hidefile.addEventListener('change', this.uploadSprite); 
     },
 
     uploadSprite: function(e){//添加图标方法
-      let access_token = Cookies.get('access_token');
-      let num = 1;
+      var access_token = Cookies.get('access_token');
+      var num = 1;
       for(let i=0;i<e.target.files.length;i++){
-        let spriteName = e.target.files[i].name.split('.')[0];
-        let url = this.dataset.pngUrl.split('?')[0];
-        let length = url.split('/').length-1;
-        let oldName = url.split('/')[length];
+        var spriteName = e.target.files[i].name.split('.')[0];
+        var url = this.dataset.pngUrl.split('?')[0];
+        var length = url.split('/').length-1;
+        var oldName = url.split('/')[length];
         url = url.replace(oldName,spriteName);
-        let formData = new FormData();
+        var formData = new FormData();
         formData.append('file', e.target.files[i]); 
         this.$http({url:url,method:'PUT',data:formData,headers:{'x-access-token':access_token}})
         .then(function(response){
@@ -141,20 +141,20 @@ export default {
     },
 
     newSprite: function(){//添加成功后更新雪碧图
-      let access_token = Cookies.get('access_token');
-      let sprite = {pngUrl:"",icons:[]};//初始化sprite对象
-      let url = this.dataset.pngUrl.split('?')[0];
+      var access_token = Cookies.get('access_token');
+      var sprite = {pngUrl:"",icons:[]};//初始化sprite对象
+      var url = this.dataset.pngUrl.split('?')[0];
       sprite.pngUrl = url;
       $.ajax(url);
       this.dataset.pngUrl = "";
       this.dataset.icons = [];
-      let length = url.split('/').length-1;
-      let oldName = url.split('/')[length];
-      let jsonUrl = url.replace(oldName,"sprite.json");
+      var length = url.split('/').length-1;
+      var oldName = url.split('/')[length];
+      var jsonUrl = url.replace(oldName,"sprite.json");
       this.$http({url:jsonUrl,method:"GET",headers:{'x-access-token':access_token}})
       .then(function(res){
-        let data = res.data;
-        let names = Object.keys(data);
+        var data = res.data;
+        var names = Object.keys(data);
         for(let i=0;i<names.length;i++){
           sprite.icons.push({'name':names[i],'positions':data[names[i]]});
         }

@@ -102,20 +102,20 @@ export default {
   props: ['dataset'],
   methods: {
     showDetails: function (e,tileset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
-      let username = Cookies.get('username');
+      var username = Cookies.get('username');
       if(username === undefined){
         return;
       }
-      let access_token = Cookies.get('access_token');
-      let that = this;
-      let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
+      var access_token = Cookies.get('access_token');
+      var that = this;
+      var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
       //移除之前的active
-      let activeCards = this.$el.querySelector('.active');
+      var activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      let claName = e.target.parentElement.className;
+      var claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
         e.target.parentElement.className = claName;
@@ -139,7 +139,7 @@ export default {
 
     lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
-      let height = (index-this.fieldsLength)*37;
+      var height = (index-this.fieldsLength)*37;
       $('.fields').css("margin",height+'px'+' 0 0 420px');
     },
 
@@ -153,18 +153,18 @@ export default {
     },
 
     uploadNameChange: function(e,index){//修改数据名称
-      let value = e.target.value;
-      let tileset_id = this.dataset[index].tileset_id;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var value = e.target.value;
+      var tileset_id = this.dataset[index].tileset_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-          let data = response.data;
-          let input = $(".tileset-name");
-          let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+          var data = response.data;
+          var input = $(".tileset-name");
+          var page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
           for(let i=0;i<input.length;i++){
             input[i].blur();
             input[i].value = this.dataset[page+i].name;
@@ -176,11 +176,11 @@ export default {
       });
     },
     editScope: function(e,index){//修改共享范围
-      let scope = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let tileset_id = this.dataset[index].tileset_id;
-      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var scope = e.target.value;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var tileset_id = this.dataset[index].tileset_id;
+      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
       .then(function(response){
         if(response.ok){
@@ -191,16 +191,16 @@ export default {
       });
     },
     editDescription: function(e,index){//修改数据描述信息
-      let value = e.target.value;
-      let tileset_id = this.dataset[index].tileset_id;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var value = e.target.value;
+      var tileset_id = this.dataset[index].tileset_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.dataset[index].description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-          let data = response.data;
+          var data = response.data;
           this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 }); 
         }    
       }, function(response) {
@@ -208,12 +208,12 @@ export default {
       });
     },
     deleteTag: function(pId, tag_id) {//删除主题词的标签
-      let tags = this.dataset[pId].tags;
-      let tileset_id = this.dataset[pId].tileset_id;
+      var tags = this.dataset[pId].tags;
+      var tileset_id = this.dataset[pId].tileset_id;
       tags.splice(tag_id, 1);
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
@@ -226,17 +226,17 @@ export default {
 
     addTag: function(e, index) {//添加主题词标签
       if (e.target.value) {
-        let tags = this.dataset[index].tags;
-        let tileset_id = this.dataset[index].tileset_id;
+        var tags = this.dataset[index].tags;
+        var tileset_id = this.dataset[index].tileset_id;
         if(tags.indexOf(e.target.value)!=-1){
           this.$broadcast('mailSent', { message: '该标签已存在！',timeout:3000 }); 
           return;
         }
         tags.push(e.target.value);
         e.target.value = '';
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
         this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -255,10 +255,10 @@ export default {
 
     deleteAction: function(status) {//删除事件
       if (status === 'ok') {
-        let tileset_id = this.deleteTilesetId;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let url = SERVER_API.tilesets + '/' + username + "/" + tileset_id;
+        var tileset_id = this.deleteTilesetId;
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var url = SERVER_API.tilesets + '/' + username + "/" + tileset_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -273,19 +273,19 @@ export default {
     },
 
     downloadFile: function(tileset_id) {//下载事件
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.tilesets + '/' + username + '/' + tileset_id + '/raw?access_token='+ access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id + '/raw?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        let aLink = document.createElement('a');
+        var aLink = document.createElement('a');
         aLink.className = 'download_link';
-        let text = document.createTextNode('&nbsp;');
+        var text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -295,8 +295,8 @@ export default {
 
   computed: {
     total_items: function (){
-      let allCount = this.$parent.dataset.length;
-      let count = this.dataset.length;
+      var allCount = this.$parent.dataset.length;
+      var count = this.dataset.length;
       this.$dispatch("tileset_nums", allCount);
       return count;
      }

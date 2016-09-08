@@ -27,7 +27,7 @@ export default {
       this.options.Vue.uploadStatus.total_files = file.length;
       this.options.Vue.uploadStatus.fileIds = [];
       if(type==='upload' || type==='icons' || type==='data'){
-        for(var i=0;i<file.length;i++){
+        for(let i=0;i<file.length;i++){
           this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
           totalSize+=file[i].size;
         }
@@ -35,7 +35,7 @@ export default {
         var fonts = this.options.Vue.fonts;
         var flag = 0;
         var existFiles = [];
-        for(var i=0;i<file.length;i++){
+        for(let i=0;i<file.length;i++){
           flag = 0;
           for(let j=0;j<fonts.length;j++){
             if(file[i].name===fonts[j].filename){
@@ -72,7 +72,7 @@ export default {
     uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
       var fileIds = this.options.Vue.uploadStatus.fileIds;
       this.options.Vue.uploadStatus.progress=0;
-      for(var i=0;i<fileIds.length;i++){
+      for(let i=0;i<fileIds.length;i++){
         if(fileIds[i].id === file.id){
           fileIds[i].status = percentage;
         }
@@ -93,7 +93,7 @@ export default {
         data.upload_at = util.dateFormat(new Date(data.upload_at));
         this.options.Vue.uploads.unshift(data);
       }else if(type === 'icons'){
-        let activeCards = this.options.Vue.$el.querySelector('.active');
+        var activeCards = this.options.Vue.$el.querySelector('.active');
         if(activeCards){
           activeCards.className = activeCards.className.replace(' active','');
         }//去掉active card

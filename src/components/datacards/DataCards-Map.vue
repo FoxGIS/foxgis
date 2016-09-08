@@ -27,8 +27,8 @@ export default {
   },
   computed: {
      total_items: function (){
-      let allCount = this.$parent.dataset.length;
-      let count = this.dataset.length;
+      var allCount = this.$parent.dataset.length;
+      var count = this.dataset.length;
       this.$dispatch("map_nums", allCount);
       return count;
      }

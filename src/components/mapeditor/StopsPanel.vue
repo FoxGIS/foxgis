@@ -101,7 +101,7 @@ export default {
   methods: {
     doOk: function(){//点击确定触发的方法
       var tem=this.stopsdata.stopsObj;
-      for(var i=0;i<tem.stops.length;i++){
+      for(let i=0;i<tem.stops.length;i++){
         if(tem.stops[i][0]===""){
           this.error = "错误：级别不能为空";
           return;

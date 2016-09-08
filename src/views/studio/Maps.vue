@@ -33,45 +33,45 @@ export default {
       document.getElementById("template-container").style.display = 'block';
     },
     createStyle: function(data){
-      let access_token = Cookies.get('access_token');
+      var access_token = Cookies.get('access_token');
       if(data.type === "empty"){
-        let newstyle = JSON.stringify(data.json);
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let createURL = SERVER_API.styles + '/' + username;
+        var newstyle = JSON.stringify(data.json);
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var createURL = SERVER_API.styles + '/' + username;
         this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
         .then(function(res){
           this.$el.querySelector("#create-loading").style.display = 'none';
           document.getElementById("template-container").style.display = 'none';
-          let styleid = res.data.style_id;
+          var styleid = res.data.style_id;
           window.location.href="#!mapeditor/"+styleid;
         },function(res){
           this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
         });
       }else{
-        let name = data.name;
-        let replace = data.replace;
-        let url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
+        var name = data.name;
+        var replace = data.replace;
+        var url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
         this.$el.querySelector("#create-loading").style.display = 'block';
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(res){
           if(typeof(res.data)==="string"){
-            let styleStr = res.data;
+            var styleStr = res.data;
           }else{
-            let styleStr = JSON.stringify(res.data);
+            var styleStr = JSON.stringify(res.data);
           }
-          let result = styleStr.replace(/replaceme/g,replace);
-          let style = JSON.parse(result);
+          var result = styleStr.replace(/replaceme/g,replace);
+          var style = JSON.parse(result);
           style.name = name;
           style.metadata.replaceField = replace;
-          let newstyle = JSON.stringify(style);
-          let username = Cookies.get('username');
-          let access_token = Cookies.get('access_token');
-          let createURL = SERVER_API.styles + '/' + username;
+          var newstyle = JSON.stringify(style);
+          var username = Cookies.get('username');
+          var access_token = Cookies.get('access_token');
+          var createURL = SERVER_API.styles + '/' + username;
           this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
           .then(function(res){
             this.$el.querySelector("#create-loading").style.display = 'none';
             document.getElementById("template-container").style.display = 'none';
-            let styleid = res.data.style_id;
+            var styleid = res.data.style_id;
             window.location.href="#!mapeditor/"+styleid;
           },function(res){
             this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
@@ -88,10 +88,10 @@ export default {
     },
     deleteAction: function(status){
       if(status === 'ok'){
-        let style_id = this.deleteStyleId;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let url = SERVER_API.styles + '/' + username + "/" + style_id;
+        var style_id = this.deleteStyleId;
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var url = SERVER_API.styles + '/' + username + "/" + style_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -109,18 +109,18 @@ export default {
   },
   computed:{
     displayDataset:function(){
-      let temp = this.dataset;
-      let t=[];
+      var temp = this.dataset;
+      var t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
-        let keyWords = this.searchKeyWords.trim().split(' ');
+        var keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<temp.length;u++){
-          let tileset = temp[u];
-          let num = 0;
+          var tileset = temp[u];
+          var num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w];
+            var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
                   num++;
@@ -138,12 +138,12 @@ export default {
     }
   },
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.styles+'/' + username;
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.styles+'/' + username;
 
     this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
     .then(function(response){

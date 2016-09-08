@@ -35,12 +35,12 @@ export default {
   methods: {
     showDetails: function (e,sprite_id) {//卡片点击事件，显示卡片详情(e:event事件，sprite_id:卡片的id)
       //移除之前的active
-      let activeCards = this.$el.querySelector('.active');
+      var activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      let claName = e.target.parentElement.className;
+      var claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
       }else{
@@ -55,17 +55,17 @@ export default {
             }
           }
           
-          let username = Cookies.get('username');
-          let access_token = Cookies.get('access_token');
-          let pngUrl = SERVER_API.sprites+'/'+username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
+          var username = Cookies.get('username');
+          var access_token = Cookies.get('access_token');
+          var pngUrl = SERVER_API.sprites+'/'+username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
           this.sprite.sprite_id = sprite_id;
           this.sprite.pngUrl = pngUrl;
-          let jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
+          var jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
           this.$http({ url: jsonUrl, method: 'GET', headers: { 'x-access-token': access_token} })
           .then(function(response){
             //请求成功
-            let data = response.data;
-            let names = Object.keys(data);
+            var data = response.data;
+            var names = Object.keys(data);
             this.sprite.icons = [];//初始化
             for(let i=0;i<names.length;i++){
               this.sprite.icons.push({'name':names[i],'positions':data[names[i]]});
@@ -80,11 +80,11 @@ export default {
     },
 
     editScope: function(e,index){//修改共享范围
-      let scope = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let sprite_id = this.dataset[index].sprite_id;
-      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      var scope = e.target.value;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var sprite_id = this.dataset[index].sprite_id;
+      var url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
       this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
       .then(function(response){
         if(response.ok){
@@ -96,18 +96,18 @@ export default {
     },
 
     uploadNameChange: function(e,index){//修改符号名称
-      let value = e.target.value;
-      let sprite_id = this.dataset[index].sprite_id;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
+      var value = e.target.value;
+      var sprite_id = this.dataset[index].sprite_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-          let data = response.data;
-          let input = $(".sprite-name");
-          let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+          var data = response.data;
+          var input = $(".sprite-name");
+          var page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
           for(let i=0;i<input.length;i++){
             input[i].blur();
             input[i].value = this.dataset[page+i].name;
@@ -120,19 +120,19 @@ export default {
     },
 
     downloadSprite: function(index) {//下载符号库
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.sprites + '/' + username + '/' + this.dataset[index].sprite_id + '/raw?access_token='+ access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.sprites + '/' + username + '/' + this.dataset[index].sprite_id + '/raw?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        let aLink = document.createElement('a');
+        var aLink = document.createElement('a');
         aLink.className = 'download_link';
-        let text = document.createTextNode('&nbsp;');
+        var text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -147,10 +147,10 @@ export default {
 
     deleteAction: function(status) {//删除事件
       if (status === 'ok') {
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let sprite_id = this.deleteUploadId;
-        let url = SERVER_API.sprites + '/' + username + "/" + sprite_id;
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var sprite_id = this.deleteUploadId;
+        var url = SERVER_API.sprites + '/' + username + "/" + sprite_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -166,8 +166,8 @@ export default {
   },
   computed: {
      total_items: function (){
-      let allCount = this.$parent.dataset.length;
-      let count = this.dataset.length;
+      var allCount = this.$parent.dataset.length;
+      var count = this.dataset.length;
       this.$dispatch("sprite_nums", allCount);
       return count;
      }

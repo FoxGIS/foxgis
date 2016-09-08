@@ -29,18 +29,18 @@ import _ from 'lodash'
 export default {
   computed:{
     displayDataset:function(){//过滤搜索到的卡片
-      let temp = this.dataset;
-      let t=[];
+      var temp = this.dataset;
+      var t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
-        let keyWords = this.searchKeyWords.trim().split(' ');
+        var keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<temp.length;u++){
-          let sprite = temp[u];
-          let num = 0;
+          var sprite = temp[u];
+          var num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w];
+            var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(sprite.name&&sprite.name.indexOf(keyWord)!=-1){
                   num++;
@@ -58,14 +58,14 @@ export default {
     }
   },
   attached(){
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.sprites + '/' + username;
-    let that = this;
-    let option = {
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.sprites + '/' + username;
+    var that = this;
+    var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -85,7 +85,7 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         data = data.map(function(d) {
           d.createdAt = util.dateFormat(new Date(d.createdAt));
           return d;

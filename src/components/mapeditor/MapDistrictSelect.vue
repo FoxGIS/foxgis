@@ -10,11 +10,11 @@
 <script>
 export default {
   ready: function(){
-    let that=this;
+    var that=this;
     this.$http({url:'/static/adminTree.json',method:'GET'})
     .then(function(response){
-      let zNodes = response.data.znodes;
-      let setting = {
+      var zNodes = response.data.znodes;
+      var setting = {
         data:{
           simpleData:{
             enable:true
@@ -23,10 +23,10 @@ export default {
         vue:this,
         callback:{
           onClick:function(e,treeId,treeNode){
-            let bounds = treeNode.bbox;
-            let adminId = treeNode.id;//行政区划码
-            let name = treeNode.name;
-            let vue = this.getZTreeObj("admin-tree").setting.vue;
+            var bounds = treeNode.bbox;
+            var adminId = treeNode.id;//行政区划码
+            var name = treeNode.name;
+            var vue = this.getZTreeObj("admin-tree").setting.vue;
             vue.$dispatch('map-bounds-change',{id:adminId,name:name,bounds:bounds});
           }
         },

@@ -83,15 +83,15 @@ export default {
   methods:{
     changePassword:function(e){
       this.userInfo.showPasswordPanel = true;
-      let url = SERVER_API.users;
-      let username = Cookies.get('username');
+      var url = SERVER_API.users;
+      var username = Cookies.get('username');
       /*--------用户修改的是密码-----------*/
       if(e.target.id === "old-password-input"){
         this.password = document.getElementById('old-password-input').value;
         url += '/'+username;
         this.$http.post(url,{'username':username,'password':this.password})
         .then(function(response){
-          let data = response.data;
+          var data = response.data;
           this.isChangePassword = true;
         },function(response){
           document.getElementById('old-password-input').value = "";
@@ -117,15 +117,15 @@ export default {
           return ;
         }else{
           url = url + '/' + username + "/password";
-          let access_token = Cookies.get('access_token');
-          let data = {
+          var access_token = Cookies.get('access_token');
+          var data = {
             'oldPassword':this.password,
             'newPassword':this.newpassword
           };
           this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
-              let token = response.data.access_token;
+              var token = response.data.access_token;
               Cookies.set('access_token',token);
               this.$broadcast("mailSent",{message:"密码修改成功",timeout:3000});
             }
@@ -137,9 +137,9 @@ export default {
       /*------------------------------------*/
     },
     infoChange:function(e){
-      let info = e.target.value;
-      let data = {};
-      let message = "";
+      var info = e.target.value;
+      var data = {};
+      var message = "";
       /*--------用户修改的是用户名-----------*/
       if(e.target.id === "username-input"){//暂时禁止修改
         if(info === ''){
@@ -201,8 +201,8 @@ export default {
       /*--------用户修改的是移动电话-----------*/
       if(e.target.id === "mobile-input"){
         if(info!=""){
-          let reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-          let isok = reg.test(info);
+          var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+          var isok = reg.test(info);
           if(!isok){
             this.$broadcast('mailSent', { message: '电话格式不正确，请重新输入',timeout:3000 });
             e.target.value = this.userInfo.mobile;
@@ -220,8 +220,8 @@ export default {
       /*--------用户修改的是邮箱-----------*/
       if(e.target.id === "email-input"){
         if (info != "") {
-          let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
-          let isok= reg.test(info);
+          var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+          var isok= reg.test(info);
           if (!isok) {
             this.$broadcast('mailSent', { message: '邮箱格式不正确，请重新输入！',timeout:3000 });
             e.target.value = this.userInfo.email;
@@ -269,9 +269,9 @@ export default {
         message = "职务/职称";
       }
       /*------------------------------------*/      
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.users + '/' + username;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.users + '/' + username;
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
@@ -284,17 +284,17 @@ export default {
   
   },
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return ;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.users + '/' + username;
-    let that = this;
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.users + '/' + username;
+    var that = this;
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
-      let data = response.data;
+      var data = response.data;
       if(data.is_verified === false){
         data.is_verified = "未验证";
       }else{

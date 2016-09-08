@@ -73,25 +73,25 @@ export default {
   methods: {
     showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
       //移除之前的active
-      let activeCards = this.$el.querySelector('.active');
+      var activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前dom的父控件添加active
-      let claName = e.target.parentElement.className;
+      var claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
       }else{
         claName += ' active';
         this.coverages = [];
         for(let i=0;i<this.fonts.length;i++){
-          let temp = this.fonts[i];
+          var temp = this.fonts[i];
           if(temp.fontname === fontname){
             this.coverages = temp.coverages;
           }
         }
         for(let j=0;j<this.coverages.length;j++){
-          let cov = (this.coverages[j].count/this.coverages[j].total).toFixed(2);
+          var cov = (this.coverages[j].count/this.coverages[j].total).toFixed(2);
           this.coverages[j].cov = cov*100+'%';
         }
       }
@@ -99,18 +99,18 @@ export default {
     },
 
     parseImgURL:function(font) {//返回缩略图的url
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.fonts + '/' + font.owner + "/" + font.fontname + "/thumbnail?access_token=" + access_token;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.fonts + '/' + font.owner + "/" + font.fontname + "/thumbnail?access_token=" + access_token;
       return url;
     },
 
     deleteAction: function(status) {//删除字体
       if (status === 'ok') {
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
         for(let i=0;i<this.deleteFontName.length;i++){
-          let fontname = this.deleteFontName[i];
-          let url = SERVER_API.fonts + '/' + username + "/" + fontname;
+          var fontname = this.deleteFontName[i];
+          var url = SERVER_API.fonts + '/' + username + "/" + fontname;
           this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
@@ -130,26 +130,26 @@ export default {
     },
 
     deleteFont: function(e,index) {//弹出删除对话框
-      let fontname = this.displayFonts[index].fontname;
+      var fontname = this.displayFonts[index].fontname;
       this.dialogcontent.title = "确定删除吗？";
       document.getElementById('delete-dialog').style.display = 'block';
       this.deleteFontName.push(fontname);
     },
 
     downloadFont: function(fontname) {//下载字体
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.fonts + '/' + username + '/' + fontname + '/raw?access_token='+ access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.fonts + '/' + username + '/' + fontname + '/raw?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        let aLink = document.createElement('a');
+        var aLink = document.createElement('a');
         aLink.className = 'download_link';
-        let text = document.createTextNode('&nbsp;');
+        var text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -157,17 +157,17 @@ export default {
     },
 
     editScope: function(e,index){//编辑共享范围
-        let scope = e.target.value;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let fontname = this.displayFonts[index].fontname;
-        let url = SERVER_API.fonts + '/' + username + "/" + fontname;
+        var scope = e.target.value;
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var fontname = this.displayFonts[index].fontname;
+        var url = SERVER_API.fonts + '/' + username + "/" + fontname;
         this.displayFonts[index].scope = scope;
         this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
         .then(function(response){
-            let data = response.data;
-            let scope = data.scope;
-            let days = 30;
+            var data = response.data;
+            var scope = data.scope;
+            var days = 30;
             Cookies.set('scope',scope,{ expires: days });
             this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
           },function(response){
@@ -179,14 +179,14 @@ export default {
 
   computed: {
     total_items: function (){
-      let count = this.displayFonts.length;
-      let allCount = this.fonts.length;
+      var count = this.displayFonts.length;
+      var allCount = this.fonts.length;
       this.$dispatch("font_nums", allCount);
       return count;
     },
 
     displayFonts: function(){
-      let tempFonts = this.fonts;
+      var tempFonts = this.fonts;
       if(this.searchFonts.length>0){
         tempFonts = this.searchFonts;
       }
@@ -203,15 +203,15 @@ export default {
     },
 
     searchFonts: function(){
-      let temp = [];
+      var temp = [];
       if(this.searchKeyWords != ''){
-        let keyWords = this.searchKeyWords.trim().split(' ');
+        var keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<this.fonts.length;u++){
-          let font = this.fonts[u];
-          let num = 0;
+          var font = this.fonts[u];
+          var num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w];
+            var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(font.fontname&&font.fontname.indexOf(keyWord)!=-1){
                   num++;
@@ -230,15 +230,15 @@ export default {
   },
 
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.fonts + '/' + username;
-    let that = this;
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.fonts + '/' + username;
+    var that = this;
       //获取数据列表
-    let option = {
+    var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -253,7 +253,7 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         data = data.map(function(d) {
           d.createdAt = util.dateFormat(new Date(d.createdAt));
           return d;

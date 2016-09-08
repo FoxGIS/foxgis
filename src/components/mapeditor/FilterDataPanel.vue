@@ -116,9 +116,9 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     propertyChange:function(e){
-      let value = $(e.target).val();
+      var value = $(e.target).val();
       if(e.target.name==="source"){//当用户更改source时，获取该source中包含哪些source-layer
-        let source = value;
+        var source = value;
         if(source===""){
           this.sourcelayers=[];
         }
@@ -127,10 +127,10 @@ export default {
             if(this.sources[i].sourceLayers){
               this.sourcelayers = this.sources[i].sourceLayers;
             }else{
-              let access_token = Cookies.get('access_token');
+              var access_token = Cookies.get('access_token');
               this.$http({url:this.sources[i].sourceUrl,method:"GET",headers:{'x-access-token':access_token}})
               .then(function(res){
-                let data = res.data;
+                var data = res.data;
                 this.sourcelayers = data.vector_layers||[];
               },function(res){
 
@@ -143,7 +143,7 @@ export default {
         if(e.target.value===""){
           this.layerfields={};
         }
-        let curr_sourcelayer = e.target.value;
+        var curr_sourcelayer = e.target.value;
         for(let j=0;j<this.sourcelayers.length;j++){
           if(curr_sourcelayer===this.sourcelayers[j].id){
             this.layerfields = this.sourcelayers[j].fields;
@@ -157,7 +157,7 @@ export default {
       if(e.target.name==="minzoom"||e.target.name==="maxzoom"){
         value = Number(value);
       }
-      let params = {};
+      var params = {};
       params.name = e.target.name;
       params.value = value;
       this.$dispatch("layer-property-change",params);
@@ -169,28 +169,28 @@ export default {
       if(e.target.name==="filter-value"){
         this.selecteddata.filter.filters[index].value=e.target.value;
       }
-      let tem = this.selecteddata.filter;
-      let filter = [];
+      var tem = this.selecteddata.filter;
+      var filter = [];
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
           if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){
             continue;
           }
-          let field = this.selecteddata.filter.filters[i].field;
-          let type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+          var field = this.selecteddata.filter.filters[i].field;
+          var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
           if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
-            let valueArr = tem.filters[i].value.split(",");
+            var valueArr = tem.filters[i].value.split(",");
             if(type==="Number"){
               for(let p=0;p<valueArr.length;p++){
                 valueArr[p] = Number(valueArr[p]);
               }
             }
-            let t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr);
+            var t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr);
           }else{
             if(type==="Number"){
               tem.filters[i].value=Number(tem.filters[i].value);
             }
-            let t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
+            var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
           }
           filter.push(t);
         }
@@ -200,13 +200,13 @@ export default {
       }else{
         filter = ["all"];
       }
-      let params = {};
+      var params = {};
       params.name = 'filter';
       params.value = filter;
       this.$dispatch("layer-property-change",params);
     },
     addFilter:function(){
-      let t={
+      var t={
         field:"",
         operator:"==",
         value:""
@@ -225,7 +225,7 @@ export default {
         return;   
       }   
       if(this.selecteddata.panel_type==="update"){    
-        let params = {};    
+        var params = {};    
         if(e.target.tagName==="INPUT"){   
           params.type = "new folder";   
           params.name = e.target.value;   

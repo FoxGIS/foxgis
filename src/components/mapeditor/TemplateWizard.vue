@@ -128,17 +128,17 @@ export default{
     methods: {
       nextStep:function(step){//点击下一步执行的方法
         if(step === 'one'){//step1跳到step2
-          let template_name = $("#template-wizard_panel #template-name").val();
+          var template_name = $("#template-wizard_panel #template-name").val();
           if(template_name===""){
             this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
             return;
           } 
-          let template_type = $("#template-wizard_panel #template-type").val();
+          var template_type = $("#template-wizard_panel #template-type").val();
           if(template_type===""){
             this.$parent.$broadcast("mailSent",{message:"模板类型不能为空",timeout:3000});
             return;
           } 
-          let level = parseInt($("#template-wizard_panel #scope-select").val());
+          var level = parseInt($("#template-wizard_panel #scope-select").val());
           this.json.name = template_name;
           this.json.metadata.template.level = level;
           this.json.metadata.template.type = template_type;
@@ -146,14 +146,14 @@ export default{
           $('.step2').css('display','block');
         }
         if(step === 'two'){//step2跳到step3
-          let username = Cookies.get('username');
-          let sources_name = $("#template-wizard_panel #sources-name").val();
+          var username = Cookies.get('username');
+          var sources_name = $("#template-wizard_panel #sources-name").val();
           if(sources_name===""){
             this.$parent.$broadcast("mailSent",{message:"数据源名称不能为空",timeout:3000});
             return;
           } 
-          let dataType_select = $("#template-wizard_panel #dataType-select").val();
-          let sources_url = $("#template-wizard_panel #sources-url").val();
+          var dataType_select = $("#template-wizard_panel #dataType-select").val();
+          var sources_url = $("#template-wizard_panel #sources-url").val();
           if(sources_url===""){
             this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
@@ -165,7 +165,7 @@ export default{
             "type": dataType_select,
             "url": sources_url
           }
-          let glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
+          var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
           $('.step2').css('display','none');
           $('.step3').css('display','block');
@@ -185,8 +185,8 @@ export default{
         if(this.glyphs_checked === 'other'){
           $("#template-wizard_panel #glyphs-url").val('');
         }else if(this.glyphs_checked === 'self'){
-          let username = Cookies.get('username');
-          let glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
+          var username = Cookies.get('username');
+          var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
         }
       },
@@ -194,13 +194,13 @@ export default{
         this.panelHidden();
       },
       newTemplateOK:function(){//确定按钮的方法
-        let username = Cookies.get('username');
-        let sprite_url  = $("#template-wizard_panel #sprite-url").val();
+        var username = Cookies.get('username');
+        var sprite_url  = $("#template-wizard_panel #sprite-url").val();
         if(sprite_url===""){
           this.$parent.$broadcast("mailSent",{message:"符号库地址不能为空",timeout:3000});
           return;
         } 
-        let glyphs_url  = $("#template-wizard_panel #glyphs-url").val();
+        var glyphs_url  = $("#template-wizard_panel #glyphs-url").val();
         if(glyphs_url===""){
           this.$parent.$broadcast("mailSent",{message:"字体地址不能为空",timeout:3000});
           return;
@@ -230,18 +230,18 @@ export default{
       }
     },
     attached(){
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
       this.spriteOptions=[];
       this.sourcesOptions=[];
       //获取数据源数据
-      let tilesetsUrl = SERVER_API.tilesets + '/' + username;
+      var tilesetsUrl = SERVER_API.tilesets + '/' + username;
       this.$http({ url: tilesetsUrl, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
         if (response.data.length > 0) {
-          let data = response.data;
+          var data = response.data;
           for(let i=0;i<data.length;i++){
-            let options = {
+            var options = {
               name:data[i].name,
               value:data[i].tileset_id
             }
@@ -253,13 +253,13 @@ export default{
       })
 
       //获取符号库数据
-      let spritesUrl = SERVER_API.sprites + '/' + username;
+      var spritesUrl = SERVER_API.sprites + '/' + username;
       this.$http({ url: spritesUrl, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
         if (response.data.length > 0) {
-          let data = response.data;
+          var data = response.data;
           for(let i=0;i<data.length;i++){
-            let options = {
+            var options = {
               name:data[i].name,
               value:data[i].sprite_id
             }

@@ -33,8 +33,8 @@ import Cookies from 'js-cookie'
 export default {
   methods:{
     register: function(e){
-      let url = SERVER_API.users;
-      let username = this.$el.querySelector('#username').value;
+      var url = SERVER_API.users;
+      var username = this.$el.querySelector('#username').value;
       if(username === ''){
         this.showError('用户名不能为空');
         return ;
@@ -42,18 +42,18 @@ export default {
         this.showError('用户名过长');
         return ;
       }
-      let password = this.$el.querySelector('#password').value;
+      var password = this.$el.querySelector('#password').value;
       if(password.length < 6){
         this.showError('密码长度过短');
         return;
       }
-      let name = this.$el.querySelector('#name').value;
+      var name = this.$el.querySelector('#name').value;
       if(name === ''){
         this.showError('姓名不能为空');
         return ;
       }
-      let email = this.$el.querySelector('#email').value;
-      let emailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+      var email = this.$el.querySelector('#email').value;
+      var emailReg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
       if(email === ''){
         this.showError('邮箱不能为空');
         return ;
@@ -61,8 +61,8 @@ export default {
         this.showError('请输入正确的邮箱地址');
         return ;
       }
-      let phoneReg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-      let phone = this.$el.querySelector('#phone').value;
+      var phoneReg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      var phone = this.$el.querySelector('#phone').value;
       if(phone === ''){
         this.showError('手机不能为空');
         return ;
@@ -70,19 +70,19 @@ export default {
         this.showError('请输入正确的电话格式');
         return;
       }
-      let location = document.getElementById('location').selectedOptions[0].value;
+      var location = document.getElementById('location').selectedOptions[0].value;
       if(location === ''){
         this.showError('位置不能为空');
         return ;
       }
-      let organization = this.$el.querySelector('#organization').value;
+      var organization = this.$el.querySelector('#organization').value;
       if(organization === ''){
         this.showError('单位不能为空');
         return ;
       }
-      let registerbutton = e.target.parentElement;
+      var registerbutton = e.target.parentElement;
       registerbutton.disabled = true;
-      let options = {
+      var options = {
         'username':username,
         'password':password,
         'name':name,
@@ -92,7 +92,7 @@ export default {
         'organization':organization
       }
       this.$http.post(url,options).then(function(response){     
-        let data = response.data;
+        var data = response.data;
         registerbutton.disabled = false;
         
         if(!data.is_verified){
@@ -100,14 +100,14 @@ export default {
           return;
         }
         
-        let access_token = data.access_token;
-        let username = data.username;
-        let name = data.name;
-        let email = data.email;
-        let phone = data.phone;
-        let location = data.location;
-        let organization = data.organization;
-        let days = 30;
+        var access_token = data.access_token;
+        var username = data.username;
+        var name = data.name;
+        var email = data.email;
+        var phone = data.phone;
+        var location = data.location;
+        var organization = data.organization;
+        var days = 30;
         
         Cookies.set('access_token',access_token);
         Cookies.set('username',username);
@@ -129,14 +129,14 @@ export default {
       window.location.href = '#!/';
     },
     showError: function(msg){
-      let errorContainer = this.$el.querySelector('#error-info');
+      var errorContainer = this.$el.querySelector('#error-info');
       errorContainer.innerHTML = msg;
       errorContainer.style.display = 'block';
     }
   },
   attached() {
     //隐藏error info
-    let errorContainer = this.$el.querySelector('#error-info');
+    var errorContainer = this.$el.querySelector('#error-info');
     errorContainer.style.display = 'none';
     //判断是否为firefox浏览器
     if (navigator.userAgent.indexOf('Firefox') >= 0){ 

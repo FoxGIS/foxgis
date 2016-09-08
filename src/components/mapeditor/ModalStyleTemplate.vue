@@ -80,7 +80,7 @@ export default {
       this.$el.style.display = 'none';
     },
     itemSelect: function(e){
-      let checked = this.$el.querySelector('.item-thumb.checked');
+      var checked = this.$el.querySelector('.item-thumb.checked');
       if(checked){
         checked.className = checked.className.replace(' checked','');
       }
@@ -108,7 +108,7 @@ export default {
       } 
     },
     customTemplate:function(){
-      let styleName = this.$el.querySelector('#style-name').value;
+      var styleName = this.$el.querySelector('#style-name').value;
       $("#template-wizard_panel #template-name").val(styleName);
       $("#template-wizard_panel").show();
       $('#template-wizard_panel .step1').css('display','block');
@@ -134,9 +134,9 @@ export default {
       formData.append('upload', files[0]);
       formData.append('name', name);
       formData.append('replace', replace);
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.templates + '/' + username;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.templates + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
       .then(function(res){
         var data = res.data;
@@ -162,10 +162,10 @@ export default {
         name:name,
         replace:replace
       }
-      let username = this.templateItem.owner;
-      let access_token = Cookies.get('access_token');
+      var username = this.templateItem.owner;
+      var access_token = Cookies.get('access_token');
       var id = this.templateItem.template_id;
-      let url = SERVER_API.templates + '/' + username+'/'+id;
+      var url = SERVER_API.templates + '/' + username+'/'+id;
       this.$http({url:url,method:"PATCH",data:opts,headers:{'x-access-token':access_token}})
       .then(function(res){
         var data = res.data;
@@ -178,7 +178,7 @@ export default {
       if(image){
         formData.append('upload', image);
         this.templateItem.thumb['background-image'] = "url('"+window.URL.createObjectURL(image)+"')";
-        let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
+        var imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
         this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
           var data = res.data;
           var url = data.thumb['background-image'];
@@ -202,7 +202,7 @@ export default {
       $("#edit-template_panel").show();
     },
     imageClick:function(){
-      let fileInput = document.getElementById('template-image');
+      var fileInput = document.getElementById('template-image');
       fileInput.click();
       fileInput.addEventListener('change', this.changeTemplateImage);
     },
@@ -223,10 +223,10 @@ export default {
     },
     deleteAction: function(status){
       if(status === 'ok'){
-        let username = this.templateItem.owner;
-        let access_token = Cookies.get('access_token');
+        var username = this.templateItem.owner;
+        var access_token = Cookies.get('access_token');
         var id = this.deleteTemplateId;
-        let url = SERVER_API.templates + '/' + username+'/'+id;
+        var url = SERVER_API.templates + '/' + username+'/'+id;
         this.$http({url:url,method:"DELETE",headers:{'x-access-token':access_token}})
         .then(function(res){
           if(res.ok){
@@ -245,8 +245,8 @@ export default {
   },
   attached(){
     this.userRole = Cookies.get('role');
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.templates;
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.templates;
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0){

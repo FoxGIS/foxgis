@@ -30,27 +30,27 @@ import commonMethod from '../../components/method.js'
 export default {
   methods: {
     downloadUpload: function(upload_id) {
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
       window.open(url);
     }
   },
 
   computed:{
     displayDataset:function(){
-      let temp = this.dataset;
-      let t=[];
+      var temp = this.dataset;
+      var t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
-        let keyWords = this.searchKeyWords.trim().split(' ');
+        var keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<temp.length;u++){
-          let tileset = temp[u];
-          let num = 0;
+          var tileset = temp[u];
+          var num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w];
+            var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
                   num++;
@@ -69,14 +69,14 @@ export default {
   },
 
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.tilesets + '/' + username;
-    let that = this;
-    let option = {
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.tilesets + '/' + username;
+    var that = this;
+    var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -91,7 +91,7 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         data = data.map(function(d) {
           if (d.filesize / 1024 > 1024) {
             d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB';

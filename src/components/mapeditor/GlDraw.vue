@@ -79,7 +79,7 @@ export default {
   },
   methods:{
     addTriangle:function() {
-      let triangle = {
+      var triangle = {
         "type": "Polygon",
         "coordinates": [[
           [116.23369693756104,40.09381888486939],
@@ -91,10 +91,10 @@ export default {
       this.addPolygon(triangle);
     },
     addPolygon:function(polygon){
-      let featureId = this.draw.add(polygon)[0];
-      let f = ["==","id",featureId];
-      let filter = ["all",["==","$type","Polygon"],f]
-      let layer1 = {
+      var featureId = this.draw.add(polygon)[0];
+      var f = ["==","id",featureId];
+      var filter = ["all",["==","$type","Polygon"],f]
+      var layer1 = {
         id:featureId+"_fill.hot",
         type:"fill",
         filter:filter,
@@ -105,7 +105,7 @@ export default {
           "fill-opacity":0.3
         }
       }
-      let layer2 = {
+      var layer2 = {
         id:featureId+"_fill.cold",
         type:"fill",
         filter:filter,
@@ -116,7 +116,7 @@ export default {
           "fill-opacity":0.3
         }
       }
-      let layer3 = {
+      var layer3 = {
         id:featureId+"_stroke.hot",
         type:"line",
         filter:filter,
@@ -130,7 +130,7 @@ export default {
           "line-width":2
         },
       }
-      let layer4 = {
+      var layer4 = {
         id:featureId+"_stroke.cold",
         type:"line",
         filter:filter,

@@ -122,38 +122,37 @@ import commonMethod from '../../components/method.js'
 export default {
   methods: {
     editScale:function(e, index) {//编辑比例尺
-      let tempUploads = this.displayUploads;
-      let scale = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let upload_id = tempUploads[index].upload_id;
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      var tempUploads = this.displayUploads;
+      var scale = e.target.value;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var upload_id = tempUploads[index].upload_id;
+      var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       tempUploads[index].scale = scale;
       this.$http({url:url,method:'PATCH',data:{'scale':scale},headers: { 'x-access-token': access_token }})
       .then(function(response){
-          let data = response.data;
-          let scale = data.scale;
-          let date = new Date();
-          let days = 30;
-          Cookies.set('scale',scale,{ expires: days });
-          this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
-        },function(response){
-          this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
-        }
-      )
+        var data = response.data;
+        var scale = data.scale;
+        var date = new Date();
+        var days = 30;
+        Cookies.set('scale',scale,{ expires: days });
+        this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
+      },function(response){
+        this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+      })
     },
 
     editLocation: function(e, index) {//编辑制图区域
-      let tempUploads = this.displayUploads;
-      let location = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let upload_id = tempUploads[index].upload_id;
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      var tempUploads = this.displayUploads;
+      var location = e.target.value;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var upload_id = tempUploads[index].upload_id;
+      var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       tempUploads[index].location = location;
       this.$http({url:url,method:'PATCH',data:{'location':location},headers: {'x-access-token':access_token }})
       .then(function(response){
-        let input = $(".location");
+        var input = $(".location");
         for(let i=0;i<input.length;i++){
           input[i].value = this.displayUploads[i].location;
           input[i].blur();
@@ -165,25 +164,25 @@ export default {
     },
 
     editTime: function(e, index) {//编辑制图年份
-      let tempUploads = this.displayUploads;
-      let year = e.target.value;
+      var tempUploads = this.displayUploads;
+      var year = e.target.value;
       if(e.target.value.length == 0){
-        let today=new Date();
-        let year=today.getFullYear();
+        var today=new Date();
+        var year=today.getFullYear();
       }
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let upload_id = tempUploads[index].upload_id;
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var upload_id = tempUploads[index].upload_id;
+      var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       tempUploads[index].year = year;
       this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }})
       .then(function(response){
-        let input = $(".year");
+        var input = $(".year");
         for(let i=0;i<input.length;i++){
           input[i].value = this.displayUploads[i].year;
           input[i].blur();
         }
-        let data = response.data;
+        var data = response.data;
         this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
       },function(response){
         this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
@@ -191,18 +190,18 @@ export default {
     },
 
     editScope: function(e,index){//编辑共享范围
-      let tempUploads = this.displayUploads;
-      let scope = e.target.value;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let upload_id = tempUploads[index].upload_id;
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      var tempUploads = this.displayUploads;
+      var scope = e.target.value;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var upload_id = tempUploads[index].upload_id;
+      var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       tempUploads[index].scope = scope;
       this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
       .then(function(response){
-        let data = response.data;
-        let scope = data.scope;
-        let days = 30;
+        var data = response.data;
+        var scope = data.scope;
+        var days = 30;
         Cookies.set('scope',scope,{ expires: days });
         this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
       },function(response){
@@ -212,7 +211,7 @@ export default {
 
     batchProcess:function(){//显示批量编辑弹框
       //以下判断用户是否有勾选
-      let t = 0;
+      var t = 0;
       for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           t++;
@@ -231,14 +230,14 @@ export default {
         return;
       }
       //获取输入的值，去掉左右两边的空格
-      let tagValue = this.$el.querySelector('#batch-process-dialog #tags-input').value.replace(/^\s+|\s+$/g,"");
-      let locationValue = this.$el.querySelector('#batch-process-dialog #location-input').value.replace(/^\s+|\s+$/g,"");
-      let timeValue = this.$el.querySelector('#batch-process-dialog #year-input').value.replace(/^\s+|\s+$/g,"");
-      let scopeValue = this.$el.querySelector('#batch-process-dialog #scope-select').value.replace(/^\s+|\s+$/g,"");
+      var tagValue = this.$el.querySelector('#batch-process-dialog #tags-input').value.replace(/^\s+|\s+$/g,"");
+      var locationValue = this.$el.querySelector('#batch-process-dialog #location-input').value.replace(/^\s+|\s+$/g,"");
+      var timeValue = this.$el.querySelector('#batch-process-dialog #year-input').value.replace(/^\s+|\s+$/g,"");
+      var scopeValue = this.$el.querySelector('#batch-process-dialog #scope-select').value.replace(/^\s+|\s+$/g,"");
       //新建data对象，存储更改以后的属性值
-      let data = {};
+      var data = {};
       if(tagValue){
-        let tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
+        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
       }
       if(locationValue){
         data.location = locationValue;
@@ -252,14 +251,14 @@ export default {
         data.scope = "public";
       }
 
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let flag = 0;//标记是否有重复主题
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var flag = 0;//标记是否有重复主题
       //循环页面所有选中的选项
       for(let i=0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           if(tags){
-            let newTags = this.displayUploads[i].tags.concat(tags);
+            var newTags = this.displayUploads[i].tags.concat(tags);
             data.tags = [];
             //去除重复的主题词
             for(let j = 0; j < newTags.length; j++) {
@@ -276,11 +275,11 @@ export default {
             this.displayUploads[i].scope = data.scope;
           }
           //向服务器发送Patch请求，更新data对象
-          let upload_id = this.displayUploads[i].upload_id;
-          let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+          var upload_id = this.displayUploads[i].upload_id;
+          var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
           this.$http({url:url,method:'PATCH',data:data,headers: { 'x-access-token': access_token }})
           .then(function(response){
-            let data = response.data;
+            var data = response.data;
             for(let t=0;t<this.displayUploads.length;t++){
               if(this.displayUploads[t].upload_id === data.upload_id){
                 this.displayUploads[t].location = data.location;
@@ -302,15 +301,15 @@ export default {
     },
 
     parseImgURL:function(upload) {//返回缩略图的url
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token;
       return url;
     },
 
     showPreview: function(e, index) {//显示图片预览
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
       document.querySelector('#thumbnail').src = url;
       document.querySelector('.modal').style.display = 'block';
 
@@ -323,9 +322,9 @@ export default {
     },
 
     patchUpload: function(upload_id,data){//更新卡片的某个属性值
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
@@ -337,16 +336,16 @@ export default {
     },
 
     deleteTag: function(pId, tag_id) {//删除主题词
-      let patchTags = this.displayUploads[pId].tags;
-      let upload_id = this.displayUploads[pId].upload_id;
+      var patchTags = this.displayUploads[pId].tags;
+      var upload_id = this.displayUploads[pId].upload_id;
       patchTags.splice(tag_id, 1);
       this.patchUpload(upload_id,{'tags':patchTags});
     },
 
     addTag: function(e, index) {//添加主题词
       if (e.target.value) {
-        let patchUpload = this.displayUploads[index];
-        let upload_id = this.displayUploads[index].upload_id;
+        var patchUpload = this.displayUploads[index];
+        var upload_id = this.displayUploads[index].upload_id;
         if(patchUpload.tags.indexOf(e.target.value)!=-1){
           this.$broadcast('mailSent', { message: '该标签已存在',timeout:3000 });
           return;
@@ -374,22 +373,22 @@ export default {
     },
 
     conditionClick: function(e,type){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
-      let str = e.target.textContent.trim();
+      var str = e.target.textContent.trim();
       str = str.substr(0, str.indexOf('(')).trim();
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none';
         if(type == 3){
-          let index = this.selected_year_tags.indexOf(str);
+          var index = this.selected_year_tags.indexOf(str);
           if(index != -1){
             this.selected_year_tags.splice(index,1);
           }
         }else if(type == 2){
-          let index = this.selected_location_tags.indexOf(str);
+          var index = this.selected_location_tags.indexOf(str);
           if(index != -1){
             this.selected_location_tags.splice(index,1);
           }
         }else if(type === 1){
-          let index = this.selected_theme_tags.indexOf(e.target.textContent.trim());
+          var index = this.selected_theme_tags.indexOf(e.target.textContent.trim());
           if(index != -1){
             this.selected_theme_tags.splice(index,1);
           }
@@ -415,8 +414,8 @@ export default {
       this.deleteUploadId.push(upload_id);
     },
     batchDeleteUpload:function(){//显示批量删除弹框
-      let t = 0;
-      let deleteIds = [];
+      var t = 0;
+      var deleteIds = [];
       for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           deleteIds.push(this.displayUploads[i].upload_id);
@@ -433,11 +432,11 @@ export default {
     },
     deleteAction: function(status) {//删除决策用图
       if (status === 'ok') {
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
         for(let i=0;i<this.deleteUploadId.length;i++){
-          let upload_id = this.deleteUploadId[i];
-          let url = SERVER_API.uploads + '/' + username + "/" + upload_id;
+          var upload_id = this.deleteUploadId[i];
+          var url = SERVER_API.uploads + '/' + username + "/" + upload_id;
           this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
@@ -456,19 +455,19 @@ export default {
     },
 
     downloadUpload: function(upload_id) {//下载决策用图
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        let aLink = document.createElement('a');
+        var aLink = document.createElement('a');
         aLink.className = 'download_link';
-        let text = document.createTextNode('&nbsp;');
+        var text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -476,22 +475,22 @@ export default {
     },
 
     uploadNameChange: function(e,index){//修改图片名称
-      let value = e.target.value;
-      let upload_id = this.displayUploads[index].upload_id;
+      var value = e.target.value;
+      var upload_id = this.displayUploads[index].upload_id;
       this.patchUpload(upload_id,{'name':value});
     }
 
   },
 
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       return;
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.uploads + '/' + username;
-    let that = this;
-    let option = {
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.uploads + '/' + username;
+    var that = this;
+    var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
       pick:'#picker',//绑定的选择按钮
@@ -515,7 +514,7 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         data = data.map(function(d) {
           if (d.size / 1024 > 1024) {
             d.size = (d.size / 1048576).toFixed(2) + 'MB';
@@ -537,18 +536,18 @@ export default {
 
   computed: {
     total_items: function (){//返回uploads数组的数量
-      let count = this.displayUploads.length;
-      let allCount = this.uploads.length;
+      var count = this.displayUploads.length;
+      var allCount = this.uploads.length;
       this.$dispatch("upload_nums", allCount);
       return count;
     },
 
     displayUploads: function(){//返回满足筛选条件的uploads数组
-      let temp = [];
-      let temp1 = [];
-      let temp2 = [];
-      let temp3 = [];
-      let tempUploads = this.uploads;
+      var temp = [];
+      var temp1 = [];
+      var temp2 = [];
+      var temp3 = [];
+      var tempUploads = this.uploads;
       if(this.searchUploads.length>0){
         tempUploads = this.searchUploads;
       }
@@ -563,9 +562,9 @@ export default {
 
       if(this.selected_theme_tags.length>0){
         for(let k=0;k<this.selected_theme_tags.length;k++){
-          let conditions = this.selected_theme_tags[k];
+          var conditions = this.selected_theme_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(upload.tags.length>0){
               for(let i=0;i<upload.tags.length;i++){
                 if(conditions === upload.tags[i]&&temp1.indexOf(upload) === -1){
@@ -579,9 +578,9 @@ export default {
       }
       if(this.selected_year_tags.length>0){
         for(let k=0;k<this.selected_year_tags.length;k++){
-          let conditions = this.selected_year_tags[k];
+          var conditions = this.selected_year_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(conditions === upload.year&&temp2.indexOf(upload) === -1){
               temp2.push(upload);
             }
@@ -590,9 +589,9 @@ export default {
       }
       if(this.selected_location_tags.length>0){
         for(let k=0;k<this.selected_location_tags.length;k++){
-          let conditions = this.selected_location_tags[k];
+          var conditions = this.selected_location_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(conditions === upload.location&&temp3.indexOf(upload) === -1){
               temp3.push(upload);
             }
@@ -658,8 +657,8 @@ export default {
         }
       }
       if(temp.length===0){
-        let data1 = [];
-        let data2 = [];
+        var data1 = [];
+        var data2 = [];
         for(let i=0;i<this.location_tags.length;i++){
           data1.push(this.location_tags[i].data);
         }
@@ -674,9 +673,9 @@ export default {
     },
 
     theme_tags: function(){//返回已选的“主题词”数组
-      let theme = [];
-      let k=0;
-      let tempUploads = this.uploads;
+      var theme = [];
+      var k=0;
+      var tempUploads = this.uploads;
       if(this.searchKeyWords.trim().length>0){
         if(this.searchUploads.length>0){
           tempUploads = this.searchUploads;
@@ -709,9 +708,9 @@ export default {
     },
 
     year_tags: function(){//返回已选的“制图年份”数组
-      let year = [];
-      let data = [];
-      let tempUploads = this.uploads;
+      var year = [];
+      var data = [];
+      var tempUploads = this.uploads;
       if(this.searchKeyWords.trim().length>0){
         if(this.searchUploads.length>0){
           tempUploads = this.searchUploads;
@@ -727,11 +726,11 @@ export default {
       for(let i=0;i<tempUploads.length;i++){
         year.push(tempUploads[i].year);
       }
-      let tempYear = year;
+      var tempYear = year;
       year = _.uniq(year).sort();
       for(let j=0;j<year.length;j++){
-        let temp = year[j];
-        let num = 0;
+        var temp = year[j];
+        var num = 0;
         for(let k=0;k<tempYear.length;k++){
           if(temp === tempYear[k]){
             num++;
@@ -748,9 +747,9 @@ export default {
     },
 
     location_tags: function(){//返回已选的“制图区域”数组
-      let location = [];
-      let data = [];
-      let tempUploads = this.uploads;
+      var location = [];
+      var data = [];
+      var tempUploads = this.uploads;
       if(this.searchKeyWords.trim().length>0){
         if(this.searchUploads.length>0){
           tempUploads = this.searchUploads;
@@ -768,11 +767,11 @@ export default {
           location.push(tempUploads[i].location);
         }
       }
-      let tempLocation = location;
+      var tempLocation = location;
       location = _.uniq(location);
       for(let j=0;j<location.length;j++){
-        let temp = location[j];
-        let num = 0;
+        var temp = location[j];
+        var num = 0;
         for(let k=0;k<tempLocation.length;k++){
           if(temp === tempLocation[k]){
             num++;
@@ -789,15 +788,15 @@ export default {
     },
 
     searchUploads: function(){
-      let temp = [];
+      var temp = [];
       if(this.searchKeyWords != ''){
-        let keyWords = this.searchKeyWords.trim().split(' ');
+        var keyWords = this.searchKeyWords.trim().split(' ');
         keyWords = _.uniq(keyWords);
         for(let u=0;u<this.uploads.length;u++){
-          let upload = this.uploads[u];
-          let num = 0;
+          var upload = this.uploads[u];
+          var num = 0;
           for(let w=0;w<keyWords.length;w++){
-            let keyWord = keyWords[w];
+            var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
               if(upload.name&&upload.name.indexOf(keyWord)!=-1 || upload.location&&upload.location.indexOf(keyWord)!=-1 || upload.year&&upload.year.toString().indexOf(keyWord)!=-1){
                   num++;

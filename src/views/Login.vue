@@ -29,28 +29,28 @@ import Cookies from 'js-cookie'
 export default {
   methods:{
     login: function(e){
-      let url = SERVER_API.users;
-      let loginbutton = e.target.parentElement;
+      var url = SERVER_API.users;
+      var loginbutton = e.target.parentElement;
       loginbutton.disabled = true;
-      let username = this.$el.querySelector('#username').value;
-      let password = this.$el.querySelector('#password').value;
+      var username = this.$el.querySelector('#username').value;
+      var password = this.$el.querySelector('#password').value;
       url += '/'+username;
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
         loginbutton.disabled = false;
-        let data = response.data;
+        var data = response.data;
         if(!data.is_verified){
           this.showError('用户未认证，请联系管理员');
           return;
         }
-        let access_token = data.access_token;
-        let username = data.username;
-        let name = data.name;
-        let email = data.email;
-        let phone = data.phone;
-        let organization = data.organization;
-        let location = data.location;
-        let role = data.role;
-        let days = 0;
+        var access_token = data.access_token;
+        var username = data.username;
+        var name = data.name;
+        var email = data.email;
+        var phone = data.phone;
+        var organization = data.organization;
+        var location = data.location;
+        var role = data.role;
+        var days = 0;
 
         Cookies.set('access_token',access_token);
         Cookies.set('username',username);
@@ -82,14 +82,14 @@ export default {
     },
     
     showError: function(msg){
-      let errorContainer = this.$el.querySelector('#error-info');
+      var errorContainer = this.$el.querySelector('#error-info');
       errorContainer.innerHTML = msg;
       errorContainer.style.display = 'block';
     }
   },
   attached() {
     //隐藏error info
-    let errorContainer = this.$el.querySelector('#error-info');
+    var errorContainer = this.$el.querySelector('#error-info');
     errorContainer.style.display = 'none';
   }
 }

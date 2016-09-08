@@ -19,7 +19,7 @@ export default {
   methods: {
     'styleCodeChange': function(e){
       var style = JSON.parse(e.target.value);
-      let styleError = validate(style);
+      var styleError = validate(style);
       if(styleError.length > 0){
         return;
       }
@@ -29,7 +29,7 @@ export default {
   watch: {
     style: {
       handler(style,oldStyle){
-        let stylecode = this.$el.querySelector("#code");
+        var stylecode = this.$el.querySelector("#code");
         var styleValue = JSON.stringify(style,null,2);
         stylecode.value = styleValue;
       },

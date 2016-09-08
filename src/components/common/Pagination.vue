@@ -21,12 +21,12 @@ export default {
         this.$dispatch("getAtlasHttpData",this.show_page_num);
         return;
       }
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
+      var allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
         return;
       }
       this.pageConfig.current_page += 1;
-      let activeCards = this.$parent.$el.querySelector('.active');
+      var activeCards = this.$parent.$el.querySelector('.active');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');
       }//去掉active card
@@ -40,7 +40,7 @@ export default {
         return;
       }
       this.pageConfig.current_page -= 1;
-      let activeCards = this.$parent.$el.querySelector('.active');
+      var activeCards = this.$parent.$el.querySelector('.active');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');
       }//去掉active card
@@ -53,7 +53,7 @@ export default {
       if(this.type === 'atlas'){
         this.pageConfig.current_page = page+this.pageConfig.first_page;
       }else{
-        let activeCards = this.$parent.$el.querySelector('.active');
+        var activeCards = this.$parent.$el.querySelector('.active');
         if(activeCards){
           activeCards.className = activeCards.className.replace(' active','');
         }//去掉active card
@@ -63,11 +63,11 @@ export default {
   },
   computed: {
     show_page_num: function (){
-      let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num);
+      var cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
         this.pageConfig.current_page = cop_page_num;
       }
-      let num = 5;
+      var num = 5;
       if(this.type === 'atlas'){
         num = 10;
       }

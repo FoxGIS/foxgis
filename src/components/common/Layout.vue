@@ -58,7 +58,7 @@ export default {
   },
   attached: function() {
     //判断是否登陆
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username !== undefined){
       this.username = username;
     }

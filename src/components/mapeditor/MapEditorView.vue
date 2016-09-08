@@ -50,8 +50,8 @@ export default {
   methods: {
     // 地图点击 弹出info
     mapClick: function(e){
-      let infoContainer = document.getElementById('info-container');
-      let features = this.map.queryRenderedFeatures(e.point);
+      var infoContainer = document.getElementById('info-container');
+      var features = this.map.queryRenderedFeatures(e.point);
 
       if(features.length>0){
         infoContainer.style.display = 'block';
@@ -62,7 +62,7 @@ export default {
     },
     // info 中的layer click
     infoLayerClick: function(e){
-      let layerId = e.currentTarget.querySelector('span').textContent;
+      var layerId = e.currentTarget.querySelector('span').textContent;
       // 通知父组件 改变图层属性窗口中展现的layer
       this.$dispatch('current-layer-change',layerId);
     },
@@ -75,11 +75,11 @@ export default {
     },
     //拖动时 改变bound
     dragresizemove: function(e){
-      let controlBox = document.getElementById("location-control");
-      let mapBound = this.mapBound;
-      let boxBound = controlBox.getBoundingClientRect();
-      let name = this.controlBound.dragButton;
-      let map = this.map;
+      var controlBox = document.getElementById("location-control");
+      var mapBound = this.mapBound;
+      var boxBound = controlBox.getBoundingClientRect();
+      var name = this.controlBound.dragButton;
+      var map = this.map;
       if(name.indexOf("dragresize-lt")!=-1){
         this.controlBound.nw = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top]);
       }else if(name.indexOf("dragresize-rt")!=-1){
@@ -117,13 +117,13 @@ export default {
     boxDragMove: function(e){
       var dx = e.layerX - this.drag.dragstartx;
       var dy = e.layerY - this.drag.dragstarty;
-      let controlBox = document.getElementById("location-control");
-      let mapBound = this.mapBound;
-      let boxBound = controlBox.getBoundingClientRect();
-      let newleft = boxBound.left - mapBound.left + dx;
-      let newtop = boxBound.top - mapBound.top + dy;
-      let newright = boxBound.left + boxBound.width - mapBound.left + dx;
-      let newbottom = boxBound.top + boxBound.height - mapBound.top + dy;
+      var controlBox = document.getElementById("location-control");
+      var mapBound = this.mapBound;
+      var boxBound = controlBox.getBoundingClientRect();
+      var newleft = boxBound.left - mapBound.left + dx;
+      var newtop = boxBound.top - mapBound.top + dy;
+      var newright = boxBound.left + boxBound.width - mapBound.left + dx;
+      var newbottom = boxBound.top + boxBound.height - mapBound.top + dy;
 
       this.controlBound.nw = this.map.unproject([newleft, newtop]);
       this.controlBound.se = this.map.unproject([newright,newbottom]);
@@ -151,11 +151,11 @@ export default {
         controlBox.style.width = prb.x - plt.x + 'px';
         controlBox.style.height = prb.y - plt.y + 'px';
       }
-      let center = this.map.getCenter();
-      let zoom = this.map.getZoom();
+      var center = this.map.getCenter();
+      var zoom = this.map.getZoom();
       this.localStyle.center = [center.lng,center.lat];
       this.localStyle.zoom = zoom;
-      let data = JSON.parse(JSON.stringify(this.localStyle));
+      var data = JSON.parse(JSON.stringify(this.localStyle));
       this.changeStyle(data);
     },
     mapDragStart: function(e){
@@ -163,21 +163,21 @@ export default {
       this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top;
     },
     mapDrag: function(){
-      let controlBox = document.getElementById("location-control");
+      var controlBox = document.getElementById("location-control");
       if(controlBox.style.display === 'block'){
         var plt = this.map.project(this.controlBound.nw);
         var prb = this.map.project(this.controlBound.se);
         controlBox.style.left = plt.x + 'px';
         controlBox.style.top = plt.y + 'px';
       }else{
-        let infoContainer = document.getElementById('info-container');
+        var infoContainer = document.getElementById('info-container');
         infoContainer.style.display = 'none';
       }
     },
     mapDragEnd: function(){
-      let center = this.map.getCenter();
+      var center = this.map.getCenter();
       this.localStyle.center = [center.lng,center.lat];
-      let data = JSON.parse(JSON.stringify(this.localStyle));
+      var data = JSON.parse(JSON.stringify(this.localStyle));
       this.changeStyle(data);
     },
     hideBoundsBox: function(){
@@ -187,13 +187,13 @@ export default {
       box.style.display = 'none';
     },
     closeInfoContainer: function(){
-      let info = this.$el.querySelector("#info-container");
+      var info = this.$el.querySelector("#info-container");
       info.style.display = 'none';
     },
     'mapInit': function(style){
       this.localStyle = JSON.parse(JSON.stringify(style));
       mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA';
-      let map = new mapboxgl.Map({
+      var map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
         attributionControl: false
@@ -206,11 +206,11 @@ export default {
       map.on('zoomend',this.mapZoomEnd);
     },
     patchStyle: function(style){
-      let style_id = style.style_id;
-      let username = Cookies.get('username');
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.styles + '/' + username + '/' + style_id;
-      let data = JSON.stringify(style);
+      var style_id = style.style_id;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.styles + '/' + username + '/' + style_id;
+      var data = JSON.stringify(style);
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
@@ -290,7 +290,7 @@ export default {
       this.changeStyle(this.localStyle);
     },
     'show-bounds-box': function(bounds){
-      let controlBox = document.getElementById("location-control");
+      var controlBox = document.getElementById("location-control");
       controlBox.style.display = 'block';
       //如果没有传入bounds，bounds的地理位置则有其css决定
       if(bounds === undefined){
@@ -301,7 +301,7 @@ export default {
         controlBox.style.left = '8px';
         controlBox.style.width = (right_top.x-16)+'px';
         controlBox.style.height = (left_bottom.y-16)+'px';
-        let mapBound = this.mapBound;
+        var mapBound = this.mapBound;
         var boxBound = controlBox.getBoundingClientRect();
         this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top]);
         this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top]);
@@ -315,7 +315,7 @@ export default {
       this.map.on('zoomend',this.mapZoomEnd);
 
       this.map.off('click', this.mapClick);
-      let infoContainer = document.getElementById('info-container');
+      var infoContainer = document.getElementById('info-container');
       infoContainer.style.display = 'none';
     },
     'hide-bounds-box': function(){
@@ -324,8 +324,8 @@ export default {
   },
   computed: {
     mapBound: function(){
-      let mapcontainer = this.map.getContainer();
-      let bound = mapcontainer.getBoundingClientRect();
+      var mapcontainer = this.map.getContainer();
+      var bound = mapcontainer.getBoundingClientRect();
       return bound;
     }
   },
@@ -348,7 +348,7 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
-        let controlBox = document.getElementById("location-control");
+        var controlBox = document.getElementById("location-control");
         var plt = this.map.project(this.controlBound.nw);
         var prb = this.map.project(this.controlBound.se);
         controlBox.style.left = plt.x + 'px';
@@ -365,7 +365,7 @@ export default {
           return;
         }
         this.localStyle = JSON.parse(JSON.stringify(style));
-        let comds = diff(oldStyle,style);
+        var comds = diff(oldStyle,style);
         for(var i=0,length=comds.length;i<length;i++){
           switch(comds[i].command){
             case 'setPaintProperty':

@@ -54,21 +54,21 @@ import Cookies from 'js-cookie'
 import echarts from 'echarts'
 export default {
   attached() {
-    let access_token = Cookies.get('access_token');
-    let username = Cookies.get('username');
+    var access_token = Cookies.get('access_token');
+    var username = Cookies.get('username');
     if(username === undefined){
       window.location.href = "#!/login";
     }
-    let url = SERVER_API.stats + '/uploads';
-    let that = this;
+    var url = SERVER_API.stats + '/uploads';
+    var that = this;
       //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
-        let messages = [];
-        let xData = [];
-        let yData=[];
+        var data = response.data;
+        var messages = [];
+        var xData = [];
+        var yData=[];
         for(let i=0;i<data.length;i++){
         	if(data[i].location){
         		messages.push({"name":data[i].location,"total":data[i].total});
@@ -91,7 +91,7 @@ export default {
         this.uploadInfo = messages;
 
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('stats-chart'));
+        var myChart = echarts.init(document.getElementById('stats-chart'));
         // 绘制图表
         myChart.setOption({
             title: { text: '用户上传饼图',x:'center' },
@@ -114,12 +114,12 @@ export default {
       console.log(response)
     });
 
-    let mapDownloadUrl = SERVER_API.stats + '/filedownloads';
+    var mapDownloadUrl = SERVER_API.stats + '/filedownloads';
     this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
-        let messages = [];
+        var data = response.data;
+        var messages = [];
         for(let i=0;i<data.length;i++){
         	messages.push({"name":data[i].name,"downloadNum":data[i].downloadNum});
         }
@@ -129,12 +129,12 @@ export default {
       console.log(response)
     });
 
-    let userDownloadUrl = SERVER_API.stats + '/userdownloads'
+    var userDownloadUrl = SERVER_API.stats + '/userdownloads'
     this.$http({ url: userDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
-        let messages = [];
+        var data = response.data;
+        var messages = [];
         for(let i=0;i<data.length;i++){
         	if(data[i].organization){
         		messages.push({"name":data[i].organization,"downloadNum":data[i].downloadNum});

@@ -138,14 +138,14 @@ export default {
   },
   events:{
     "getAtlasHttpData":function(show_page_num){//“下一页”按钮的点击方法
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
-      let that = this;
+      var allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
+      var that = this;
       if(this.pageConfig.current_page === allPages){
         this.searchKeyWords = document.getElementById("search").value.trim();
         if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return;
         }
-        let url = '';
-        let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
+        var url = '';
+        var skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
         if(this.pageConfig.skip === skip){
           return;
         }else{
@@ -162,7 +162,7 @@ export default {
             } else {
               d.size = (d.size / 1024).toFixed(2) + 'KB';
             }
-            let date = new Date(d.createdAt);
+            var date = new Date(d.createdAt);
             d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
             return d;
           })
@@ -196,10 +196,10 @@ export default {
       this.pageConfig.page_item_num = 8;
       this.pageConfig.current_page = 1;
       this.pageConfig.first_page = 1;
-      let that = this;
-      let url = '';
+      var that = this;
+      var url = '';
       if(this.searchKeyWords.length>0){
-        let search = this.searchKeyWords;
+        var search = this.searchKeyWords;
         url = SERVER_API.uploads + '?search='+search+'&limit='+this.requestCounts+'&sort=-updatedAt';
       }else{
         url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt';
@@ -211,7 +211,7 @@ export default {
           } else {
             d.size = (d.size / 1024).toFixed(2) + 'KB';
           }
-          let date = new Date(d.createdAt);
+          var date = new Date(d.createdAt);
           d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
           return d;
         })
@@ -232,15 +232,15 @@ export default {
     },
 
     getHttpData: function(url,callback){
-      let username = Cookies.get('username');
+      var username = Cookies.get('username');
       if(!username){
         return ;
       }
-      let access_token = Cookies.get('access_token');
+      var access_token = Cookies.get('access_token');
       //获取数据列表
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        let data = response.data;
+        var data = response.data;
         callback(data);
       }, function(response) {
         this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
@@ -248,9 +248,9 @@ export default {
     },
 
     showPreview: function(e, index) {//显示图片预览
-      let username = this.displayUploads[index].owner;
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
+      var username = this.displayUploads[index].owner;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
       document.querySelector('#thumbnail').src = url;
       document.querySelector('.modal').style.display = 'block';
     },
@@ -261,7 +261,7 @@ export default {
       }
     },
     showMore:function(e){//隐藏或显示“标签”的“更多”按钮
-      let $item = $(e.target).parent(".more").prev();
+      var $item = $(e.target).parent(".more").prev();
       if(e.target.innerHTML==="更多"){
         $item.css({
           "max-height":"120px",
@@ -282,22 +282,22 @@ export default {
       this.pageConfig.page_item_num = 8;    
       this.pageConfig.current_page = 1;
       this.pageConfig.first_page = 1;
-      let str = e.target.textContent.trim();
+      var str = e.target.textContent.trim();
       str = str.substr(0, str.indexOf('(')).trim();
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none';
         if(type == 3){
-          let index = this.selected_year_tags.indexOf(str);
+          var index = this.selected_year_tags.indexOf(str);
           if(index != -1){
             this.selected_year_tags.splice(index,1);
           }
         }else if(type == 2){
-          let index = this.selected_location_tags.indexOf(str);
+          var index = this.selected_location_tags.indexOf(str);
           if(index != -1){
             this.selected_location_tags.splice(index,1);
           }
         }else if(type === 1){
-          let index = this.selected_theme_tags.indexOf(e.target.textContent.trim());
+          var index = this.selected_theme_tags.indexOf(e.target.textContent.trim());
           if(index != -1){
             this.selected_theme_tags.splice(index,1);
           }
@@ -323,25 +323,25 @@ export default {
     },
 
     parseImgURL:function(upload) {//返回缩略图的url
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + upload.owner + '/' + upload.upload_id + '/' + 'mini_thumbnail' + '?access_token=' + access_token;
       return url;
     },
 
     downloadUpload: function(e,index) {//下载方法
-      let username = this.displayUploads[index].owner;
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token;
+      var username = this.displayUploads[index].owner;
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '/' + username + '/' + this.displayUploads[index].upload_id + '/file?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        let aLink = document.createElement('a');
+        var aLink = document.createElement('a');
         aLink.className = 'download_link';
-        let text = document.createTextNode('&nbsp;');
+        var text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -349,18 +349,18 @@ export default {
     },
 
     getNewUploads:function(){//选中“制图区域”和“制图年份”后重新请求数据的方法
-      let username = Cookies.get('username');
+      var username = Cookies.get('username');
       if(!username){
         return ;
       }
-      let access_token = Cookies.get('access_token');
-      let url = SERVER_API.uploads + '?';
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '?';
       if(this.searchKeyWords.length>0){
-        let search = this.searchKeyWords;
+        var search = this.searchKeyWords;
         url = url+'&search='+search;
       }
       if(this.selected_year_tags.length>0){
-        let yTags = [];
+        var yTags = [];
         for(let i=0;i<this.selected_year_tags.length;i++){
           if(this.selected_year_tags[i]==="未指定"){
             yTags.push("null");
@@ -371,7 +371,7 @@ export default {
         url = url+"&year="+yTags.toString();
       }
       if(this.selected_location_tags.length>0){
-        let lTags = [];
+        var lTags = [];
         for(let j=0;j<this.selected_location_tags.length;j++){
           if(this.selected_location_tags[j]==="未指定"){
             lTags.push("null");
@@ -385,19 +385,19 @@ export default {
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
         if (response.data.length > 0) {
-          let data = response.data;
+          var data = response.data;
           data = data.map(function(d) {
             if (d.size / 1024 > 1024) {
               d.size = (d.size / 1048576).toFixed(2) + 'MB';
             } else {
               d.size = (d.size / 1024).toFixed(2) + 'KB';
             }
-            let date = new Date(d.createdAt);
+            var date = new Date(d.createdAt);
             d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
             return d;
           })
-          let temp= [];
-          let flag = 0;//0表示uploads里没有，1表示已经有了
+          var temp= [];
+          var flag = 0;//0表示uploads里没有，1表示已经有了
           for(let m = 0;m<data.length;m++){
             for(let n = 0;n<this.uploads.length;n++){
               if(data[m].upload_id === this.uploads[n].upload_id){
@@ -425,25 +425,25 @@ export default {
     
   },
   attached() {
-    let username = Cookies.get('username');
+    var username = Cookies.get('username');
     if(username === undefined){
       window.location.href = "#!/login";
     }
-    let access_token = Cookies.get('access_token');
-    let url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt';
-    let that = this;
+    var access_token = Cookies.get('access_token');
+    var url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt';
+    var that = this;
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         data = data.map(function(d) {
           if (d.size / 1024 > 1024) {
             d.size = (d.size / 1048576).toFixed(2) + 'MB';
           } else {
             d.size = (d.size / 1024).toFixed(2) + 'KB';
           }
-          let date = new Date(d.createdAt);
+          var date = new Date(d.createdAt);
           d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
           return d;
         })
@@ -462,11 +462,11 @@ export default {
     });
 
     //获取制图区域统计信息
-    let locationUrl = SERVER_API.stats+"/location";
+    var locationUrl = SERVER_API.stats+"/location";
     this.$http({ url: locationUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         for(let i=0;i<data.length;i++){
           if(!data[i].location){
             data[i].location = "未指定";
@@ -479,11 +479,11 @@ export default {
     });
 
     //获取制图年份统计信息
-    let yearUrl = SERVER_API.stats+"/year";
+    var yearUrl = SERVER_API.stats+"/year";
     this.$http({ url: yearUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        let data = response.data;
+        var data = response.data;
         for(let i=0;i<data.length;i++){
           if(!data[i].year){
             data[i].year = "未指定";
@@ -499,16 +499,16 @@ export default {
 
   computed: {//计算属性
     total_items: function (){
-      let count = this.displayUploads.length;   
+      var count = this.displayUploads.length;   
       return count;
     },
      
     displayUploads: function(){
-      let temp = [];
-      let temp1 = [];
-      let temp2 = [];
-      let temp3 = [];
-      let tempUploads = this.uploads;
+      var temp = [];
+      var temp1 = [];
+      var temp2 = [];
+      var temp3 = [];
+      var tempUploads = this.uploads;
 
       if(this.selected_theme_tags.length===0 && this.selected_year_tags.length===0 && this.selected_location_tags.length===0){
         return tempUploads.slice(0);
@@ -516,9 +516,9 @@ export default {
 
       if(this.selected_theme_tags.length>0){
         for(let k=0;k<this.selected_theme_tags.length;k++){
-          let conditions = this.selected_theme_tags[k];
+          var conditions = this.selected_theme_tags[k];
           for(let u=0,length=tempUploads.length;u<length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(upload.tags.length>0){
               for(let i=0;i<upload.tags.length;i++){
                 if(conditions === upload.tags[i]&&temp1.indexOf(upload) === -1){
@@ -532,9 +532,9 @@ export default {
       }
       if(this.selected_year_tags.length>0){
         for(let k=0;k<this.selected_year_tags.length;k++){
-          let conditions = this.selected_year_tags[k];
+          var conditions = this.selected_year_tags[k];
           for(let u=0;u<tempUploads.length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(conditions === upload.year&&temp2.indexOf(upload) === -1){
               temp2.push(upload);
             }
@@ -543,9 +543,9 @@ export default {
       }
       if(this.selected_location_tags.length>0){
         for(let k=0;k<this.selected_location_tags.length;k++){
-          let conditions = this.selected_location_tags[k];
+          var conditions = this.selected_location_tags[k];
           for(let u=0;u<tempUploads.length;u++){
-            let upload = tempUploads[u];
+            var upload = tempUploads[u];
             if(conditions === upload.location&&temp3.indexOf(upload) === -1){
               temp3.push(upload);
             }
@@ -574,8 +574,8 @@ export default {
     },
 
     theme_tags: function(){
-      let theme = [];
-      let tempUploads = this.uploads;
+      var theme = [];
+      var tempUploads = this.uploads;
       for(let i=0;i<tempUploads.length;i++){
         if(tempUploads[i].tags.length>0){
           for(let j=0;j<tempUploads[i].tags.length;j++){

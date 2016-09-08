@@ -13,7 +13,7 @@ export default {
       if($("#svg-wrap iframe").length > 0){
         return;
       }else{
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.setAttribute('id',"fatherSVG");
         iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html");
         iframe.setAttribute('style',"width: 100%; height: 100%;");
@@ -21,11 +21,11 @@ export default {
       }
     },
     "map-layout":function(option){
-      let options = JSON.stringify(option);
-      let iframe = document.getElementById("fatherSVG");
-      let src = "./static/svgedit/editor/embedapi.html?options="+options;
+      var options = JSON.stringify(option);
+      var iframe = document.getElementById("fatherSVG");
+      var src = "./static/svgedit/editor/embedapi.html?options="+options;
       if(!iframe){
-        let iframe = document.createElement("iframe");
+        var iframe = document.createElement("iframe");
         iframe.setAttribute('id',"fatherSVG");
         iframe.setAttribute('src',src);
         iframe.setAttribute('style',"width: 100%; height: 100%;");
