@@ -113,17 +113,7 @@
         </div>
       </div>
     
-      <div id="pagination" v-show="displayUploads.length>0?true:false">
-        <ul>
-          <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
-            <span><i class="material-icons">navigate_before</i></span>
-          </li>
-          <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-          <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
-            <span><i class="material-icons">navigate_next</i></span>
-          </li>
-        </ul>
-      </div>
+      <foxgis-pagination v-show="displayUploads.length>0?true:false" :type="'atlas'" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
   
       <div class="modal" @click="hidePreview">
         <div class="image-container" >
@@ -132,7 +122,6 @@
       </div>
 
       <div class="modal2"></div>
-
     </div>
   </foxgis-layout>
 </div>
@@ -146,6 +135,58 @@ import util from '../components/util.js'
 export default {
   el() {
     return '#searchButton';
+  },
+  events:{
+    "getAtlasHttpData":function(show_page_num){//“下一页”按钮的点击方法
+      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
+      let that = this;
+      if(this.pageConfig.current_page === allPages){
+        this.searchKeyWords = document.getElementById("search").value.trim();
+        if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return;
+        }
+        let url = '';
+        let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
+        if(this.pageConfig.skip === skip){
+          return;
+        }else{
+          this.pageConfig.skip = skip;
+        }
+        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt';
+        this.getHttpData(url,function(data){
+          if(data.length===0){
+            return;
+          }
+          data = data.map(function(d) {
+            if (d.size / 1024 > 1024) {
+              d.size = (d.size / 1048576).toFixed(2) + 'MB';
+            } else {
+              d.size = (d.size / 1024).toFixed(2) + 'KB';
+            }
+            let date = new Date(d.createdAt);
+            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            return d;
+          })
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              data[i].location = "未指定";
+            }
+            if(!data[i].year){
+              data[i].year = "未指定";
+            }
+          }
+          that.uploads = _.concat(that.uploads,data);
+          that.pageConfig.current_page += 1;
+          if(that.pageConfig.current_page > show_page_num){
+            that.pageConfig.first_page +=1;
+          }
+        })
+      }else{
+        this.pageConfig.current_page += 1;
+        if(this.pageConfig.current_page > show_page_num){
+          this.pageConfig.first_page +=1;
+        }
+      }
+    }
   },
   methods: {
     search: function(){//获取数据，每次请求80个数据
@@ -306,70 +347,6 @@ export default {
       } 
     },
 
-    prePage: function (event) {//“上一页”按钮的点击方法
-      if(this.pageConfig.current_page === 1){
-        return;
-      }
-      this.pageConfig.current_page -= 1;
-      if(this.pageConfig.current_page < this.pageConfig.first_page){
-        this.pageConfig.first_page -=1;
-      }
-    },
-    
-    setPage: function (page) {//“页码”的点击方法
-      this.pageConfig.current_page = page+this.pageConfig.first_page;
-    },
-
-    nextPage: function (event) {//“下一页”按钮的点击方法
-      let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
-      let that = this;
-      if(this.pageConfig.current_page === allPages){
-        this.searchKeyWords = document.getElementById("search").value.trim();
-        if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return;
-        }
-        let url = '';
-        let skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
-        if(this.pageConfig.skip === skip){
-          return;
-        }else{
-          this.pageConfig.skip = skip;
-        }
-        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt';
-        this.getHttpData(url,function(data){
-          if(data.length===0){
-            return;
-          }
-          data = data.map(function(d) {
-            if (d.size / 1024 > 1024) {
-              d.size = (d.size / 1048576).toFixed(2) + 'MB';
-            } else {
-              d.size = (d.size / 1024).toFixed(2) + 'KB';
-            }
-            let date = new Date(d.createdAt);
-            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-            return d;
-          })
-          for(let i=0;i<data.length;i++){
-            if(!data[i].location){
-              data[i].location = "未指定";
-            }
-            if(!data[i].year){
-              data[i].year = "未指定";
-            }
-          }
-          that.uploads = _.concat(that.uploads,data);
-          that.pageConfig.current_page += 1;
-          if(that.pageConfig.current_page > that.show_page_num){
-            that.pageConfig.first_page +=1;
-          }
-        })
-      }else{
-        this.pageConfig.current_page += 1;
-        if(this.pageConfig.current_page > this.show_page_num){
-          this.pageConfig.first_page +=1;
-        }
-      }
-    },
     getNewUploads:function(){//选中“制图区域”和“制图年份”后重新请求数据的方法
       let username = Cookies.get('username');
       if(!username){
@@ -520,14 +497,6 @@ export default {
   },
 
   computed: {//计算属性
-    show_page_num: function (){
-      let cop_page_num = Math.ceil(this.total_items / this.pageConfig.page_item_num);
-      if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
-        this.pageConfig.current_page = cop_page_num;
-      }
-      return cop_page_num > 10 ? 10 : cop_page_num;
-    },
-     
     total_items: function (){
       let count = this.displayUploads.length;   
       return count;
@@ -896,57 +865,6 @@ span.delete-badge{
   clear: both;
   display: block;
   margin: 0 auto;
-}
-
-#pagination {
-  text-align: center;
-  display: block;
-  margin-top: auto;
-}
-
-#pagination li.disabled {
-  color: #9c9696;
-}
-
-#pagination .material-icons {
-  vertical-align: middle;
-}
-
-#pagination ul {
-  padding: 10px;
-  display: inline-block;
-}
-
-#pagination li {
-  display: inline-block;
-  margin: 0 10px;
-  list-style-type: disc;
-  cursor: pointer;
-}
-
-#pagination li:not(.page-active):hover {
-  background-color: #eaa5bd;
-  font-weight: bold;
-}
-
-#pagination li.page-active {
-  background-color: #ff4081;
-  font-weight: bolder;
-}
-
-#pagination li span {
-  padding: 6px;
-  line-height: 30px;
-  font-size: 1.2em;
-}
-
-#page-pre {
-  margin-right: 10px;
-}
-
-#page-next {
-  margin-left: 10px;
-  vertical-align: middle;
 }
 
 .condition{

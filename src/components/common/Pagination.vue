@@ -14,9 +14,13 @@
 
 <script>
 export default {
-  props:['pageConfig','total_items'],
+  props:['pageConfig','total_items','type'],
   methods: {
     nextPage: function (event) {//下一页点击事件
+      if(this.type === 'atlas'){
+        this.$dispatch("getAtlasHttpData",this.show_page_num);
+        return;
+      }
       let allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
       if(this.pageConfig.current_page === allPages){
         return;
@@ -46,11 +50,15 @@ export default {
     },
 
     setPage: function (page) {//页码点击事件
-      let activeCards = this.$parent.$el.querySelector('.active');
-      if(activeCards){
-        activeCards.className = activeCards.className.replace(' active','');
-      }//去掉active card
-      this.pageConfig.current_page = page+1;
+      if(this.type === 'atlas'){
+        this.pageConfig.current_page = page+this.pageConfig.first_page;
+      }else{
+        let activeCards = this.$parent.$el.querySelector('.active');
+        if(activeCards){
+          activeCards.className = activeCards.className.replace(' active','');
+        }//去掉active card
+        this.pageConfig.current_page = page+1;
+      }   
     }
   },
   computed: {
@@ -59,7 +67,11 @@ export default {
       if(this.pageConfig.current_page > cop_page_num&&cop_page_num>0){
         this.pageConfig.current_page = cop_page_num;
       }
-      return cop_page_num > 5 ? 5 : cop_page_num;
+      let num = 5;
+      if(this.type === 'atlas'){
+        num = 10;
+      }
+      return cop_page_num > num ? num : cop_page_num;
     }
   },
   data() {
