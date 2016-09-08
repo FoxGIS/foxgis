@@ -16,12 +16,12 @@
 export default {
   methods: {
     doDelete: function(){
-      this.$el.style.display = 'none'
-      this.$dispatch("dialog-action",'ok')
+      this.$el.style.display = 'none';
+      this.$dispatch("dialog-action",'ok');
     },
     doCancel: function(){
-      this.$el.style.display = 'none'
-      this.$dispatch("dialog-action",'cancel')
+      this.$el.style.display = 'none';
+      this.$dispatch("dialog-action",'cancel');
     }
   },
   props:['dialog']

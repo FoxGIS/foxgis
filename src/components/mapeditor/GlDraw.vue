@@ -79,8 +79,7 @@ export default {
   },
   methods:{
     addTriangle:function() {
-      var triangle = 
-      {
+      let triangle = {
         "type": "Polygon",
         "coordinates": [[
           [116.23369693756104,40.09381888486939],
@@ -92,62 +91,61 @@ export default {
       this.addPolygon(triangle);
     },
     addPolygon:function(polygon){
-        var featureId = this.draw.add(polygon)[0];
-        var f = ["==","id",featureId];
-        var filter = ["all",["==","$type","Polygon"],f]
-        var layer1 = {
-          id:featureId+"_fill.hot",
-          type:"fill",
-          filter:filter,
-          source:"mapbox-gl-draw-hot",
-          layout:{},
-          paint:{
-            "fill-color":"#0000ff",
-            "fill-opacity":0.3
-          }
+      let featureId = this.draw.add(polygon)[0];
+      let f = ["==","id",featureId];
+      let filter = ["all",["==","$type","Polygon"],f]
+      let layer1 = {
+        id:featureId+"_fill.hot",
+        type:"fill",
+        filter:filter,
+        source:"mapbox-gl-draw-hot",
+        layout:{},
+        paint:{
+          "fill-color":"#0000ff",
+          "fill-opacity":0.3
         }
-        var layer2 = {
-          id:featureId+"_fill.cold",
-          type:"fill",
-          filter:filter,
-          source:"mapbox-gl-draw-cold",
-          layout:{},
-          paint:{
-            "fill-color":"#0000ff",
-            "fill-opacity":0.3
-          }
+      }
+      let layer2 = {
+        id:featureId+"_fill.cold",
+        type:"fill",
+        filter:filter,
+        source:"mapbox-gl-draw-cold",
+        layout:{},
+        paint:{
+          "fill-color":"#0000ff",
+          "fill-opacity":0.3
         }
-        var layer3 = {
-          id:featureId+"_stroke.hot",
-          type:"line",
-          filter:filter,
-          source:"mapbox-gl-draw-hot",
-          "layout":{
-            "line-cap":"round",
-            "line-join":"round"
-          },
-          "paint":{
-            "line-color":"#ff0000",
-            "line-width":2
-          },
-        }
-        var layer4 = {
-          id:featureId+"_stroke.cold",
-          type:"line",
-          filter:filter,
-          source:"mapbox-gl-draw-cold",
-          "layout":{
-            "line-cap":"round",
-            "line-join":"round"
-          },
-          "paint":{
-            "line-color":"#ff0000",
-            "line-width":2
-          },
-        }
-        this.style.layers.push(layer1);
-        this.changeStyle(this.style);
-      // body...
+      }
+      let layer3 = {
+        id:featureId+"_stroke.hot",
+        type:"line",
+        filter:filter,
+        source:"mapbox-gl-draw-hot",
+        "layout":{
+          "line-cap":"round",
+          "line-join":"round"
+        },
+        "paint":{
+          "line-color":"#ff0000",
+          "line-width":2
+        },
+      }
+      let layer4 = {
+        id:featureId+"_stroke.cold",
+        type:"line",
+        filter:filter,
+        source:"mapbox-gl-draw-cold",
+        "layout":{
+          "line-cap":"round",
+          "line-join":"round"
+        },
+        "paint":{
+          "line-color":"#ff0000",
+          "line-width":2
+        },
+      }
+      this.style.layers.push(layer1);
+      this.changeStyle(this.style);
     }
   },
   props: ['map','draw','style'],

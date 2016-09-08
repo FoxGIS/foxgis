@@ -205,45 +205,46 @@ export default {
         url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt';
       }
       this.getHttpData(url,function(data){
-          data = data.map(function(d) {
-            if (d.size / 1024 > 1024) {
-              d.size = (d.size / 1048576).toFixed(2) + 'MB';
-            } else {
-              d.size = (d.size / 1024).toFixed(2) + 'KB';
-            }
-            let date = new Date(d.createdAt);
-            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-            return d;
-          })
-          for(let i=0;i<data.length;i++){
-            if(!data[i].location){
-              data[i].location = "未指定";
-            }
-            if(!data[i].year){
-              data[i].year = "未指定";
-            }
+        data = data.map(function(d) {
+          if (d.size / 1024 > 1024) {
+            d.size = (d.size / 1048576).toFixed(2) + 'MB';
+          } else {
+            d.size = (d.size / 1024).toFixed(2) + 'KB';
           }
-          that.uploads = data
-          if(data.length < that.requestCounts){
-            that.pageConfig.skip = that.requestCounts;
+          let date = new Date(d.createdAt);
+          d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+          return d;
+        })
+        for(let i=0;i<data.length;i++){
+          if(!data[i].location){
+            data[i].location = "未指定";
           }
-          document.querySelector('.modal2').style.display = 'none';
+          if(!data[i].year){
+            data[i].year = "未指定";
+          }
+        }
+        that.uploads = data
+        if(data.length < that.requestCounts){
+          that.pageConfig.skip = that.requestCounts;
+        }
+        document.querySelector('.modal2').style.display = 'none';
       })
     },
 
     getHttpData: function(url,callback){
-        let username = Cookies.get('username');
-        if(!username){
-          return ;
-        }
-        let access_token = Cookies.get('access_token');
-        //获取数据列表
-        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-            let data = response.data;
-            callback(data);
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
-        })
+      let username = Cookies.get('username');
+      if(!username){
+        return ;
+      }
+      let access_token = Cookies.get('access_token');
+      //获取数据列表
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        let data = response.data;
+        callback(data);
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '获取图集失败！',timeout:3000 });
+      })
     },
 
     showPreview: function(e, index) {//显示图片预览

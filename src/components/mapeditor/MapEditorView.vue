@@ -50,87 +50,87 @@ export default {
   methods: {
     // 地图点击 弹出info
     mapClick: function(e){
-      let infoContainer = document.getElementById('info-container')
-      let features = this.map.queryRenderedFeatures(e.point)
+      let infoContainer = document.getElementById('info-container');
+      let features = this.map.queryRenderedFeatures(e.point);
 
       if(features.length>0){
-        infoContainer.style.display = 'block'
-        infoContainer.style.left = e.point.x-100 + 'px'
-        infoContainer.style.top = e.point.y-features.length*25-17 + 'px'
+        infoContainer.style.display = 'block';
+        infoContainer.style.left = e.point.x-100 + 'px';
+        infoContainer.style.top = e.point.y-features.length*25-17 + 'px';
       }
-      this.queryFeatures = features
+      this.queryFeatures = features;
     },
     // info 中的layer click
     infoLayerClick: function(e){
-      let layerId = e.currentTarget.querySelector('span').textContent
+      let layerId = e.currentTarget.querySelector('span').textContent;
       // 通知父组件 改变图层属性窗口中展现的layer
-      this.$dispatch('current-layer-change',layerId)
+      this.$dispatch('current-layer-change',layerId);
     },
     // 点击时，绑定事件
     dragresizedown: function(e){
       //标记点击的是哪个按钮
-      this.controlBound.dragButton = e.target.className
-      document.addEventListener('mousemove',this.dragresizemove,false)
-      document.addEventListener('mouseup',this.dragresizeup,false)
+      this.controlBound.dragButton = e.target.className;
+      document.addEventListener('mousemove',this.dragresizemove,false);
+      document.addEventListener('mouseup',this.dragresizeup,false);
     },
     //拖动时 改变bound
     dragresizemove: function(e){
-      let controlBox = document.getElementById("location-control")
-      let mapBound = this.mapBound
-      let boxBound = controlBox.getBoundingClientRect()
-      let name = this.controlBound.dragButton
-      let map = this.map
+      let controlBox = document.getElementById("location-control");
+      let mapBound = this.mapBound;
+      let boxBound = controlBox.getBoundingClientRect();
+      let name = this.controlBound.dragButton;
+      let map = this.map;
       if(name.indexOf("dragresize-lt")!=-1){
-        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, e.pageY-mapBound.top]);
       }else if(name.indexOf("dragresize-rt")!=-1){
-        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
-        this.controlBound.se = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top]);
+        this.controlBound.se = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top + boxBound.height]);
       }else if(name.indexOf("dragresize-lb")!=-1){
-        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
-        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top]);
+        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY-mapBound.top]);
       }else if(name.indexOf("dragresize-rb")!=-1){
-        this.controlBound.se = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.se = map.unproject([e.pageX - mapBound.left, e.pageY - mapBound.top]);
       }else if(name.indexOf("dragresize-t")!=-1){
-        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top])
+        this.controlBound.nw = map.unproject([boxBound.left - mapBound.left, e.pageY - mapBound.top]);
       }else if(name.indexOf("dragresize-b")!=-1){
-        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top])
+        this.controlBound.se = map.unproject([boxBound.left - mapBound.left + boxBound.width, e.pageY - mapBound.top]);
       }else if(name.indexOf("dragresize-r")!=-1){
-        this.controlBound.se = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height])
+        this.controlBound.se = map.unproject([e.pageX-mapBound.left, boxBound.top - mapBound.top + boxBound.height]);
       }else if(name.indexOf("dragresize-l")!=-1){
-        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top])
+        this.controlBound.nw = map.unproject([e.pageX - mapBound.left, boxBound.top - mapBound.top]);
       }
     },
     //up时，释放事件
     dragresizeup: function(){
-      document.removeEventListener('mousemove',this.dragresizemove,false)
+      document.removeEventListener('mousemove',this.dragresizemove,false);
     },
     //拖拽bound时 鼠标down事件
     boxDragDown: function(e){
       if(e.target.className.indexOf("dragresize")!=-1){
-        return
+        return;
       }
-      this.drag.dragstartx = e.layerX
-      this.drag.dragstarty = e.layerY
-      document.addEventListener('mousemove',this.boxDragMove,false)
+      this.drag.dragstartx = e.layerX;
+      this.drag.dragstarty = e.layerY;
+      document.addEventListener('mousemove',this.boxDragMove,false);
     },
     //移动bound
     boxDragMove: function(e){
-      var dx = e.layerX - this.drag.dragstartx
-      var dy = e.layerY - this.drag.dragstarty
-      let controlBox = document.getElementById("location-control")
-      let mapBound = this.mapBound
-      let boxBound = controlBox.getBoundingClientRect()
-      let newleft = boxBound.left - mapBound.left + dx
-      let newtop = boxBound.top - mapBound.top + dy
-      let newright = boxBound.left + boxBound.width - mapBound.left + dx
-      let newbottom = boxBound.top + boxBound.height - mapBound.top + dy
+      var dx = e.layerX - this.drag.dragstartx;
+      var dy = e.layerY - this.drag.dragstarty;
+      let controlBox = document.getElementById("location-control");
+      let mapBound = this.mapBound;
+      let boxBound = controlBox.getBoundingClientRect();
+      let newleft = boxBound.left - mapBound.left + dx;
+      let newtop = boxBound.top - mapBound.top + dy;
+      let newright = boxBound.left + boxBound.width - mapBound.left + dx;
+      let newbottom = boxBound.top + boxBound.height - mapBound.top + dy;
 
-      this.controlBound.nw = this.map.unproject([newleft, newtop])
-      this.controlBound.se = this.map.unproject([newright,newbottom])
+      this.controlBound.nw = this.map.unproject([newleft, newtop]);
+      this.controlBound.se = this.map.unproject([newright,newbottom]);
     },
     //up 释放事件
     boxDragUp: function(e){
-      document.removeEventListener('mousemove',this.boxDragMove,false)
+      document.removeEventListener('mousemove',this.boxDragMove,false);
     },
     // 在bound上缩放时
     boxZommChange: function(e){
@@ -142,84 +142,83 @@ export default {
     },
     //地图缩放后，重新计算框所在的位置
     mapZoomEnd: function(e){
-      var controlBox = this.$el.querySelector("#location-control")
+      var controlBox = this.$el.querySelector("#location-control");
       if(controlBox.style.display === 'block'){
-        var plt = this.map.project(this.controlBound.nw)
-        var prb = this.map.project(this.controlBound.se)
-        controlBox.style.left = plt.x + 'px'
-        controlBox.style.top = plt.y + 'px'
-        controlBox.style.width = prb.x - plt.x + 'px'
-        controlBox.style.height = prb.y - plt.y + 'px'
+        var plt = this.map.project(this.controlBound.nw);
+        var prb = this.map.project(this.controlBound.se);
+        controlBox.style.left = plt.x + 'px';
+        controlBox.style.top = plt.y + 'px';
+        controlBox.style.width = prb.x - plt.x + 'px';
+        controlBox.style.height = prb.y - plt.y + 'px';
       }
-      let center = this.map.getCenter()
-      let zoom = this.map.getZoom()
-      this.localStyle.center = [center.lng,center.lat]
-      this.localStyle.zoom = zoom
-      let data = JSON.parse(JSON.stringify(this.localStyle))
-      this.changeStyle(data)
+      let center = this.map.getCenter();
+      let zoom = this.map.getZoom();
+      this.localStyle.center = [center.lng,center.lat];
+      this.localStyle.zoom = zoom;
+      let data = JSON.parse(JSON.stringify(this.localStyle));
+      this.changeStyle(data);
     },
     mapDragStart: function(e){
-      this.drag.dragstartx = e.originalEvent.offsetX - this.mapBound.left
-      this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top
+      this.drag.dragstartx = e.originalEvent.offsetX - this.mapBound.left;
+      this.drag.dragstarty = e.originalEvent.offsetY - this.mapBound.top;
     },
     mapDrag: function(){
-      let controlBox = document.getElementById("location-control")
+      let controlBox = document.getElementById("location-control");
       if(controlBox.style.display === 'block'){
-        var plt = this.map.project(this.controlBound.nw)
-        var prb = this.map.project(this.controlBound.se)
-        controlBox.style.left = plt.x + 'px'
-        controlBox.style.top = plt.y + 'px'
+        var plt = this.map.project(this.controlBound.nw);
+        var prb = this.map.project(this.controlBound.se);
+        controlBox.style.left = plt.x + 'px';
+        controlBox.style.top = plt.y + 'px';
       }else{
-        let infoContainer = document.getElementById('info-container')
-        infoContainer.style.display = 'none'
+        let infoContainer = document.getElementById('info-container');
+        infoContainer.style.display = 'none';
       }
     },
     mapDragEnd: function(){
-      let center = this.map.getCenter()
-      this.localStyle.center = [center.lng,center.lat]
-      let data = JSON.parse(JSON.stringify(this.localStyle))
-      this.changeStyle(data)
+      let center = this.map.getCenter();
+      this.localStyle.center = [center.lng,center.lat];
+      let data = JSON.parse(JSON.stringify(this.localStyle));
+      this.changeStyle(data);
     },
     hideBoundsBox: function(){
-      this.map.off('dragstart', this.mapDragStart)
-      //this.map.off('zoomend',this.mapZoomEnd)
-      this.map.on('click', this.mapClick)
-      var box = this.$el.querySelector("#location-control")
-      box.style.display = 'none'
+      this.map.off('dragstart', this.mapDragStart);
+      this.map.on('click', this.mapClick);
+      var box = this.$el.querySelector("#location-control");
+      box.style.display = 'none';
     },
     closeInfoContainer: function(){
-      let info = this.$el.querySelector("#info-container")
-      info.style.display = 'none'
+      let info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
     },
     'mapInit': function(style){
-      this.localStyle = JSON.parse(JSON.stringify(style))
-      mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'
+      this.localStyle = JSON.parse(JSON.stringify(style));
+      mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA';
       let map = new mapboxgl.Map({
         container: 'map-editorview-container',
         style: style,
         attributionControl: false
-      })
-      map.addControl(new mapboxgl.Navigation())
+      });
+      map.addControl(new mapboxgl.Navigation());
       this.map = map;
-      map.on('click', this.mapClick)
-      map.on('drag', this.mapDrag)
-      map.on('dragend', this.mapDragEnd)
-      map.on('zoomend',this.mapZoomEnd)
+      map.on('click', this.mapClick);
+      map.on('drag', this.mapDrag);
+      map.on('dragend', this.mapDragEnd);
+      map.on('zoomend',this.mapZoomEnd);
     },
     patchStyle: function(style){
-      let style_id = style.style_id
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.styles + '/' + username + '/' + style_id
-      let data = JSON.stringify(style)
+      let style_id = style.style_id;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.styles + '/' + username + '/' + style_id;
+      let data = JSON.stringify(style);
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
+      .then(function(response){
+        if(response.ok){
 
-          }
-        },function(response){
-          this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
-        })
+        }
+      },function(response){
+        this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
+      })
     },
     // 给定 admin code，返回 admin 级别
     // 省市县的 admin code 是6位格式，乡镇为8位格式
@@ -251,7 +250,7 @@ export default {
       var replaceContent;
       var bounds = options.bounds;
       if(Object.prototype.toString.call(bounds) === '[object Array]'){
-        this.map.fitBounds(bounds)
+        this.map.fitBounds(bounds);
       }else{
         this.$broadcast('mailSent', { message: '地图范围错误！',timeout:3000 });
       }
@@ -291,8 +290,8 @@ export default {
       this.changeStyle(this.localStyle);
     },
     'show-bounds-box': function(bounds){
-      let controlBox = document.getElementById("location-control")
-      controlBox.style.display = 'block'
+      let controlBox = document.getElementById("location-control");
+      controlBox.style.display = 'block';
       //如果没有传入bounds，bounds的地理位置则有其css决定
       if(bounds === undefined){
         var temBounds = this.map.getBounds();
@@ -302,32 +301,32 @@ export default {
         controlBox.style.left = '8px';
         controlBox.style.width = (right_top.x-16)+'px';
         controlBox.style.height = (left_bottom.y-16)+'px';
-        let mapBound = this.mapBound
-        var boxBound = controlBox.getBoundingClientRect()
-        this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top])
-        this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top])
+        let mapBound = this.mapBound;
+        var boxBound = controlBox.getBoundingClientRect();
+        this.controlBound.nw = this.map.unproject([boxBound.left-mapBound.left, boxBound.top-mapBound.top]);
+        this.controlBound.se = this.map.unproject([boxBound.left+boxBound.width-mapBound.left, boxBound.top+boxBound.height-mapBound.top]);
       }else{
-        this.controlBound.nw = bounds.nw
-        this.controlBound.se = bounds.se
+        this.controlBound.nw = bounds.nw;
+        this.controlBound.se = bounds.se;
       }
 
 
-      this.map.on('dragstart', this.mapDragStart)
-      this.map.on('zoomend',this.mapZoomEnd)
+      this.map.on('dragstart', this.mapDragStart);
+      this.map.on('zoomend',this.mapZoomEnd);
 
-      this.map.off('click', this.mapClick)
-      let infoContainer = document.getElementById('info-container')
-      infoContainer.style.display = 'none'
+      this.map.off('click', this.mapClick);
+      let infoContainer = document.getElementById('info-container');
+      infoContainer.style.display = 'none';
     },
     'hide-bounds-box': function(){
-      this.hideBoundsBox()
+      this.hideBoundsBox();
     }
   },
   computed: {
     mapBound: function(){
-      let mapcontainer = this.map.getContainer()
-      let bound = mapcontainer.getBoundingClientRect()
-      return bound
+      let mapcontainer = this.map.getContainer();
+      let bound = mapcontainer.getBoundingClientRect();
+      return bound;
     }
   },
   data: function(){
@@ -349,62 +348,66 @@ export default {
   watch: {
     controlBound: {
       handler:function(val,oldVal){
-        let controlBox = document.getElementById("location-control")
-        var plt = this.map.project(this.controlBound.nw)
-        var prb = this.map.project(this.controlBound.se)
-        controlBox.style.left = plt.x + 'px'
-        controlBox.style.top = plt.y + 'px'
-        controlBox.style.width = prb.x - plt.x + 'px'
-        controlBox.style.height = prb.y - plt.y + 'px'
+        let controlBox = document.getElementById("location-control");
+        var plt = this.map.project(this.controlBound.nw);
+        var prb = this.map.project(this.controlBound.se);
+        controlBox.style.left = plt.x + 'px';
+        controlBox.style.top = plt.y + 'px';
+        controlBox.style.width = prb.x - plt.x + 'px';
+        controlBox.style.height = prb.y - plt.y + 'px';
       },
       deep:true
     },
     style: {
       handler:function(style,oldStyle){
-        var style_error = validate(style)
+        var style_error = validate(style);
         if(style_error.length > 0){
-          return
+          return;
         }
-        this.localStyle = JSON.parse(JSON.stringify(style))
-        let comds = diff(oldStyle,style)
+        this.localStyle = JSON.parse(JSON.stringify(style));
+        let comds = diff(oldStyle,style);
         for(var i=0,length=comds.length;i<length;i++){
           switch(comds[i].command){
             case 'setPaintProperty':
-              this.map.setPaintProperty.apply(this.map,comds[i].args)
-              break
+              this.map.setPaintProperty.apply(this.map,comds[i].args);
+              break;
             case 'setLayoutProperty':
-              this.map.setLayoutProperty.apply(this.map,comds[i].args)
-              break
+              this.map.setLayoutProperty.apply(this.map,comds[i].args);
+              break;
             case 'setStyle':
               if(this.map.setStyle === undefined){
-                this.mapInit(style)
-                break
+                this.mapInit(style);
+                break;
               }
-              this.map.setStyle.apply(this.map,comds[i].args)
-              if(style.zoom){this.map.setZoom(style.zoom);}
-              if(style.center){this.map.setCenter(style.center);}
-              break
+              this.map.setStyle.apply(this.map,comds[i].args);
+              if(style.zoom){
+                this.map.setZoom(style.zoom);
+              }
+              if(style.center){
+                this.map.setCenter(style.center);
+              }
+              break;
             case 'addLayer':
-              this.map.addLayer.apply(this.map,comds[i].args)
-              break
+              this.map.addLayer.apply(this.map,comds[i].args);
+              break;
             case 'removeLayer':
-              this.map.removeLayer.apply(this.map,comds[i].args)
-              break
+              this.map.removeLayer.apply(this.map,comds[i].args);
+              break;
             case 'setFilter':
-              this.map.setFilter.apply(this.map,comds[i].args)
-              break
+              this.map.setFilter.apply(this.map,comds[i].args);
+              break;
             case 'setLayerZoomRange':
-              this.map.setLayerZoomRange.apply(this.map,comds[i].args)
-              break
+              this.map.setLayerZoomRange.apply(this.map,comds[i].args);
+              break;
             case 'setLayerProperty':
-              this.map.setLayerProperty.apply(this.map,comds[i].args)
-              break
+              this.map.setLayerProperty.apply(this.map,comds[i].args);
+              break;
             case 'addSource':
-              this.map.addSource.apply(this.map,comds[i].args)
-              break
+              this.map.addSource.apply(this.map,comds[i].args);
+              break;
             case 'removeSource':
-              this.map.removeSource.apply(this.map,comds[i].args)
-              break
+              this.map.removeSource.apply(this.map,comds[i].args);
+              break;
           }
         }
       },

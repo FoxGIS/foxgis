@@ -57,7 +57,7 @@ export default {
           
           let username = Cookies.get('username');
           let access_token = Cookies.get('access_token');
-          let pngUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
+          let pngUrl = SERVER_API.sprites+'/'+username+'/'+sprite_id+'/sprite.png?access_token='+access_token;
           this.sprite.sprite_id = sprite_id;
           this.sprite.pngUrl = pngUrl;
           let jsonUrl = SERVER_API.sprites + '/' + username+'/'+sprite_id+'/sprite.json';
@@ -85,13 +85,14 @@ export default {
       let access_token = Cookies.get('access_token');
       let sprite_id = this.dataset[index].sprite_id;
       let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
-      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
-          if(response.ok){
-            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
-          }
-        },function(response){
-          this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
-        });
+      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+        }
+      },function(response){
+        this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
+      });
     },
 
     uploadNameChange: function(e,index){//修改符号名称
@@ -102,19 +103,19 @@ export default {
       let url = SERVER_API.sprites + '/' + username + '/'+ sprite_id;
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            let data = response.data;
-            let input = $(".sprite-name");
-            let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-            for(let i=0;i<input.length;i++){
-              input[i].blur();
-              input[i].value = this.dataset[page+i].name;
-            }
-            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
-          } 
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
+      .then(function(response){
+        if(response.ok){
+          let data = response.data;
+          let input = $(".sprite-name");
+          let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+          for(let i=0;i<input.length;i++){
+            input[i].blur();
+            input[i].value = this.dataset[page+i].name;
+          }
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+        } 
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
       });
     },
 
@@ -124,14 +125,14 @@ export default {
       let url = SERVER_API.sprites + '/' + username + '/' + this.dataset[index].sprite_id + '/raw?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        var aLink = document.createElement('a')
-        aLink.className = 'download_link'
-        var text = document.createTextNode('&nbsp;')
-        aLink.appendChild(text)
-        aLink.href = url
-        aLink.click()
+        let aLink = document.createElement('a');
+        aLink.className = 'download_link';
+        let text = document.createTextNode('&nbsp;');
+        aLink.appendChild(text);
+        aLink.href = url;
+        aLink.click();
       }else{//Chrome,Firefox
-        var iframe = document.createElement("iframe");
+        let iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -146,8 +147,8 @@ export default {
 
     deleteAction: function(status) {//删除事件
       if (status === 'ok') {
-        var username = Cookies.get('username');
-        var access_token = Cookies.get('access_token');
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
         let sprite_id = this.deleteUploadId;
         let url = SERVER_API.sprites + '/' + username + "/" + sprite_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
@@ -157,7 +158,7 @@ export default {
             this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
           }
         }, function(response) {
-            this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
+          this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
         });
         this.deleteUploadId = "";//重置deleteUploadId
       }

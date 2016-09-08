@@ -104,7 +104,7 @@ export default {
     showDetails: function (e,tileset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
       let username = Cookies.get('username');
       if(username === undefined){
-        return
+        return;
       }
       let access_token = Cookies.get('access_token');
       let that = this;
@@ -117,17 +117,18 @@ export default {
       //给当前的dom添加active
       let claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
-        claName = claName.replace(' active','')
+        claName = claName.replace(' active','');
         e.target.parentElement.className = claName;
       }else{
         claName += ' active';
         //do somthing
-        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
-            that.detailsData = response.data;
-            that.detailsData.url = url;
-            that.fieldsLength = response.data.vector_layers.length;
-            that.fieldsData = [];
-            e.target.parentElement.className = claName;
+        this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+        .then(function(response) {
+          that.detailsData = response.data;
+          that.detailsData.url = url;
+          that.fieldsLength = response.data.vector_layers.length;
+          that.fieldsData = [];
+          e.target.parentElement.className = claName;
         }, function(response) {
           this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
           e.target.parentElement.className = claName;
@@ -139,7 +140,7 @@ export default {
     lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
       let height = (index-this.fieldsLength)*37;
-      $('.fields').css("margin",height+'px'+' 0 0 420px')
+      $('.fields').css("margin",height+'px'+' 0 0 420px');
     },
 
     calculation: function(size){//计算文件大小
@@ -159,34 +160,35 @@ export default {
       let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.dataset[index].name = value;
       this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            let data = response.data;
-            let input = $(".tileset-name");
-            let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
-            for(let i=0;i<input.length;i++){
-              input[i].blur();
-              input[i].value = this.dataset[page+i].name;
-            }
-            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+      .then(function(response){
+        if(response.ok){
+          let data = response.data;
+          let input = $(".tileset-name");
+          let page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+          for(let i=0;i<input.length;i++){
+            input[i].blur();
+            input[i].value = this.dataset[page+i].name;
           }
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:3000 });
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:3000 });
       });
     },
     editScope: function(e,index){//修改共享范围
-        let scope = e.target.value;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let tileset_id = this.dataset[index].tileset_id;
-        let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
-        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
-            if(response.ok){
-              this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
-            }
-          },function(response){
-            this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:3000 });
-          });
+      let scope = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let tileset_id = this.dataset[index].tileset_id;
+      let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+        }
+      },function(response){
+        this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:3000 });
+      });
     },
     editDescription: function(e,index){//修改数据描述信息
       let value = e.target.value;
@@ -196,13 +198,13 @@ export default {
       let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.dataset[index].description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            let data = response.data;
-            this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 }); 
-          }    
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
+      .then(function(response){
+        if(response.ok){
+          let data = response.data;
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 }); 
+        }    
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
       });
     },
     deleteTag: function(pId, tag_id) {//删除主题词的标签
@@ -213,12 +215,12 @@ export default {
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
       this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });  
-          }
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });  
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });  
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });  
       });
     },
 
@@ -236,12 +238,12 @@ export default {
         let access_token = Cookies.get('access_token');
         let url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
         this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
-         .then(function(response){
-            if(response.ok){
-              this.$broadcast('mailSent', { message: '标签添加成功！',timeout:3000 });  
-            }
-          }, function(response) {
-            this.$broadcast('mailSent', { message: '标签添加失败！',timeout:3000 });  
+        .then(function(response){
+          if(response.ok){
+            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:3000 });  
+          }
+        }, function(response) {
+          this.$broadcast('mailSent', { message: '标签添加失败！',timeout:3000 });  
         });
       }
     },
@@ -264,7 +266,7 @@ export default {
             this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
           }
         }, function(response) {
-            this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
+          this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
         });
         this.deleteTilesetId = "";
       }

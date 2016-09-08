@@ -84,10 +84,10 @@ export default {
       if(checked){
         checked.className = checked.className.replace(' checked','');
       }
-      e.target.className += " checked"
+      e.target.className += " checked";
     },
     createStyle: function(e){
-      var checked = this.$el.querySelector('.item-thumb.checked')
+      var checked = this.$el.querySelector('.item-thumb.checked');
       if(checked){
         var template_id = checked.dataset.id;
         var replace = checked.dataset.replace;
@@ -137,7 +137,8 @@ export default {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.templates + '/' + username;
-      this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
+      this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
+      .then(function(res){
         var data = res.data;
         var str = data.thumb['background-image'];
         data.thumb['background-image'] = str.substr(0,str.length-2)+"?access_token="+access_token+"')";
@@ -165,21 +166,22 @@ export default {
       let access_token = Cookies.get('access_token');
       var id = this.templateItem.template_id;
       let url = SERVER_API.templates + '/' + username+'/'+id;
-      this.$http({url:url,method:"PATCH",data:opts,headers:{'x-access-token':access_token}}).then(function(res){
+      this.$http({url:url,method:"PATCH",data:opts,headers:{'x-access-token':access_token}})
+      .then(function(res){
         var data = res.data;
         this.templateItem.name = data.name;
         this.templateItem.replace = data.replace;
       },function(res){
         this.$broadcast("mailSent",{message:"修改失败！",timeout:3000});
       });
-      var formData = new FormData()
+      var formData = new FormData();
       if(image){
         formData.append('upload', image);
         this.templateItem.thumb['background-image'] = "url('"+window.URL.createObjectURL(image)+"')";
         let imageurl = SERVER_API.templates + '/' + username+'/'+id+'/image';
         this.$http({url:imageurl,method:"POST",data:formData,headers:{'x-access-token':access_token}}).then(function(res){
           var data = res.data;
-          var url = data.thumb['background-image']
+          var url = data.thumb['background-image'];
           url = url.substring(5,url.length-2)+"?access_token="+access_token;
           $.ajax(url);
         },function(res){
@@ -200,13 +202,13 @@ export default {
       $("#edit-template_panel").show();
     },
     imageClick:function(){
-      let fileInput = document.getElementById('template-image')
-      fileInput.click()
-      fileInput.addEventListener('change', this.changeTemplateImage)
+      let fileInput = document.getElementById('template-image');
+      fileInput.click();
+      fileInput.addEventListener('change', this.changeTemplateImage);
     },
     changeTemplateImage:function(e){
-      var formData = new FormData()
-      formData.append('file', e.target.files[0])
+      var formData = new FormData();
+      formData.append('file', e.target.files[0]);
       var imageUrl = window.URL.createObjectURL(e.target.files[0]);
       $("#edit-template_panel .item-thumb").css("background-image","url('"+imageUrl+"')");
     },
@@ -216,7 +218,7 @@ export default {
           this.templateItem = this.templates[i];
         }
       }
-      this.$el.querySelector("#delete-dialog_template").style.display = 'block'
+      this.$el.querySelector("#delete-dialog_template").style.display = 'block';
       this.deleteTemplateId = id;
     },
     deleteAction: function(status){
@@ -225,11 +227,12 @@ export default {
         let access_token = Cookies.get('access_token');
         var id = this.deleteTemplateId;
         let url = SERVER_API.templates + '/' + username+'/'+id;
-        this.$http({url:url,method:"DELETE",headers:{'x-access-token':access_token}}).then(function(res){
+        this.$http({url:url,method:"DELETE",headers:{'x-access-token':access_token}})
+        .then(function(res){
           if(res.ok){
             for(let i = 0;i<this.templates.length;i++){
               if(this.templates[i].template_id === id){
-                this.templates.splice(i,1)
+                this.templates.splice(i,1);
               }
             }
             this.$broadcast("mailSent",{message:"删除成功！",timeout:3000});
@@ -244,9 +247,10 @@ export default {
     this.userRole = Cookies.get('role');
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.templates;
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       if (response.data.length > 0){
-        var data = response.data
+        var data = response.data;
         for(let i=0;i<data.length;i++){
           if(data[i].thumb){
             var url = data[i].thumb['background-image'];

@@ -86,9 +86,9 @@ export default {
       data.checked = false;//为新增加的文件添加checked属性
       if(type === 'upload'){
         if (data.size / 1024 > 1024) {
-          data.size = (data.size / 1048576).toFixed(2) + 'MB'
+          data.size = (data.size / 1048576).toFixed(2) + 'MB';
         }else{
-          data.size = (data.size / 1024).toFixed(2) + 'KB'
+          data.size = (data.size / 1024).toFixed(2) + 'KB';
         }
         data.upload_at = util.dateFormat(new Date(data.upload_at));
         this.options.Vue.uploads.unshift(data);

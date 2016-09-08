@@ -32,17 +32,17 @@ export default {
       let url = this.dataset.pngUrl.split('?')[0].replace("/sprite.png","");
       this.dataset.description = value;
       this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(this.dataset.sprite_id){
-            let tempDataset = this.$parent.dataset;
-            for(let i=0;i<tempDataset.length;i++){
-              if(this.dataset.sprite_id === tempDataset[i].sprite_id) {
-                tempDataset[i].description = this.dataset.description;
-              }
+      .then(function(response){
+        if(this.dataset.sprite_id){
+          let tempDataset = this.$parent.dataset;
+          for(let i=0;i<tempDataset.length;i++){
+            if(this.dataset.sprite_id === tempDataset[i].sprite_id) {
+              tempDataset[i].description = this.dataset.description;
             }
           }
-        }, function(response) {
-          this.$parent.$broadcast("mailSent",{message:"图标说明修改失败！",timeout:3000});
+        }
+      }, function(response) {
+        this.$parent.$broadcast("mailSent",{message:"图标说明修改失败！",timeout:3000});
       });
     },
 
@@ -50,7 +50,9 @@ export default {
       if(this.dataset.sprite_id){
         let className = "";
         let title = "";
-        if($(e.target).parents("#icon-select-panel").length>0){return}
+        if($(e.target).parents("#icon-select-panel").length>0){
+          return;
+        }
         for(let i=0;i<e.currentTarget.attributes.length;i++){
           let temp = e.currentTarget.attributes[i].name;
           if(temp === "class"){
@@ -62,9 +64,9 @@ export default {
         }
         if(className.indexOf('del')!==-1){
          className = className.replace(' del','');
-         let index = this.delSpriteTitle.indexOf(title)
+         let index = this.delSpriteTitle.indexOf(title);
          if(index != -1){
-           this.delSpriteTitle.splice(index,1)
+           this.delSpriteTitle.splice(index,1);
          }
         }else{
           className += ' del';
@@ -88,17 +90,17 @@ export default {
           let title = this.delSpriteTitle[i];
           let delUrl = url+"/"+title;
           this.$http({url:delUrl,method:'DELETE',headers:{'x-access-token':access_token}})
-           .then(function(response){
-             if(response.ok){
-                if(num === this.delSpriteTitle.length){
-                  this.delSpriteTitle = [];
-                  this.newSprite();
-                }else{
-                  num++;
-                }  
-             } 
-           }, function(response) {
-             this.$parent.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
+          .then(function(response){
+            if(response.ok){
+              if(num === this.delSpriteTitle.length){
+                this.delSpriteTitle = [];
+                this.newSprite();
+              }else{
+                num++;
+              }  
+            } 
+          }, function(response) {
+            this.$parent.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
           });
         } 
       }else{

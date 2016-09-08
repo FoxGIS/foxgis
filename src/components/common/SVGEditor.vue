@@ -11,32 +11,33 @@ export default {
   events:{
     "loadIframe":function(){
       if($("#svg-wrap iframe").length > 0){
-        return
+        return;
       }else{
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute('id',"fatherSVG")
-        iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html")
-        iframe.setAttribute('style',"width: 100%; height: 100%;")
+        let iframe = document.createElement("iframe");
+        iframe.setAttribute('id',"fatherSVG");
+        iframe.setAttribute('src',"./static/svgedit/editor/embedapi.html");
+        iframe.setAttribute('style',"width: 100%; height: 100%;");
         $("#svg-wrap").append(iframe);
       }
     },
-    "map-layout":function(options){
-      var options = JSON.stringify(options);
-      var iframe = document.getElementById("fatherSVG");
-      var src = "./static/svgedit/editor/embedapi.html?options="+options;
+    "map-layout":function(option){
+      let options = JSON.stringify(option);
+      let iframe = document.getElementById("fatherSVG");
+      let src = "./static/svgedit/editor/embedapi.html?options="+options;
       if(!iframe){
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute('id',"fatherSVG")
-        iframe.setAttribute('src',src)
-        iframe.setAttribute('style',"width: 100%; height: 100%;")
+        let iframe = document.createElement("iframe");
+        iframe.setAttribute('id',"fatherSVG");
+        iframe.setAttribute('src',src);
+        iframe.setAttribute('style',"width: 100%; height: 100%;");
         $("#svg-wrap").append(iframe);
       }else{
-        iframe.setAttribute('src',src)
+        iframe.setAttribute('src',src);
       }   
     }
   }
 }
 </script>
+
 <style scoped>
 #svg-wrap {
   display: block;

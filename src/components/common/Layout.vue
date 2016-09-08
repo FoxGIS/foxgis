@@ -33,34 +33,34 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     signout: function(){
-      Cookies.remove('username')
-      Cookies.remove('access_token')
-      Cookies.remove('name')
-      Cookies.remove('phone')
-      Cookies.remove('email')
-      Cookies.remove('location')
-      Cookies.remove('organization')
-      window.location.href = '/'
+      Cookies.remove('username');
+      Cookies.remove('access_token');
+      Cookies.remove('name');
+      Cookies.remove('phone');
+      Cookies.remove('email');
+      Cookies.remove('location');
+      Cookies.remove('organization');
+      window.location.href = '/';
     },
 
     showUserCenter: function(){
       if(document.querySelector('.userCenter').style.display === 'none'){
-        document.querySelector('.userCenter').style.display = 'block'
+        document.querySelector('.userCenter').style.display = 'block';
       }else{
-        document.querySelector('.userCenter').style.display = 'none'
+        document.querySelector('.userCenter').style.display = 'none';
       }
       
     }
   },
   ready() {
     /*global componentHandler */
-    componentHandler.upgradeElement(this.$el.firstElementChild)
+    componentHandler.upgradeElement(this.$el.firstElementChild);
   },
   attached: function() {
     //判断是否登陆
-    let username = Cookies.get('username')
+    let username = Cookies.get('username');
     if(username !== undefined){
-      this.username = username
+      this.username = username;
     }
   },
   data: function(){
@@ -120,7 +120,6 @@ export default {
   position:relative;
   min-height: calc(100% - 100px);
   background-color: #e4e4e4;
-  /*background-image: radial-gradient(50% 50%,circle cover,#ddd,#e1eab1 60%);*/
   display: flex;
   flex-flow: column;
 }

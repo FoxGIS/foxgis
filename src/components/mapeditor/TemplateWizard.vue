@@ -237,38 +237,38 @@ export default{
       //获取数据源数据
       let tilesetsUrl = SERVER_API.tilesets + '/' + username;
       this.$http({ url: tilesetsUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-        .then(function(response) {
-          if (response.data.length > 0) {
-            let data = response.data;
-            for(let i=0;i<data.length;i++){
-              let options = {
-                name:data[i].name,
-                value:data[i].tileset_id
-              }
-              this.sourcesOptions.push(options);
+      .then(function(response) {
+        if (response.data.length > 0) {
+          let data = response.data;
+          for(let i=0;i<data.length;i++){
+            let options = {
+              name:data[i].name,
+              value:data[i].tileset_id
             }
+            this.sourcesOptions.push(options);
           }
-        }, function(response) {
-          this.$parent.$broadcast("mailSent",{message:"获取数据源数据错误!",timeout:3000});
-        })
+        }
+      }, function(response) {
+        this.$parent.$broadcast("mailSent",{message:"获取数据源数据错误!",timeout:3000});
+      })
 
       //获取符号库数据
       let spritesUrl = SERVER_API.sprites + '/' + username;
       this.$http({ url: spritesUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-        .then(function(response) {
-          if (response.data.length > 0) {
-            let data = response.data;
-            for(let i=0;i<data.length;i++){
-              let options = {
-                name:data[i].name,
-                value:data[i].sprite_id
-              }
-              this.spriteOptions.push(options);
+      .then(function(response) {
+        if (response.data.length > 0) {
+          let data = response.data;
+          for(let i=0;i<data.length;i++){
+            let options = {
+              name:data[i].name,
+              value:data[i].sprite_id
             }
+            this.spriteOptions.push(options);
           }
-        }, function(response) {
-          this.$parent.$broadcast("mailSent",{message:"获取符号库数据错误!",timeout:3000});
-        })
+        }
+      }, function(response) {
+        this.$parent.$broadcast("mailSent",{message:"获取符号库数据错误!",timeout:3000});
+      })
       
     },
     data(){

@@ -374,8 +374,8 @@ export default {
     //颜色选择器
     colorPickerClick:function(e){
       $(e.target).unbind("click",this.colorPickerClick);
-      var color = e.target.value;
-      var that = this;
+      let color = e.target.value;
+      let that = this;
       $(e.target).colpick({
         submitText:"确定",
         layout:'rgbhexhsb',
@@ -384,7 +384,7 @@ export default {
           $(el).css('background-color','#'+hex);
           $(el).val('#'+hex);
           $(el).colpickHide();
-          var options = {};
+          let options = {};
           options.name = $(el).attr("name");
           options.type = el.dataset.type;
           options.value = "#"+hex;
@@ -399,7 +399,7 @@ export default {
         $("#property-panel").hide();
         $(".panel").hide();
       }
-      var newLayerPanel = $("#new-layer-panel");
+      let newLayerPanel = $("#new-layer-panel");
       if(newLayerPanel.is(":visible")){
         newLayerPanel.hide();
       }else{
@@ -455,32 +455,32 @@ export default {
     fixType: function(layer){
       //有的layer没有type属性，有ref属性,补充这个信息
       if(layer.type === undefined && layer.ref){
-        let layers = this.styleObj.layers
+        let layers = this.styleObj.layers;
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id === layer.ref){
-            layer.type = layers[i].type
-            break
+            layer.type = layers[i].type;
+            break;
           }
         }
       }
     },
     //将样式图层中没有的属性字段用defaultProperty中的默认值补充，目前只支持 defaultProperty 中的属性
     filterProperty: function(layer){
-      let defaultProperty = JSON.parse(JSON.stringify(this.defaultProperty))
-      let templayer = JSON.parse(JSON.stringify(layer))
+      let defaultProperty = JSON.parse(JSON.stringify(this.defaultProperty));
+      let templayer = JSON.parse(JSON.stringify(layer));
       if(templayer.paint !== undefined){
         for(let name in defaultProperty[templayer.type].paint){
           if(templayer.paint[name] !== undefined&&!templayer.paint[name].stops){
-            defaultProperty[templayer['type']].paint[name] = templayer.paint[name]
+            defaultProperty[templayer['type']].paint[name] = templayer.paint[name];
           }else if(templayer.paint[name] !== undefined&&templayer.paint[name].stops){
             if(templayer.paint[name].type){
-              var type = templayer.paint[name].type;
+              let type = templayer.paint[name].type;
             }else if(typeof(defaultProperty[templayer['type']].paint[name])==="number"){
               type = "exponential";
             }else{
               type = "interval";
             }
-            var opts = {type:type,value:templayer.paint[name]};
+            let opts = {type:type,value:templayer.paint[name]};
             defaultProperty[templayer['type']].paint[name] = this.getCurrentValue(opts);
           }
         }
@@ -488,28 +488,28 @@ export default {
       if(templayer.layout !== undefined){
         for(let name in defaultProperty[templayer.type].layout){
           if(templayer.layout[name] !== undefined&&!templayer.layout[name].stops){
-            defaultProperty[templayer['type']].layout[name] = templayer.layout[name]
+            defaultProperty[templayer['type']].layout[name] = templayer.layout[name];
           }else if(templayer.layout[name] !== undefined&&templayer.layout[name].stops){
             if(templayer.layout[name].type){
-              var type = templayer.layout[name].type;
+              let type = templayer.layout[name].type;
             }else if(typeof(defaultProperty[templayer['type']].layout[name])==="number"){
               type = "exponential";
             }else{
               type = "interval";
             }
-            var opts = {type:type,value:templayer.layout[name]};
+            let opts = {type:type,value:templayer.layout[name]};
             defaultProperty[templayer['type']].layout[name] = this.getCurrentValue(opts);
           }
         }
       }
-      templayer.paint = defaultProperty[templayer['type']].paint
-      templayer.layout = defaultProperty[templayer['type']].layout
-      return templayer
+      templayer.paint = defaultProperty[templayer['type']].paint;
+      templayer.layout = defaultProperty[templayer['type']].layout;
+      return templayer;
     },
     //将面板图层中的样式图层进行分组，用于属性面板的tab菜单
     resolvePropertyGroup:function(panelLayer){
       if(panelLayer.type==="symbol"){
-        var group = {
+        let group = {
           text:{
             layout:{},
             paint:{}
@@ -547,63 +547,64 @@ export default {
     },
     //根据样式中的layers创建TocLayers，用户显示样式图层列表及文件夹
     createTocLayer: function(style){
-      let styleObj = JSON.parse(JSON.stringify(style))
+      let styleObj = JSON.parse(JSON.stringify(style));
       let groups = styleObj['metadata']?(styleObj['metadata']['mapbox:groups']?styleObj['metadata']['mapbox:groups']:{}):{}
       this.Folders = groups;
-      let layers = styleObj['layers']
-      layers.reverse()
-      let mylayers = []
+      let layers = styleObj['layers'];
+      layers.reverse();
+      let mylayers = [];
       let layerIndex = -1
       for(let i=0,length=layers.length;i<length;i++){
-        let layer = layers[i]
-        this.fixType(layer)
+        let layer = layers[i];
+        this.fixType(layer);
         if(layer['metadata']&&layer['metadata']['mapbox:group']){
-          let layername = groups[layer['metadata']['mapbox:group']].name
-          let collapsed = groups[layer['metadata']['mapbox:group']].collapsed
+          let layername = groups[layer['metadata']['mapbox:group']].name;
+          let collapsed = groups[layer['metadata']['mapbox:group']].collapsed;
 
           if(mylayers[layerIndex]&&mylayers[layerIndex]['id'] == layername){
-            // mylayers[layerIndex]['name'] = layer['source-layer']?layer['source-layer']:layer['ref']
-            mylayers[layerIndex]['items'].push(layer)
+            mylayers[layerIndex]['items'].push(layer);
           }else{
-            layerIndex++
-            mylayers[layerIndex] = {}
-            mylayers[layerIndex]['items'] = []
-            mylayers[layerIndex]['id'] = layername
-            mylayers[layerIndex]['collapsed'] = collapsed
-            mylayers[layerIndex]['items'].push(layer)
+            layerIndex++;
+            mylayers[layerIndex] = {};
+            mylayers[layerIndex]['items'] = [];
+            mylayers[layerIndex]['id'] = layername;
+            mylayers[layerIndex]['collapsed'] = collapsed;
+            mylayers[layerIndex]['items'].push(layer);
           }
         }else{
-          layerIndex++
-          mylayers[layerIndex] = layer
+          layerIndex++;
+          mylayers[layerIndex] = layer;
         }
       }
-      return mylayers
+      return mylayers;
     },
     //点击图层列表时，显示当前图层的属性设置面板
     showPropertyPanel:function(layer_id){
       $(".panel").hide();
       let that = this;
-      let layers = this.styleObj.layers
-      let clickLayer
+      let layers = this.styleObj.layers;
+      let clickLayer;
       for(let i=0,length=layers.length;i<length;i++){
         if(layers[i].id === layer_id){
-          clickLayer = layers[i]
-          break
+          clickLayer = layers[i];
+          break;
         }
       }
-      if(!clickLayer){return;}
+      if(!clickLayer){
+        return;
+      }
       if((this.curPanelLayer.id===clickLayer.id)&&$("#property-panel").is(":visible")){
         $("#property-panel").hide();
       }else{
         $("#new-layer-panel").hide();
         $("#property-panel").show();
-        this.$dispatch("hide-mapbounds")
-        this.currentLayer = clickLayer
-        this.fixType(clickLayer)
-        this.curPanelLayer = this.filterProperty(clickLayer)
+        this.$dispatch("hide-mapbounds");
+        this.currentLayer = clickLayer;
+        this.fixType(clickLayer);
+        this.curPanelLayer = this.filterProperty(clickLayer);
         this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
-        var filter = {condition:'',filters:[]};
-        var tempFilter = this.curPanelLayer.filter||[];
+        let filter = {condition:'',filters:[]};
+        let tempFilter = this.curPanelLayer.filter||[];
         if(tempFilter.length!=0){//存在过滤条件
           if(tempFilter[0]==="all"){
             filter.condition = "all";
@@ -614,13 +615,13 @@ export default {
           }
           if(tempFilter[0]==="any"||tempFilter[0]==="all"||tempFilter[0]==="none"){//存在多个过滤条件
             for(let i=1;i<tempFilter.length;i++){//根据过滤条件数目新建过滤元素
-              var str = tempFilter[i].slice(2,tempFilter[i].length).toString();
-              var t={field:tempFilter[i][1],operator:tempFilter[i][0],value:str};
+              let str = tempFilter[i].slice(2,tempFilter[i].length).toString();
+              let t={field:tempFilter[i][1],operator:tempFilter[i][0],value:str};
               filter.filters.push(t);
             }
           }else{//只存在一个过滤条件
-            var str = tempFilter.slice(2,tempFilter.length).toString();
-            var t={field:tempFilter[1],operator:tempFilter[0],value:str};
+            let str = tempFilter.slice(2,tempFilter.length).toString();
+            let t={field:tempFilter[1],operator:tempFilter[0],value:str};
             filter.filters.push(t);
           }
         }else{//没有过滤条件
@@ -638,20 +639,26 @@ export default {
           'folder':""
         }
         if(this.curPanelLayer.metadata&&this.curPanelLayer.metadata["mapbox:group"]){
-          var folder_id = this.curPanelLayer.metadata["mapbox:group"];
+          let folder_id = this.curPanelLayer.metadata["mapbox:group"];
           this.selectedData.folder = this.Folders[folder_id].name;
         }else{
           this.selectedData.folder = "";
         }
-        if(this.selectedData.source===""){this.sourceLayers=[];}
+        if(this.selectedData.source===""){
+          this.sourceLayers=[];
+        }
         for(let j=0;j<this.sources.length;j++){
           if(this.selectedData.source === this.sources[j].sourceName){
             this.sourceLayers = this.sources[j].sourceLayers;
             break;
           }
         }
-        if(!this.sourceLayers){return}
-        if(this.selectedData['source-layer']===""){this.layerFields={};}
+        if(!this.sourceLayers){
+          return;
+        }
+        if(this.selectedData['source-layer']===""){
+          this.layerFields={};
+        }
         for(let k=0;k<this.sourceLayers.length;k++){
           if(this.selectedData['source-layer'] === this.sourceLayers[k].id){
             this.layerFields = this.sourceLayers[k].fields;
@@ -663,29 +670,29 @@ export default {
     //点击文件夹时检查文件夹的展开状态以及图层列表
     checkSublayer:function(layer_id,index,e){
       //切换active
-      let activeLayer = this.$el.querySelector('.layer.active')
+      let activeLayer = this.$el.querySelector('.layer.active');
       let ct = $(e.target).parents(".layer")[0];
       if(activeLayer&&activeLayer.className.indexOf('active')!==-1){
-        activeLayer.className = activeLayer.className.replace(' active','')
+        activeLayer.className = activeLayer.className.replace(' active','');
       }
 
       if(ct.className.indexOf('active') === -1&&activeLayer !== ct){
-        ct.className += ' active'
+        ct.className += ' active';
       }
 
-      let collapsed = this.tocLayers[index].collapsed
+      let collapsed = this.tocLayers[index].collapsed;
 
       // 如果是group
       if( collapsed !== undefined){
-        var metadata = this.styleObj['metadata']
+        let metadata = this.styleObj['metadata'];
         //change metadata's collapsed
-        this.tocLayers[index].collapsed = !collapsed
+        this.tocLayers[index].collapsed = !collapsed;
         if(metadata&&metadata['mapbox:groups']){
-          var metadatagroup = metadata['mapbox:groups']
+          let metadatagroup = metadata['mapbox:groups'];
         }
         for(let index in metadatagroup){
           if(layer_id === metadatagroup[index].name){
-            metadatagroup[index].collapsed = !collapsed
+            metadatagroup[index].collapsed = !collapsed;
           }
         }
 
@@ -696,28 +703,28 @@ export default {
     },
     
     propertyChange:function(e){
-      let currentLayer = this.currentLayer
-      let layers = this.styleObj.layers
-      let targetDom = e.target
-      let value
+      let currentLayer = this.currentLayer;
+      let layers = this.styleObj.layers;
+      let targetDom = e.target;
+      let value;
 
       if(targetDom.tagName === 'SELECT'){
-        value = targetDom.options[targetDom.selectedIndex].value
+        value = targetDom.options[targetDom.selectedIndex].value;
       }else{
-        value = targetDom.value
+        value = targetDom.value;
         if(value === ""){
           value = this.defaultProperty[currentLayer['type']][targetDom.dataset.type][targetDom.name];
         }
       }
 
-      var temp = Number(value)
+      let temp = Number(value);
       if(!isNaN(temp)){
-        value = temp
+        value = temp;
       }else if(typeof value === 'string'){
         if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"&&value.indexOf("rgb")===-1){//数组（dasharray或offset）
-          value = value.split(',')
-          for(var i=0,length=value.length;i<length;i++){
-            value[i] = Number(value[i])
+          value = value.split(',');
+          for(let i=0,length=value.length;i<length;i++){
+            value[i] = Number(value[i]);
           }
         }
         if(targetDom.name==="text-font"){
@@ -735,86 +742,94 @@ export default {
       if(targetDom.type === 'checkbox'){
         if(targetDom.parentElement.dataset.name === 'visibility'){
           if(targetDom.checked){
-            value = 'visible'
+            value = 'visible';
           }else{
-            value = 'none'
+            value = 'none';
           }
-          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value;
         }else{
-          value = targetDom.checked
-          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value
+          value = targetDom.checked;
+          currentLayer[targetDom.parentElement.dataset.type][targetDom.parentElement.dataset.name] = value;
         }
       }else{
-        currentLayer[targetDom.dataset.type][targetDom.name] = value
+        currentLayer[targetDom.dataset.type][targetDom.name] = value;
       }
 
       if(targetDom.name === 'line-join'){
-        let inputDomR = document.querySelector("input[name='line-round-limit']")
-        let inputDomM = document.querySelector("input[name='line-miter-limit']")
+        let inputDomR = document.querySelector("input[name='line-round-limit']");
+        let inputDomM = document.querySelector("input[name='line-miter-limit']");
         if(value === 'miter'){
-          inputDomR.disabled = 'disabled'
-          inputDomM.removeAttribute('disabled')
+          inputDomR.disabled = 'disabled';
+          inputDomM.removeAttribute('disabled');
         }else if(value === 'round'){
-          inputDomM.disabled = 'disabled'
-          inputDomR.removeAttribute('disabled')
+          inputDomM.disabled = 'disabled';
+          inputDomR.removeAttribute('disabled');
         }else {
-          inputDomR.disabled = 'disabled'
-          inputDomM.disabled = 'disabled'
+          inputDomR.disabled = 'disabled';
+          inputDomM.disabled = 'disabled';
         }
       }
 
-      let data = JSON.parse(JSON.stringify(this.styleObj))
-      this.changeStyle(data)
+      let data = JSON.parse(JSON.stringify(this.styleObj));
+      this.changeStyle(data);
     },
     createNewLayer:function(){
-      var id = $("#new-layer-panel input[name='id']").val();
-      if(id===""){this.$broadcast("mailSent",{message:"样式ID不能为空！",timeout:3000});return;}
-      var layers = this.styleObj.layers;
+      let id = $("#new-layer-panel input[name='id']").val();
+      if(id===""){
+        this.$broadcast("mailSent",{message:"样式ID不能为空！",timeout:3000});
+        return;
+      }
+      let layers = this.styleObj.layers;
       for(let j=0;j<layers.length;j++){
-        if(id===layers[j].id){this.$broadcast("mailSent",{message:"该样式ID已存在！",timeout:3000});return;}
+        if(id===layers[j].id){
+          this.$broadcast("mailSent",{message:"该样式ID已存在！",timeout:3000});
+          return;
+        }
       }
 
-      var sourceDom = $("#new-layer-panel select[name='source']")[0];
-      var source = sourceDom.options[sourceDom.selectedIndex].value;
-      var sourceLayerDom = $("#new-layer-panel select[name='source-layer']")[0];
-      var source_layer = sourceLayerDom.options[sourceLayerDom.selectedIndex].value;
+      let sourceDom = $("#new-layer-panel select[name='source']")[0];
+      let source = sourceDom.options[sourceDom.selectedIndex].value;
+      let sourceLayerDom = $("#new-layer-panel select[name='source-layer']")[0];
+      let source_layer = sourceLayerDom.options[sourceLayerDom.selectedIndex].value;
 
-      var minzoom = $("#new-layer-panel input[name='minzoom']").val();
-      var maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
-      var filterElems = $("#new-layer-panel .filter-item");
-      var filterItems = [];
+      let minzoom = $("#new-layer-panel input[name='minzoom']").val();
+      let maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
+      let filterElems = $("#new-layer-panel .filter-item");
+      let filterItems = [];
       for(let i=0;i<filterElems.length;i++){
-        var temp = [];
-        var field = $(filterElems[i]).children("select[name='filter-field']").val();
+        let temp = [];
+        let field = $(filterElems[i]).children("select[name='filter-field']").val();
         if(field===""){continue;}
-        var operator = $(filterElems[i]).children("select[name='filter-operator']").val();
-        var value = $(filterElems[i]).children("input[name='filter-value']").val();
-        var type = $(filterElems[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+        let operator = $(filterElems[i]).children("select[name='filter-operator']").val();
+        let value = $(filterElems[i]).children("input[name='filter-value']").val();
+        let type = $(filterElems[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
         if(operator==="in"||operator==="!in"){//值为数组
-          value = value.split(",")
+          value = value.split(",");
           if(type==="Number"){
-            for(var p=0;p<value.length;p++){
+            for(let p=0;p<value.length;p++){
               value[p] = Number(value[p]);
             }
           }
-          temp = _.concat([operator,field],value)
+          temp = _.concat([operator,field],value);
         }else{
-          if(type==="Number"){value=Number(value);}
-          temp = [operator,field,value]
+          if(type==="Number"){
+            value=Number(value);
+          }
+          temp = [operator,field,value];
         }
         filterItems.push(temp);
       }
       if(filterItems.length>1){
-        var condition = $("#new-layer-panel select[name='filter-condition']").val();
-        var filter = [condition].concat(filterItems);
+        let condition = $("#new-layer-panel select[name='filter-condition']").val();
+        let filter = [condition].concat(filterItems);
       }else if(filterItems.length===1){
-        var filter = filterItems[0];
+        let filter = filterItems[0];
       }
 
-      var ratioDom = $("#new-layer-panel input[name='type']");
+      let ratioDom = $("#new-layer-panel input[name='type']");
       for(let i=0;i<ratioDom.length;i++){
         if(ratioDom[i].checked){
-          var type = ratioDom[i].value;
+          let type = ratioDom[i].value;
         }
       }
 
@@ -829,11 +844,14 @@ export default {
       if(maxzoom===""){maxzoom=22;}
       minzoom=Number(minzoom);
       maxzoom=Number(maxzoom);
-      if(maxzoom<minzoom){this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});return;}
+      if(maxzoom<minzoom){
+        this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});
+        return;
+      }
 
-      var layout = this.defaultProperty[type].layout;
-      var paint = this.defaultProperty[type].paint;
-      var layer = {
+      let layout = this.defaultProperty[type].layout;
+      let paint = this.defaultProperty[type].paint;
+      let layer = {
         'id':id,
         "source":source,
         'type':type,
@@ -848,31 +866,47 @@ export default {
           "text-font":["SimHei Regular"]
         }
       }
-      if(source_layer!==""){layer['source-layer'] = source_layer;}
-      if(filter){layer.filter = filter;}
+      if(source_layer!==""){
+        layer['source-layer'] = source_layer;
+      }
+      if(filter){
+        layer.filter = filter;
+      }
       //处理文件夹
       if($("#new-layer-panel select[name='folder']").val()){//选择了已有的文件夹
-        layer.metadata = {"mapbox:group": $("#new-layer-panel select[name='folder']").find("option:selected").data("id")}
+        layer.metadata = {
+          "mapbox:group": $("#new-layer-panel select[name='folder']").find("option:selected").data("id")
+        };
       }else if($("#new-layer-panel input[name='folder']").val()){//新建了一个文件夹
-        var folder_id = this.getFolderId();
+        let folder_id = this.getFolderId();
         if(this.styleObj.metadata){
           if(!this.styleObj.metadata["mapbox:groups"]){
             this.styleObj.metadata["mapbox:groups"] = {};
           }
-          this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
-          layer.metadata = {"mapbox:group": folder_id}
+          this.styleObj.metadata["mapbox:groups"][folder_id] = {
+            name:$("#new-layer-panel input[name='folder']").val(),
+            "collapsed": false
+          };
+          layer.metadata = {
+            "mapbox:group": folder_id
+          };
         }else{
           this.styleObj.metadata = {};
           this.styleObj.metadata["mapbox:groups"] = {};
-          this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
-          layer.metadata = {"mapbox:group": folder_id}
+          this.styleObj.metadata["mapbox:groups"][folder_id] = {
+            name:$("#new-layer-panel input[name='folder']").val(),
+            "collapsed": false
+          };
+          layer.metadata = {
+            "mapbox:group": folder_id
+          };
         }
       }
       this.styleObj.layers.push(layer);
       if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
         for(let i=0;i<this.sources.length;i++){
           if(this.sources[i].sourceName===layer.source){
-            var tilejsonUrl = this.sources[i].sourceUrl;
+            let tilejsonUrl = this.sources[i].sourceUrl;
             break;
           }
         }
@@ -899,12 +933,12 @@ export default {
     },
     deleteStyleLayer:function(){
       if($("#property-panel").is(":visible")){
-        var currentLayer = this.currentLayer;
+        let currentLayer = this.currentLayer;
         let layers = this.styleObj.layers
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id === currentLayer.id){
             layers.splice(i,1);
-            break
+            break;
           }
         }
         $("#property-panel").hide();
@@ -915,99 +949,99 @@ export default {
       }
     },
     eledragstart: function(e){
-      e.dataTransfer.setData('dragid',e.target.id)
+      e.dataTransfer.setData('dragid',e.target.id);
     },
     eledragover: function(){
       //just for preventDefault
     },
     eledrop: function(e){
-      var dragnode = this.$el.querySelector("#layer"+e.dataTransfer.getData('dragid').substr(5))
+      let dragnode = this.$el.querySelector("#layer"+e.dataTransfer.getData('dragid').substr(5));
       if(dragnode === null){
-        dragnode = this.$el.querySelector("#"+e.dataTransfer.getData('dragid'))
+        dragnode = this.$el.querySelector("#"+e.dataTransfer.getData('dragid'));
       }
-      var refnode = this.$el.querySelector("*[data-ref='1']")
+      let refnode = this.$el.querySelector("*[data-ref='1']");
       if(refnode == null){
-        return
+        return;
       }
 
       //移除高亮
-      refnode.setAttribute('data-ref','0')
-      var lyindex = refnode.className.indexOf(' layerover')
+      refnode.setAttribute('data-ref','0');
+      let lyindex = refnode.className.indexOf(' layerover');
       if(lyindex !== -1){
-        refnode.className = refnode.className.replace(' layerover','')
+        refnode.className = refnode.className.replace(' layerover','');
       }
 
-      let dragLayer = this.tocLayers[parseInt(e.dataTransfer.getData('dragid').substr(5))]
-      let refLayer = this.tocLayers[parseInt(refnode.id.substr(5))]
+      let dragLayer = this.tocLayers[parseInt(e.dataTransfer.getData('dragid').substr(5))];
+      let refLayer = this.tocLayers[parseInt(refnode.id.substr(5))];
 
       //如果是sublayer
-      let dragLayerId
+      let dragLayerId;
       if(dragLayer){
-        dragLayerId = dragLayer.id
+        dragLayerId = dragLayer.id;
       }else{
-        dragLayerId = dragnode.id
+        dragLayerId = dragnode.id;
       }
       //如果dragnode是group,则dragLayerId 是其子元素的最后一个的id
       if(dragLayer&&dragLayer.items){
-        dragLayerId = dragLayer.items[dragLayer.items.length-1].id
+        dragLayerId = dragLayer.items[dragLayer.items.length-1].id;
       }
 
 
-      let refLayerId
+      let refLayerId;
       if(refLayer){
-        refLayerId= refLayer.id
+        refLayerId= refLayer.id;
       }else{
-        refLayerId = refnode.id
+        refLayerId = refnode.id;
       }
 
-      let dragLayerIndex,refLayerIndex
+      let dragLayerIndex,refLayerIndex;
 
       //如果refnode是group
-      var refsublayer = refnode.querySelectorAll('div.sublayer-item')
+      let refsublayer = refnode.querySelectorAll('div.sublayer-item');
       if(refsublayer && refsublayer.length>0){
-        refLayerId = refsublayer[0].id
+        refLayerId = refsublayer[0].id;
       }
 
-      var styleObj = this.styleObj
-      var maplayers = styleObj.layers
+      let styleObj = this.styleObj;
+      let maplayers = styleObj.layers;
 
       //移除
       for(let i=0,length=maplayers.length;i<length;i++){
-        let name = maplayers[i].id
+        let name = maplayers[i].id;
         if(name === dragLayerId){
-          dragLayerIndex = i
+          dragLayerIndex = i;
 
           //判断是否是组，是组则移除整组
           if(dragLayer&&dragLayer.items&&dragLayer.items.length>0){
 
-            maplayers.splice(dragLayerIndex,dragLayer.items.length)
+            maplayers.splice(dragLayerIndex,dragLayer.items.length);
           }else{
-            dragLayer = maplayers[i]
-            maplayers.splice(dragLayerIndex,1)
+            dragLayer = maplayers[i];
+            maplayers.splice(dragLayerIndex,1);
           }
-          break
+          break;
         }
       }
       //插入
       for(let i=0,length=maplayers.length;i<length;i++){
-        let name = maplayers[i].id
+        let name = maplayers[i].id;
         if(name === refLayerId){
-          refLayerIndex = i
+          refLayerIndex = i;
           //如果是组
           if(dragLayer&&dragLayer.items){
             for(let j=0,length = dragLayer.items.length;j<length;j++){
-              maplayers.splice(refLayerIndex+1,0,dragLayer.items[j])
+              maplayers.splice(refLayerIndex+1,0,dragLayer.items[j]);
             }
           }else{
-            maplayers.splice(refLayerIndex+1,0,dragLayer)
+            maplayers.splice(refLayerIndex+1,0,dragLayer);
           }
-          break
+          break;
         }
       }
 
       //如果dragnode 是sublayer
       if(dragnode.className.indexOf('sublayer-item') !== -1){
-        delete dragLayer['metadata']
+        delete dragLayer['metadata'];
       }
 
       //如果refnode是sublayer
@@ -1016,51 +1050,51 @@ export default {
         if(dragLayer.items&&dragLayer.items.length>0){
           //移动group
           for(let j=dragLayer.items.length-1;j>=0;j--){
-            dragLayer.items[j]['metadata'] = {}
-            dragLayer.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+            dragLayer.items[j]['metadata'] = {};
+            dragLayer.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
           }
         }else{
-          dragLayer['metadata'] = {}
-          dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group']
+          dragLayer['metadata'] = {};
+          dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
         }
       }
       //change toc
-      this.tocLayers = this.createTocLayer(styleObj)
+      this.tocLayers = this.createTocLayer(styleObj);
 
-      let data = JSON.parse(JSON.stringify(this.styleObj))
-      this.changeStyle(data)
+      let data = JSON.parse(JSON.stringify(this.styleObj));
+      this.changeStyle(data);
     },
     eledragenter: function(e){
       //先移除
-      let over = document.querySelectorAll("*[data-ref='1']")
-      let currentTarget = e.currentTarget
+      let over = document.querySelectorAll("*[data-ref='1']");
+      let currentTarget = e.currentTarget;
 
       for(let i=0,length = over.length;i<length;i++){
-        over[i].setAttribute('data-ref','0')
-        over[i].className = over[i].className.replace(' layerover','')
+        over[i].setAttribute('data-ref','0');
+        over[i].className = over[i].className.replace(' layerover','');
       }
 
-      currentTarget.setAttribute('data-ref','1')
-      var lyindex = currentTarget.className.indexOf('layerover')
+      currentTarget.setAttribute('data-ref','1');
+      let lyindex = currentTarget.className.indexOf('layerover');
       if(lyindex === -1){
-        currentTarget.className += ' layerover'
+        currentTarget.className += ' layerover';
       }
     },
     sublayerMouseover: function(e){
       if(e.currentTarget.className.indexOf('sublayer-over') === -1){
-        e.currentTarget.className += ' sublayer-over'
+        e.currentTarget.className += ' sublayer-over';
       }
     },
     sublayerMouseleave: function(e){
-      e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','')
+      e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','');
     },
     closePanel: function(e){
-      let panel = this.$el.querySelector("#property-panel")
-      panel.style.display = 'none'
+      let panel = this.$el.querySelector("#property-panel");
+      panel.style.display = 'none';
       $(".panel").hide();
     },
     onShowIconPanel:function(e){
-      var iconPanel = $("#icon-select-panel");
+      let iconPanel = $("#icon-select-panel");
       if(iconPanel.is(":visible")===true){
         iconPanel.hide();
         $("#icon-select-panel .icon-link").unbind("click");
@@ -1073,15 +1107,15 @@ export default {
       }
     },
     iconClick:function(e){
-      var iconName = e.target.title;
-      var inputEvent = e.data.inputEvent;
+      let iconName = e.target.title;
+      let inputEvent = e.data.inputEvent;
       inputEvent.target.value = iconName;
       this.propertyChange(inputEvent);
       $("#icon-select-panel").hide();
     },
     onShowFontPanel:function(e){
       
-      var fontPanel = $("#font-select-panel");
+      let fontPanel = $("#font-select-panel");
       if(fontPanel.is(":visible")===true){
         fontPanel.hide();
         $("#font-select-panel .font-item").unbind("click");
@@ -1094,19 +1128,18 @@ export default {
       }
     },
     fontClick:function(e){
-      var fontName = e.target.title;
-      var inputEvent = e.data.inputEvent;
+      let fontName = e.target.title;
+      let inputEvent = e.data.inputEvent;
       inputEvent.target.value = fontName;
       this.propertyChange(inputEvent);
       $("#font-select-panel").hide();
     },
     fontFamilyClick:function(e){
       
-      var font_item = $(e.target).closest(".font-family").children(".font-item");
+      let font_item = $(e.target).closest(".font-family").children(".font-item");
       if(font_item.is(":visible")){
         font_item.css("display","none");
       }else{
-        //$(".font-item").css("display","none");
         font_item.css("display","block");
       }
     },
@@ -1122,13 +1155,18 @@ export default {
       }else if(!glfun.isFunctionDefinition(parameters.value)){
         return parameters.value;
       }else{
-        var params = {type:parameters.type,stops:parameters.value.stops};
-        if(parameters.value.base){params.base = parameters.value.base}
-        var experiement = glfun.interpolated(params);
+        let params = {
+          type:parameters.type,
+          stops:parameters.value.stops
+        };
+        if(parameters.value.base){
+          params.base = parameters.value.base;
+        }
+        let experiement = glfun.interpolated(params);
         if(this.$parent.$refs.drafmap.map.getZoom){  
-          var zoom = this.$parent.$refs.drafmap.map.getZoom();
+          let zoom = this.$parent.$refs.drafmap.map.getZoom();
         }else{
-          var zoom = this.styleObj.zoom||3;
+          let zoom = this.styleObj.zoom||3;
         }
         return experiement(zoom);
       }
@@ -1144,10 +1182,12 @@ export default {
       $(e.target).addClass("open");
       $("#stops-panel").show();
 
-      var propertyName = e.target.dataset.name;
-      var type = e.target.dataset.type;//layout/paint
-      if(!this.currentLayer[type]){this.currentLayer[type]={};}
-      var value = this.currentLayer[type][propertyName]||this.defaultProperty[this.currentLayer.type][type][propertyName];
+      let propertyName = e.target.dataset.name;
+      let type = e.target.dataset.type;//layout/paint
+      if(!this.currentLayer[type]){
+        this.currentLayer[type]={};
+      }
+      let value = this.currentLayer[type][propertyName]||this.defaultProperty[this.currentLayer.type][type][propertyName];
       this.stopsData.property = {
         name:propertyName,
         type:type,
@@ -1160,8 +1200,12 @@ export default {
           stops:value.stops,
           base:1
         };
-        if(value.base){this.stopsData.stopsObj.base = value.base}
-        if(value.property){this.stopsData.stopsObj.property = value.property}
+        if(value.base){
+          this.stopsData.stopsObj.base = value.base;
+        }
+        if(value.property){
+          this.stopsData.stopsObj.property = value.property;
+        }
       }else{
         this.stopsData.hasStops=false;
         this.stopsData.stopsObj = {
@@ -1171,9 +1215,9 @@ export default {
         };
       }
 
-      var offsetTop = e.target.offsetParent.offsetTop;
-      var containerHeight = e.target.offsetParent.offsetParent.offsetHeight;
-      var pannelHeight;
+      let offsetTop = e.target.offsetParent.offsetTop;
+      let containerHeight = e.target.offsetParent.offsetParent.offsetHeight;
+      let pannelHeight;
       if(this.stopsData.hasStops===false){
         pannelHeight = 108;
       }else{
@@ -1191,38 +1235,38 @@ export default {
   },
   events: {
     'toc-init': function(style){
-      this.styleObj = JSON.parse(JSON.stringify(style))
-      this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1]
-      this.tocLayers = this.createTocLayer(style)
-      this.fixType(this.currentLayer)
+      this.styleObj = JSON.parse(JSON.stringify(style));
+      this.currentLayer = this.styleObj.layers[this.styleObj.layers.length-1];
+      this.tocLayers = this.createTocLayer(style);
+      this.fixType(this.currentLayer);
       //展示属性
-      this.curPanelLayer = this.filterProperty(this.currentLayer)
+      this.curPanelLayer = this.filterProperty(this.currentLayer);
       this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
       
     },
     'toc-layer-change': function(id){
       $("input[name='icon-image']").unbind("click");
-      let styleObj = this.styleObj
-      let layers = styleObj.layers
+      let styleObj = this.styleObj;
+      let layers = styleObj.layers;
       for(let i=0,length=layers.length;i<length;i++){
         if(layers[i].id == id){
-          this.currentLayer = layers[i]
-          break
+          this.currentLayer = layers[i];
+          break;
         }
       }
-      this.fixType(this.currentLayer)
+      this.fixType(this.currentLayer);
       //展示属性
-      this.curPanelLayer = this.filterProperty(this.currentLayer)
+      this.curPanelLayer = this.filterProperty(this.currentLayer);
       this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
-      let panel = this.$el.querySelector("#property-panel")
-      panel.style.display = 'block'
+      let panel = this.$el.querySelector("#property-panel");
+      panel.style.display = 'block';
       $("input[name='icon-image']").bind("click",this.onSelectIcon);
     },
     'layer-property-change':function(options){
-      var name = options.name;
-      var value = options.value;
+      let name = options.name;
+      let value = options.value;
       $(".open-stops").removeClass("open");
-      var currentLayer = this.currentLayer;
+      let currentLayer = this.currentLayer;
       if(value===""||value===undefined||value===null||value.length===0){
         if(options.type){
           delete currentLayer[options.type][name];
@@ -1231,20 +1275,22 @@ export default {
         }
       }else{
         if(options.type){
-          if(!currentLayer[options.type]){currentLayer[options.type] = {}}
+          if(!currentLayer[options.type]){
+            currentLayer[options.type] = {};
+          }
           currentLayer[options.type][name] = value;
         }else{
           currentLayer[name] = value;
         }
       }
-      let data = JSON.parse(JSON.stringify(this.styleObj))
-      this.changeStyle(data)
+      let data = JSON.parse(JSON.stringify(this.styleObj));
+      this.changeStyle(data);
     },
     'layer-folder-change':function(params){//修改文件夹
       if(params.type==="new folder"){//input
-        var folder_id = this.getFolderId();
-        var keys = Object.keys(this.Folders);
-        var flag=0;
+        let folder_id = this.getFolderId();
+        let keys = Object.keys(this.Folders);
+        let flag=0;
         for(let i=0;i<keys.length;i++){
           if(params.name === this.Folders[keys[i]].name){
             folder_id = keys[i];
@@ -1257,17 +1303,23 @@ export default {
             if(!this.styleObj.metadata["mapbox:groups"]){
               this.styleObj.metadata["mapbox:groups"] = {};
             }
-            this.styleObj.metadata["mapbox:groups"][folder_id] = {name:params.name,"collapsed": false}
+            this.styleObj.metadata["mapbox:groups"][folder_id] = {
+              name:params.name,
+              "collapsed": false
+            };
           }else{
             this.styleObj.metadata = {};
             this.styleObj.metadata["mapbox:groups"] = {};
-            this.styleObj.metadata["mapbox:groups"][folder_id] = {name:$("#new-layer-panel input[name='folder']").val(),"collapsed": false}
+            this.styleObj.metadata["mapbox:groups"][folder_id] = {
+              name:$("#new-layer-panel input[name='folder']").val(),
+              "collapsed": false
+            };
           }
         }
       }else if(params.type==="change folder"){//select
-        var folder_id = params.id;
+        let folder_id = params.id;
       }
-      var currentLayer = this.currentLayer;
+      let currentLayer = this.currentLayer;
       if(params.name===""){
         delete currentLayer.metadata["mapbox:group"];
       }else{
@@ -1498,13 +1550,13 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data;
+        let data = response.data;
         for(let i = 0;i<data.length;i++){
-          var source = {};
+          let source = {};
           source.sourceName = data[i].name;
           source.sourceUrl = response.request.url+'/'+data[i].tileset_id;
           source.id = data[i].tileset_id;
-          var flag=0;//标记source是否重复
+          let flag=0;//标记source是否重复
           for(let j = 0;j<this.sources.length;j++){//判断是否有重复source
             if(this.sources[j].id===source.id){
               flag=1;
@@ -1525,19 +1577,19 @@ export default {
       handler: function(style,oldStyle){
         if(Object.keys(style).length===0){return;}
         let access_token = Cookies.get('access_token');
-        this.styleObj = JSON.parse(JSON.stringify(style))
+        this.styleObj = JSON.parse(JSON.stringify(style));
         if(!_.isEqual(style.sources,oldStyle.sources)){//sources发生变化时，重新计算this.sources
-          var sourceNames = Object.keys(this.styleObj.sources);
+          let sourceNames = Object.keys(this.styleObj.sources);
           for(let j = 0;j<sourceNames.length;j++){
-            var source = {};
+            let source = {};
             source.sourceName = sourceNames[j];
             if(this.styleObj.sources[sourceNames[j]].url){
               source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
-              var t = source.sourceUrl.split("/");
+              let t = source.sourceUrl.split("/");
               source.id = t[t.length-1];
               this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{'x-access-token':access_token}}).then(function(res){
-                var data = res.data;
-                var params = res.request.params;//请求参数
+                let data = res.data;
+                let params = res.request.params;//请求参数
                 for(let m=0;m<this.sources.length;m++){
                   if(this.sources[m].sourceName===params.sourceName){
                     this.sources[m].sourceLayers = data.vector_layers;
@@ -1558,18 +1610,18 @@ export default {
         }
         
         if(style.glyphs&&style.glyphs!==oldStyle.glyphs){//glyth发生变化时，重新请求字体列表  
-          var glyphUrl = this.styleObj.glyphs;
-          var index = glyphUrl.indexOf("/{fontstack}");
-          var fontUrl = glyphUrl.substring(0,index);
+          let glyphUrl = this.styleObj.glyphs;
+          let index = glyphUrl.indexOf("/{fontstack}");
+          let fontUrl = glyphUrl.substring(0,index);
           this.$http({url:fontUrl,method:"GET",headers:{'x-access-token':access_token}})
           .then(function(res){
-            var fonts = res.data;
-            var fontFamilys={};
+            let fonts = res.data;
+            let fontFamilys={};
             for(let i=0;i<fonts.length;i++){
-              var temFont = {};
+              let temFont = {};
               temFont.name = fonts[i].fontname;
               temFont.previewUrl = fontUrl+"/"+fonts[i].fontname+"/thumbnail?access_token="+access_token;
-              var family_name = fonts[i].family_name;
+              let family_name = fonts[i].family_name;
               if(fontFamilys.hasOwnProperty(family_name)){
                 fontFamilys[family_name].push(temFont);
               }else{
@@ -1584,7 +1636,11 @@ export default {
         }
 
         if(style.sprite&&style.sprite!==oldStyle.sprite){//sprite发生变化时，重新请求字体列表
-          let sprite = {pngUrl:"",icons:[],description:""};//初始化sprite对象
+          let sprite = {
+            pngUrl:"",
+            icons:[],
+            description:""
+          };//初始化sprite对象
           sprite.pngUrl = this.styleObj.sprite+".png";
           this.spriteObj.pngUrl = sprite.pngUrl;
           let jsonUrl = this.styleObj.sprite+".json";
@@ -1609,16 +1665,16 @@ export default {
           });
         }
 
-        let layers = this.styleObj.layers
+        let layers = this.styleObj.layers;
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id === this.currentLayer.id){
-            this.currentLayer = layers[i]
+            this.currentLayer = layers[i];
           }
         }
-        this.tocLayers = this.createTocLayer(this.styleObj)
-        this.fixType(this.currentLayer)
+        this.tocLayers = this.createTocLayer(this.styleObj);
+        this.fixType(this.currentLayer);
         //展示属性
-        this.curPanelLayer = this.filterProperty(this.currentLayer)
+        this.curPanelLayer = this.filterProperty(this.currentLayer);
         this.propertyGroup = this.resolvePropertyGroup(this.curPanelLayer);
       },
       deep: true

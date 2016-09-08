@@ -9,7 +9,7 @@
 <script>
 export default {
   attached() {
-    componentHandler.upgradeElement(document.getElementById("spiner"))
+    componentHandler.upgradeElement(document.getElementById("spiner"));
   }
 
 }

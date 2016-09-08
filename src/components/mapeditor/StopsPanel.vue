@@ -110,8 +110,14 @@ export default {
       if(tem.type!=="exponential"){
         tem.base=undefined;
       }
-      if(tem.type===""){tem.type=undefined;}
-      var opts = {name:this.name,type:this.stopsdata.property.type,value:tem};
+      if(tem.type===""){
+        tem.type=undefined;
+      }
+      var opts = {
+        name:this.name,
+        type:this.stopsdata.property.type,
+        value:tem
+      };
       this.$dispatch("layer-property-change",opts);
       this.$el.style.display = 'none';
     },
@@ -124,7 +130,9 @@ export default {
       var value = targetDom.value;
       var name = targetDom.name;
       if(name==='zoom'){//级别
-        if(isNaN(Number(value))){this.error = "错误：级别应为数字";}
+        if(isNaN(Number(value))){
+          this.error = "错误：级别应为数字";
+        }
         this.stopsdata.stopsObj.stops[index][0] = Number(value);
         this.error="";
         return;
@@ -140,7 +148,9 @@ export default {
         return;
       }
       if(name==='base'){//指数
-        if(isNaN(Number(value))){this.error = "错误：指数应为数字";}
+        if(isNaN(Number(value))){
+          this.error = "错误：指数应为数字";
+        }
         this.stopsdata.stopsObj.base = Number(value);
         this.error="";
         return;
@@ -165,9 +175,9 @@ export default {
       }
       if(typeof defaultValue==='object'&&defaultValue.length!=='undefined'){//数组
         if(name!=="text-font"){
-          value = value.split(',')
+          value = value.split(',');
           for(var i=0,length=value.length;i<length;i++){
-            value[i] = Number(value[i])
+            value[i] = Number(value[i]);
           }
           this.stopsdata.stopsObj.stops[index][1] = value;
         }
@@ -181,9 +191,9 @@ export default {
       if(typeof defaultValue==='boolean'||e.target.type==="checkbox"){
         if(targetDom.parentElement.dataset.name === 'visibility'){
           if(targetDom.checked){
-            value = 'visible'
+            value = 'visible';
           }else{
-            value = 'none'
+            value = 'none';
           }
           this.stopsdata.stopsObj.stops[index][1] = value;
         }else{
@@ -290,7 +300,6 @@ export default {
       if(font_item.is(":visible")){
         font_item.css("display","none");
       }else{
-        //$(".font-item").css("display","none");
         font_item.css("display","block");
       }
     }

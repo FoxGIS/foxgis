@@ -22,18 +22,18 @@
 export default {
   methods: {
     doOK: function(){
-      this.$el.style.display = 'none'
-      this.$dispatch("dialog-action",'ok')
+      this.$el.style.display = 'none';
+      this.$dispatch("dialog-action",'ok');
     },
     doCancel: function(){
-      this.$el.style.display = 'none'
-      this.$dispatch("dialog-action",'cancel')
+      this.$el.style.display = 'none';
+      this.$dispatch("dialog-action",'cancel');
     }
   },
   data(){
     return {
-    scope: '不修改',
-    scopeOptions: ['不修改','私有', '公开']
+      scope: '不修改',
+      scopeOptions: ['不修改','私有', '公开']
     }
   },
 

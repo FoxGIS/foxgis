@@ -116,18 +116,21 @@ import Cookies from 'js-cookie'
 export default {
   methods: {
     propertyChange:function(e){
-      var value = $(e.target).val();
+      let value = $(e.target).val();
       if(e.target.name==="source"){//当用户更改source时，获取该source中包含哪些source-layer
-        var source = value;
-        if(source===""){this.sourcelayers=[];}
+        let source = value;
+        if(source===""){
+          this.sourcelayers=[];
+        }
         for(let i=0;i<this.sources.length;i++){
           if(source === this.sources[i].sourceName){
             if(this.sources[i].sourceLayers){
               this.sourcelayers = this.sources[i].sourceLayers;
             }else{
               let access_token = Cookies.get('access_token');
-              this.$http({url:this.sources[i].sourceUrl,method:"GET",headers:{'x-access-token':access_token}}).then(function(res){
-                var data = res.data;
+              this.$http({url:this.sources[i].sourceUrl,method:"GET",headers:{'x-access-token':access_token}})
+              .then(function(res){
+                let data = res.data;
                 this.sourcelayers = data.vector_layers||[];
               },function(res){
 
@@ -137,8 +140,10 @@ export default {
         }
       }
       if(e.target.name==="source-layer"){//当用户更改source-layer时，获取该source-layer中包含哪些字段
-        if(e.target.value===""){this.layerfields={};}
-        var curr_sourcelayer = e.target.value;
+        if(e.target.value===""){
+          this.layerfields={};
+        }
+        let curr_sourcelayer = e.target.value;
         for(let j=0;j<this.sourcelayers.length;j++){
           if(curr_sourcelayer===this.sourcelayers[j].id){
             this.layerfields = this.sourcelayers[j].fields;
@@ -152,7 +157,7 @@ export default {
       if(e.target.name==="minzoom"||e.target.name==="maxzoom"){
         value = Number(value);
       }
-      var params = {};
+      let params = {};
       params.name = e.target.name;
       params.value = value;
       this.$dispatch("layer-property-change",params);
@@ -161,25 +166,31 @@ export default {
       if(this.selecteddata.panel_type==="create"){
         return;
       }
-      if(e.target.name==="filter-value"){this.selecteddata.filter.filters[index].value=e.target.value;}
-      var tem = this.selecteddata.filter;
-      var filter = [];
+      if(e.target.name==="filter-value"){
+        this.selecteddata.filter.filters[index].value=e.target.value;
+      }
+      let tem = this.selecteddata.filter;
+      let filter = [];
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
-          if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){continue;}
-          var field = this.selecteddata.filter.filters[i].field;
-          var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+          if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){
+            continue;
+          }
+          let field = this.selecteddata.filter.filters[i].field;
+          let type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
           if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
-            var valueArr = tem.filters[i].value.split(",")
+            let valueArr = tem.filters[i].value.split(",");
             if(type==="Number"){
-              for(var p=0;p<valueArr.length;p++){
+              for(let p=0;p<valueArr.length;p++){
                 valueArr[p] = Number(valueArr[p]);
               }
             }
-            var t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr)
+            let t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr);
           }else{
-            if(type==="Number"){tem.filters[i].value=Number(tem.filters[i].value);}
-            var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
+            if(type==="Number"){
+              tem.filters[i].value=Number(tem.filters[i].value);
+            }
+            let t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
           }
           filter.push(t);
         }
@@ -187,15 +198,19 @@ export default {
       if(filter.length>0){
         filter = [tem.condition].concat(filter);
       }else{
-        filter = ["all"]
+        filter = ["all"];
       }
-      var params = {};
+      let params = {};
       params.name = 'filter';
       params.value = filter;
       this.$dispatch("layer-property-change",params);
     },
     addFilter:function(){
-      var t={field:"",operator:"==",value:""}
+      let t={
+        field:"",
+        operator:"==",
+        value:""
+      }
       this.selecteddata.filter.filters.push(t);
       if(this.selecteddata.panel_type==="create"&&this.selecteddata['source-layer']===""){
         this.layerfields = {};
@@ -210,7 +225,7 @@ export default {
         return;   
       }   
       if(this.selecteddata.panel_type==="update"){    
-        var params = {};    
+        let params = {};    
         if(e.target.tagName==="INPUT"){   
           params.type = "new folder";   
           params.name = e.target.value;   
@@ -243,11 +258,11 @@ export default {
       handler:function(data,olddata){
         if(this.selecteddata.panel_type==="update"){//给radio元素赋值
           $(".select-data input[type='radio']").removeAttr("name");
-          $("#data-div input[type='radio']").attr("name","type")
+          $("#data-div input[type='radio']").attr("name","type");
           $("#data-div input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }else{
           $(".select-data input[type='radio']").removeAttr("name");
-          $("#new-layer-panel input[type='radio']").attr("name","type")
+          $("#new-layer-panel input[type='radio']").attr("name","type");
           $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }
       }

@@ -10,10 +10,11 @@
 <script>
 export default {
   ready: function(){
-    var that=this;
-    this.$http({url:'/static/adminTree.json',method:'GET'}).then(function(response){
-      var zNodes = response.data.znodes;
-      var setting = {
+    let that=this;
+    this.$http({url:'/static/adminTree.json',method:'GET'})
+    .then(function(response){
+      let zNodes = response.data.znodes;
+      let setting = {
         data:{
           simpleData:{
             enable:true
@@ -25,7 +26,7 @@ export default {
             let bounds = treeNode.bbox;
             let adminId = treeNode.id;//行政区划码
             let name = treeNode.name;
-            var vue = this.getZTreeObj("admin-tree").setting.vue;
+            let vue = this.getZTreeObj("admin-tree").setting.vue;
             vue.$dispatch('map-bounds-change',{id:adminId,name:name,bounds:bounds});
           }
         },
