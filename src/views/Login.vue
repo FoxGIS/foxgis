@@ -29,68 +29,68 @@ import Cookies from 'js-cookie'
 export default {
   methods:{
     login: function(e){
-      let url = SERVER_API.users
-      let loginbutton = e.target.parentElement
-      loginbutton.disabled = true
-      let username = this.$el.querySelector('#username').value
-      let password = this.$el.querySelector('#password').value
-      url += '/'+username
+      let url = SERVER_API.users;
+      let loginbutton = e.target.parentElement;
+      loginbutton.disabled = true;
+      let username = this.$el.querySelector('#username').value;
+      let password = this.$el.querySelector('#password').value;
+      url += '/'+username;
       this.$http.post(url,{'username':username,'password':password}).then(function(response){
-        loginbutton.disabled = false
-        let data = response.data
+        loginbutton.disabled = false;
+        let data = response.data;
         if(!data.is_verified){
-          this.showError('用户未认证，请联系管理员')
-          return
+          this.showError('用户未认证，请联系管理员');
+          return;
         }
-        let access_token = data.access_token
-        let username = data.username
-        let name = data.name
-        let email = data.email
-        let phone = data.phone
-        let organization = data.organization
-        let location = data.location
+        let access_token = data.access_token;
+        let username = data.username;
+        let name = data.name;
+        let email = data.email;
+        let phone = data.phone;
+        let organization = data.organization;
+        let location = data.location;
         let role = data.role;
-        let days = 0
+        let days = 0;
 
-        Cookies.set('access_token',access_token)
-        Cookies.set('username',username)
+        Cookies.set('access_token',access_token);
+        Cookies.set('username',username);
         if(name!=undefined){
-          Cookies.set('name',name)
+          Cookies.set('name',name);
         }
         if(email!=undefined){
-          Cookies.set('email',email)
+          Cookies.set('email',email);
         }
         if(phone!=undefined){
-          Cookies.set('phone',phone)
+          Cookies.set('phone',phone);
         }
         if(location!=undefined){
-          Cookies.set('location',location)
+          Cookies.set('location',location);
         }
         if(organization!=undefined){
-          Cookies.set('organization',organization)
+          Cookies.set('organization',organization);
         }
         if(role!=undefined){
           Cookies.set('role',role);
         }
         
         //跳转不好处理，所以统一跳转到首页
-        window.location.href = '#!/home'
+        window.location.href = '#!/home';
       },function(response){
-        loginbutton.disabled = false
-        this.showError('用户名或密码错误')
+        loginbutton.disabled = false;
+        this.showError('用户名或密码错误');
       })
     },
     
     showError: function(msg){
-      let errorContainer = this.$el.querySelector('#error-info')
-      errorContainer.innerHTML = msg
-      errorContainer.style.display = 'block'
+      let errorContainer = this.$el.querySelector('#error-info');
+      errorContainer.innerHTML = msg;
+      errorContainer.style.display = 'block';
     }
   },
   attached() {
     //隐藏error info
-    let errorContainer = this.$el.querySelector('#error-info')
-    errorContainer.style.display = 'none'
+    let errorContainer = this.$el.querySelector('#error-info');
+    errorContainer.style.display = 'none';
   }
 }
 

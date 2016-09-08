@@ -89,7 +89,8 @@ export default {
       if(e.target.id === "old-password-input"){
         this.password = document.getElementById('old-password-input').value;
         url += '/'+username;
-        this.$http.post(url,{'username':username,'password':this.password}).then(function(response){
+        this.$http.post(url,{'username':username,'password':this.password})
+        .then(function(response){
           let data = response.data;
           this.isChangePassword = true;
         },function(response){
@@ -121,23 +122,24 @@ export default {
             'oldPassword':this.password,
             'newPassword':this.newpassword
           };
-          this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
-              if(response.ok){
-                let token = response.data.access_token;
-                Cookies.set('access_token',token);
-                this.$broadcast("mailSent",{message:"密码修改成功",timeout:3000});
-              }
-            }, function(response) {
-              his.$broadcast("mailSent",{message:"密码修改失败",timeout:3000});
+          this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
+          .then(function(response){
+            if(response.ok){
+              let token = response.data.access_token;
+              Cookies.set('access_token',token);
+              this.$broadcast("mailSent",{message:"密码修改成功",timeout:3000});
+            }
+          }, function(response) {
+            his.$broadcast("mailSent",{message:"密码修改失败",timeout:3000});
           });
         }
       }
       /*------------------------------------*/
     },
     infoChange:function(e){
-      var info = e.target.value;
-      var data = {};
-      var message = "";
+      let info = e.target.value;
+      let data = {};
+      let message = "";
       /*--------用户修改的是用户名-----------*/
       if(e.target.id === "username-input"){//暂时禁止修改
         if(info === ''){
@@ -218,9 +220,9 @@ export default {
       /*--------用户修改的是邮箱-----------*/
       if(e.target.id === "email-input"){
         if (info != "") {
-         let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
-         let isok= reg.test(info);
-           if (!isok) {
+          let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+          let isok= reg.test(info);
+          if (!isok) {
             this.$broadcast('mailSent', { message: '邮箱格式不正确，请重新输入！',timeout:3000 });
             e.target.value = this.userInfo.email;
             return;
@@ -270,11 +272,12 @@ export default {
       let username = Cookies.get('username');
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.users + '/' + username;
-      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}}).then(function(response){
-          if(response.ok){
-            this.$broadcast('mailSent', { message: message+'修改成功！',timeout:3000 });
-          }
-        }, function(response) {
+      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: message+'修改成功！',timeout:3000 });
+        }
+      }, function(response) {
           this.$broadcast('mailSent', { message: message+'修改失败！',timeout:3000 });
       });
     }
@@ -287,9 +290,10 @@ export default {
     }
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.users + '/' + username;
-    var that = this;
+    let that = this;
       //获取数据列表
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       let data = response.data;
       if(data.is_verified === false){
         data.is_verified = "未验证";

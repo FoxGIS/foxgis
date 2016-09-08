@@ -30,10 +30,10 @@ export default {
   },
   methods: {
     createMapClick: function(){
-      document.getElementById("template-container").style.display = 'block'
+      document.getElementById("template-container").style.display = 'block';
     },
     createStyle: function(data){
-      var access_token = Cookies.get('access_token');
+      let access_token = Cookies.get('access_token');
       if(data.type === "empty"){
         let newstyle = JSON.stringify(data.json);
         let username = Cookies.get('username');
@@ -49,22 +49,22 @@ export default {
           this.$broadcast('mailSent', { message: '创建地图失败！',timeout:3000 });
         });
       }else{
-        var name = data.name;
-        var replace = data.replace;
-        var url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
+        let name = data.name;
+        let replace = data.replace;
+        let url = SERVER_API.templates+'/'+data.owner+'/'+data.id+'/json';
         this.$el.querySelector("#create-loading").style.display = 'block';
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(res){
           if(typeof(res.data)==="string"){
-            var styleStr = res.data;
+            let styleStr = res.data;
           }else{
-            var styleStr = JSON.stringify(res.data);
+            let styleStr = JSON.stringify(res.data);
           }
-          var result = styleStr.replace(/replaceme/g,replace);
-          var style = JSON.parse(result);
+          let result = styleStr.replace(/replaceme/g,replace);
+          let style = JSON.parse(result);
           style.name = name;
           style.metadata.replaceField = replace;
           let newstyle = JSON.stringify(style);
-          var username = Cookies.get('username');
+          let username = Cookies.get('username');
           let access_token = Cookies.get('access_token');
           let createURL = SERVER_API.styles + '/' + username;
           this.$http({'url':createURL,'method':'POST','data':newstyle,headers:{'x-access-token':access_token}})
@@ -83,34 +83,34 @@ export default {
       
     },
     deleteStyle: function(style_id){
-      this.$el.querySelector("#delete-dialog").style.display = 'block'
-      this.deleteStyleId = style_id
+      this.$el.querySelector("#delete-dialog").style.display = 'block';
+      this.deleteStyleId = style_id;
     },
     deleteAction: function(status){
       if(status === 'ok'){
-        let style_id = this.deleteStyleId
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let url = SERVER_API.styles + '/' + username + "/" + style_id
+        let style_id = this.deleteStyleId;
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
+        let url = SERVER_API.styles + '/' + username + "/" + style_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
             for(let i = 0;i<this.dataset.length;i++){
               if(this.dataset[i].style_id === style_id){
-                this.dataset.splice(i,1)
+                this.dataset.splice(i,1);
               }
             }
           }
         },function(response){
-          alert("未知错误，请稍后再试")
+          this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
         })
       }
     }
   },
   computed:{
     displayDataset:function(){
-      var temp = this.dataset;
-      var t=[];
+      let temp = this.dataset;
+      let t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
@@ -130,7 +130,7 @@ export default {
             }
           }
           if(num == keyWords.length){
-            t.push(tileset)
+            t.push(tileset);
           }
         }
         return t;
@@ -138,22 +138,21 @@ export default {
     }
   },
   attached() {
-    let username = Cookies.get('username')
+    let username = Cookies.get('username');
     if(username === undefined){
-      return
+      return;
     }
-    let access_token = Cookies.get('access_token')
-    let url = SERVER_API.styles+'/' + username
+    let access_token = Cookies.get('access_token');
+    let url = SERVER_API.styles+'/' + username;
 
-    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}}).then(function(response){
-
+    this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
+    .then(function(response){
       if(response.data.length>0){
         this.dataset = response.data.map(function(d){
           d.updatedAt = util.dateFormat(new Date(d.updatedAt));
           d.createdAt = util.dateFormat(new Date(d.createdAt));
           return d;
         })
-
       }
     },function(response){
       this.$broadcast('mailSent', { message: '地图列表获取失败！',timeout:3000 });

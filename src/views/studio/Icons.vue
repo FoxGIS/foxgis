@@ -29,8 +29,8 @@ import _ from 'lodash'
 export default {
   computed:{
     displayDataset:function(){//过滤搜索到的卡片
-      var temp = this.dataset;
-      var t=[];
+      let temp = this.dataset;
+      let t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
@@ -50,7 +50,7 @@ export default {
             }
           }
           if(num == keyWords.length){
-            t.push(sprite)
+            t.push(sprite);
           }
         }
         return t;
@@ -82,11 +82,12 @@ export default {
     }
     commonMethod.uploaderData(option,'icons');
 
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data;
+        let data = response.data;
         data = data.map(function(d) {
-          d.createdAt = util.dateFormat(new Date(d.createdAt))
+          d.createdAt = util.dateFormat(new Date(d.createdAt));
           return d;
         });
         for(let i=0;i<data.length;i++){

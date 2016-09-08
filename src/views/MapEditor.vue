@@ -48,93 +48,93 @@ export default {
       if(e.currentTarget.className.indexOf('control-active')!==-1){
         return;
       }
-      let toc = document.getElementById('toc-container')
-      toc.style.display = 'block'
-      let discontrol = document.getElementById('district-control')
-      discontrol.style.display = 'none'
-      let editorContainer = document.getElementById('style-editor')
-      editorContainer.style.display = 'none'
-      let svgContainer = document.getElementById('svg-editor')
-      svgContainer.style.display = 'none'
-      let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.visibility = 'visible'
-      this.changeLayout()
-      e.currentTarget.className += ' control-active'
+      let toc = document.getElementById('toc-container');
+      toc.style.display = 'block';
+      let discontrol = document.getElementById('district-control');
+      discontrol.style.display = 'none';
+      let editorContainer = document.getElementById('style-editor');
+      editorContainer.style.display = 'none';
+      let svgContainer = document.getElementById('svg-editor');
+      svgContainer.style.display = 'none';
+      let mapContainer = document.getElementById("map-editorview-container");
+      mapContainer.style.visibility = 'visible';
+      this.changeLayout();
+      e.currentTarget.className += ' control-active';
     },
     //行政区按钮 click
     'districtControlClick': function(e){
       if(e.currentTarget.className.indexOf('control-active')!==-1){
         return;
       }
-      let toc = document.getElementById('toc-container')
-      toc.style.display = 'none'
-      let discontrol = document.getElementById('district-control')
-      discontrol.style.display = 'block'
-      let editorContainer = document.getElementById('style-editor')
-      editorContainer.style.display = 'none'
-      let svgContainer = document.getElementById('svg-editor')
-      svgContainer.style.display = 'none'
-      let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.visibility = 'visible'
-      this.changeLayout()
-      e.currentTarget.className += ' control-active'
+      let toc = document.getElementById('toc-container');
+      toc.style.display = 'none';
+      let discontrol = document.getElementById('district-control');
+      discontrol.style.display = 'block';
+      let editorContainer = document.getElementById('style-editor');
+      editorContainer.style.display = 'none';
+      let svgContainer = document.getElementById('svg-editor');
+      svgContainer.style.display = 'none';
+      let mapContainer = document.getElementById("map-editorview-container");
+      mapContainer.style.visibility = 'visible';
+      this.changeLayout();
+      e.currentTarget.className += ' control-active';
     },
     //svg编辑器点击事件
     'SVGEditorClick': function(e){
       if(document.getElementById("svgeditor-open").className.indexOf('control-active')!==-1){
         return;
       }
-      let toc = document.getElementById('toc-container')
-      toc.style.display = 'none'
-      let discontrol = document.getElementById('district-control')
-      discontrol.style.display = 'none'
-      let editorContainer = document.getElementById('style-editor')
-      editorContainer.style.display = 'none'
-      let svgContainer = document.getElementById('svg-editor')
-      svgContainer.style.display = 'block'
-      this.$broadcast("loadIframe")
-      let mapContainer = document.getElementById("map-editorview-container")
-      mapContainer.style.visibility = 'hidden'
-      this.changeLayout()
-      document.getElementById("map-tool").style.display = 'none'
-      document.getElementById("svgeditor-open").className += ' control-active'
+      let toc = document.getElementById('toc-container');
+      toc.style.display = 'none';
+      let discontrol = document.getElementById('district-control');
+      discontrol.style.display = 'none';
+      let editorContainer = document.getElementById('style-editor');
+      editorContainer.style.display = 'none';
+      let svgContainer = document.getElementById('svg-editor');
+      svgContainer.style.display = 'block';
+      this.$broadcast("loadIframe");
+      let mapContainer = document.getElementById("map-editorview-container");
+      mapContainer.style.visibility = 'hidden';
+      this.changeLayout();
+      document.getElementById("map-tool").style.display = 'none';
+      document.getElementById("svgeditor-open").className += ' control-active';
     },
     //style 编辑
     'styleEditorClick': function(e){
       if(e.currentTarget.className.indexOf('control-active')!==-1){
         return;
       }
-      e.currentTarget.className += ' control-active'
-      let active = document.getElementsByClassName("control-active")
+      e.currentTarget.className += ' control-active';
+      let active = document.getElementsByClassName("control-active");
       if(active.length === 2){
         if(active[1].textContent === "build"){
-          active[0].className = active[0].className.replace(' control-active','')
+          active[0].className = active[0].className.replace(' control-active','');
         }else{
-          active[1].className = active[1].className.replace(' control-active','')
+          active[1].className = active[1].className.replace(' control-active','');
         }
       }
       
       //切换toc区域的内容
-      let toc = document.getElementById('toc-container')
-      toc.style.display = 'none'
-      let discontrol = document.getElementById('district-control')
-      discontrol.style.display = 'none'
-      let editorContainer = document.getElementById('style-editor')
-      editorContainer.style.display = 'block'
-      let svgContainer = document.getElementById('svg-editor')
-      svgContainer.style.display = 'none'
-      document.getElementById("map-editorview-container").style.visibility = 'visible'
+      let toc = document.getElementById('toc-container');
+      toc.style.display = 'none';
+      let discontrol = document.getElementById('district-control');
+      discontrol.style.display = 'none';
+      let editorContainer = document.getElementById('style-editor');
+      editorContainer.style.display = 'block';
+      let svgContainer = document.getElementById('svg-editor');
+      svgContainer.style.display = 'none';
+      document.getElementById("map-editorview-container").style.visibility = 'visible';
       // 传入style 字符串到textarea
-      this.$broadcast('editor-init',this.style)
+      this.$broadcast('editor-init',this.style);
 
       //移动map，扩宽区域
-      let mapContainer = document.getElementById("map-editorview-container")
+      let mapContainer = document.getElementById("map-editorview-container");
       if(mapContainer.style.display == 'none'){
-        mapContainer = document.getElementById("map-layout-container")
+        mapContainer = document.getElementById("map-layout-container");
       }
-      mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px"
-      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px"
-      document.getElementById("map-tool").style.display = 'none'
+      mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px";
+      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px";
+      document.getElementById("map-tool").style.display = 'none';
     },
     //保存样式方法
     'styleSaveClick':function(){
@@ -152,7 +152,7 @@ export default {
       if(statas==='ok'){
         this.patchStyle(this.style);
       }
-      var style = {};
+      let style = {};
       this.styleSaveStatus = true;
       this.changeStyle(style);
       $(".panel").hide();
@@ -163,19 +163,19 @@ export default {
       window.location.href = "#!/studio/maps";
     },
     changeLayout: function(){
-      let active = document.getElementsByClassName("control-active")
-      active[0].className = active[0].className.replace(' control-active','')
-      let mapContainer = document.getElementById("map-editorview-container")
+      let active = document.getElementsByClassName("control-active");
+      active[0].className = active[0].className.replace(' control-active','');
+      let mapContainer = document.getElementById("map-editorview-container");
       //之前改变过map时，还原map
       if(mapContainer.style.left === "380px"){
-        mapContainer.style.width = mapContainer.getBoundingClientRect().width + 150 + "px"
-        mapContainer.style.left = "230px"
+        mapContainer.style.width = mapContainer.getBoundingClientRect().width + 150 + "px";
+        mapContainer.style.left = "230px";
       }
-      document.getElementById("map-tool").style.display = 'flex'
+      document.getElementById("map-tool").style.display = 'flex';
     },
     //改变当前图层
     'setTocLayer': function(layerId){
-      this.$broadcast('toc-layer-change',layerId)
+      this.$broadcast('toc-layer-change',layerId);
     },
     printMap: function(e){  
       if(e.target.textContent === '输出'){
@@ -183,7 +183,7 @@ export default {
         $("#new-layer-panel").hide();
         $(".panel").hide();
         if(this.selectedDistrictBounds.length!=0){
-          var bounds = {
+          let bounds = {
             nw:new mapboxgl.LngLat(this.selectedDistrictBounds[0][0],this.selectedDistrictBounds[1][1]),
             se:new mapboxgl.LngLat(this.selectedDistrictBounds[1][0],this.selectedDistrictBounds[0][1])
           }
@@ -191,12 +191,12 @@ export default {
         }else{
           this.$broadcast('show-bounds-box');
         } 
-        e.target.innerHTML = '确定'
+        e.target.innerHTML = '确定';
         document.getElementById("back-button").disabled = false;
         document.getElementById("back-button").style.background = '#ff4081'; 
         document.getElementById("back-button").style.display = 'block';
       }else if(e.target.textContent === '确定'){
-        var options = {}
+        let options = {};
         options.API = SERVER_API;
         options.style_id = this.styleId;
         options.username = Cookies.get('username');
@@ -205,7 +205,7 @@ export default {
         options.scale = 1;
         options.selectedDistrict = this.selectedDistrict;
         options.templateName = this.style.metadata.template.type;
-        var controlBound = this.$refs.drafmap.controlBound;
+        let controlBound = this.$refs.drafmap.controlBound;
         options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
         options.organization = Cookies.get('organization');
         options.location = Cookies.get('location');
@@ -220,27 +220,27 @@ export default {
       }
     },
     backEditor: function(e){
-      var operator = document.getElementById("print-button")
+      let operator = document.getElementById("print-button");
       if(operator.innerText === '确定'){
         // return to editor
-        this.hideBoundsBox()
-        operator.innerHTML = "输出"
-        document.getElementById("back-button").disabled = true  
+        this.hideBoundsBox();
+        operator.innerHTML = "输出";
+        document.getElementById("back-button").disabled = true;
         document.getElementById("back-button").style.background = '#888888';    
       }
     },
     hideBoundsBox: function(e){
-      this.$broadcast('hide-bounds-box')
-      let printbutton = document.querySelector("#print-button")
-      printbutton.innerText = '输出'
+      this.$broadcast('hide-bounds-box');
+      let printbutton = document.querySelector("#print-button");
+      printbutton.innerText = '输出';
     },
     patchStyle: function(style){
       this.styleSaveStatus = true;
-      let style_id = style.style_id
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      let url = SERVER_API.styles + '/' + username + '/' + style_id
-      let data = JSON.stringify(style)
+      let style_id = style.style_id;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let url = SERVER_API.styles + '/' + username + '/' + style_id;
+      let data = JSON.stringify(style);
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
@@ -252,23 +252,23 @@ export default {
     }
   },
   attached: function(){
-    let urlhash = window.location.hash
-    let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1')
-    this.styleId = styleId
-    var username = Cookies.get('username')
+    let urlhash = window.location.hash;
+    let styleId = urlhash.replace(/.*mapeditor\/(\w*)/,'$1');
+    this.styleId = styleId;
+    let username = Cookies.get('username');
     if(username === undefined){
-      window.location.href = "#!/login"
+      window.location.href = "#!/login";
     }
-    let access_token = Cookies.get('access_token')
+    let access_token = Cookies.get('access_token');
     if(styleId !== null && access_token !== undefined){
-      let url = SERVER_API.styles + '/' + username + '/' + styleId
+      let url = SERVER_API.styles + '/' + username + '/' + styleId;
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(res){
-        let data = res.data
-        let initStyle = JSON.parse(JSON.stringify(data))
-        var tocdata = initStyle;
-        this.$broadcast('toc-init', tocdata)
-        this.changeStyle(initStyle)
+        let data = res.data;
+        let initStyle = JSON.parse(JSON.stringify(data));
+        let tocdata = initStyle;
+        this.$broadcast('toc-init', tocdata);
+        this.changeStyle(initStyle);
       },function(){
         this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
       })

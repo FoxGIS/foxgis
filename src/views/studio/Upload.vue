@@ -129,7 +129,8 @@ export default {
       let upload_id = tempUploads[index].upload_id;
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       tempUploads[index].scale = scale;
-      this.$http({url:url,method:'PATCH',data:{'scale':scale},headers: { 'x-access-token': access_token }}).then(function(response){
+      this.$http({url:url,method:'PATCH',data:{'scale':scale},headers: { 'x-access-token': access_token }})
+      .then(function(response){
           let data = response.data;
           let scale = data.scale;
           let date = new Date();
@@ -143,76 +144,76 @@ export default {
     },
 
     editLocation: function(e, index) {//编辑制图区域
-        let tempUploads = this.displayUploads
-        let location = e.target.value
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let upload_id = tempUploads[index].upload_id
-        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        tempUploads[index].location = location
-        this.$http({url:url,method:'PATCH',data:{'location':location},headers: { 'x-access-token': access_token }}).then(function(response){
-            let input = $(".location");
-            for(let i=0;i<input.length;i++){
-              input[i].value = this.displayUploads[i].location;
-              input[i].blur();
-            }
-            this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
-          },function(response){
-            this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
-          }
-        )
+      let tempUploads = this.displayUploads;
+      let location = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let upload_id = tempUploads[index].upload_id;
+      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      tempUploads[index].location = location;
+      this.$http({url:url,method:'PATCH',data:{'location':location},headers: {'x-access-token':access_token }})
+      .then(function(response){
+        let input = $(".location");
+        for(let i=0;i<input.length;i++){
+          input[i].value = this.displayUploads[i].location;
+          input[i].blur();
+        }
+        this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
+      },function(response){
+        this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+      })
     },
 
     editTime: function(e, index) {//编辑制图年份
-        let tempUploads = this.displayUploads
-        let year = e.target.value
-        if(e.target.value.length == 0){
-          let today=new Date();
-          let year=today.getFullYear();
+      let tempUploads = this.displayUploads;
+      let year = e.target.value;
+      if(e.target.value.length == 0){
+        let today=new Date();
+        let year=today.getFullYear();
+      }
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let upload_id = tempUploads[index].upload_id;
+      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      tempUploads[index].year = year;
+      this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }})
+      .then(function(response){
+        let input = $(".year");
+        for(let i=0;i<input.length;i++){
+          input[i].value = this.displayUploads[i].year;
+          input[i].blur();
         }
-        let username = Cookies.get('username')
-        let access_token = Cookies.get('access_token')
-        let upload_id = tempUploads[index].upload_id
-        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-        tempUploads[index].year = year
-        this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }}).then(function(response){
-            var input = $(".year");
-            for(let i=0;i<input.length;i++){
-              input[i].value = this.displayUploads[i].year;
-              input[i].blur();
-            }
-            let data = response.data;
-            this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
-          },function(response){
-            this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
-          }
-        )
+        let data = response.data;
+        this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
+      },function(response){
+        this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+      })
     },
 
     editScope: function(e,index){//编辑共享范围
-        let tempUploads = this.displayUploads;
-        let scope = e.target.value;
-        let username = Cookies.get('username');
-        let access_token = Cookies.get('access_token');
-        let upload_id = tempUploads[index].upload_id;
-        let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
-        tempUploads[index].scope = scope;
-        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
-            let data = response.data;
-            let scope = data.scope;
-            let days = 30;
-            Cookies.set('scope',scope,{ expires: days });
-            this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
-          },function(response){
-            this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
-          }
-        )
+      let tempUploads = this.displayUploads;
+      let scope = e.target.value;
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let upload_id = tempUploads[index].upload_id;
+      let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+      tempUploads[index].scope = scope;
+      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
+      .then(function(response){
+        let data = response.data;
+        let scope = data.scope;
+        let days = 30;
+        Cookies.set('scope',scope,{ expires: days });
+        this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
+      },function(response){
+        this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+      })
     },
 
     batchProcess:function(){//显示批量编辑弹框
       //以下判断用户是否有勾选
-      var t = 0;
-      for(var i = 0;i<this.displayUploads.length;i++){
+      let t = 0;
+      for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           t++;
         }
@@ -230,63 +231,74 @@ export default {
         return;
       }
       //获取输入的值，去掉左右两边的空格
-      var tagValue = this.$el.querySelector('#batch-process-dialog #tags-input').value.replace(/^\s+|\s+$/g,"");
-      var locationValue = this.$el.querySelector('#batch-process-dialog #location-input').value.replace(/^\s+|\s+$/g,"");
-      var timeValue = this.$el.querySelector('#batch-process-dialog #year-input').value.replace(/^\s+|\s+$/g,"");
-      var scopeValue = this.$el.querySelector('#batch-process-dialog #scope-select').value.replace(/^\s+|\s+$/g,"");
+      let tagValue = this.$el.querySelector('#batch-process-dialog #tags-input').value.replace(/^\s+|\s+$/g,"");
+      let locationValue = this.$el.querySelector('#batch-process-dialog #location-input').value.replace(/^\s+|\s+$/g,"");
+      let timeValue = this.$el.querySelector('#batch-process-dialog #year-input').value.replace(/^\s+|\s+$/g,"");
+      let scopeValue = this.$el.querySelector('#batch-process-dialog #scope-select').value.replace(/^\s+|\s+$/g,"");
       //新建data对象，存储更改以后的属性值
-      var data = {};
+      let data = {};
       if(tagValue){
-        var tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
+        let tags = tagValue.replace(/^\s+|\s+$/g,"").split(/\s+/);
       }
-      if(locationValue){data.location = locationValue;}
-      if(timeValue){data.year = timeValue;}
-      if(scopeValue==="私有"){data.scope = "private";}else if(scopeValue==="公开"){data.scope = "public";}
+      if(locationValue){
+        data.location = locationValue;
+      }
+      if(timeValue){
+        data.year = timeValue;
+      }
+      if(scopeValue==="私有"){
+        data.scope = "private";
+      }else if(scopeValue==="公开"){
+        data.scope = "public";
+      }
 
-      let username = Cookies.get('username')
-      let access_token = Cookies.get('access_token')
-      var flag = 0;//标记是否有重复主题
+      let username = Cookies.get('username');
+      let access_token = Cookies.get('access_token');
+      let flag = 0;//标记是否有重复主题
       //循环页面所有选中的选项
       for(let i=0;i<this.displayUploads.length;i++){
-          if(this.displayUploads[i].checked === true){
-            if(tags){
-              var newTags = this.displayUploads[i].tags.concat(tags);
-              data.tags = [];
-              //去除重复的主题词
-              for(let j = 0; j < newTags.length; j++) {
-                if (newTags.indexOf(newTags[j]) === j){
-                  data.tags.push(newTags[j]);
-                }
+        if(this.displayUploads[i].checked === true){
+          if(tags){
+            let newTags = this.displayUploads[i].tags.concat(tags);
+            data.tags = [];
+            //去除重复的主题词
+            for(let j = 0; j < newTags.length; j++) {
+              if (newTags.indexOf(newTags[j]) === j){
+                data.tags.push(newTags[j]);
               }
-              if(data.tags.length !== newTags.length){
-                flag++;
-              }
-              this.displayUploads[i].tags = data.tags;
             }
-            if(data.scope){this.displayUploads[i].scope = data.scope;}
-            //向服务器发送Patch请求，更新data对象
-            let upload_id = this.displayUploads[i].upload_id;
-            let url = SERVER_API.uploads + '/' + username + '/'+ upload_id
-            this.$http({url:url,method:'PATCH',data:data,headers: { 'x-access-token': access_token }}).then(function(response){
-                let data = response.data;
-                for(let t=0;t<this.displayUploads.length;t++){
-                  if(this.displayUploads[t].upload_id === data.upload_id){
-                    this.displayUploads[t].location = data.location;
-                    this.displayUploads[t].year = data.year;
-                  }
-                }
-              },function(response){
-                this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
-              });
+            if(data.tags.length !== newTags.length){
+              flag++;
+            }
+            this.displayUploads[i].tags = data.tags;
           }
+          if(data.scope){
+            this.displayUploads[i].scope = data.scope;
+          }
+          //向服务器发送Patch请求，更新data对象
+          let upload_id = this.displayUploads[i].upload_id;
+          let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
+          this.$http({url:url,method:'PATCH',data:data,headers: { 'x-access-token': access_token }})
+          .then(function(response){
+            let data = response.data;
+            for(let t=0;t<this.displayUploads.length;t++){
+              if(this.displayUploads[t].upload_id === data.upload_id){
+                this.displayUploads[t].location = data.location;
+                this.displayUploads[t].year = data.year;
+              }
+            }
+          },function(response){
+            this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+          });
         }
-        if(flag!==0){
-          this.$broadcast('mailSent', {message: '已为您自动删除重复主题！',timeout:3000});
-        }
-        this.$el.querySelector('#batch-process-dialog #tags-input').value="";
-        this.$el.querySelector('#batch-process-dialog #location-input').value="";
-        this.$el.querySelector('#batch-process-dialog #year-input').value="";
-        this.$el.querySelector('#batch-process-dialog #scope-select').value="不修改";
+      }
+      if(flag!==0){
+        this.$broadcast('mailSent', {message: '已为您自动删除重复主题！',timeout:3000});
+      }
+      this.$el.querySelector('#batch-process-dialog #tags-input').value="";
+      this.$el.querySelector('#batch-process-dialog #location-input').value="";
+      this.$el.querySelector('#batch-process-dialog #year-input').value="";
+      this.$el.querySelector('#batch-process-dialog #scope-select').value="不修改";
     },
 
     parseImgURL:function(upload) {//返回缩略图的url
@@ -315,12 +327,12 @@ export default {
       let access_token = Cookies.get('access_token');
       let url = SERVER_API.uploads + '/' + username + '/'+ upload_id;
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
-        .then(function(response){
-          if(response.ok){
-            this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
-          }
-        }, function(response) {
-          this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
       });
     },
 
@@ -403,9 +415,9 @@ export default {
       this.deleteUploadId.push(upload_id);
     },
     batchDeleteUpload:function(){//显示批量删除弹框
-      var t = 0;
-      var deleteIds = [];
-      for(var i = 0;i<this.displayUploads.length;i++){
+      let t = 0;
+      let deleteIds = [];
+      for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked === true){
           deleteIds.push(this.displayUploads[i].upload_id);
           t++;
@@ -421,20 +433,20 @@ export default {
     },
     deleteAction: function(status) {//删除决策用图
       if (status === 'ok') {
-        var username = Cookies.get('username');
-        var access_token = Cookies.get('access_token');
+        let username = Cookies.get('username');
+        let access_token = Cookies.get('access_token');
         for(let i=0;i<this.deleteUploadId.length;i++){
           let upload_id = this.deleteUploadId[i];
           let url = SERVER_API.uploads + '/' + username + "/" + upload_id;
           this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
           .then(function(response){
-          if(response.ok){
-            for(let i = 0;i<this.uploads.length;i++){
-              if(this.uploads[i].upload_id === upload_id){
-                this.uploads.splice(i,1);
+            if(response.ok){
+              for(let i = 0;i<this.uploads.length;i++){
+                if(this.uploads[i].upload_id === upload_id){
+                  this.uploads.splice(i,1);
+                }
               }
             }
-          }
           }, function(response) {
             this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
           });
@@ -478,7 +490,7 @@ export default {
     }
     let access_token = Cookies.get('access_token');
     let url = SERVER_API.uploads + '/' + username;
-    var that = this;
+    let that = this;
     let option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
       server:url+'?access_token='+access_token,//上传url
@@ -503,7 +515,7 @@ export default {
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data;
+        let data = response.data;
         data = data.map(function(d) {
           if (d.size / 1024 > 1024) {
             d.size = (d.size / 1048576).toFixed(2) + 'MB';
@@ -662,118 +674,118 @@ export default {
     },
 
     theme_tags: function(){//返回已选的“主题词”数组
-        let theme = [];
-        let k=0;
-        let tempUploads = this.uploads;
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads;
-          }else{
-            //theme的元素发生变化后检测selected_theme_tags是否需要更改
-            for(let i=0;i<this.selected_theme_tags.length;i++){
-              if(theme.indexOf(this.selected_theme_tags[i])===-1){
-                this.selected_theme_tags.splice(i,1);
-              }
-            }
-            return theme;
-          }
-        }
-        for(let i=0;i<tempUploads.length;i++){
-          if(tempUploads[i].tags.length>0){
-            for(let j=0;j<tempUploads[i].tags.length;j++){
-              theme.push(tempUploads[i].tags[j]);
-              k++;
+      let theme = [];
+      let k=0;
+      let tempUploads = this.uploads;
+      if(this.searchKeyWords.trim().length>0){
+        if(this.searchUploads.length>0){
+          tempUploads = this.searchUploads;
+        }else{
+          //theme的元素发生变化后检测selected_theme_tags是否需要更改
+          for(let i=0;i<this.selected_theme_tags.length;i++){
+            if(theme.indexOf(this.selected_theme_tags[i])===-1){
+              this.selected_theme_tags.splice(i,1);
             }
           }
+          return theme;
         }
-        theme = _.uniq(theme)
-        //theme的元素发生变化后检测selected_theme_tags是否需要更改
-        for(let i=0;i<this.selected_theme_tags.length;i++){
-          if(theme.indexOf(this.selected_theme_tags[i])===-1){
-            this.selected_theme_tags.splice(i,1);
+      }
+      for(let i=0;i<tempUploads.length;i++){
+        if(tempUploads[i].tags.length>0){
+          for(let j=0;j<tempUploads[i].tags.length;j++){
+            theme.push(tempUploads[i].tags[j]);
+            k++;
           }
         }
-        return theme;
+      }
+      theme = _.uniq(theme);
+      //theme的元素发生变化后检测selected_theme_tags是否需要更改
+      for(let i=0;i<this.selected_theme_tags.length;i++){
+        if(theme.indexOf(this.selected_theme_tags[i])===-1){
+          this.selected_theme_tags.splice(i,1);
+        }
+      }
+      return theme;
     },
 
     year_tags: function(){//返回已选的“制图年份”数组
-        let year = [];
-        let data = [];
-        let tempUploads = this.uploads;
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads;
-          }else{
-            for(let i=0;i<this.selected_year_tags.length;i++){
-              if(year.indexOf(this.selected_year_tags[i])===-1){
-                this.selected_year_tags.splice(i,1);
-              }
-            }
-            return year;
-          }
-        }
-        for(let i=0;i<tempUploads.length;i++){
-          year.push(tempUploads[i].year);
-        }
-        let tempYear = year;
-        year = _.uniq(year).sort();
-        for(let j=0;j<year.length;j++){
-          let temp = year[j];
-          let num = 0;
-          for(let k=0;k<tempYear.length;k++){
-            if(temp === tempYear[k]){
-              num++;
+      let year = [];
+      let data = [];
+      let tempUploads = this.uploads;
+      if(this.searchKeyWords.trim().length>0){
+        if(this.searchUploads.length>0){
+          tempUploads = this.searchUploads;
+        }else{
+          for(let i=0;i<this.selected_year_tags.length;i++){
+            if(year.indexOf(this.selected_year_tags[i])===-1){
+              this.selected_year_tags.splice(i,1);
             }
           }
-          data.push({'data':temp,'num':num});
+          return year;
         }
-        for(let i=0;i<this.selected_year_tags.length;i++){
-          if(year.indexOf(this.selected_year_tags[i])===-1){
-            this.selected_year_tags.splice(i,1);
+      }
+      for(let i=0;i<tempUploads.length;i++){
+        year.push(tempUploads[i].year);
+      }
+      let tempYear = year;
+      year = _.uniq(year).sort();
+      for(let j=0;j<year.length;j++){
+        let temp = year[j];
+        let num = 0;
+        for(let k=0;k<tempYear.length;k++){
+          if(temp === tempYear[k]){
+            num++;
           }
         }
-        return data;
+        data.push({'data':temp,'num':num});
+      }
+      for(let i=0;i<this.selected_year_tags.length;i++){
+        if(year.indexOf(this.selected_year_tags[i])===-1){
+          this.selected_year_tags.splice(i,1);
+        }
+      }
+      return data;
     },
 
     location_tags: function(){//返回已选的“制图区域”数组
-        let location = [];
-        let data = [];
-        let tempUploads = this.uploads;
-        if(this.searchKeyWords.trim().length>0){
-          if(this.searchUploads.length>0){
-            tempUploads = this.searchUploads;
-          }else{
-            for(let i=0;i<this.selected_location_tags.length;i++){
-              if(location.indexOf(this.selected_location_tags[i])===-1){
-                this.selected_location_tags.splice(i,1);
-              }
-            }
-            return location;
-          }
-        }
-        for(let i=0;i<tempUploads.length;i++){
-          if(tempUploads[i].location.length > 0){
-            location.push(tempUploads[i].location);
-          }
-        }
-        let tempLocation = location;
-        location = _.uniq(location);
-        for(let j=0;j<location.length;j++){
-          let temp = location[j];
-          let num = 0;
-          for(let k=0;k<tempLocation.length;k++){
-            if(temp === tempLocation[k]){
-              num++;
+      let location = [];
+      let data = [];
+      let tempUploads = this.uploads;
+      if(this.searchKeyWords.trim().length>0){
+        if(this.searchUploads.length>0){
+          tempUploads = this.searchUploads;
+        }else{
+          for(let i=0;i<this.selected_location_tags.length;i++){
+            if(location.indexOf(this.selected_location_tags[i])===-1){
+              this.selected_location_tags.splice(i,1);
             }
           }
-          data.push({'data':temp,'num':num});
+          return location;
         }
-        for(let i=0;i<this.selected_location_tags.length;i++){
-          if(location.indexOf(this.selected_location_tags[i])===-1){
-            this.selected_location_tags.splice(i,1);
+      }
+      for(let i=0;i<tempUploads.length;i++){
+        if(tempUploads[i].location.length > 0){
+          location.push(tempUploads[i].location);
+        }
+      }
+      let tempLocation = location;
+      location = _.uniq(location);
+      for(let j=0;j<location.length;j++){
+        let temp = location[j];
+        let num = 0;
+        for(let k=0;k<tempLocation.length;k++){
+          if(temp === tempLocation[k]){
+            num++;
           }
         }
-        return data;
+        data.push({'data':temp,'num':num});
+      }
+      for(let i=0;i<this.selected_location_tags.length;i++){
+        if(location.indexOf(this.selected_location_tags[i])===-1){
+          this.selected_location_tags.splice(i,1);
+        }
+      }
+      return data;
     },
 
     searchUploads: function(){
@@ -984,16 +996,16 @@ span {
 }
 
 .tag a {
-    text-decoration: none;
-    margin-left: 5px;
-    font: 14px "Times New Roman";
+  text-decoration: none;
+  margin-left: 5px;
+  font: 14px "Times New Roman";
 }
 .card-checkbox{
-    position: absolute;
-    right: 0px;
-    top: calc(50% - 8px);
-    width: 16px;
-    height: 16px;
+  position: absolute;
+  right: 0px;
+  top: calc(50% - 8px);
+  width: 16px;
+  height: 16px;
 }
 
 .metadata {
@@ -1011,19 +1023,19 @@ span {
 }
 
 .metadata input{
-    border: 0;
-    width: 40px;
-    font-size: 12px;
-    margin: 0;
+  border: 0;
+  width: 40px;
+  font-size: 12px;
+  margin: 0;
 }
 
 .metadata span{
-    border: 0;
-    width: 70px;
-    color: #9E9E9E;
-    font-size: 12px;
-    margin: 0;
-    display: inline-block;
+  border: 0;
+  width: 70px;
+  color: #9E9E9E;
+  font-size: 12px;
+  margin: 0;
+  display: inline-block;
 }
 
 .metadata .mdl-button {
@@ -1083,11 +1095,11 @@ span {
 }
 
 .progress-bar .bar{
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    transition: width .2s cubic-bezier(.4,0,.2,1);
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: width .2s cubic-bezier(.4,0,.2,1);
 }
 
 .small-pic {

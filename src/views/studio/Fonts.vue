@@ -142,14 +142,14 @@ export default {
       let url = SERVER_API.fonts + '/' + username + '/' + fontname + '/raw?access_token='+ access_token;
       if((/Trident\/7\./).test(navigator.userAgent)||(/Trident\/6\./).test(navigator.userAgent)){
       //IE10/IE11
-        var aLink = document.createElement('a');
+        let aLink = document.createElement('a');
         aLink.className = 'download_link';
-        var text = document.createTextNode('&nbsp;');
+        let text = document.createTextNode('&nbsp;');
         aLink.appendChild(text);
         aLink.href = url;
         aLink.click();
       }else{//Chrome,Firefox
-        var iframe = document.createElement("iframe");
+        let iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.style = "display:none";
         document.body.appendChild(iframe);
@@ -163,7 +163,8 @@ export default {
         let fontname = this.displayFonts[index].fontname;
         let url = SERVER_API.fonts + '/' + username + "/" + fontname;
         this.displayFonts[index].scope = scope;
-        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }}).then(function(response){
+        this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
+        .then(function(response){
             let data = response.data;
             let scope = data.scope;
             let days = 30;
@@ -249,7 +250,8 @@ export default {
     }
     commonMethod.uploaderData(option,'fonts');
     
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       if (response.data.length > 0) {
         let data = response.data;
         data = data.map(function(d) {

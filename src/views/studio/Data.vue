@@ -39,8 +39,8 @@ export default {
 
   computed:{
     displayDataset:function(){
-      var temp = this.dataset;
-      var t=[];
+      let temp = this.dataset;
+      let t=[];
       if(this.searchKeyWords.trim().length===0){
         return temp;
       }else{        
@@ -60,7 +60,7 @@ export default {
             }
           }
           if(num == keyWords.length){
-            t.push(tileset)
+            t.push(tileset);
           }
         }
         return t;
@@ -88,9 +88,10 @@ export default {
     }
     commonMethod.uploaderData(option,'data');
    
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } }).then(function(response) {
+    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
       if (response.data.length > 0) {
-        var data = response.data;
+        let data = response.data;
         data = data.map(function(d) {
           if (d.filesize / 1024 > 1024) {
             d.filesize = (d.filesize / 1048576).toFixed(2) + 'MB';
