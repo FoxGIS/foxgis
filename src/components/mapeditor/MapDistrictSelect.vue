@@ -11,7 +11,7 @@
 export default {
   ready: function(){
     var that=this;
-    this.$http({url:'/static/adminTree.json',method:'GET'})
+    this.$http({url:'/static/config/adminTree.json',method:'GET'})
     .then(function(response){
       var zNodes = response.data.znodes;
       var setting = {

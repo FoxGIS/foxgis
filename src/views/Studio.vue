@@ -59,7 +59,7 @@ export default {
     var sprites_url = SERVER_API.sprites + '/' + username;
     var uploads_url = SERVER_API.uploads + '/' + username;
     var maps_url = SERVER_API.styles+'/' + username;
-    this.$http({url:'/static/whitelist.json',method:'GET'})
+    this.$http({url:'/static/config/whitelist.json',method:'GET'})
     .then(function(response){
       var accessUser = response.data.usernames;
       if(accessUser.indexOf(this.username)!==-1){this.access=true;}

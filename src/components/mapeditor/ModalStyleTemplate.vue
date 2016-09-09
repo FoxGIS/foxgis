@@ -389,7 +389,7 @@ export default {
 }
 
 .template-new .item-thumb{
-  background-image:url('../../../static/新建.png');
+  background-image:url('../../../static/icons/新建.png');
   background-size: contain;
   background-position: center;
 } 
@@ -399,7 +399,7 @@ export default {
 }
 
  .template-empty .item-thumb{
-  background-image:url('../../../static/edit.png');
+  background-image:url('../../../static/icons/edit.png');
   background-size: contain;
   background-position: center;
   cursor: pointer;
