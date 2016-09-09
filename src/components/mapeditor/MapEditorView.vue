@@ -16,7 +16,7 @@
       <div id='info-tip' v-show="queryFeatures&&queryFeatures.length>0"></div>
       <i class="material-icons" id="close-info" v-on:click="closeInfoContainer">clear</i>
     </div>
-    <div id="location-control" style='display:none' v-on:mousewheel="boxZommChange" v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
+    <div id="location-control" style='display:none' v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
       <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
       <div class="dragresize dragresize-t" v-on:mousedown="dragresizedown"></div>
       <div class="dragresize dragresize-rt" v-on:mousedown="dragresizedown"></div>
@@ -133,12 +133,20 @@ export default {
       document.removeEventListener('mousemove',this.boxDragMove,false);
     },
     // 在bound上缩放时
-    boxZommChange: function(e){
-      if(e.deltaY < 0){
-        this.map.zoomIn();
-      }else{
-        this.map.zoomOut();
-      }
+    boxZoomChange: function(e){
+      if(e.detail){//firefox
+        if(e.detail<0){
+          this.map.zoomIn();
+        }else{
+          this.map.zoomOut();
+        }
+      }else{//其他浏览器
+        if(e.deltaY < 0){
+          this.map.zoomIn();
+        }else{
+          this.map.zoomOut();
+        }
+      } 
     },
     //地图缩放后，重新计算框所在的位置
     mapZoomEnd: function(e){
@@ -328,6 +336,16 @@ export default {
       var bound = mapcontainer.getBoundingClientRect();
       return bound;
     }
+  },
+  attached(){
+    //为location-control添加滚轮滚动事件，firefox为"DOMMouseScroll"，其他浏览器为"mousewheel"
+    var support =document.onmousewheel !== undefined ? "mousewheel" : "DOMMouseScroll";
+    if(support==="mousewheel"){
+      document.getElementById("location-control").onmousewheel=this.boxZoomChange;
+    }
+    if(support==="DOMMouseScroll"){
+      document.getElementById("location-control").addEventListener("DOMMouseScroll", this.boxZoomChange);
+    } 
   },
   data: function(){
     return {

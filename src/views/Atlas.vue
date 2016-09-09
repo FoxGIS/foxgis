@@ -420,6 +420,11 @@ export default {
     var access_token = Cookies.get('access_token');
     var url = SERVER_API.uploads + '?limit='+this.requestCounts+'&sort=-updatedAt';
     var that = this;
+    //初始化
+    this.selected_year_tags = [];
+    this.selected_location_tags = [];
+    this.selected_theme_tags = [];
+    this.searchKeyWords = '';
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
