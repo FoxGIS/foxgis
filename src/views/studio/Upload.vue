@@ -437,12 +437,14 @@ export default {
         for(let i=0;i<this.deleteUploadId.length;i++){
           var upload_id = this.deleteUploadId[i];
           var url = SERVER_API.uploads + '/' + username + "/" + upload_id;
-          this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
+          this.$http({url:url,method:'DELETE',data:{'upload_id':upload_id},headers:{'x-access-token':access_token}})
           .then(function(response){
             if(response.ok){
+              var id = $.parseJSON(response.request.data).upload_id;
               for(let i = 0;i<this.uploads.length;i++){
-                if(this.uploads[i].upload_id === upload_id){
+                if(this.uploads[i].upload_id === id){
                   this.uploads.splice(i,1);
+                  break;
                 }
               }
             }
