@@ -60,7 +60,7 @@
           </div>
         </div>
 
-        <div id="template-wizard_panel" class="edit-panel" v-if="userRole==='admin'">
+        <div id="template-wizard_panel" class="edit-panel">
           <div class="item" style="height: auto;">
             <foxgis-template-wizard></foxgis-template-wizard>
           </div>
