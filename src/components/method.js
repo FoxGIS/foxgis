@@ -107,29 +107,27 @@ export default {
         this.options.Vue.dataset.unshift(data);
       }
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-        $('.progress-bar').css('display','none');
-        $('.webuploader-pick').css('background-color','#3F51B5');
-        $('#picker input').removeAttr('disabled');
+        initProgressBar(this.options.Vue.uploadStatus);
         this.options.Vue.$broadcast('mailSent', { message: '上传完成！',timeout:3000 });
-        this.options.Vue.uploadStatus.current_file=1;
-        this.options.Vue.uploadStatus.total_files=0;
-        this.options.Vue.uploadStatus.progress=0;
-        this.options.Vue.uploadStatus.percentage="width:0";
       }
     });
     uploader.on( 'uploadError', function( file,reason) {//上传失败
       this.options.Vue.uploadStatus.current_file +=1;
-      this.options.Vue.$broadcast('mailSent', { message: '上传失败！请重新上传'+reason,timeout:3000 });
+      this.options.Vue.$broadcast('mailSent',{message: '上传失败！请重新上传'+reason,timeout:3000});
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
-        $('.progress-bar').css('display','none');//所有状态初始化
-        $('.webuploader-pick').css('background-color','#3F51B5');
-        $('#picker input').removeAttr('disabled');
-        this.options.Vue.uploadStatus.current_file=1;
-        this.options.Vue.uploadStatus.total_files=0;
-        this.options.Vue.uploadStatus.progress=0;
-        this.options.Vue.uploadStatus.percentage="width:0";
+        initProgressBar(this.options.Vue.uploadStatus);
       }
     });
+
+    function initProgressBar(uploadStatus){
+      $('.progress-bar').css('display','none');//所有状态初始化
+      $('.webuploader-pick').css('background-color','#3F51B5');
+      $('#picker input').removeAttr('disabled');
+      uploadStatus.current_file=1;
+      uploadStatus.total_files=0;
+      uploadStatus.progress=0;
+      uploadStatus.percentage="width:0";
+    }
   },
 
   /*文件下载功能

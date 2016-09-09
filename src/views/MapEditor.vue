@@ -45,59 +45,15 @@ export default {
   methods: {
     //图层控制
     'layerControlClick': function(e){
-      if(e.currentTarget.className.indexOf('control-active')!==-1){
-        return;
-      }
-      var toc = document.getElementById('toc-container');
-      toc.style.display = 'block';
-      var discontrol = document.getElementById('district-control');
-      discontrol.style.display = 'none';
-      var editorContainer = document.getElementById('style-editor');
-      editorContainer.style.display = 'none';
-      var svgContainer = document.getElementById('svg-editor');
-      svgContainer.style.display = 'none';
-      var mapContainer = document.getElementById("map-editorview-container");
-      mapContainer.style.visibility = 'visible';
-      this.changeLayout();
-      e.currentTarget.className += ' control-active';
+      this.changeControlStyle(e,'layer');
     },
     //行政区按钮 click
     'districtControlClick': function(e){
-      if(e.currentTarget.className.indexOf('control-active')!==-1){
-        return;
-      }
-      var toc = document.getElementById('toc-container');
-      toc.style.display = 'none';
-      var discontrol = document.getElementById('district-control');
-      discontrol.style.display = 'block';
-      var editorContainer = document.getElementById('style-editor');
-      editorContainer.style.display = 'none';
-      var svgContainer = document.getElementById('svg-editor');
-      svgContainer.style.display = 'none';
-      var mapContainer = document.getElementById("map-editorview-container");
-      mapContainer.style.visibility = 'visible';
-      this.changeLayout();
-      e.currentTarget.className += ' control-active';
+      this.changeControlStyle(e,'district');
     },
     //svg编辑器点击事件
     'SVGEditorClick': function(e){
-      if(document.getElementById("svgeditor-open").className.indexOf('control-active')!==-1){
-        return;
-      }
-      var toc = document.getElementById('toc-container');
-      toc.style.display = 'none';
-      var discontrol = document.getElementById('district-control');
-      discontrol.style.display = 'none';
-      var editorContainer = document.getElementById('style-editor');
-      editorContainer.style.display = 'none';
-      var svgContainer = document.getElementById('svg-editor');
-      svgContainer.style.display = 'block';
-      this.$broadcast("loadIframe");
-      var mapContainer = document.getElementById("map-editorview-container");
-      mapContainer.style.visibility = 'hidden';
-      this.changeLayout();
-      document.getElementById("map-tool").style.display = 'none';
-      document.getElementById("svgeditor-open").className += ' control-active';
+      this.changeControlStyle(e,'svg-editor');
     },
     //style 编辑
     'styleEditorClick': function(e){
@@ -115,15 +71,7 @@ export default {
       }
       
       //切换toc区域的内容
-      var toc = document.getElementById('toc-container');
-      toc.style.display = 'none';
-      var discontrol = document.getElementById('district-control');
-      discontrol.style.display = 'none';
-      var editorContainer = document.getElementById('style-editor');
-      editorContainer.style.display = 'block';
-      var svgContainer = document.getElementById('svg-editor');
-      svgContainer.style.display = 'none';
-      document.getElementById("map-editorview-container").style.visibility = 'visible';
+      this.changeControlStyle(e,'style');
       // 传入style 字符串到textarea
       this.$broadcast('editor-init',this.style);
 
@@ -135,6 +83,45 @@ export default {
       mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px";
       mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px";
       document.getElementById("map-tool").style.display = 'none';
+    },
+    changeControlStyle:function(e,type){
+      if(type === 'svg-editor'){
+        if(document.getElementById("svgeditor-open").className.indexOf('control-active')!==-1){
+          return;
+        }
+      }else if(type === 'layer' || type === 'district'){
+        if(e.currentTarget.className.indexOf('control-active')!==-1){
+          return;
+        }
+      }
+
+      document.getElementById('toc-container').style.display = 'none';
+      document.getElementById('district-control').style.display = 'none';
+      document.getElementById('style-editor').style.display = 'none';
+      document.getElementById('svg-editor').style.display = 'none';
+
+      if(type === 'svg-editor'){
+        document.getElementById('svg-editor').style.display = 'block';
+        this.$broadcast("loadIframe");
+        document.getElementById("map-editorview-container").style.visibility = 'hidden';
+        this.changeLayout();
+        document.getElementById("map-tool").style.display = 'none';
+        document.getElementById("svgeditor-open").className += ' control-active';
+      }else if(type === 'layer' || type === 'district'){
+        if(type === 'layer'){
+          document.getElementById('toc-container').style.display = 'block';
+        }
+        if(type === 'district'){
+          document.getElementById('district-control').style.display = 'block';
+        }
+        document.getElementById("map-editorview-container").style.visibility = 'visible';
+        this.changeLayout();
+        e.currentTarget.className += ' control-active';
+      }else if(type === 'style'){
+        document.getElementById('style-editor').style.display = 'block';
+        document.getElementById("map-editorview-container").style.visibility = 'visible';
+      };
+
     },
     //保存样式方法
     'styleSaveClick':function(){
