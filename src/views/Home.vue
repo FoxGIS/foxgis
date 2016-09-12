@@ -9,44 +9,60 @@
 	 	</div>
 	 	<div id = "upload-rank" class="ranklist">
 	 	  <div class="title">
-            <i class="material-icons">list</i>
-            <span>上传排行</span>
-          </div>
+        <i class="material-icons">list</i>
+        <span>上传排行</span>
+      </div>
 	 	  <div class="scrollText" style="height: 480px;">
 	 		<table>
 	 		  <tr v-for="message in uploadInfo">
-	 			<td><input value="{{$index+1}}" disabled></input></td>
-	 			<td><span title="{{message.name}}上传{{message.total}}幅地图">{{message.name}}上传{{message.total}}幅地图</span></td>
+  	 			<td>
+            <input value="{{$index+1}}" disabled></input>
+          </td>
+  	 			<td>
+            <span title="{{message.name}}上传{{message.total}}幅地图">{{message.name}}上传{{message.total}}幅地图</span>
+          </td>
 	 		  </tr>
 	 		</table>
 	 	  </div>
 	 	</div>
 	 	<div id = "image-download-rank" class="ranklist">
 	 	  <div class="title">
-            <i class="material-icons">list</i>
-            <span>地图下载排行</span>
-          </div>
+        <i class="material-icons">list</i>
+        <span>地图下载排行</span>
+      </div>
 	 	  <div class="scrollText" style="height: 240px;">
 	 		<table>
 	 		  <tr v-for="message in mapDownloadInfo">
-	 			<td><input value="{{$index+1}}" disabled></input></td>
-	 			<td><span title="{{message.name}}">{{message.name}}</span></td>
-	 			<td><span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span></td>
+  	 			<td>
+            <input value="{{$index+1}}" disabled></input>
+          </td>
+  	 			<td>
+            <span title="{{message.name}}">{{message.name}}</span>
+          </td>
+  	 			<td>
+            <span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
+          </td>
 	 		  </tr>
 	 		</table>
 	 	  </div>
 	 	</div>
 	 	<div id = "user-download-rank" class="ranklist">
 	 	  <div class="title">
-            <i class="material-icons">list</i>
-            <span>用户贡献排行</span>
-          </div>
+        <i class="material-icons">list</i>
+        <span>用户贡献排行</span>
+      </div>
 	 	  <div class="scrollText" style="height: 240px;">
 	 		<table>
 	 		  <tr v-for="message in userDowloadInfo">
-	 			<td><input value="{{$index+1}}" disabled></input></td>
-	 			<td><span title="{{message.name}}">{{message.name}}</span></td>
-	 			<td><span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span></td>
+  	 			<td>
+            <input value="{{$index+1}}" disabled></input>
+          </td>
+  	 			<td>
+            <span title="{{message.name}}">{{message.name}}</span>
+          </td>
+  	 			<td>
+            <span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
+          </td>
 	 		  </tr>
 	 		</table>
 	 	  </div>
