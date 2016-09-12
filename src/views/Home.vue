@@ -19,7 +19,9 @@
             <input value="{{$index+1}}" disabled></input>
           </td>
   	 			<td>
-            <span title="{{message.name}}上传{{message.total}}幅地图">{{message.name}}上传{{message.total}}幅地图</span>
+            <span title="{{message.name}}上传{{message.total}}幅地图">
+              {{message.name}}上传{{message.total}}幅地图
+            </span>
           </td>
 	 		  </tr>
 	 		</table>
@@ -40,7 +42,9 @@
             <span title="{{message.name}}">{{message.name}}</span>
           </td>
   	 			<td>
-            <span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
+            <span style="text-align:left;">下载次数：
+              <b style="color:red;">{{message.downloadNum}}</b>
+            </span>
           </td>
 	 		  </tr>
 	 		</table>
@@ -61,7 +65,9 @@
             <span title="{{message.name}}">{{message.name}}</span>
           </td>
   	 			<td>
-            <span style="text-align:left;">下载次数：<b style="color:red;">{{message.downloadNum}}</b></span>
+            <span style="text-align:left;">下载次数：
+              <b style="color:red;">{{message.downloadNum}}</b>
+            </span>
           </td>
 	 		  </tr>
 	 		</table>
@@ -86,7 +92,7 @@ export default {
     }
     var url = SERVER_API.stats + '/uploads';
     var that = this;
-      //获取数据列表
+    //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if(response.data.length > 0){
@@ -96,21 +102,21 @@ export default {
         var yData=[];
         for(let i=0;i<data.length;i++){
           if(data[i].location){
-        	messages.push({"name":data[i].location,"total":data[i].total});
-        	xData.push(data[i].location);
-        	yData.push({value:data[i].total,name:data[i].location});
+          	messages.push({"name":data[i].location,"total":data[i].total});
+          	xData.push(data[i].location);
+          	yData.push({value:data[i].total,name:data[i].location});
           }else if(data[i].organization){
-        	messages.push({"name":data[i].organization,"total":data[i].total});
-        	xData.push(data[i].organization);
-        	yData.push({value:data[i].total,name:data[i].organization});
+          	messages.push({"name":data[i].organization,"total":data[i].total});
+          	xData.push(data[i].organization);
+          	yData.push({value:data[i].total,name:data[i].organization});
           }else if(data[i].name){
-        	messages.push({"name":data[i].name,"total":data[i].total});
-        	xData.push(data[i].name);
-        	yData.push({value:data[i].total,name:data[i].name});
+          	messages.push({"name":data[i].name,"total":data[i].total});
+          	xData.push(data[i].name);
+          	yData.push({value:data[i].total,name:data[i].name});
           }else if(data[i].owner){
-        	messages.push({"name":data[i].owner,"total":data[i].total});
-        	xData.push(data[i].owner);
-        	yData.push({value:data[i].total,name:data[i].owner});
+          	messages.push({"name":data[i].owner,"total":data[i].total});
+          	xData.push(data[i].owner);
+          	yData.push({value:data[i].total,name:data[i].owner});
           }
         }
         this.uploadInfo = messages;
