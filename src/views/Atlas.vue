@@ -425,6 +425,10 @@ export default {
     this.selected_location_tags = [];
     this.selected_theme_tags = [];
     this.searchKeyWords = '';
+    this.pageConfig.skip = 0;
+    this.pageConfig.page_item_num = 8;
+    this.pageConfig.current_page = 1;
+    this.pageConfig.first_page = 1;
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
@@ -747,7 +751,7 @@ export default {
   width: 300px;
   height: 210px;
   background-color: #659BF7;
-  opacity: 0.7;
+  opacity: 0.9;
   top: 0;
   display: none;
 }
