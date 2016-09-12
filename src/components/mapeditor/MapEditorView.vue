@@ -16,7 +16,8 @@
       <div id='info-tip' v-show="queryFeatures&&queryFeatures.length>0"></div>
       <i class="material-icons" id="close-info" v-on:click="closeInfoContainer">clear</i>
     </div>
-    <div id="location-control" style='display:none' v-on:mousedown="boxDragDown" v-on:mouseup="boxDragUp">
+    <div id="location-control" style='display:none' v-on:mousedown="boxDragStart" v-on:mouseup="boxDragEnd">
+      <div class="dragmove" v-on:mousedown="boxMoveStart"></div>
       <div class="dragresize dragresize-lt" v-on:mousedown="dragresizedown"></div>
       <div class="dragresize dragresize-t" v-on:mousedown="dragresizedown"></div>
       <div class="dragresize dragresize-rt" v-on:mousedown="dragresizedown"></div>
@@ -104,33 +105,69 @@ export default {
     dragresizeup: function(){
       document.removeEventListener('mousemove',this.dragresizemove,false);
     },
-    //拖拽bound时 鼠标down事件
-    boxDragDown: function(e){
-      if(e.target.className.indexOf("dragresize")!=-1){
-        return;
-      }
-      this.drag.dragstartx = e.layerX;
-      this.drag.dragstarty = e.layerY;
-      document.addEventListener('mousemove',this.boxDragMove,false);
+
+    //拖拽"move"图标时，开始移动bound
+    boxMoveStart: function(e){
+      this.drag.dragstartx = e.clientX;
+      this.drag.dragstarty = e.clientY;
+      document.addEventListener('mousemove',this.boxMove,false);
+      document.addEventListener('mouseup',this.boxMoveEnd,false);
     },
-    //移动bound
-    boxDragMove: function(e){
-      var dx = e.layerX - this.drag.dragstartx;
-      var dy = e.layerY - this.drag.dragstarty;
-      var controlBox = document.getElementById("location-control");
-      var mapBound = this.mapBound;
-      var boxBound = controlBox.getBoundingClientRect();
-      var newleft = boxBound.left - mapBound.left + dx;
-      var newtop = boxBound.top - mapBound.top + dy;
-      var newright = boxBound.left + boxBound.width - mapBound.left + dx;
-      var newbottom = boxBound.top + boxBound.height - mapBound.top + dy;
+  //移动bound
+    boxMove: function(e){
+      var dx = e.clientX - this.drag.dragstartx;
+      var dy = e.clientY - this.drag.dragstarty;
+      let controlBox = document.getElementById("location-control");
+      let mapBound = this.mapBound;
+      let boxBound = controlBox.getBoundingClientRect();
+      let newleft = boxBound.left - mapBound.left + dx;
+      let newtop = boxBound.top - mapBound.top + dy;
+      let newright = boxBound.left + boxBound.width - mapBound.left + dx;
+      let newbottom = boxBound.top + boxBound.height - mapBound.top + dy;
 
       this.controlBound.nw = this.map.unproject([newleft, newtop]);
       this.controlBound.se = this.map.unproject([newright,newbottom]);
+      this.drag.dragstartx = e.clientX;
+      this.drag.dragstarty = e.clientY;
     },
     //up 释放事件
-    boxDragUp: function(e){
-      document.removeEventListener('mousemove',this.boxDragMove,false);
+    boxMoveEnd: function(e){
+      document.removeEventListener('mousemove',this.boxMove,false);
+    },
+    //拖拽bound时，使bound与地图一起移动
+    boxDragStart: function(e){
+      if(e.target.className.indexOf("dragresize")!=-1||e.target.className.indexOf("dragmove")!=-1){
+        return;
+      }
+      this.dragPos.x = e.clientX;
+      this.dragPos.y = e.clientY;
+      document.addEventListener('mousemove',this.boxDrag,false);
+    },
+    //移动bound和地图
+    boxDrag: function(e){
+      var event = {};
+      event.point = [e.layerX,e.layerY];
+      event.originalEvent = e;
+      this.map.fire('dragstart', event);
+      this.map.fire('movestart', event);
+      var dragPos = {};
+      dragPos.x = e.clientX;
+      dragPos.y = e.clientY;
+      this.map.stop();
+      this.map.transform.setLocationAtPoint(this.map.transform.pointLocation(this.dragPos), dragPos);
+      this.map.fire('drag', event);
+      this.map.fire('move', event);
+      this.dragPos = dragPos;
+      e.preventDefault();
+    },
+    //up 释放事件
+    boxDragEnd: function(e){
+      var event = {};
+      event.point = [e.layerX,e.layerY];
+      event.originalEvent = e;
+      this.map.fire('dragend', event);
+      this.map.fire('moveend', event);
+      document.removeEventListener('mousemove',this.boxDrag,false);
     },
     // 在bound上缩放时
     boxZoomChange: function(e){
@@ -356,6 +393,10 @@ export default {
         dragstartx:0,
         dragstarty:0
       },
+      dragPos:{
+        x:0,
+        y:0
+      },
       controlBound: {
         nw: [0,0],
         se: [0,0],
@@ -566,6 +607,19 @@ export default {
   right: 0px;
   font-size: 14px;
   cursor: pointer;
+}
+
+.dragmove{
+  margin: 20px;
+  width: 20px;
+  height:20px;
+  background-image:url('../../../static/icons/drag_move.png');
+  background-size: contain;
+  background-position: center;
+}
+
+.dragmove:hover{
+  cursor: move;
 }
 
 </style>

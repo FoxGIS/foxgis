@@ -746,14 +746,15 @@ export default {
   position: absolute;
   width: 300px;
   height: 210px;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: #659BF7;
+  opacity: 0.7;
   top: 0;
   display: none;
 }
 
 .details table{
   font-size: 12px;
-  color: black;
+  color: #fff;
   opacity: 1;
   margin-top: 45px;
   border: 1px solid;
