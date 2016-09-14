@@ -43,31 +43,45 @@
       <span>url来源：</span>
       <input type="radio" value="self" v-model="sources_checked" checked>
       <label for="self">本地</label>
+      <input type="radio" value="public" v-model="sources_checked">
+      <label for="public">公开</label>
       <input type="radio" value="other" v-model="sources_checked">
       <label for="other">其他</label>
-    </div>  
+    </div> 
+    <!--渲染其他数据源--> 
     <div v-if="sources_checked === 'other'">
       <mdl-textfield label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-tooltip for="source-url_help">{{toolTips.sourceUrl.remote}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="source-url_help" fab primary>
+      <mdl-tooltip for="source-url_help1">{{toolTips.sourceUrl.remote}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="source-url_help1" fab primary>
         <i class="material-icons">help</i>
       </mdl-button>
     </div>
-
+    <!--渲染本地数据源--> 
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
         <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="source-url_help">{{toolTips.sourceUrl.local}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="source-url_help" fab primary >
+      <mdl-tooltip for="source-url_help2">{{toolTips.sourceUrl.local}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="source-url_help2" fab primary >
+        <i class="material-icons">help</i>
+      </mdl-button>
+    </div>
+    <!--渲染公开的数据源--> 
+    <div class="select" v-if="sources_checked === 'public'">
+      <div>数据源地址</div>
+      <select id="sources-url" class="select-item">
+        <option value="{{s.value}}" v-for="s in publicSources">{{s.name}}</option>
+      </select>
+      <mdl-tooltip for="source-url_help3">{{toolTips.sourceUrl.publicTip}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="source-url_help3" fab primary >
         <i class="material-icons">help</i>
       </mdl-button>
     </div>
 
     <div class="action">
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('two')">上一步</mdl-button>
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('two')">下一步</mdl-button>        
+      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('two')">下一步</mdl-button>
     </div>
   </div>
 
@@ -78,25 +92,38 @@
       <span>url来源：</span>
       <input type="radio" value="self" v-model="sprite_checked" checked>
       <label for="self">本地</label>
+      <input type="radio" value="public" v-model="sprite_checked">
+      <label for="public">公开</label>
       <input type="radio" value="other" v-model="sprite_checked">
       <label for="other">其他</label>
     </div>
-
+    <!--渲染其他符号库--> 
     <div v-if="sprite_checked === 'other'">
       <mdl-textfield label="符号库地址" floating-label="符号库地址" id="sprite-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-tooltip for="sprite-url_help">{{toolTips.spriteUrl.remote}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="sprite-url_help" fab primary>
+      <mdl-tooltip for="sprite-url_help1">{{toolTips.spriteUrl.remote}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="sprite-url_help1" fab primary>
         <i class="material-icons">help</i>
       </mdl-button>
     </div>
-
+    <!--渲染本地符号库--> 
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
         <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
       </select>
-      <mdl-tooltip for="sprite-url_help">{{toolTips.spriteUrl.local}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="sprite-url_help" fab primary>
+      <mdl-tooltip for="sprite-url_help2">{{toolTips.spriteUrl.local}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="sprite-url_help2" fab primary>
+        <i class="material-icons">help</i>
+      </mdl-button>
+    </div>
+    <!--渲染公开的符号库--> 
+    <div class="select" v-if="sprite_checked === 'public'">
+      <div>符号库地址</div>
+      <select id="sprite-url" class="select-item">
+        <option value="{{s.value}}" v-for="s in publicSprite">{{s.name}}</option>
+      </select>
+      <mdl-tooltip for="sprite-url_help3">{{toolTips.spriteUrl.publicTip}}</mdl-tooltip>
+      <mdl-button class="tip-button" id="sprite-url_help3" fab primary>
         <i class="material-icons">help</i>
       </mdl-button>
     </div>
@@ -109,14 +136,14 @@
       <label for="other">其他</label>
     </div>
     <mdl-textfield label="字体地址" floating-label="字体地址" id="glyphs-url" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip for="tip-button4">{{toolTips.glyphUrl}}</mdl-tooltip>
-    <mdl-button class="tip-button" id="tip-button4" fab primary>
+    <mdl-tooltip for="glyphs-url_help">{{toolTips.glyphUrl}}</mdl-tooltip>
+    <mdl-button class="tip-button" id="glyphs-url_help" fab primary>
       <i class="material-icons">help</i>
     </mdl-button>
 
     <div class="action">
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('three')">上一步</mdl-button> 
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>      
+      <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
     </div>
   </div>
   <i class="material-icons" id="template-wizard-close" v-on:click="newTemplateCancel">clear</i>
@@ -234,7 +261,9 @@ export default{
       var access_token = Cookies.get('access_token');
       this.spriteOptions=[];
       this.sourcesOptions=[];
-      //获取数据源数据
+      this.publicSources=[];
+      this.publicSprite=[];
+      //获取本地数据源数据
       var tilesetsUrl = SERVER_API.tilesets + '/' + username;
       this.$http({ url: tilesetsUrl, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
@@ -249,10 +278,28 @@ export default{
           }
         }
       }, function(response) {
-        this.$parent.$broadcast("mailSent",{message:"获取数据源数据错误!",timeout:3000});
+        this.$parent.$broadcast("mailSent",{message:"获取本地数据源数据错误!",timeout:3000});
       })
 
-      //获取符号库数据
+      //获取公开数据源数据
+      var publicTilesetsUrl = SERVER_API.tilesets;
+      this.$http({url:publicTilesetsUrl, method:'GET', headers: {'x-access-token': access_token}})
+      .then(function(response) {
+        if (response.data.length > 0) {
+          var data = response.data;
+          for(let i=0;i<data.length;i++){
+            var options = {
+              name:data[i].name,
+              value:data[i].tileset_id
+            }
+            this.publicSources.push(options);
+          }
+        }
+      }, function(response) {
+        this.$parent.$broadcast("mailSent",{message:"获取公开数据源数据错误!",timeout:3000});
+      })
+
+      //获取本地符号库数据
       var spritesUrl = SERVER_API.sprites + '/' + username;
       this.$http({ url: spritesUrl, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
@@ -267,7 +314,25 @@ export default{
           }
         }
       }, function(response) {
-        this.$parent.$broadcast("mailSent",{message:"获取符号库数据错误!",timeout:3000});
+        this.$parent.$broadcast("mailSent",{message:"获取本地符号库数据错误!",timeout:3000});
+      })
+
+      //获取公开符号库数据
+      var publicSpritesUrl = SERVER_API.sprites;
+      this.$http({url:publicSpritesUrl, method:'GET', headers:{'x-access-token':access_token} })
+      .then(function(response) {
+        if (response.data.length > 0) {
+          var data = response.data;
+          for(let i=0;i<data.length;i++){
+            var options = {
+              name:data[i].name,
+              value:data[i].sprite_id
+            }
+            this.publicSprite.push(options);
+          }
+        }
+      }, function(response) {
+        this.$parent.$broadcast("mailSent",{message:"获取公开符号库数据错误!",timeout:3000});
       })
       
     },
@@ -299,6 +364,8 @@ export default{
       ],
       spriteOptions: [],        //本地符号库数据
       sourcesOptions: [],       //本地数据源数据
+      publicSources: [],        //公开数据源数据
+      publicSprite: [],         //公开符号库数据
       sprite_checked: [],       //取值self:本地，other:其他
       glyphs_checked: [],       //取值self:本地，other:其他
       sources_checked: [],      //取值self:本地，other:其他
@@ -336,11 +403,13 @@ export default{
           "sourceName":"数据源名称。尽量使用英文字母与数字，不要使用特殊字符，例如：data2012",
           "sourceUrl":{
             "local":"选择本地数据管理模块中上传的数据源",
-            "remote":"选择其他用户公开的数据源，请确保能正确访问数据源的tilejson。例如：http://foxgis.com/api/v1/ tilesets/{username}/{tileset_id}"
+            "publicTip":"选择其他用户公开的数据源",
+            "remote":"请确保能正确访问数据源的tilejson。例如：http://foxgis.com/api/v1/ tilesets/{username}/{tileset_id}"
           },
           "spriteUrl":{
             "local":"选择本地符号库管理模块中上传的符号库",
-            "remote":"选择其他用户公开的符号库，请确保能正确访问到符号库。例如：http://foxgis.com/api/v1/ sprites/{username}/{sprite_id} /sprite"
+            "publicTip":"选择其他用户公开的符号库",
+            "remote":"请确保能正确访问到符号库。例如：http://foxgis.com/api/v1/ sprites/{username}/{sprite_id} /sprite"
           },
           "glyphUrl":"选择字体库。默认为本系统的字体库，也可指定其他用户的字体库，例如：http://foxgis.com /api/v1/fonts/{username} /{fontstack}/{range}.pbf"
         }
