@@ -60,7 +60,7 @@
       <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" />
       <div id="map-property">
         <p>
-        比例尺：<span style="color:black;">1:  </span> <input type="text" class="map-scale" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
+        比例尺：<span class="map-area">1:  </span> <input type="text" class="map-scale" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
         图幅大小：<span class="map-area">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
         </p>
       </div>
@@ -1022,7 +1022,7 @@ span {
   width: 70px;
   color: #9E9E9E;
   font-size: 12px;
-  margin: 0;
+  margin: -3px 0 0 0;
   display: inline-block;
 }
 
@@ -1135,6 +1135,11 @@ span {
   display: inline-block;
   line-height: 1.428571429;
   vertical-align: middle;
+}
+
+.map-area {
+  display: inline-block;
+  margin: -3px 0 0 0;
 }
 
 </style>
