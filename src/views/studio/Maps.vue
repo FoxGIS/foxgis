@@ -62,7 +62,9 @@ export default {
           var result = styleStr.replace(/replaceme/g,replace);
           var style = JSON.parse(result);
           style.name = name;
-          style.metadata.replaceField = replace;
+          if(style.metadata){
+            style.metadata.replaceField = replace;
+          }
           var newstyle = JSON.stringify(style);
           var username = Cookies.get('username');
           var access_token = Cookies.get('access_token');
