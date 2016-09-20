@@ -267,10 +267,11 @@ svgEditor.addExtension('compass', function() {'use strict';
 		},
 		mouseUp: function(opts) {
 			var mode = canv.getMode();
-			if (mode !== mode_id) {return;}
-
+			if (mode !== mode_id) {
+				return;
+			}
 			var keepObject = (opts.event.clientX != startClientPos.x && opts.event.clientY != startClientPos.y);
-
+			canv.setMode("select");
 			return {
 				keep: keepObject,
 				element: cur_shape,
