@@ -290,7 +290,7 @@ export default {
       handler:function(style,oldStyle){
         if(Object.keys(oldStyle).length===0){return}
         var comds = diff(oldStyle,style);
-        if(comds.length>0){
+        if(comds.length>0&&Object.keys(oldStyle).length>0){
           this.styleSaveStatus = false;
         }
       }
