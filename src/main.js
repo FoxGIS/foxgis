@@ -44,7 +44,7 @@ import MapDistrictSelect from './components/mapeditor/MapDistrictSelect'
 import ModalStyleTemplate from './components/mapeditor/ModalStyleTemplate'
 import IconPanel from './components/mapeditor/IconPanel'
 import FilterData from './components/mapeditor/FilterDataPanel'
-import StopsPanel from './components/mapeditor/stopsPanel.vue'
+import StopsPanel from './components/mapeditor/StopsPanel.vue'
 import TemplateWizard from './components/mapeditor/TemplateWizard.vue'
 
 Vue.config.debug = true
