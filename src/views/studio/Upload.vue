@@ -58,12 +58,6 @@
 
     <div class="name">
       <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" />
-      <div id="map-property">
-        <p>
-        比例尺：<span class="map-area">1:  </span> <input type="text" class="map-scale" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
-        图幅大小：<span class="map-area">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
-        </p>
-      </div>
 
       <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 68px;padding: 0 6px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
     </div>
@@ -78,20 +72,29 @@
     </div>
     <input type="checkbox" class = "card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
-      <p>
-        制图区域：<input class="location" type="text" style="width:80px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+      <div>
+        <p>
+          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
-        制图年份：<input class="year" type="text" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+          比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
 
-        共享范围：<select id="scope" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-          <option value="private">私有</option>
-          <option value="public">公开</option>
-        </select>
+          图幅大小：<span>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
+        </p>
+        <p>
+          制图年份：<select id="year" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+            <option v-for="year in selectYearsData" value="{{year}}">{{year}}</option>
+          </select>
 
-        文件大小：<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size }}</span>
+          共享范围：<select id="scope" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+            <option value="private">私有</option>
+            <option value="public">公开</option>
+          </select>
 
-        文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
-      </p>
+          文件大小：<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size }}</span>
+
+          文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
+        </p>
+      </div>
       <div class="action">
         <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
         <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
@@ -166,9 +169,9 @@ export default {
     editTime: function(e, index) {//编辑制图年份
       var tempUploads = this.displayUploads;
       var year = e.target.value;
-      if(e.target.value.length == 0){
+      if(e.target.value.length === 0){
         var today=new Date();
-        var year=today.getFullYear();
+        year=today.getFullYear();
       }
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
@@ -177,11 +180,6 @@ export default {
       tempUploads[index].year = year;
       this.$http({url:url,method:'PATCH',data:{'year':year},headers: { 'x-access-token': access_token }})
       .then(function(response){
-        var input = $(".year");
-        for(let i=0;i<input.length;i++){
-          input[i].value = this.displayUploads[i].year;
-          input[i].blur();
-        }
         var data = response.data;
         this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
       },function(response){
@@ -517,6 +515,13 @@ export default {
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
         }
         this.uploads = data;
+
+        var year=new Date().getFullYear();
+        var years = [];
+        for(let j=2000;j<=year;j++){
+          years.unshift(j);
+        }
+        this.selectYearsData = years;
       }
     }, function(response) {
       this.$broadcast('mailSent', { message: '获取列表失败！',timeout:3000 });
@@ -812,7 +817,8 @@ export default {
 
   data() {
     return {
-      uploads: [] ,
+      uploads: [],
+      selectYearsData: [],         //制图年份选择框数据
       dialogcontent: {
         title: '确定删除吗？',
         textOk:'删除',
@@ -944,23 +950,6 @@ span {
   width: 300px;
 }
 
-#map-property{
-  position: absolute;
-  left: 432px;
-  padding: 5px 0 0 0;
-}
-#map-property p{
-  margin: 0;
-  font-size: 12px;
-  color: #A2A2A2;
-}
-#map-property input{
-  width: 58px;
-  font-size: 12px;
-  border: 0;
-  margin: 0;
-  padding: 0;
-}
 .tags {
   margin-left: 24px;
   margin-right: 24px;
@@ -1012,9 +1001,9 @@ span {
 
 .metadata input{
   border: 0;
-  width: 40px;
+  width: 60px;
   font-size: 12px;
-  margin: 0;
+  margin: 0 10px 0 0;
 }
 
 .metadata span{
@@ -1135,11 +1124,6 @@ span {
   display: inline-block;
   line-height: 1.428571429;
   vertical-align: middle;
-}
-
-.map-area {
-  display: inline-block;
-  margin: -3px 0 0 0;
 }
 
 </style>
