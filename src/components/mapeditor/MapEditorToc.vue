@@ -206,7 +206,7 @@
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='line-translate-anchor'">
               <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-              <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='line-translate-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -732,7 +732,7 @@ export default {
         }
       }
 
-      if(targetDom.name==="line-dasharray"&&((value.length===2&&value[1]===0)||typeof value==="number")){//如line-dasharray=[1,0]或line-dasharray=3
+      if(targetDom.name==="line-dasharray"&&((value.length===2&&value[1]===0)||typeof value==="number")){//如line-dasharray=[1,0]或line-dasharray=3的时候显示的应该是实线
         value=undefined;
       }
 

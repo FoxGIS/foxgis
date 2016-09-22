@@ -1,16 +1,22 @@
 <template>
   <div id='map-editorview-container'>
     <div id='info-container'>
-      <div v-for="(layer,meta) in querySourceLayers" class="layer" v-on:click='infoLayerClick'>
-        <i class='material-icons' v-if="meta.type=='Point'">grade</i>
-        <i class='material-icons' v-if="meta.type=='LineString'">remove</i>
-        <i class='material-icons' v-if="meta.type=='Polygon'">filter_b_and_w</i>
-        <span style="font-weight:bold;font-size: 14px;position: relative;bottom: 2px;">{{layer}}</span></br>
-        <div v-for="(key,value) in meta.properties" style="margin-left:5px;font-size:12px;">
-          <span>{{key}}:</span>
-          <span style="color:gray;">{{value}}</span>
+      <div style="padding:10px;background-color: white;border-radius:4px">
+        <div id="layer-container">
+          <div v-for="(layer,meta) in querySourceLayers" class="layer">
+            <i class='material-icons' v-if="meta.type=='Point'||meta.type=='MultiPoint'">grade</i>
+            <i class='material-icons' v-if="meta.type=='LineString'||meta.type=='MultiLineString'">remove</i>
+            <i class='material-icons' v-if="meta.type=='Polygon'||meta.type=='MultiPolygon'">filter_b_and_w</i>
+            <span style="font-weight:bold;font-size: 14px;position: relative;bottom: 2px;">{{layer}}</span></br>
+            <div v-for="(key,value) in meta.properties" style="margin-left:5px;font-size:12px;">
+              <span>{{key}}:</span>
+              <span style="color:gray;">{{value}}</span>
+            </div>
+          </div>
         </div>
-      </div>
+      </div> 
+      <div id='info-tip'></div>
+      <i class="material-icons" id="close-info" v-on:click="closeInfoContainer">clear</i>
     </div>
     <div id="location-control" style='display:none' v-on:mousedown="boxDragStart" v-on:mouseup="boxDragEnd">
       <div class="dragmove" v-on:mousedown="boxMoveStart"></div>
@@ -51,7 +57,10 @@ export default {
       var features = this.map.queryRenderedFeatures(e.point);
       this.querySourceLayers = {};
       var sourceLayers = {};
-      if(features.length===0){return;}
+      if(features.length===0){
+        infoContainer.style.display = 'none';
+        return;
+      }
       for(let i=0;i<features.length;i++){
         var sourceLayer = features[i].layer["source-layer"];
         var properties = features[i].properties;
@@ -65,21 +74,17 @@ export default {
       }
       this.querySourceLayers = sourceLayers;
       if(Object.keys(this.querySourceLayers).length>0){
-        var dom = $("#info-container");
-        dom.css("display","block");
-        this.popup = new mapboxgl.Popup()
-          .setLngLat(this.map.unproject(e.point))
-          .setDOMContent(dom[0])
-          .addTo(this.map);
-        //dom.children("input").bind("change",{id:featureId},this.polygonChange);
+        var containerHeight = 20;//padding值
+        for(var layer in this.querySourceLayers){
+          var c = Object.keys(this.querySourceLayers[layer].properties).length;
+          containerHeight += (c+1)*20;
+        }
+        if(containerHeight>300){containerHeight=300;}
+        infoContainer.style.display = 'block';
+        infoContainer.style.left = e.point.x-94 + 'px';
+        infoContainer.style.top = e.point.y-containerHeight-17 + 'px';
       }
       //this.querySourceLayers = features;
-    },
-    // info 中的layer click
-    infoLayerClick: function(e){
-      var layerId = e.currentTarget.querySelector('span').textContent;
-      // 通知父组件 改变图层属性窗口中展现的layer
-      this.$dispatch('current-layer-change',layerId);
     },
     // 点击时，绑定事件
     dragresizedown: function(e){
@@ -229,9 +234,8 @@ export default {
         controlBox.style.left = plt.x + 'px';
         controlBox.style.top = plt.y + 'px';
       }else{
-        if(this.popup.remove){
-          this.popup.remove();
-        }
+        var info = this.$el.querySelector("#info-container");
+        info.style.display = 'none';
       }
     },
     mapDragEnd: function(){
@@ -245,6 +249,10 @@ export default {
       this.map.on('click', this.mapClick);
       var box = this.$el.querySelector("#location-control");
       box.style.display = 'none';
+    },
+    closeInfoContainer: function(){
+      var info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
     },
     'mapInit': function(style){
       this.localStyle = JSON.parse(JSON.stringify(style));
@@ -371,9 +379,8 @@ export default {
       this.map.on('zoomend',this.mapZoomEnd);
 
       this.map.off('click', this.mapClick);
-      if(this.popup.remove){
-        this.popup.remove();
-      }
+      var info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
     },
     'hide-bounds-box': function(){
       this.hideBoundsBox();
@@ -401,7 +408,6 @@ export default {
       map: {},
       localStyle: {},
       querySourceLayers: {},
-      popup:{},
       drag: {
         dragstartx:0,
         dragstarty:0
@@ -502,10 +508,15 @@ export default {
 
 #info-container {
   display: none;
-  margin-right: 10px;
-  min-width: 150px;
-  max-width: 300px;
-  max-height: 300px;
+  position: absolute;
+  left: 500px;
+  top: 300px;
+  z-index: 1;
+}
+
+#layer-container {
+  width: 170px;
+  max-height: 295px;
   overflow: auto;
 }
 
@@ -525,6 +536,15 @@ export default {
 .layer span {
   display: inline-block;
   line-height: 21px;
+}
+
+#info-tip {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid white;
+  margin: 0 auto;
 }
 
 /* box bounds */
