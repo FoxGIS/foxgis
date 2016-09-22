@@ -1587,7 +1587,7 @@ export default {
           for(let j = 0;j<sourceNames.length;j++){
             var source = {};
             source.sourceName = sourceNames[j];
-            if(this.styleObj.sources[sourceNames[j]].url){
+            if(this.styleObj.sources[sourceNames[j]].url&&this.styleObj.sources[sourceNames[j]].type==="vector"){
               source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
               var t = source.sourceUrl.split("/");
               source.id = t[t.length-1];
