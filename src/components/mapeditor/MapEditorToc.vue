@@ -718,7 +718,7 @@ export default {
       }
 
       var temp = Number(value);
-      if(!isNaN(temp)){
+      if(!isNaN(temp)){//number
         value = temp;
       }else if(typeof value === 'string'){
         if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"&&value.indexOf("rgb")===-1){//数组（dasharray或offset）
@@ -727,9 +727,13 @@ export default {
             value[i] = Number(value[i]);
           }
         }
-        if(targetDom.name==="text-font"){
+        if(targetDom.name==="text-font"){//数组（font）
           value = value.split(',');
         }
+      }
+
+      if(targetDom.name==="line-dasharray"&&((value.length===2&&value[1]===0)||typeof value==="number")){//如line-dasharray=[1,0]或line-dasharray=3
+        value=undefined;
       }
 
       if(!currentLayer.hasOwnProperty('layout')){
@@ -738,9 +742,9 @@ export default {
       if(!currentLayer.hasOwnProperty('paint')){
         currentLayer.paint = {};
       }
-      //visibility
+      
       if(targetDom.type === 'checkbox'){
-        if(targetDom.parentElement.dataset.name === 'visibility'){
+        if(targetDom.parentElement.dataset.name === 'visibility'){//visibility
           if(targetDom.checked){
             value = 'visible';
           }else{
