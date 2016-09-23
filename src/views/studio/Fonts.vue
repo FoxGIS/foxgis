@@ -35,7 +35,7 @@
         <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
       </div>
       <div class="details">
-        <div class="panel">
+        <div class="font-panel">
           <div class="meta-title">
             <b>预览</b>
           </div>
@@ -438,7 +438,7 @@ span {
   margin: 12px 0px;
 }
 
-.details .panel{
+.details .font-panel{
   display: flex;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;

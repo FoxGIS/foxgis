@@ -142,9 +142,7 @@ export default {
       var style = {};
       this.styleSaveStatus = true;
       this.changeStyle(style);
-      $(".panel").hide();
       $("#property-panel").hide();
-      $("#new-layer-panel").hide();
       this.$broadcast("mapEditor-close");  
     },
     changeLayout: function(){
@@ -165,8 +163,6 @@ export default {
     printMap: function(e){  
       if(e.target.textContent === '输出'){
         $("#property-panel").hide();
-        $("#new-layer-panel").hide();
-        $(".panel").hide();
         if(this.selectedDistrictBounds.length!=0){
           var bounds = {
             nw:new mapboxgl.LngLat(this.selectedDistrictBounds[0][0],this.selectedDistrictBounds[1][1]),

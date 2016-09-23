@@ -50,7 +50,7 @@
       </div> 
 
       <div class="search-results mdl-grid">
-        <div class="panel">
+        <div class="atlas-container">
           <div v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length" track-by="$index">
             <foxgis-data-cards>
               <a>
@@ -711,7 +711,7 @@ export default {
   padding: 0px;
 }
 
-.search-results .panel{
+.search-results .atlas-container{
   margin: 0 auto;
   height: 100%;
   max-width: 1240px;
