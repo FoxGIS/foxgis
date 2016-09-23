@@ -384,6 +384,13 @@ export default {
     },
     'hide-bounds-box': function(){
       this.hideBoundsBox();
+    },
+    'mapEditor-close':function(){
+      this.map.remove();
+      this.map = {};
+      var info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
+      window.location.href = "#!/studio/maps";
     }
   },
   computed: {

@@ -29,28 +29,35 @@
   <script src="build/bundle.js"></script>   
 </body>
  <script>
-        //event listener form DOM ready
-        function addLoadEvent(func) {
-            var oldonload = window.onload;
-            if (typeof window.onload != 'function') {
-                window.onload = func;
-            } else {
-                window.onload = function() {
-                    if (oldonload) {
-                        oldonload();
-                    }
-                    func();
-                }
-            }
+  //event listener form DOM ready
+  function addLoadEvent(func) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') {
+      window.onload = func;
+    } else {
+      window.onload = function() {
+        if (oldonload) {
+          oldonload();
         }
-        //call function after DOM ready
-        addLoadEvent(function(){
-            outdatedBrowser({
-                bgColor: '#f25648',
-                color: '#ffffff',
-                lowerThan: 'IE10',
-                languagePath: 'static/document/zh-cn.html'
-            })
-        });
+        func();
+      }
+    }
+  }
+  //call function after DOM ready
+  addLoadEvent(function(){
+    outdatedBrowser({
+      bgColor: '#f25648',
+      color: '#ffffff',
+      lowerThan: 'IE10',
+      languagePath: 'static/document/zh-cn.html'
+    })
+  });
+
+  $(document).mouseup(function(e){
+    var _con = $(".tag-tips");   // 设置目标区域
+    if(!_con.is(e.target) && _con.has(e.target).length === 0){ // Mark 1
+      _con.hide();
+    }
+  });
     </script>
 </html>
