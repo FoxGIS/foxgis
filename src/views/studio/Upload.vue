@@ -153,33 +153,12 @@ export default {
       })
     },
 
-    showLocationPanel: function(e,index){
+    showLocationPanel: function(e,index){//显示制图区域选择面板
       this.message.index = index;
       document.getElementById('location-select').style.display = 'block';
-      document.getElementById('location-select').style.left = '265px';
-      document.getElementById('location-select').style.top = 415 + (index%10*135) + 'px';
-      var father = $('#select-tab').children('a');
-      for(let j=0;j<father.length;j++){
-        var temp = father[j];
-        for(let k=0;k<temp.attributes.length;k++){
-          if(temp.attributes[k].name === 'class'){
-            temp.attributes[k].value = '';
-            break;
-          }
-        } 
-      }
-
-      var attr = $('#province-tab')[0].attributes;
-      for(let i=0;i<attr.length;i++){
-        if(attr[i].name === 'class'){
-          attr[i].value = 'current';
-          break;
-        }
-      }
-      
-      document.getElementById('city-province').style.display = 'block';
-      document.getElementById('city-city').style.display = 'none';
-      document.getElementById('city-district').style.display = 'none';
+      document.getElementById('location-select').style.left = e.target.offsetLeft + 'px';
+      document.getElementById('location-select').style.top = e.target.offsetTop+20+'px';
+      this.$broadcast('initLocationSelectPanel');
     },
 
     editLocation: function(e, index) {//编辑制图区域
@@ -200,7 +179,6 @@ export default {
           input[i].value = this.displayUploads[i].location;
           input[i].blur();
         }
-        this.$broadcast('mailSent', { message: '编辑成功！',timeout:3000 });
       },function(response){
         this.$broadcast('mailSent', { message: '编辑失败！',timeout:3000 });
       })

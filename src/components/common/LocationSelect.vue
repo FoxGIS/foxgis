@@ -1,53 +1,51 @@
 <template>
 <div id="location-select" class="overlay">
-  <div id="location-select-component">
-    <div class="city-select-warp">
-      <div id="select-tab" class="city-select-tab">
-        <a id="province-tab" class="current" @click="selectTabClick('province')">省份</a>
-        <a id="city-tab" class="" @click="selectTabClick('city')">城市</a>
-        <a id="district-tab" class="" @click="selectTabClick('district')">县区</a>
+  <div id="select-tab" class="city-select-tab">
+    <a id="province-tab" class="current" @click="selectTabClick('province')">省份</a>
+    <a id="city-tab" class="" @click="selectTabClick('city')">城市</a>
+    <a id="district-tab" class="" @click="selectTabClick('district')">县区</a>
+  </div>
+  <div class="panel-content">
+    <div class="city-select-content">
+      <div id="city-province" class="city-select">
+        <dl class="fn-clear">
+          <dt>A-G</dt>
+          <dd>
+            <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData" v-if="p.startZM=='A'" href="javascript:;">{{p.name}}</a>
+          </dd>
+        </dl>
+        <dl class="fn-clear">
+          <dt>H-K</dt>
+          <dd>
+            <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData" v-if="p.startZM=='H'" href="javascript:;">{{p.name}}</a>
+          </dd>
+        </dl>
+        <dl class="fn-clear">
+          <dt>L-S</dt>
+          <dd>
+            <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData" v-if="p.startZM=='L'" href="javascript:;">{{p.name}}</a>
+          </dd>
+        </dl>
+        <dl class="fn-clear">
+          <dt>T-Z</dt>
+          <dd>
+            <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData" v-if="p.startZM=='T'" href="javascript:;">{{p.name}}</a>
+          </dd>
+        </dl>
       </div>
-      <div class="city-select-content">
-        <div id="city-province" class="city-select">
-          <dl class="fn-clear">
-            <dt>A-G</dt>
-            <dd>
-              <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData[0].children" href="javascript:;">{{p.name}}</a>
-            </dd>
-          </dl>
-          <dl class="fn-clear">
-            <dt>H-K</dt>
-            <dd>
-              <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData[1].children" href="javascript:;">{{p.name}}</a>
-            </dd>
-          </dl>
-          <dl class="fn-clear">
-            <dt>L-S</dt>
-            <dd>
-              <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData[2].children" href="javascript:;">{{p.name}}</a>
-            </dd>
-          </dl>
-          <dl class="fn-clear">
-            <dt>T-Z</dt>
-            <dd>
-              <a title="{{p.name}}" class="" data-id="{{p.id}}" @click="contentClick($event,'province')" v-for="p in provinceData[3].children" href="javascript:;">{{p.name}}</a>
-            </dd>
-          </dl>
-        </div>
-        <div id="city-city" class="city-select">
-          <dl class="fn-clear city-select-city">
-            <dd>
-              <a title="{{city.name}}" class="" data-id="{{city.id}}" @click="contentClick($event,'city')" v-for="city in cityData" href="javascript:;">{{city.name}}</a>
-            </dd>
-          </dl>
-        </div>
-        <div id="city-district" class="city-select">
-          <dl class="fn-clear city-select-district">
-            <dd>
-              <a title="{{district.name}}" class="" data-id="{{district.id}}" @click="contentClick($event,'district')" v-for="district in districtData" href="javascript:;">{{district.name}}</a>
-            </dd>
-          </dl>
-        </div>
+      <div id="city-city" class="city-select">
+        <dl class="fn-clear city-select-city">
+          <dd>
+            <a title="{{city.name}}" class="" data-id="{{city.id}}" @click="contentClick($event,'city')" v-for="city in cityData" href="javascript:;">{{city.name}}</a>
+          </dd>
+        </dl>
+      </div>
+      <div id="city-district" class="city-select">
+        <dl class="fn-clear city-select-district">
+          <dd>
+            <a title="{{district.name}}" class="" data-id="{{district.id}}" @click="contentClick($event,'district')" v-for="district in districtData" href="javascript:;">{{district.name}}</a>
+          </dd>
+        </dl>
       </div>
     </div>
   </div>
@@ -56,8 +54,14 @@
 
 <script>
 export default {
+  events: {
+    'initLocationSelectPanel': function () {
+      this.selectTabClick('province');
+      this.clearData();
+    }
+  },
   methods : {
-    selectTabClick: function(type){
+    selectTabClick: function(type){//省份、城市、县区选择方法
       var father = $('#select-tab').children('a');
       for(let j=0;j<father.length;j++){
         var temp = father[j];
@@ -82,10 +86,9 @@ export default {
       document.getElementById('city-district').style.display = 'none';
 
       document.getElementById('city-'+type).style.display = 'block';
-
     },
 
-    contentClick: function(e,type){
+    contentClick: function(e,type){//地名选择方法.city-select
       var data = [];
       var id = e.currentTarget.dataset.id;
       var name = e.currentTarget.text;
@@ -111,14 +114,19 @@ export default {
         this.district_selected.id = id;
         this.district_selected.name = name;
         this.showCurrent(type,true);
-        this.clickHiddenPanel();
+        document.getElementById('location-select').style.display = 'none';
       }
 
       var msg =this.province_selected.name+this.city_selected.name+this.district_selected.name;
-      this.$dispatch('child-msg', msg);
+      this.$dispatch('child-msg', msg);//向父控件传值
+
+      if(type === 'district'){
+        this.clearData();
+      }
     },
 
-    showCurrent: function(type,isShow){
+    showCurrent: function(type,isShow){//给每个tab中已经选择的a标签添加current标记
+      //isShow取值true(给选择的a标签添加current标记)、false(清除所有的current标记)
       var attr = $('#city-'+type+' a');
       var selected = "";
       if(type === 'province'){
@@ -149,12 +157,7 @@ export default {
       }
     },
 
-    clickHiddenPanel:function(){
-      document.getElementById('location-select').style.display = 'none';
-      this.clearData();
-    },
-
-    clearData:function(){
+    clearData:function(){//清空数据
       this.cityData=[];
       this.districtData=[];
       this.province_selected.id="";
@@ -166,15 +169,15 @@ export default {
       this.showCurrent('province',false);
     },
 
-    hiddenPanel:function(type){
+    hiddenPanel:function(type){//点击面板以外(除区域选择的input框外)的区域隐藏面板
       var that = this;
       $("body").click(function(e){
         var id = $(e.target).attr("class");
-        //点击的是input框  input_id为input框id
+        //点击的是制图区域的input框
         if(id=="location"){
           return;
         }
-        //parent_id弹出最顶级id名称
+        //弹出最顶级id名称
         var o = $(e.target).parents("#location-select").size()>0?true:false;
         //如果o返回true说明点击的是窗口上的元素
         if(o){
@@ -192,45 +195,15 @@ export default {
   attached() {
     this.$http({url:'/static/config/cityData.json',method:'GET'})
     .then(function(response){
-      var zNodes = response.data.china;
-      var china = [
-        {
-          type:'A-G',
-          children:[]
-        },{
-          type:'H-K',
-          children:[]
-        },{
-          type:'L-S',
-          children:[]
-        },{
-          type:'T-Z',
-          children:[]
-        },
-      ];
+      var china = response.data.china;
       var province = [];
-      for(let i=0;i<zNodes.length;i++){
-        if(zNodes[i].nodeType === 1){
-          province.push(zNodes[i]);
+      for(let i=0;i<china.length;i++){
+        if(china[i].nodeType === 1){
+          province.push(china[i]);
         }
       }
-
-      for(let j=0;j<province.length;j++){
-        if(province[j].startZM === "A"){
-          china[0].children.push(province[j]);
-        }
-        if(province[j].startZM === "H"){
-          china[1].children.push(province[j]);
-        }
-        if(province[j].startZM === "L"){
-          china[2].children.push(province[j]);
-        }
-        if(province[j].startZM === "T"){
-          china[3].children.push(province[j]);
-        }
-      }
-      this.provinceData = china;
-      this.chinaData = zNodes;
+      this.provinceData = province;
+      this.chinaData = china;
       this.hiddenPanel();
     });
   },
@@ -275,9 +248,17 @@ export default {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+.panel-content {
+  width: 179px;
+  height: 150px;
+  border: 1px #ccc solid;
+  border-top: 0;
+  background: #fff;
+}
+
 .city-select-content {
-  max-height: 285px;
-  overflow-y: auto;
+  max-height: 100%;
+  overflow-y: scroll;
 }
 
 .city-select-content::-webkit-scrollbar {
@@ -290,7 +271,7 @@ export default {
 
 /* 滚动条的滑轨背景颜色 */
 .city-select-content::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
+  background-color: #fff;
 }
 
 /* 滑块颜色 */
@@ -328,10 +309,8 @@ export default {
 }
 
 .city-select {
-  border: 1px #ccc solid;
   border-top: 0;
   padding: 10px;
-  width: 159px;
   background: #fff;
 }
 
