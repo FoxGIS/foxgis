@@ -68,14 +68,14 @@
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
       </span>
-      <input type="text" maxlength="10" @input="tagsInput($event,$index)" @click="tagsInput($event,$index)">
-      <a title="完成" class="add-tag-finish" @click="tagsInputFinish($index)">√</a>
+      <input type="text" maxlength="10" @input="showInputTips($event,$index,'tag')" @click="showInputTips($event,$index,'tag')">
+      <a title="完成" class="add-tag-finish" @click="inputTipsClickFinish($index,'tag')">√</a>
     </div>
-    <input type="checkbox" class = "card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
+    <input type="checkbox" class="card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
       <div>
         <p>
-          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @input="showInputTips($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index,'location')"/>
 
           比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
 
@@ -115,12 +115,19 @@
 
   <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
 
-
   <foxgis-location-select id="location-control"></foxgis-location-select>
 
   <div class="key-tips" style="display:none;">
     <ul>
-      <li v-for="tip in keyTips" @click="tipsClick($event)">
+      <li v-for="tip in keyTips" @click="inputTipsClick($event,'tag')">
+        <span>{{tip}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="location-tips" style="display:none;width:168px;">
+    <ul>
+      <li v-for="tip in locationTips" @click="inputTipsClick($event,'location')">
         <span>{{tip}}</span>
       </li>
     </ul>
@@ -499,46 +506,112 @@ export default {
       var upload_id = this.displayUploads[index].upload_id;
       this.patchUpload(upload_id,{'name':value});
     },
-    tagsInput:function(e,index){//输入主题词时显示提示信息
+
+    showInputTips: function(e,index,type){
+    //显示input框提示信息,type:location(制图区域提示)/tag(主题词提示)
       var value = e.target.value;
-      var tagTips = [];
+      var tips = [];
+      var status = [];
+      if(type === 'location'){
+        $("#location-select").hide();
+        status = this.themeLocationsStatus;
+      }else if(type === 'tag'){
+        status = this.themeTagsStatus;
+      }
       if(value===""){
-        for(let i=0;i<this.themeTagsStatus.length;i++){
-          tagTips.push(this.themeTagsStatus[i].tag);
-          if(tagTips.length===10){break;}
-        }
-        $(e.target.nextElementSibling).hide();
-      }else{
-        for(let i=0;i<this.themeTagsStatus.length;i++){
-          if(this.themeTagsStatus[i].tag.indexOf(value)!==-1){
-            tagTips.push(this.themeTagsStatus[i].tag);
-            if(tagTips.length===10){break;}
+        for(let i=0;i<status.length;i++){
+          if(type === 'location'){
+            tips.push(status[i].location);
+          }else if(type === 'tag'){
+            tips.push(status[i].tag);
+          }
+          if(tips.length === 10){
+            break;
           }
         }
-        $(e.target.nextElementSibling).show();
-      }
-      this.keyTips = tagTips;
-      if(this.keyTips.length>0){
-        $(".key-tips").css({
-          "left":e.target.offsetLeft+"px",
-          "top":e.target.offsetTop+18+"px",
-          "display":"block"
-        });
-        $(".key-tips ul")[0].dataset.index = index;
+        if(type === 'tag'){
+          $(e.target.nextElementSibling).hide();
+        }
       }else{
-        $(".key-tips").hide();
+        for(let i=0;i<status.length;i++){
+          if(type === 'location'){
+            if(status[i].location.indexOf(value)!==-1){
+              tips.push(status[i].location);
+              if(tips.length===10){
+                break;
+              }
+            }
+          }else if(type === 'tag'){
+            if(status[i].tag.indexOf(value)!==-1){
+              tips.push(status[i].tag);
+              if(tips.length===10){
+                break;
+              }
+            }
+          }  
+        }
+        if(type === 'tag'){
+          $(e.target.nextElementSibling).show();
+        }
+      }
+    
+      if(type === 'location'){
+        this.locationTips = tips;
+      }else if(type === 'tag'){
+        this.keyTips = tips;
+      }
+          
+      if(type === 'location'){
+        if(this.locationTips.length>0){
+          $(".location-tips").css({
+            "left":e.target.offsetLeft+"px",
+            "top":e.target.offsetTop+20+"px",
+            "display":"block"
+          });
+          $(".location-tips ul")[0].dataset.index = index;
+        }else{
+          $(".location-tips").hide();
+        }
+      }else if(type === 'tag'){
+        if(this.keyTips.length>0){
+          $(".key-tips").css({
+            "left":e.target.offsetLeft+"px",
+            "top":e.target.offsetTop+18+"px",
+            "display":"block"
+          });
+          $(".key-tips ul")[0].dataset.index = index;
+        }else{
+          $(".key-tips").hide();
+        }
+      }    
+    },
+
+    inputTipsClickFinish:function(index,type){//把选择的值赋给input框
+      if(type === 'key'){
+        type = 'tag';
+      }
+      if(type === 'location'){
+        var value = $(".metadata input.location")[index].value;
+        this.editLocation(value,(this.pageConfig.current_page-1)*this.pageConfig.page_item_num+index);
+      }else if(type === 'tag'){
+        var value = $(".tags input")[index].value;
+        this.addTag(value,(this.pageConfig.current_page-1)*this.pageConfig.page_item_num+index);
       }
     },
-    tagsInputFinish:function(index){
-      var value = $(".tags input")[index].value;
-      this.addTag(value,(this.pageConfig.current_page-1)*this.pageConfig.page_item_num+index);
-    },
-    tipsClick:function(e){//关键词提示时，选择了提示的关键词
-      var index = Number($(".key-tips ul")[0].dataset.index);
+
+    inputTipsClick:function(e,type){//选择了提示框中的关键词
+      if(type === 'tag'){
+        type = 'key';
+      }
+      var index = Number($("."+type+"-tips ul")[0].dataset.index);
       var value = e.target.innerText;
-      $(".tags input")[index].value = value;
-      this.tagsInputFinish(index);
-      $(".key-tips").hide();
+      if(type === 'location'){
+        $(".metadata input.location")[index].value = value;
+      }else if(type === 'key'){
+        $(".tags input")[index].value = value;
+      }
+      this.inputTipsClickFinish(index,type);
+      $("."+type+"-tips").hide();
     }
 
   },
@@ -613,6 +686,18 @@ export default {
       }
     },function(response){
       this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
+    });
+
+    //获取制图区域统计信息
+    var tagUrl = SERVER_API.stats+"/location";
+    this.$http({ url: tagUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        this.themeLocationsStatus = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取制图区域统计信息失败！',timeout:3000 });
     });
   },
 
@@ -938,7 +1023,9 @@ export default {
         index: -1
       },
       themeTagsStatus:[],//所有的主题词及个数统计信息
-      keyTips:[]//主题词输入提示
+      keyTips:[],//主题词输入提示
+      themeLocationsStatus:[],//所有的制图区域及个数统计信息
+      locationTips:[]//制图区域输入提示
     }
   }
 }
@@ -1224,7 +1311,7 @@ span {
   display: none;
 }
 
-.key-tips{
+.key-tips, .location-tips{
   padding: 5px;
   min-width: 157px;
   position: absolute;
@@ -1238,12 +1325,12 @@ span {
   -o-box-shadow: 1px 1px 3px #ededed;
 }
 
-.key-tips li{
+.key-tips li, .location-tips li{
   list-style-type :none;
-  cursor: default;
+  cursor: pointer;
 }
 
-.key-tips li:hover{
+.key-tips li:hover, .location-tips li:hover{
   background-color: #e4e4e4;
 }
 
