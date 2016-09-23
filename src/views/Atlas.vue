@@ -16,7 +16,8 @@
           <div class="condition" v-if="theme_tags.length>0">
             <strong>主题词：</strong>
             <div class="items">
-              <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag }}
+              <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag.tag }}
+                <span>({{ tag.total }})</span>
               </a>
             </div>
             <div class="more">
@@ -137,58 +138,6 @@ export default {
   el() {
     return '#searchButton';
   },
-  events:{
-    "getAtlasHttpData":function(show_page_num){//“下一页”按钮的点击方法
-      var allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
-      var that = this;
-      if(this.pageConfig.current_page === allPages){
-        this.searchKeyWords = document.getElementById("search").value.trim();
-        if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return;
-        }
-        var url = '';
-        var skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
-        if(this.pageConfig.skip === skip){
-          return;
-        }else{
-          this.pageConfig.skip = skip;
-        }
-        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt';
-        this.getHttpData(url,function(data){
-          if(data.length===0){
-            return;
-          }
-          data = data.map(function(d) {
-            if (d.size / 1024 > 1024) {
-              d.size = (d.size / 1048576).toFixed(2) + 'MB';
-            } else {
-              d.size = (d.size / 1024).toFixed(2) + 'KB';
-            }
-            var date = new Date(d.createdAt);
-            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-            return d;
-          })
-          for(let i=0;i<data.length;i++){
-            if(!data[i].location){
-              data[i].location = "未指定";
-            }
-            if(!data[i].year){
-              data[i].year = "未指定";
-            }
-          }
-          that.uploads = _.concat(that.uploads,data);
-          that.pageConfig.current_page += 1;
-          if(that.pageConfig.current_page > show_page_num){
-            that.pageConfig.first_page +=1;
-          }
-        })
-      }else{
-        this.pageConfig.current_page += 1;
-        if(this.pageConfig.current_page > show_page_num){
-          this.pageConfig.first_page +=1;
-        }
-      }
-    }
-  },
   methods: {
     search: function(){//获取数据，每次请求80个数据
       document.querySelector('.modal2').style.display = 'block';
@@ -298,7 +247,7 @@ export default {
             this.selected_location_tags.splice(index,1);
           }
         }else if(type === 1){
-          var index = this.selected_theme_tags.indexOf(e.target.textContent.trim());
+          var index = this.selected_theme_tags.indexOf(str);
           if(index != -1){
             this.selected_theme_tags.splice(index,1);
           }
@@ -313,14 +262,12 @@ export default {
           this.selected_location_tags.push(str);
           this.selected_location_tags = _.uniq(this.selected_location_tags);
         }else if(type ===1){
-          this.selected_theme_tags.push(e.target.textContent.trim());
+          this.selected_theme_tags.push(str);
           this.selected_theme_tags = _.uniq(this.selected_theme_tags);
         }
         
       }
-      if(type!==1){//选中的主题不重新请求
-        this.getNewUploads();
-      }
+      this.getNewUploads();
     },
 
     parseImgURL:function(upload) {//返回缩略图的url
@@ -369,6 +316,17 @@ export default {
         }
         url = url+"&location="+lTags.toString();
       }
+      if(this.selected_theme_tags.length>0){
+        var tTags = [];
+        for(let j=0;j<this.selected_theme_tags.length;j++){
+          if(this.selected_theme_tags[j]==="未指定"){
+            tTags.push("null");
+          }else{
+            tTags.push(this.selected_theme_tags[j]);
+          }
+        }
+        url = url+"&tags="+tTags.toString();
+      }
       //获取数据列表
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
@@ -411,6 +369,59 @@ export default {
       });
     }
     
+  },
+
+  events:{
+    "getAtlasHttpData":function(show_page_num){//“下一页”按钮的点击方法
+      var allPages = Math.ceil(this.total_items / this.pageConfig.page_item_num);
+      var that = this;
+      if(this.pageConfig.current_page === allPages){
+        this.searchKeyWords = document.getElementById("search").value.trim();
+        if(this.searchKeyWords.length>0||this.selected_location_tags.length>0||this.selected_year_tags.length>0){return;
+        }
+        var url = '';
+        var skip = Math.ceil(this.pageConfig.first_page/10)*this.requestCounts;
+        if(this.pageConfig.skip === skip){
+          return;
+        }else{
+          this.pageConfig.skip = skip;
+        }
+        url = SERVER_API.uploads + '?limit='+this.requestCounts+'&skip='+skip+'&sort=-updatedAt';
+        this.getHttpData(url,function(data){
+          if(data.length===0){
+            return;
+          }
+          data = data.map(function(d) {
+            if (d.size / 1024 > 1024) {
+              d.size = (d.size / 1048576).toFixed(2) + 'MB';
+            } else {
+              d.size = (d.size / 1024).toFixed(2) + 'KB';
+            }
+            var date = new Date(d.createdAt);
+            d.createdAt = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            return d;
+          })
+          for(let i=0;i<data.length;i++){
+            if(!data[i].location){
+              data[i].location = "未指定";
+            }
+            if(!data[i].year){
+              data[i].year = "未指定";
+            }
+          }
+          that.uploads = _.concat(that.uploads,data);
+          that.pageConfig.current_page += 1;
+          if(that.pageConfig.current_page > show_page_num){
+            that.pageConfig.first_page +=1;
+          }
+        })
+      }else{
+        this.pageConfig.current_page += 1;
+        if(this.pageConfig.current_page > show_page_num){
+          this.pageConfig.first_page +=1;
+        }
+      }
+    }
   },
   attached() {
     var username = Cookies.get('username');
@@ -492,6 +503,17 @@ export default {
       this.$broadcast('mailSent', { message: '获取制图年份失败！',timeout:3000 });
     });
 
+    //获取主题词统计信息
+    var tagUrl = SERVER_API.stats+"/tags";
+    this.$http({ url: tagUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        this.theme_tags = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
+    });
   },
 
   computed: {//计算属性
@@ -568,20 +590,6 @@ export default {
         temp = _.intersection(temp1,temp2);
       }
       return temp;
-    },
-
-    theme_tags: function(){
-      var theme = [];
-      var tempUploads = this.uploads;
-      for(let i=0;i<tempUploads.length;i++){
-        if(tempUploads[i].tags.length>0){
-          for(let j=0;j<tempUploads[i].tags.length;j++){
-            theme.push(tempUploads[i].tags[j]);
-          }
-        }
-      }
-      theme = _.uniq(theme);
-      return theme;
     }
   },
 
@@ -600,7 +608,8 @@ export default {
       selected_theme_tags: [],
       searchKeyWords: '',
       location_tags:[],
-      year_tags:[]
+      year_tags:[],
+      theme_tags:[]
     }
   }
 }
