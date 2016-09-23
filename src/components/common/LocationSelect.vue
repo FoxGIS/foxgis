@@ -108,8 +108,12 @@ export default {
         this.city_selected.id = id;
         this.city_selected.name = name;
         this.districtData = data;
-        this.selectTabClick('district');
         this.showCurrent(type,true);
+        if(this.districtData.length>0){
+          this.selectTabClick('district');
+        }else{
+          document.getElementById('location-select').style.display = 'none';
+        } 
       }else if(type === 'district'){
         this.district_selected.id = id;
         this.district_selected.name = name;
@@ -121,6 +125,9 @@ export default {
       this.$dispatch('child-msg', msg);//向父控件传值
 
       if(type === 'district'){
+        this.clearData();
+      }
+      if(type === 'city' && this.districtData.length === 0){
         this.clearData();
       }
     },
@@ -167,29 +174,6 @@ export default {
       this.district_selected.id="";
       this.district_selected.name="";
       this.showCurrent('province',false);
-    },
-
-    hiddenPanel:function(type){//点击面板以外(除区域选择的input框外)的区域隐藏面板
-      var that = this;
-      $("body").click(function(e){
-        var id = $(e.target).attr("class");
-        //点击的是制图区域的input框
-        if(id=="location"){
-          return;
-        }
-        //弹出最顶级id名称
-        var o = $(e.target).parents("#location-select").size()>0?true:false;
-        //如果o返回true说明点击的是窗口上的元素
-        if(o){
-          return;
-        }
-        //两个都不是，如果窗口打开，则关闭
-        if(document.getElementById('location-select').style.display === 'block'){
-          document.getElementById('location-select').style.display = 'none';
-          that.clearData();
-        }
-
-      })
     }
   },
   attached() {
@@ -204,7 +188,6 @@ export default {
       }
       this.provinceData = province;
       this.chinaData = china;
-      this.hiddenPanel();
     });
   },
   data() {
