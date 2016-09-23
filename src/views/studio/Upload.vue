@@ -366,36 +366,6 @@ export default {
         this.patchUpload(upload_id,{'tags':patchUpload.tags});
       }
     },
-    tagsInput:function(e,index){//输入主题词时显示提示信息
-      var value = e.target.value;
-      var tagTips = [];
-      if(value===""){
-        for(let i=0;i<this.themeTagsStatus.length;i++){
-          tagTips.push(this.themeTagsStatus[i].tag);
-          if(tagTips.length===10){break;}
-        }
-        $(e.target.nextElementSibling).hide();
-      }else{
-        for(let i=0;i<this.themeTagsStatus.length;i++){
-          if(this.themeTagsStatus[i].tag.indexOf(value)!==-1){
-            tagTips.push(this.themeTagsStatus[i].tag);
-            if(tagTips.length===10){break;}
-          }
-        }
-        $(e.target.nextElementSibling).show();
-      }
-      this.tagTips = tagTips;
-      if(this.tagTips.length>0){
-        $(".tag-tips").css({
-          "left":e.target.offsetLeft+"px",
-          "top":e.target.offsetTop+18+"px",
-          "display":"block"
-        });
-        $(".tag-tips ul")[0].dataset.index = index;
-      }else{
-        $(".tag-tips").hide();
-      }
-    },
 
     selectAll:function(){//全选
       for(let i = 0;i<this.displayUploads.length;i++){
@@ -508,6 +478,36 @@ export default {
       var value = e.target.value;
       var upload_id = this.displayUploads[index].upload_id;
       this.patchUpload(upload_id,{'name':value});
+    },
+    tagsInput:function(e,index){//输入主题词时显示提示信息
+      var value = e.target.value;
+      var tagTips = [];
+      if(value===""){
+        for(let i=0;i<this.themeTagsStatus.length;i++){
+          tagTips.push(this.themeTagsStatus[i].tag);
+          if(tagTips.length===10){break;}
+        }
+        $(e.target.nextElementSibling).hide();
+      }else{
+        for(let i=0;i<this.themeTagsStatus.length;i++){
+          if(this.themeTagsStatus[i].tag.indexOf(value)!==-1){
+            tagTips.push(this.themeTagsStatus[i].tag);
+            if(tagTips.length===10){break;}
+          }
+        }
+        $(e.target.nextElementSibling).show();
+      }
+      this.tagTips = tagTips;
+      if(this.tagTips.length>0){
+        $(".tag-tips").css({
+          "left":e.target.offsetLeft+"px",
+          "top":e.target.offsetTop+18+"px",
+          "display":"block"
+        });
+        $(".tag-tips ul")[0].dataset.index = index;
+      }else{
+        $(".tag-tips").hide();
+      }
     },
     tagsInputFinish:function(index){
       var value = $(".tags input")[index].value;

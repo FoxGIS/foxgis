@@ -28,36 +28,36 @@
   <script src="static/lib/colpick/colpick.js"></script>   
   <script src="build/bundle.js"></script>   
 </body>
- <script>
-  //event listener form DOM ready
-  function addLoadEvent(func) {
-    var oldonload = window.onload;
-    if (typeof window.onload != 'function') {
-      window.onload = func;
-    } else {
-      window.onload = function() {
-        if (oldonload) {
-          oldonload();
+  <script>
+    //event listener form DOM ready
+    function addLoadEvent(func) {
+      var oldonload = window.onload;
+      if (typeof window.onload != 'function') {
+        window.onload = func;
+      } else {
+        window.onload = function() {
+          if (oldonload) {
+            oldonload();
+          }
+          func();
         }
-        func();
       }
     }
-  }
-  //call function after DOM ready
-  addLoadEvent(function(){
-    outdatedBrowser({
-      bgColor: '#f25648',
-      color: '#ffffff',
-      lowerThan: 'IE10',
-      languagePath: 'static/document/zh-cn.html'
-    })
-  });
+    //call function after DOM ready
+    addLoadEvent(function(){
+      outdatedBrowser({
+        bgColor: '#f25648',
+        color: '#ffffff',
+        lowerThan: 'IE10',
+        languagePath: 'static/document/zh-cn.html'
+      })
+    });
 
-  $(document).mouseup(function(e){
-    var _con = $(".tag-tips");   // 设置目标区域
-    if(!_con.is(e.target) && _con.has(e.target).length === 0){ // Mark 1
-      _con.hide();
-    }
-  });
-    </script>
+    $(document).mouseup(function(e){
+      var _con = $(".tag-tips,.panel");   // 隐藏关键词提示框
+      if(!_con.is(e.target) && _con.has(e.target).length === 0){
+        _con.hide();
+      }
+    });
+  </script>
 </html>
