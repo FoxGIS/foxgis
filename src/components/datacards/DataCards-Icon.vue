@@ -333,30 +333,6 @@ export default {
   margin-bottom: 12px;
   margin-left: 5px;
 }
-.details .panel{
-  display: flex;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  background-color: #D8D8D8;
-  overflow: auto;
-  margin: 5px;
-  height: calc(100% - 50px);
-}
-
-.details .panel::-webkit-scrollbar {
-  width: 6px;
-}
-
-/* 滚动条的滑轨背景颜色 */
-.details .panel::-webkit-scrollbar-track {
-  background-color: #f5f5f5;
-}
-
-/* 滑块颜色 */
-.details .panel::-webkit-scrollbar-thumb {
-  background-color: #adadad;
-}
 
 .details .description input{
   font-size: 16px;

@@ -397,7 +397,6 @@ export default {
     showCreateStyle:function(){
       if($("#property-panel").is(":visible")){
         $("#property-panel").hide();
-        $(".panel").hide();
       }
       var newLayerPanel = $("#new-layer-panel");
       if(newLayerPanel.is(":visible")){
@@ -423,7 +422,6 @@ export default {
     },
     //属性面板的tab菜单
     styleControlClick:function(e){
-      $(".panel").hide();
       //移除之前的active
       var activeCards = this.$el.querySelector('.style-control-active');
       if(activeCards&&activeCards!==e.target){
@@ -580,7 +578,6 @@ export default {
     },
     //点击图层列表时，显示当前图层的属性设置面板
     showPropertyPanel:function(layer_id){
-      $(".panel").hide();
       var that = this;
       var layers = this.styleObj.layers;
       var clickLayer;
@@ -1095,7 +1092,6 @@ export default {
     closePanel: function(e){
       var panel = this.$el.querySelector("#property-panel");
       panel.style.display = 'none';
-      $(".panel").hide();
     },
     onShowIconPanel:function(e){
       var iconPanel = $("#icon-select-panel");
@@ -1103,7 +1099,6 @@ export default {
         iconPanel.hide();
         $("#icon-select-panel .icon-link").unbind("click");
       }else{
-        $(".panel").hide();
         iconPanel.show();
         iconPanel.css("left","520px");
         $("#icon-select-panel .icon-link").unbind("click");
@@ -1124,7 +1119,6 @@ export default {
         fontPanel.hide();
         $("#font-select-panel .font-item").unbind("click");
       }else{
-        $(".panel").hide();
         fontPanel.show();
         fontPanel.css("left","520px");
         $("#font-select-panel .font-item").unbind("click");
@@ -1176,7 +1170,6 @@ export default {
       }
     },
     openStopsPanel:function(e){
-      $(".panel").hide();
       if($(e.target).hasClass("open")){
         $("#stops-panel").hide();
         $(e.target).removeClass("open");
