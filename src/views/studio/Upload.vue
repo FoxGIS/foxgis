@@ -74,7 +74,7 @@
     <div class="metadata">
       <div>
         <p>
-          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
+          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"/>
 
           比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
 
@@ -113,6 +113,8 @@
   <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
 
   <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
+
+  <foxgis-location-select id="location-control"></foxgis-location-select>
 </template>
 
 
@@ -123,6 +125,12 @@ import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 import commonMethod from '../../components/method.js'
 export default {
+  events: {
+    'child-msg': function (msg) {
+      this.message.msg = msg;
+      this.editLocation(msg,this.message.index);
+    }
+  },
   methods: {
     editScale:function(e, index) {//编辑比例尺
       var tempUploads = this.displayUploads;
@@ -145,9 +153,41 @@ export default {
       })
     },
 
+    showLocationPanel: function(e,index){
+      this.message.index = index;
+      document.getElementById('location-select').style.display = 'block';
+      document.getElementById('location-select').style.left = '265px';
+      document.getElementById('location-select').style.top = 415 + (index%10*135) + 'px';
+      var father = $('#select-tab').children('a');
+      for(let j=0;j<father.length;j++){
+        var temp = father[j];
+        for(let k=0;k<temp.attributes.length;k++){
+          if(temp.attributes[k].name === 'class'){
+            temp.attributes[k].value = '';
+            break;
+          }
+        } 
+      }
+
+      var attr = $('#province-tab')[0].attributes;
+      for(let i=0;i<attr.length;i++){
+        if(attr[i].name === 'class'){
+          attr[i].value = 'current';
+          break;
+        }
+      }
+      
+      document.getElementById('city-province').style.display = 'block';
+      document.getElementById('city-city').style.display = 'none';
+      document.getElementById('city-district').style.display = 'none';
+    },
+
     editLocation: function(e, index) {//编辑制图区域
       var tempUploads = this.displayUploads;
-      var location = e.target.value;
+      var location = e;
+      if(e.target){
+        location = e.target.value;
+      }
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
       var upload_id = tempUploads[index].upload_id;
@@ -515,13 +555,15 @@ export default {
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
         }
         this.uploads = data;
-
+        //生成制图年份下拉框数据
         var year=new Date().getFullYear();
         var years = [];
         for(let j=2000;j<=year;j++){
           years.unshift(j);
         }
         this.selectYearsData = years;
+        //生成制图区域下拉框数据
+        this.selectLocationsData = [];
       }
     }, function(response) {
       this.$broadcast('mailSent', { message: '获取列表失败！',timeout:3000 });
@@ -819,6 +861,7 @@ export default {
     return {
       uploads: [],
       selectYearsData: [],         //制图年份选择框数据
+      selectLocationsData: [],     //制图区域选择框数据
       dialogcontent: {
         title: '确定删除吗？',
         textOk:'删除',
@@ -843,6 +886,10 @@ export default {
         total_files:0,//上传文件数目
         total_size:"0KB",
         current_file:1//当前正在第几个文件
+      },
+      message: {
+        msg: '',
+        index: -1
       }
     }
   }
@@ -935,7 +982,7 @@ span {
 }
 
 .name {
-  margin: 24px 24px 0 24px;
+  margin: 10px 24px 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1124,6 +1171,10 @@ span {
   display: inline-block;
   line-height: 1.428571429;
   vertical-align: middle;
+}
+
+#location-control{
+  display: none;
 }
 
 </style>
