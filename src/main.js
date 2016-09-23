@@ -29,6 +29,7 @@ import Search from './components/common/Search'
 import DialogPrompt from './components/common/Dialog-Prompt'
 import DialogInput from './components/common/Dialog-Input'
 import Loading from './components/common/Loading'
+import LocationSelect from './components/common/LocationSelect'
 import Pagination from './components/common/Pagination'
 import SVGEditor from './components/common/SVGEditor.vue'
 
@@ -65,6 +66,7 @@ Vue.component('foxgis-style-editor',MapStyleEditor)
 Vue.component('foxgis-district-select',MapDistrictSelect)
 Vue.component('foxgis-style-template',ModalStyleTemplate)
 Vue.component('foxgis-loading',Loading)
+Vue.component('foxgis-location-select',LocationSelect)
 Vue.component('foxgis-dialog-prompt',DialogPrompt)
 Vue.component('foxgis-dialog-input',DialogInput)
 Vue.component('foxgis-icon-panel',IconPanel)
