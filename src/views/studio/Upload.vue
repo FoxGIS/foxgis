@@ -115,15 +115,17 @@
 
   <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
 
+
   <foxgis-location-select id="location-control"></foxgis-location-select>
 
-  <div class="tag-tips" style="display:none;">
+  <div class="key-tips" style="display:none;">
     <ul>
-      <li v-for="tip in tagTips" @click="tipsClick($event)">
+      <li v-for="tip in keyTips" @click="tipsClick($event)">
         <span>{{tip}}</span>
       </li>
     </ul>
   </div>
+
 </div>
 </template>
 
@@ -515,16 +517,16 @@ export default {
         }
         $(e.target.nextElementSibling).show();
       }
-      this.tagTips = tagTips;
-      if(this.tagTips.length>0){
-        $(".tag-tips").css({
+      this.keyTips = tagTips;
+      if(this.keyTips.length>0){
+        $(".key-tips").css({
           "left":e.target.offsetLeft+"px",
           "top":e.target.offsetTop+18+"px",
           "display":"block"
         });
-        $(".tag-tips ul")[0].dataset.index = index;
+        $(".key-tips ul")[0].dataset.index = index;
       }else{
-        $(".tag-tips").hide();
+        $(".key-tips").hide();
       }
     },
     tagsInputFinish:function(index){
@@ -532,11 +534,11 @@ export default {
       this.addTag(value,(this.pageConfig.current_page-1)*this.pageConfig.page_item_num+index);
     },
     tipsClick:function(e){//关键词提示时，选择了提示的关键词
-      var index = Number($(".tag-tips ul")[0].dataset.index);
+      var index = Number($(".key-tips ul")[0].dataset.index);
       var value = e.target.innerText;
       $(".tags input")[index].value = value;
       this.tagsInputFinish(index);
-      $(".tag-tips").hide();
+      $(".key-tips").hide();
     }
 
   },
@@ -936,7 +938,7 @@ export default {
         index: -1
       },
       themeTagsStatus:[],//所有的主题词及个数统计信息
-      tagTips:[]//主题词输入提示
+      keyTips:[]//主题词输入提示
     }
   }
 }
@@ -1222,7 +1224,7 @@ span {
   display: none;
 }
 
-.tag-tips{
+.key-tips{
   padding: 5px;
   min-width: 157px;
   position: absolute;
@@ -1236,12 +1238,12 @@ span {
   -o-box-shadow: 1px 1px 3px #ededed;
 }
 
-.tag-tips li{
+.key-tips li{
   list-style-type :none;
   cursor: default;
 }
 
-.tag-tips li:hover{
+.key-tips li:hover{
   background-color: #e4e4e4;
 }
 
