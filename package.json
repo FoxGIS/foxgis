@@ -19,7 +19,6 @@
     "js-cookie": "^2.1.1",
     "lodash": "^4.13.1",
     "mapbox-gl": "^0.23.0",
-    "mapbox-gl-draw": "^0.11.19",
     "mapbox-gl-function": "^1.2.1",
     "mapbox-gl-style-spec": "^8.4.2",
     "mapbox-gl-styles": "^2.0.2",

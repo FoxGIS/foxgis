@@ -145,9 +145,7 @@ export default {
       $(".panel").hide();
       $("#property-panel").hide();
       $("#new-layer-panel").hide();
-      this.$refs.drafmap.map.remove();
-      this.$refs.drafmap.map = {};  
-      window.location.href = "#!/studio/maps";
+      this.$broadcast("mapEditor-close");  
     },
     changeLayout: function(){
       var active = document.getElementsByClassName("control-active");
@@ -250,7 +248,7 @@ export default {
     if(styleId !== null && access_token !== undefined){
       var url = SERVER_API.styles + '/' + username + '/' + styleId;
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
-      .then(function(res){
+      .then(function(res){//从服务器获取地图的stylejson样式
         var data = res.data;
         var initStyle = JSON.parse(JSON.stringify(data));
         var tocdata = initStyle;
@@ -262,6 +260,8 @@ export default {
     }else{
       this.$broadcast('mailSent', { message: '地图样式获取失败！',timeout:3000 });
     }
+
+    $(".mdl-navigation a")[0].click();//默认第一次进来显示地图编辑界面
   },
   data: function(){
     return {

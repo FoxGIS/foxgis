@@ -32,7 +32,7 @@
         <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
           <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
           <div class="property-value">
-            <input type="text" value="{{value}}" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
+            <input type="text" :value="value" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
             <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
           </div>
         </div>
@@ -60,7 +60,7 @@
           <div v-for="(name,value) in propertyGroup.text.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name.indexOf('color')==-1">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
@@ -78,8 +78,8 @@
               <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
             </div>
             <div class="property-value" v-if="name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
-              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
-              <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
+              <input type="text" :value="value" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
+              <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name=='text-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
@@ -106,7 +106,7 @@
           <div v-for="(name,value) in propertyGroup.icon.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name.indexOf('color')==-1">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name.indexOf('color')!=-1">
               <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
@@ -117,8 +117,8 @@
           <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
-              <input type="text" value="{{value}}" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
-              <input type="text" value="{{value}}" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
+              <input type="text" :value="value" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
+              <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -131,7 +131,7 @@
           <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
-              <input type="text" value="{{value}}" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+              <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
             </div>
             <div class="property-value" v-if="name=='symbol-avoid-edges'">
               <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -165,7 +165,7 @@
             <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
               <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-              <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='fill-translate-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -206,7 +206,7 @@
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='line-translate-anchor'">
               <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-              <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='line-translate-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -220,7 +220,7 @@
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='line-miter-limit'&&name!=='line-round-limit'&&name!=='line-cap'&&name!=='line-join'&&name!=='visibility'">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='layout' />
+              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='layout' />
             </div>
             <div class="property-value" v-if="name=='visibility'">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
@@ -241,12 +241,12 @@
               </select>
             </div>
             <div class="property-value" v-if="name=='line-round-limit'">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
-              <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
+              <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+              <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
             </div>
             <div class="property-value" v-if="name=='line-miter-limit'">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
-              <input type="text" value="{{value}}" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
+              <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+              <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
             </div>
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
@@ -268,7 +268,7 @@
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='circle-translate-anchor'">
               <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-              <input type="text" value="{{value}}" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <div class="property-value" v-if="name=='circle-translate-anchor'">
               <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -304,7 +304,7 @@
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
-              <input type="text" value="{{value}}" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
             </div>
             <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
@@ -718,7 +718,7 @@ export default {
       }
 
       var temp = Number(value);
-      if(!isNaN(temp)){
+      if(!isNaN(temp)){//number
         value = temp;
       }else if(typeof value === 'string'){
         if(value.indexOf(',')!=-1&&targetDom.name!=="text-font"&&value.indexOf("rgb")===-1){//数组（dasharray或offset）
@@ -727,9 +727,13 @@ export default {
             value[i] = Number(value[i]);
           }
         }
-        if(targetDom.name==="text-font"){
+        if(targetDom.name==="text-font"){//数组（font）
           value = value.split(',');
         }
+      }
+
+      if(targetDom.name==="line-dasharray"&&((value.length===2&&value[1]===0)||typeof value==="number")){//如line-dasharray=[1,0]或line-dasharray=3的时候显示的应该是实线
+        value=undefined;
       }
 
       if(!currentLayer.hasOwnProperty('layout')){
@@ -738,9 +742,9 @@ export default {
       if(!currentLayer.hasOwnProperty('paint')){
         currentLayer.paint = {};
       }
-      //visibility
+      
       if(targetDom.type === 'checkbox'){
-        if(targetDom.parentElement.dataset.name === 'visibility'){
+        if(targetDom.parentElement.dataset.name === 'visibility'){//visibility
           if(targetDom.checked){
             value = 'visible';
           }else{
@@ -1583,7 +1587,7 @@ export default {
           for(let j = 0;j<sourceNames.length;j++){
             var source = {};
             source.sourceName = sourceNames[j];
-            if(this.styleObj.sources[sourceNames[j]].url){
+            if(this.styleObj.sources[sourceNames[j]].url&&this.styleObj.sources[sourceNames[j]].type==="vector"){
               source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
               var t = source.sourceUrl.split("/");
               source.id = t[t.length-1];

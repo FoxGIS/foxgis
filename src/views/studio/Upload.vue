@@ -68,7 +68,8 @@
         <span>{{ tag }}</span>
         <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
       </span>
-      <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+      <input type="text" maxlength="10" @input="tagsInput($event,$index)" @click="tagsInput($event,$index)">
+      <a title="完成" class="add-tag-finish" @click="tagsInputFinish($index)">√</a>
     </div>
     <input type="checkbox" class = "card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
     <div class="metadata">
@@ -115,6 +116,15 @@
   <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
 
   <foxgis-location-select id="location-control"></foxgis-location-select>
+
+  <div class="tag-tips" style="display:none;">
+    <ul>
+      <li v-for="tip in tagTips" @click="tipsClick($event)">
+        <span>{{tip}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
 </template>
 
 
@@ -358,16 +368,19 @@ export default {
       this.patchUpload(upload_id,{'tags':patchTags});
     },
 
-    addTag: function(e, index) {//添加主题词
-      if (e.target.value) {
+    addTag: function(value, index) {//添加主题词
+      if (value) {
         var patchUpload = this.displayUploads[index];
         var upload_id = this.displayUploads[index].upload_id;
-        if(patchUpload.tags.indexOf(e.target.value)!=-1){
+        if(patchUpload.tags.indexOf(value)!=-1){
           this.$broadcast('mailSent', { message: '该标签已存在',timeout:3000 });
           return;
         }
-        patchUpload.tags.push(e.target.value);
-        e.target.value = '';
+        patchUpload.tags.push(value);
+
+        var inputIndex = index-(this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
+        $(".tags input")[inputIndex].value = '';
+        $(".add-tag-finish").hide();
         this.patchUpload(upload_id,{'tags':patchUpload.tags});
       }
     },
@@ -483,6 +496,47 @@ export default {
       var value = e.target.value;
       var upload_id = this.displayUploads[index].upload_id;
       this.patchUpload(upload_id,{'name':value});
+    },
+    tagsInput:function(e,index){//输入主题词时显示提示信息
+      var value = e.target.value;
+      var tagTips = [];
+      if(value===""){
+        for(let i=0;i<this.themeTagsStatus.length;i++){
+          tagTips.push(this.themeTagsStatus[i].tag);
+          if(tagTips.length===10){break;}
+        }
+        $(e.target.nextElementSibling).hide();
+      }else{
+        for(let i=0;i<this.themeTagsStatus.length;i++){
+          if(this.themeTagsStatus[i].tag.indexOf(value)!==-1){
+            tagTips.push(this.themeTagsStatus[i].tag);
+            if(tagTips.length===10){break;}
+          }
+        }
+        $(e.target.nextElementSibling).show();
+      }
+      this.tagTips = tagTips;
+      if(this.tagTips.length>0){
+        $(".tag-tips").css({
+          "left":e.target.offsetLeft+"px",
+          "top":e.target.offsetTop+18+"px",
+          "display":"block"
+        });
+        $(".tag-tips ul")[0].dataset.index = index;
+      }else{
+        $(".tag-tips").hide();
+      }
+    },
+    tagsInputFinish:function(index){
+      var value = $(".tags input")[index].value;
+      this.addTag(value,(this.pageConfig.current_page-1)*this.pageConfig.page_item_num+index);
+    },
+    tipsClick:function(e){//关键词提示时，选择了提示的关键词
+      var index = Number($(".tag-tips ul")[0].dataset.index);
+      var value = e.target.innerText;
+      $(".tags input")[index].value = value;
+      this.tagsInputFinish(index);
+      $(".tag-tips").hide();
     }
 
   },
@@ -545,7 +599,19 @@ export default {
       }
     }, function(response) {
       this.$broadcast('mailSent', { message: '获取列表失败！',timeout:3000 });
-    })
+    });
+
+    //获取主题词统计信息
+    var tagUrl = SERVER_API.stats+"/tags";
+    this.$http({ url: tagUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        this.themeTagsStatus = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
+    });
   },
 
   computed: {
@@ -868,7 +934,9 @@ export default {
       message: {
         msg: '',
         index: -1
-      }
+      },
+      themeTagsStatus:[],//所有的主题词及个数统计信息
+      tagTips:[]//主题词输入提示
     }
   }
 }
@@ -982,7 +1050,6 @@ span {
 }
 
 .tags input {
-  outline: none;
   border: 0;
 }
 
@@ -1155,4 +1222,31 @@ span {
   display: none;
 }
 
+.tag-tips{
+  padding: 5px;
+  min-width: 157px;
+  position: absolute;
+  background-color: white;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 1px 1px 3px #ededed;
+  -webkit-box-shadow: 1px 1px 3px #ededed;
+  -moz-box-shadow: 1px 1px 3px #ededed;
+  -o-box-shadow: 1px 1px 3px #ededed;
+}
+
+.tag-tips li{
+  list-style-type :none;
+  cursor: default;
+}
+
+.tag-tips li:hover{
+  background-color: #e4e4e4;
+}
+
+.add-tag-finish{
+  display: none;
+  cursor: pointer;
+}
 </style>

@@ -1,19 +1,21 @@
 <template>
   <div id='map-editorview-container'>
     <div id='info-container'>
-      <div id='layer-container'>
-        <div v-for="feature in queryFeatures" class="layer" v-on:click='infoLayerClick'>
-          <i class='material-icons' v-if="feature.layer.type=='symbol'">grade</i>
-          <i class='material-icons' v-if="feature.layer.type=='line'">remove</i>
-          <i class='material-icons' v-if="feature.layer.type=='background'">filter_hdr</i>
-          <i class='material-icons' v-if="feature.layer.type=='fill'">filter_b_and_w</i>
-          <i class='material-icons' v-if="feature.layer.type=='circle'">lens</i>
-          <i class='material-icons' v-if="feature.layer.type=='raster'">image</i>
-          <span>{{feature.layer.id}}</span>
+      <div style="padding:10px;background-color: white;border-radius:4px">
+        <div id="layer-container">
+          <div v-for="(layer,meta) in querySourceLayers" class="layer">
+            <i class='material-icons' v-if="meta.type=='Point'||meta.type=='MultiPoint'">grade</i>
+            <i class='material-icons' v-if="meta.type=='LineString'||meta.type=='MultiLineString'">remove</i>
+            <i class='material-icons' v-if="meta.type=='Polygon'||meta.type=='MultiPolygon'">filter_b_and_w</i>
+            <span style="font-weight:bold;font-size: 14px;position: relative;bottom: 2px;">{{layer}}</span></br>
+            <div v-for="(key,value) in meta.properties" style="margin-left:5px;font-size:12px;">
+              <span>{{key}}:</span>
+              <span style="color:gray;">{{value}}</span>
+            </div>
+          </div>
         </div>
-
-      </div>
-      <div id='info-tip' v-show="queryFeatures&&queryFeatures.length>0"></div>
+      </div> 
+      <div id='info-tip'></div>
       <i class="material-icons" id="close-info" v-on:click="closeInfoContainer">clear</i>
     </div>
     <div id="location-control" style='display:none' v-on:mousedown="boxDragStart" v-on:mouseup="boxDragEnd">
@@ -53,19 +55,36 @@ export default {
     mapClick: function(e){
       var infoContainer = document.getElementById('info-container');
       var features = this.map.queryRenderedFeatures(e.point);
-
-      if(features.length>0){
-        infoContainer.style.display = 'block';
-        infoContainer.style.left = e.point.x-100 + 'px';
-        infoContainer.style.top = e.point.y-features.length*25-17 + 'px';
+      this.querySourceLayers = {};
+      var sourceLayers = {};
+      if(features.length===0){
+        infoContainer.style.display = 'none';
+        return;
       }
-      this.queryFeatures = features;
-    },
-    // info 中的layer click
-    infoLayerClick: function(e){
-      var layerId = e.currentTarget.querySelector('span').textContent;
-      // 通知父组件 改变图层属性窗口中展现的layer
-      this.$dispatch('current-layer-change',layerId);
+      for(let i=0;i<features.length;i++){
+        var sourceLayer = features[i].layer["source-layer"];
+        var properties = features[i].properties;
+        var type = features[i].geometry.type;
+        if(sourceLayer&&!sourceLayers[sourceLayer]){
+          sourceLayers[sourceLayer]={
+            type:type,
+            properties:properties
+          }
+        }
+      }
+      this.querySourceLayers = sourceLayers;
+      if(Object.keys(this.querySourceLayers).length>0){
+        var containerHeight = 20;//padding值
+        for(var layer in this.querySourceLayers){
+          var c = Object.keys(this.querySourceLayers[layer].properties).length;
+          containerHeight += (c+1)*20;
+        }
+        if(containerHeight>300){containerHeight=300;}
+        infoContainer.style.display = 'block';
+        infoContainer.style.left = e.point.x-94 + 'px';
+        infoContainer.style.top = e.point.y-containerHeight-17 + 'px';
+      }
+      //this.querySourceLayers = features;
     },
     // 点击时，绑定事件
     dragresizedown: function(e){
@@ -215,8 +234,8 @@ export default {
         controlBox.style.left = plt.x + 'px';
         controlBox.style.top = plt.y + 'px';
       }else{
-        var infoContainer = document.getElementById('info-container');
-        infoContainer.style.display = 'none';
+        var info = this.$el.querySelector("#info-container");
+        info.style.display = 'none';
       }
     },
     mapDragEnd: function(){
@@ -360,11 +379,18 @@ export default {
       this.map.on('zoomend',this.mapZoomEnd);
 
       this.map.off('click', this.mapClick);
-      var infoContainer = document.getElementById('info-container');
-      infoContainer.style.display = 'none';
+      var info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
     },
     'hide-bounds-box': function(){
       this.hideBoundsBox();
+    },
+    'mapEditor-close':function(){
+      this.map.remove();
+      this.map = {};
+      var info = this.$el.querySelector("#info-container");
+      info.style.display = 'none';
+      window.location.href = "#!/studio/maps";
     }
   },
   computed: {
@@ -388,7 +414,7 @@ export default {
     return {
       map: {},
       localStyle: {},
-      queryFeatures: [],
+      querySourceLayers: {},
       drag: {
         dragstartx:0,
         dragstarty:0
@@ -489,7 +515,6 @@ export default {
 
 #info-container {
   display: none;
-  width: 200px;
   position: absolute;
   left: 500px;
   top: 300px;
@@ -497,23 +522,19 @@ export default {
 }
 
 #layer-container {
-  background-color: #2061C6;
-  color: white;
-  border-radius: 2px;
+  width: 170px;
+  max-height: 295px;
+  overflow: auto;
 }
+
 
 .layer {
   font-size: 16px;
-  height: 25px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
-  cursor: pointer;
+  overflow-x: hidden;
 }
 
-.layer:hover{
-  background-color: #0257af;
-}
 .layer i {
   font-size: 1px;
   line-height: 16px;
@@ -521,8 +542,7 @@ export default {
 
 .layer span {
   display: inline-block;
-  line-height: 25px;
-  height: 25px;
+  line-height: 21px;
 }
 
 #info-tip {
@@ -530,7 +550,7 @@ export default {
   height: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 7px solid #2061C6;
+  border-top: 7px solid white;
   margin: 0 auto;
 }
 
