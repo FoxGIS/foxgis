@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="editFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">编辑</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
     </div>
 
     <div class = "tags">
@@ -31,7 +31,7 @@
     <div class="details">
       <div class="meta-container">
         <div class="meta-title title">
-          <b>数据属性</b>
+          <b>瓦片属性</b>
         </div>
         <div class="meta-data content">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
@@ -45,7 +45,7 @@
       </div>
       <div class="description-container">
         <div class="description-title title">
-          <b>数据描述</b>
+          <b>瓦片描述</b>
         </div>
         <div class="description content">
           <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="4" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
@@ -54,7 +54,7 @@
       </div>
       <div class="property-container">
         <div class="property-title title">
-          <b>数据版权</b>
+          <b>瓦片版权</b>
         </div>
         <div class="tileset-property content">
           <span>{{detailsData.attribution}}</span>
@@ -263,7 +263,7 @@ export default {
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$dispatch("delete_dataset", tileset_id);
+            this.$dispatch("delete_tileset", tileset_id);
             this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
           }
         }, function(response) {
@@ -273,8 +273,11 @@ export default {
       }
     },
 
-    editFile: function(tileset_id) {//编辑方法
-      
+    downloadFile: function(tileset_id) {//下载事件
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id + '/raw?access_token='+ access_token;
+      commonMethod.downloadUpload(url);
     }
   },
 
@@ -282,7 +285,7 @@ export default {
     total_items: function (){
       var allCount = this.$parent.dataset.length;
       var count = this.dataset.length;
-      this.$dispatch("dataset_nums", allCount);
+      this.$dispatch("tileset_nums", allCount);
       return count;
      }
    },

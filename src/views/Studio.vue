@@ -4,16 +4,33 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }"><i class="material-icons">map</i>制图工程<span  v-mdl-badge.number="map_nums" ></a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }"><i class="material-icons">layers</i>数据<span  v-mdl-badge.number="tileset_nums" ></span></a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }"><i class="material-icons">text_format</i>字体<span  v-mdl-badge.number="font_nums" ></span></a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }"><i class="material-icons">place</i>符号库<span  v-mdl-badge.number="sprite_nums" ></span></a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }"><i class="material-icons">image</i>决策用图<span  v-mdl-badge.number="upload_nums" ></span></a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }">
+          <i class="material-icons">map</i>制图工程<span v-mdl-badge.number="map_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }">
+          <i class="material-icons">layers</i>数据集<span v-mdl-badge.number="dataset_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/tile' }">
+          <i class="material-icons">adjust</i>瓦片集<span v-mdl-badge.number="tileset_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }">
+          <i class="material-icons">text_format</i>字体<span v-mdl-badge.number="font_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }">
+          <i class="material-icons">place</i>符号库<span v-mdl-badge.number="sprite_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }">
+          <i class="material-icons">image</i>决策用图<span v-mdl-badge.number="upload_nums"></span>
+        </a>
       </nav>
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/user' }"><i class="material-icons">account_circle</i>{{username}}</a>
-        <a class="mdl-navigation__link" v-on:click.prevent="signout"><i class="material-icons">exit_to_app</i>注销</a>
+        <a class="mdl-navigation__link" v-link="{ path: '/studio/user' }">
+          <i class="material-icons">account_circle</i>{{username}}
+        </a>
+        <a class="mdl-navigation__link" v-on:click.prevent="signout">
+          <i class="material-icons">exit_to_app</i>注销
+        </a>
       </nav>
     </div>
     <div class="mdl-layout__content">
@@ -105,6 +122,7 @@ export default {
       username: '用户',
       upload_nums:0,
       sprite_nums:0,
+      dataset_nums:0,
       tileset_nums:0,
       map_nums:0,
       font_nums:0,
@@ -119,6 +137,11 @@ export default {
     "sprite_nums":function(msg) {
       this.sprite_nums = parseInt(msg);
     },
+
+    "dataset_nums":function(msg) {
+      this.dataset_nums = parseInt(msg);
+    },
+
     "tileset_nums":function(msg) {
       this.tileset_nums = parseInt(msg);
     },
@@ -126,6 +149,7 @@ export default {
     "font_nums":function(msg){
       this.font_nums = parseInt(msg);
     },
+
     "map_nums":function(msg){
       this.map_nums = parseInt(msg);
     }

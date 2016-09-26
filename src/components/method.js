@@ -26,7 +26,7 @@ export default {
       }
       this.options.Vue.uploadStatus.total_files = file.length;
       this.options.Vue.uploadStatus.fileIds = [];
-      if(type==='upload' || type==='icons' || type==='data'){
+      if(type==='upload' || type==='icons' || type==='data' || type==='tile'){
         for(let i=0;i<file.length;i++){
           this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
           totalSize+=file[i].size;

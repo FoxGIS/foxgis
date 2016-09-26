@@ -1,11 +1,11 @@
 <template>
 <div class="data">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <h5><i class="material-icons">layers</i><span>数据集</span></h5>
+  <h5><i class="material-icons">adjust</i><span>瓦片集</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传数据</div>
+    <div id="picker" >上传瓦片</div>
   </div>
 
   <div class='progress-bar' style="display:none">
@@ -17,7 +17,7 @@
     </span>
   </div>
 
-  <foxgis-data-cards-data :dataset="displayDataset"></foxgis-data-cards-data>
+  <foxgis-data-cards-tile :dataset="displayDataset"></foxgis-data-cards-tile>
   
 </div>
 </template>
@@ -74,7 +74,7 @@ export default {
       return;
     }
     var access_token = Cookies.get('access_token');
-    var url = '';
+    var url = SERVER_API.tilesets + '/' + username;
     var that = this;
     var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
@@ -84,14 +84,9 @@ export default {
       auto:true,//选择文件后自动上传
       compress:false,//是否压缩
       prepareNextFile:true,//自动准备下一个文件
-      accept:{//接受的文件格式
-        title: 'Datas',
-        extensions: 'geojson',
-        mimeTypes: 'data/*'
-      },
       Vue:that
     }
-    commonMethod.uploaderData(option,'data');
+    commonMethod.uploaderData(option,'tile');
    
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
@@ -131,7 +126,7 @@ export default {
   },
 
   events:{
-    "delete_dataset":function(msg){
+    "delete_tileset":function(msg){
       for(let i = 0;i<this.dataset.length;i++){
         if(this.dataset[i].tileset_id === msg){
           this.dataset.splice(i,1);
