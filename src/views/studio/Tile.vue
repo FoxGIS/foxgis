@@ -1,7 +1,7 @@
 <template>
 <div class="data">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <h5><i class="material-icons">adjust</i><span>瓦片集</span></h5>
+  <h5><i class="material-icons">layers</i><span>瓦片集</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>

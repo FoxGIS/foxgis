@@ -7,11 +7,11 @@
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }">
           <i class="material-icons">map</i>制图工程<span v-mdl-badge.number="map_nums"></span>
         </a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }">
-          <i class="material-icons">layers</i>数据集<span v-mdl-badge.number="dataset_nums"></span>
-        </a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/tile' }">
-          <i class="material-icons">adjust</i>瓦片集<span v-mdl-badge.number="tileset_nums"></span>
+          <i class="material-icons">layers</i>瓦片集<span v-mdl-badge.number="tileset_nums"></span>
+        </a>
+        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }">
+          <i class="material-icons">public</i>数据集<span v-mdl-badge.number="dataset_nums"></span>
         </a>
         <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }">
           <i class="material-icons">text_format</i>字体<span v-mdl-badge.number="font_nums"></span>

@@ -1,7 +1,6 @@
 <template>
-  <div id='map-editorview-container'>
-    
-  </div>
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
+  <div id='map-editorview-container'></div>
 
   <div class="data-meta">
     <div class="feature-meta">
@@ -44,6 +43,8 @@
       <i class="material-icons" v-on:click="deleteField($event,$index)" title="删除分级">clear</i>
     </div>
   </div>
+
+  <foxgis-dialog-prompt id="save-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
 </template>
 
 <script>
@@ -53,12 +54,7 @@ import Draw from 'mapbox-gl-draw'
 import Cookies from 'js-cookie'
 export default {
   methods: {
-    // 地图点击 弹出info
-    mapClick: function(e){
-      
-    },
-    mapInit: function(style){
-      this.localStyle = JSON.parse(JSON.stringify(style));
+    mapInit: function(style){//地图初始化
       mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA';
       var map = new mapboxgl.Map({
         container: 'map-editorview-container',
@@ -75,7 +71,7 @@ export default {
       this.map.on('draw.delete',this.drawDeleted);
       this.map.on('draw.selectionchange',this.drawSelectChange);
     },
-    mapLoaded:function(){
+    mapLoaded:function(){//load事件，地图加载完成后执行
       if(this.dataBounds.length>0){
         this.map.fitBounds(this.dataBounds);
       }
@@ -92,18 +88,20 @@ export default {
         this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
       })
     },
-    drawCreated:function(e){
+    drawCreated:function(e){//draw.created事件，添加新要素时执行
       var features = this.draw.getAll().features;
       this.features = features;
+      this.saveStatus = false;
     },
-    drawDeleted:function(e){
+    drawDeleted:function(e){//draw.delete事件，删除要素时执行
       var features = this.draw.getAll().features;
       this.features = features;
       this.currFeatures = [];
       this.currNodes=0;
+      this.saveStatus = false;
       $("#property-edit").hide();
     },
-    drawSelectChange:function(e){
+    drawSelectChange:function(e){//draw.selectionchange事件，要素选择更改时执行
       this.properties = [];
       var features = e.features;
       this.currFeatures = features;
@@ -130,8 +128,9 @@ export default {
       }
       this.currNodes = n;
     },
-    propertyChange:function(){
+    propertyChange:function(){//input.change事件，更改要素属性时执行
       var properties = {};
+      this.saveStatus = false;
       var id = this.currFeatures[0].id;
       for(let i=0;i<this.properties.length;i++){
         var temp = Number(this.properties[i][1]);
@@ -145,48 +144,95 @@ export default {
       this.draw.delete(id).add(this.currFeatures[0]);
       this.draw.changeMode("direct_select",{featureId: id});
     },
-    addField:function(){
+    addField:function(){//添加属性字段
       this.properties.push(["",""]);
     },
-    deleteField:function(e,index){
+    deleteField:function(e,index){//删除属性字段
       this.properties.splice(index,1);
       this.propertyChange();
     },
-    addPoint:function(){
+    addPoint:function(){//添加点状要素
       this.draw.changeMode("draw_point");
     },
-    addLine:function(){
+    addLine:function(){//添加线状要素
       this.draw.changeMode("draw_line_string")
     },
-    addPolygon:function(){
+    addPolygon:function(){//添加面状要素
       this.draw.changeMode("draw_polygon")
     },
-    deleteSelected:function(){
+    deleteSelected:function(){//删除选中的要素
       this.draw.trash();
     },
-    importFeatures:function(){
-
+    importFeatures:function(){//从文件导入新的要素
+      var input = document.createElement("input");
+      input.setAttribute("type","file");
+      input.setAttribute("accept",".json");
+      input.click();
+      $(input).bind("change",{draw:this.draw,Vue:this},function(e){
+        var file = e.target.files[0];
+        var fileReader = new FileReader();
+        var draw = e.data.draw;
+        var vue = e.data.Vue;
+        fileReader.onload = function(e) {
+          var geojson = JSON.parse(e.target.result);
+          draw.add(geojson);
+          vue.$broadcast("mailSent",{message:"导入成功",timeout:3000});
+          vue.saveStatus = false;
+        }
+        fileReader.readAsText(file, "utf-8");
+      });
     },
-    exportFeatures:function(){
+    exportFeatures:function(){//将当前要素导出到瓦片集
       var features = this.draw.getAll();
-      
+      var blobArr = [JSON.stringify(features)];
+      var featureBlob = new Blob(blobArr, { "type" : "text/plain" }); // the blob
+      var formData = new FormData();
+      formData.append("file", featureBlob, "testGeojson.json");
+
+      var username = Cookies.get('username');
+      if(username === undefined){
+        return;
+      }
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username;
+      this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
+      .then(function(res){
+        this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
+      },function(res){
+        this.$broadcast("mailSent",{message:"导出失败",timeout:3000});
+      }); 
     },
-    saveFeatures: function(style){
-      var style_id = style.style_id;
+    saveFeatures: function(){//保存当前更改
+      this.saveStatus=true;
+      var data_id = this.tilejson.tileset_id;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.styles + '/' + username + '/' + style_id;
-      var data = JSON.stringify(style);
+      var url = "";
+      var geojson = this.draw.getAll();
+      var data = JSON.stringify(geojson);
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-
+          this.$broadcast('mailSent', { message: '保存成功！',timeout:3000 });
         }
       },function(response){
-        this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
+        this.$broadcast('mailSent', { message: '保存失败！',timeout:3000 });
       });
     },
-    backToDataset:function(){
+    backToDataset:function(){//返回到数据集列表
+      if(this.saveStatus===false){
+        $("#save-dialog").show();
+      }else{
+        this.saveAction('cancel');
+      }
+    },
+    saveAction:function(status){//保存
+      if(status==='ok'){
+        this.saveFeatures();
+      }
+      this.saveStatus = true;
+      this.map.remove();
+      this.map ={};
       window.location.href = "#!/studio/data";
     }
   },
@@ -205,15 +251,20 @@ export default {
   },
   data: function(){
     return {
-      map: {},
-      draw:{},
-      localStyle: {},
+      map: {},//地图对象
+      draw:{},//绘图对象
       tilejson:{},
       dataBounds:[],//要素的数据范围
-      features:[],
-      currFeatures:[],
-      currNodes:0,
-      properties:[]
+      features:[],//所有的geojson要素
+      currFeatures:[],//当前选中的geojson要素
+      currNodes:0,//选中要素包含的节点数
+      properties:[],//选中要素的属性信息
+      saveStatus:true,//是否存在未保存的更改
+      dialogcontent: {//保存对话框的内容
+        title: '存在未保存的改动，是否保存？',
+        textOk:'保存',
+        textCancel:'不保存'
+      }
     }
   }
 }
@@ -369,5 +420,8 @@ a:hover{
   padding: 0 8px;
   height: 25px;
   line-height: 25px;
+}
+#save-dialog{
+  display: none;
 }
 </style>

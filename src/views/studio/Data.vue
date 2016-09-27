@@ -1,7 +1,7 @@
 <template>
 <div class="data">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <h5><i class="material-icons">layers</i><span>数据集</span></h5>
+  <h5><i class="material-icons">public</i><span>数据集</span></h5>
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
@@ -86,8 +86,8 @@ export default {
       prepareNextFile:true,//自动准备下一个文件
       accept:{//接受的文件格式
         title: 'Datas',
-        extensions: 'geojson',
-        mimeTypes: 'data/*'
+        extensions: 'json',
+        mimeTypes: 'text/plain'
       },
       Vue:that
     }
