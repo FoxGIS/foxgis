@@ -2,6 +2,7 @@ require('material-design-lite/material.min.js')
 require('material-design-lite/material.min.css')
 require('material-design-icons/iconfont/material-icons.css')
 require('mapbox-gl/dist/mapbox-gl.css')
+require('mapbox-gl-draw/dist/mapbox-gl-draw.css')
 
 
 import Vue from 'vue'
@@ -16,6 +17,7 @@ import Login from './views/Login'
 import Register from './views/Register'
 import Studio from './views/Studio'
 import MapEditor from './views/MapEditor'
+import DataEditor from './views/DataEditor'
 
 import Maps from './views/studio/Maps'
 import Fonts from './views/studio/Fonts'
@@ -48,6 +50,9 @@ import FilterData from './components/mapeditor/FilterDataPanel'
 import StopsPanel from './components/mapeditor/StopsPanel.vue'
 import TemplateWizard from './components/mapeditor/TemplateWizard.vue'
 
+import DataToc from './components/dataeditor/DataEditorToc.vue'
+import DataEditorView from './components/dataeditor/DataEditorView.vue'
+
 Vue.config.debug = true
 Vue.use(Router)
 Vue.use(VueMdl)
@@ -74,6 +79,8 @@ Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
 Vue.component('foxgis-stops-panel',StopsPanel)
 Vue.component('foxgis-template-wizard',TemplateWizard)
+Vue.component('foxgis-data-toc', DataToc)
+Vue.component('foxgis-data-view',DataEditorView)
 
 let router = new Router({
   history: false
@@ -150,6 +157,11 @@ router.map({
   '/mapeditor/*any': {
     component: function (resolve) {
       require(['./views/MapEditor.vue'], resolve)
+    }
+  },
+  '/dataeditor/*any': {
+    component: function (resolve) {
+      require(['./views/DataEditor.vue'], resolve)
     }
   }
 })

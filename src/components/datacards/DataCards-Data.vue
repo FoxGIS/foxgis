@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
+      <a v-link="{ path: '/dataeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
     </div>
 
     <div class = "tags">
