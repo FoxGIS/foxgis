@@ -52,7 +52,6 @@ import FilterData from './components/mapeditor/FilterDataPanel'
 import StopsPanel from './components/mapeditor/StopsPanel.vue'
 import TemplateWizard from './components/mapeditor/TemplateWizard.vue'
 
-import DataToc from './components/dataeditor/DataEditorToc.vue'
 import DataEditorView from './components/dataeditor/DataEditorView.vue'
 
 Vue.config.debug = true
@@ -82,7 +81,6 @@ Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
 Vue.component('foxgis-stops-panel',StopsPanel)
 Vue.component('foxgis-template-wizard',TemplateWizard)
-Vue.component('foxgis-data-toc', DataToc)
 Vue.component('foxgis-data-view',DataEditorView)
 
 let router = new Router({
