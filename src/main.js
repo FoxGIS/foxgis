@@ -22,6 +22,7 @@ import DataEditor from './views/DataEditor'
 import Maps from './views/studio/Maps'
 import Fonts from './views/studio/Fonts'
 import Data from './views/studio/Data'
+import Tile from './views/studio/Tile'
 import Icons from './views/studio/Icons'
 import Upload from './views/studio/Upload'
 import User from './views/studio/User'
@@ -37,6 +38,7 @@ import SVGEditor from './components/common/SVGEditor.vue'
 
 import DataCardsMap from './components/datacards/DataCards-Map'
 import DataCardsData from './components/datacards/DataCards-Data'
+import DataCardsTile from './components/datacards/DataCards-Tile'
 import DataCardsIcon from './components/datacards/DataCards-Icon'
 import DataCards from './components/datacards/DataCards'
 
@@ -64,6 +66,7 @@ Vue.component('foxgis-pagination', Pagination)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-data-cards-map', DataCardsMap)
 Vue.component('foxgis-data-cards-data', DataCardsData)
+Vue.component('foxgis-data-cards-tile', DataCardsTile)
 Vue.component('foxgis-data-cards-icon', DataCardsIcon)
 Vue.component('foxgis-toc', TOC)
 Vue.component('foxgis-drafmap',MapEditorView)
@@ -130,6 +133,11 @@ router.map({
       '/data': {
         component: function (resolve) {
           require(['./views/studio/Data.vue'], resolve)
+        }
+      },
+      '/tile': {
+        component: function (resolve) {
+          require(['./views/studio/Tile.vue'], resolve)
         }
       },
       '/fonts': {
