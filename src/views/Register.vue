@@ -2,7 +2,7 @@
 <div>
   <foxgis-layout>
     <div class="wrapper">
-      <foxgis-card class="register">
+      <foxgis-data-cards class="register">
         <div id="error-info"></div>
         <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
         <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
@@ -20,7 +20,7 @@
           <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
           <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
         </div>
-      </foxgis-card>
+      </foxgis-data-cards>
     </div>
   </foxgis-layout>
 </div>
