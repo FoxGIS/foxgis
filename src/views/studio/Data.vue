@@ -28,15 +28,6 @@ import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 import commonMethod from '../../components/method.js'
 export default {
-  methods: {
-    downloadUpload: function(upload_id) {
-      var username = Cookies.get('username');
-      var access_token = Cookies.get('access_token');
-      var url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
-      window.open(url);
-    }
-  },
-
   computed:{
     displayDataset:function(){
       var temp = this.dataset;
@@ -52,7 +43,7 @@ export default {
           for(let w=0;w<keyWords.length;w++){
             var keyWord = keyWords[w];
             if(keyWord.indexOf(' ')==-1){
-              if(tileset.name&&tileset.name.indexOf(keyWord)!=-1){
+              if(tileset.filename&&tileset.filename.indexOf(keyWord)!=-1){
                   num++;
               }
             }else{
@@ -74,7 +65,7 @@ export default {
       return;
     }
     var access_token = Cookies.get('access_token');
-    var url = '';
+    var url = SERVER_API.datasets + '/' + username;
     var that = this;
     var option = {
       swf:'../assets/webuploader/Uploader.swf',//用flash兼容低版本浏览器
@@ -133,7 +124,7 @@ export default {
   events:{
     "delete_dataset":function(msg){
       for(let i = 0;i<this.dataset.length;i++){
-        if(this.dataset[i].tileset_id === msg){
+        if(this.dataset[i].dataset_id === msg){
           this.dataset.splice(i,1);
         }
       }

@@ -14,7 +14,7 @@ import util from '../components/util.js'
 export default {
   attached: function(){
     var urlhash = window.location.hash;
-    var tilesetId = urlhash.replace(/.*dataeditor\/(\w*)/,'$1');
+    var dataset_id = urlhash.replace(/.*dataeditor\/(\w*)/,'$1');
     var username = Cookies.get('username');
     if(username === undefined){
       window.location.href = "#!/login";
@@ -31,20 +31,20 @@ export default {
       this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
     });
 
-    var dataUrl = SERVER_API.tilesets+'/'+username+'/'+tilesetId;
+    var dataUrl = SERVER_API.datasets + '/' + username + '/' + dataset_id;
     this.$http({url:dataUrl,method:'GET',headers:{'x-access-token':access_token}})
-    .then(function(res){//从服务器获取tilejson
+    .then(function(res){//从服务器获取datajson
       var data = res.data;
-      var tilejson = JSON.parse(JSON.stringify(data));
-      this.tilejson = tilejson;
-      this.$broadcast("data-load",tilejson);
+      var datajson = JSON.parse(JSON.stringify(data));
+      this.datajson = datajson;
+      this.$broadcast("data-load",datajson);
     },function(){
       this.$broadcast('mailSent', { message: '数据信息获取失败！',timeout:3000 });
     });
   },
   data: function(){
     return {
-      tilejson:{}
+      datajson:{}
     }
   }
 }

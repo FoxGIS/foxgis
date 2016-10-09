@@ -72,6 +72,7 @@ export default {
     }
     var access_token = Cookies.get('access_token');
     var tileset_url = SERVER_API.tilesets + '/' + username;
+    var dataset_url = SERVER_API.datasets + '/' + username;
     var fonts_url = SERVER_API.fonts + '/' + username;
     var sprites_url = SERVER_API.sprites + '/' + username;
     var uploads_url = SERVER_API.uploads + '/' + username;
@@ -81,35 +82,48 @@ export default {
       var accessUser = response.data.usernames;
       if(accessUser.indexOf(this.username)!==-1){this.access=true;}
     });
-    this.$http({ url: maps_url, method: 'GET', headers: { 'x-access-token': access_token } })
+
+    this.$http({url: maps_url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       var data = response.data;
       this.map_nums = data.length;
     },function(response){
 
     });
-    this.$http({ url: tileset_url, method: 'GET', headers: { 'x-access-token': access_token } })
+
+    this.$http({url: tileset_url, method: 'GET', headers: {'x-access-token': access_token}})
     .then(function(response) {
       var data = response.data;
       this.tileset_nums = data.length;
     },function(response){
 
     });
-    this.$http({ url: fonts_url, method: 'GET', headers: { 'x-access-token': access_token } })
+
+    this.$http({url: dataset_url, method: 'GET', headers: {'x-access-token': access_token}})
+    .then(function(response) {
+      var data = response.data;
+      this.dataset_nums = data.length;
+    },function(response){
+
+    });
+
+    this.$http({url: fonts_url, method: 'GET', headers: {'x-access-token': access_token}})
     .then(function(response) {
       var data = response.data;
       this.font_nums = data.length;
     },function(response){
 
     });
-    this.$http({ url: sprites_url, method: 'GET', headers: { 'x-access-token': access_token } })
+
+    this.$http({url: sprites_url, method: 'GET', headers: {'x-access-token': access_token}})
     .then(function(response) {
       var data = response.data;
       this.sprite_nums = data.length;
     },function(response){
 
     });
-    this.$http({ url: uploads_url, method: 'GET', headers: { 'x-access-token': access_token } })
+
+    this.$http({url: uploads_url, method: 'GET', headers: {'x-access-token':access_token}})
     .then(function(response) {
       var data = response.data;
       this.upload_nums = data.length;

@@ -3,6 +3,7 @@ window.SERVER_API = {
   users: baseURL + '/users',
   styles: baseURL + '/styles',
   tilesets: baseURL + '/tilesets',
+  datasets: baseURL + '/datasets',
   fonts: baseURL + '/fonts',
   sprites: baseURL + '/sprites',
   uploads: baseURL + '/uploads',

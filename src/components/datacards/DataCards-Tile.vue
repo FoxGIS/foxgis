@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
     <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
       <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
-      <a v-link="{ path: '/dataeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
     </div>
 
     <div class = "tags">
@@ -153,7 +153,7 @@ export default {
       return size;
     },
 
-    uploadNameChange: function(e,index){//修改数据名称
+    uploadNameChange: function(e,index){//修改瓦片名称
       var value = e.target.value;
       var tileset_id = this.dataset[index].tileset_id;
       var username = Cookies.get('username');
@@ -176,6 +176,7 @@ export default {
         this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:3000 });
       });
     },
+
     editScope: function(e,index){//修改共享范围
       var scope = e.target.value;
       var username = Cookies.get('username');
@@ -191,7 +192,8 @@ export default {
         this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:3000 });
       });
     },
-    editDescription: function(e,index){//修改数据描述信息
+
+    editDescription: function(e,index){//修改瓦片描述信息
       var value = e.target.value;
       var tileset_id = this.dataset[index].tileset_id;
       var username = Cookies.get('username');
@@ -208,6 +210,7 @@ export default {
         this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
       });
     },
+
     deleteTag: function(pId, tag_id) {//删除主题词的标签
       var tags = this.dataset[pId].tags;
       var tileset_id = this.dataset[pId].tileset_id;
@@ -248,6 +251,7 @@ export default {
         });
       }
     },
+    
     deleteUpload: function(tileset_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block';

@@ -75,10 +75,10 @@ export default {
       if(this.dataBounds.length>0){
         this.map.fitBounds(this.dataBounds);
       }
-      var data_id = this.tilejson.tileset_id;
+      var data_id = this.datajson.dataset_id;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.tilesets + '/' + username + '/' + data_id + '/raw';
+      var url = SERVER_API.datasets + '/' + username + '/' + data_id + '/raw';
       this.$http({url:url,method:'GET',headers:{'x-access-token':access_token}})
       .then(function(response){
         var geojson = response.data;
@@ -194,7 +194,7 @@ export default {
         return;
       }
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.tilesets + '/' + username;
+      var url = SERVER_API.datasets + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
       .then(function(res){
         this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
@@ -204,10 +204,10 @@ export default {
     },
     saveFeatures: function(){//保存当前更改
       this.saveStatus=true;
-      var data_id = this.tilejson.tileset_id;
+      var data_id = this.datajson.dataset_id;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = "";
+      var url = SERVER_API.datasets + '/' + username + '/' + data_id + '/raw';
       var geojson = this.draw.getAll();
       var data = JSON.stringify(geojson);
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
@@ -240,9 +240,9 @@ export default {
     "map-init":function(style){
       this.mapInit(style);
     },
-    "data-load":function(tilejson){
-      this.tilejson = tilejson;
-      var bounds = [[this.tilejson.bounds[0],this.tilejson.bounds[1]],[this.tilejson.bounds[2],this.tilejson.bounds[3]]];
+    "data-load":function(datajson){
+      this.datajson = datajson;
+      var bounds = [[this.datajson.bounds[0],this.datajson.bounds[1]],[this.datajson.bounds[2],this.datajson.bounds[3]]];
       this.dataBounds = bounds;
       if(this.map.loaded&&this.map.loaded()){
         this.map.fitBounds(bounds);
@@ -253,7 +253,7 @@ export default {
     return {
       map: {},//地图对象
       draw:{},//绘图对象
-      tilejson:{},
+      datajson:{},
       dataBounds:[],//要素的数据范围
       features:[],//所有的geojson要素
       currFeatures:[],//当前选中的geojson要素

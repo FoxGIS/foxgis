@@ -28,15 +28,6 @@ import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 import commonMethod from '../../components/method.js'
 export default {
-  methods: {
-    downloadUpload: function(upload_id) {
-      var username = Cookies.get('username');
-      var access_token = Cookies.get('access_token');
-      var url = SERVER_API.uploads + '/' + username + '/' + upload_id + '/file?access_token='+ access_token;
-      window.open(url);
-    }
-  },
-
   computed:{
     displayDataset:function(){
       var temp = this.dataset;

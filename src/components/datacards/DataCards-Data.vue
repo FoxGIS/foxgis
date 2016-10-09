@@ -2,9 +2,9 @@
 <div class="foxgis-data-cards">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
-      <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
-      <a v-link="{ path: '/dataeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
+    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dataset_id)">
+      <input type="text" maxlength="50" class="dataset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].filename" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].filename}}"/>
+      <a v-link="{ path: '/dataeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dataset_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
     </div>
 
     <div class = "tags">
@@ -24,7 +24,7 @@
           <option value="public">公开</option>
         </select>
       <div>
-        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dataset_id)">删除</mdl-anchor-button>
       </div>
     </div>
 
@@ -35,57 +35,11 @@
         </div>
         <div class="meta-data content">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
-            <span>最大缩放级别：{{detailsData.maxzoom}}</span>
             <span v-if="detailsData.bounds">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
-            <span>最小缩放级别：{{detailsData.minzoom}}</span>
             <span>格式：{{detailsData.format}}</span>
             <span>数据大小：{{calculation(detailsData.filesize)}}</span>
-            <span style="width:600px;">访问地址：{{detailsData.url}}</span>
+            <span style="width:700px;">访问地址：{{detailsData.url}}</span>
         </div>
-      </div>
-      <div class="description-container">
-        <div class="description-title title">
-          <b>数据描述</b>
-        </div>
-        <div class="description content">
-          <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="4" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
-        </div>
-        
-      </div>
-      <div class="property-container">
-        <div class="property-title title">
-          <b>数据版权</b>
-        </div>
-        <div class="tileset-property content">
-          <span>{{detailsData.attribution}}</span>
-        </div>
-      </div>
-      <div class="preview-container" v-if="detailsData.vector_layers!=='undefined'">
-        <div class="preview-title title">
-          <b>图层信息</b>
-        </div>
-        <div class="preview content">
-          <table>
-            <tr>
-              <th>图层标识</th>
-              <th>最小缩放级别</th>
-              <th>最大缩放级别</th>
-              <th>字段</th>
-              <th>详情</th>
-            </tr>
-            <tr v-for="u in detailsData.vector_layers">
-              <td>{{u.id}}</td>
-              <td>{{u.minzoom}}</td>
-              <td>{{u.maxzoom}}</td>
-              <td style= "cursor:pointer;"><a v-on:click='lookFields(u.fields,$index)'>查看</a></td>
-              <td>{{u.description}}</td>
-            </tr>
-          </table>
-          <div class="fields" style="width: 380px;float: right;">
-            <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
-          </div>
-        </div>
-        
       </div>
     </div>
   </div>
@@ -102,14 +56,14 @@ import commonMethod from '../../components/method.js'
 export default {
   props: ['dataset'],
   methods: {
-    showDetails: function (e,tileset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
+    showDetails: function (e,dataset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
       var username = Cookies.get('username');
       if(username === undefined){
         return;
       }
       var access_token = Cookies.get('access_token');
       var that = this;
-      var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
+      var url = SERVER_API.datasets + '/' + username + '/' + dataset_id;
       //移除之前的active
       var activeCards = this.$el.querySelector('.active');
       if(activeCards&&activeCards!==e.target.parentElement){
@@ -127,8 +81,6 @@ export default {
         .then(function(response) {
           that.detailsData = response.data;
           that.detailsData.url = url;
-          that.fieldsLength = response.data.vector_layers.length;
-          that.fieldsData = [];
           e.target.parentElement.className = claName;
         }, function(response) {
           this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
@@ -136,12 +88,6 @@ export default {
         })
       }
   
-    },
-
-    lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
-      this.fieldsData = fields;
-      var height = (index-this.fieldsLength)*37;
-      $('.fields').css("margin",height+'px'+' 0 0 420px');
     },
 
     calculation: function(size){//计算文件大小
@@ -155,127 +101,110 @@ export default {
 
     uploadNameChange: function(e,index){//修改数据名称
       var value = e.target.value;
-      var tileset_id = this.dataset[index].tileset_id;
+      var dataset_id = this.dataset[index].dataset_id;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
-      this.dataset[index].name = value;
-      this.$http({url:url,method:'PATCH',data:{'name':value},headers:{'x-access-token':access_token}})
+      var url = SERVER_API.datasets + '/' + username + '/'+ dataset_id;
+      this.dataset[index].filename = value;
+      this.$http({url:url,method:'PATCH',data:{'filename':value},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
           var data = response.data;
-          var input = $(".tileset-name");
+          var input = $(".dataset-name");
           var page = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
           for(let i=0;i<input.length;i++){
             input[i].blur();
-            input[i].value = this.dataset[page+i].name;
+            input[i].value = this.dataset[page+i].filename;
           }
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 });  
         }
       }, function(response) {
-        this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:3000 });
+        this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:1000 });
       });
     },
+
     editScope: function(e,index){//修改共享范围
       var scope = e.target.value;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var tileset_id = this.dataset[index].tileset_id;
-      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var dataset_id = this.dataset[index].dataset_id;
+      var url = SERVER_API.datasets + '/' + username + '/'+ dataset_id;
       this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
       .then(function(response){
         if(response.ok){
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 });  
         }
       },function(response){
-        this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:3000 });
+        this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:1000 });
       });
     },
-    editDescription: function(e,index){//修改数据描述信息
-      var value = e.target.value;
-      var tileset_id = this.dataset[index].tileset_id;
-      var username = Cookies.get('username');
-      var access_token = Cookies.get('access_token');
-      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
-      this.dataset[index].description = value;
-      this.$http({url:url,method:'PATCH',data:{'description':value},headers:{'x-access-token':access_token}})
-      .then(function(response){
-        if(response.ok){
-          var data = response.data;
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 }); 
-        }    
-      }, function(response) {
-        this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
-      });
-    },
+   
     deleteTag: function(pId, tag_id) {//删除主题词的标签
       var tags = this.dataset[pId].tags;
-      var tileset_id = this.dataset[pId].tileset_id;
+      var dataset_id = this.dataset[pId].dataset_id;
       tags.splice(tag_id, 1);
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+      var url = SERVER_API.datasets + '/' + username + '/'+ dataset_id;
       this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-          this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '删除成功！',timeout:1000 });  
         }
       }, function(response) {
-        this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });  
+        this.$broadcast('mailSent', { message: '删除失败！',timeout:1000 });  
       });
     },
 
     addTag: function(e, index) {//添加主题词标签
       if (e.target.value) {
         var tags = this.dataset[index].tags;
-        var tileset_id = this.dataset[index].tileset_id;
+        var dataset_id = this.dataset[index].dataset_id;
         if(tags.indexOf(e.target.value)!=-1){
-          this.$broadcast('mailSent', { message: '该标签已存在！',timeout:3000 }); 
+          this.$broadcast('mailSent', { message: '该标签已存在！',timeout:1000 }); 
           return;
         }
         tags.push(e.target.value);
         e.target.value = '';
         var username = Cookies.get('username');
         var access_token = Cookies.get('access_token');
-        var url = SERVER_API.tilesets + '/' + username + '/'+ tileset_id;
+        var url = SERVER_API.datasets + '/' + username + '/'+ dataset_id;
         this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:3000 });  
+            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:1000 });  
           }
         }, function(response) {
-          this.$broadcast('mailSent', { message: '标签添加失败！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '标签添加失败！',timeout:1000 });  
         });
       }
     },
-    deleteUpload: function(tileset_id) {//显示删除弹框
+
+    deleteUpload: function(dataset_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
       this.$el.querySelector('#delete-dialog').style.display = 'block';
-      this.deleteTilesetId = tileset_id;
+      this.deleteDatasetId = dataset_id;
     },
 
     deleteAction: function(status) {//删除事件
       if (status === 'ok') {
-        var tileset_id = this.deleteTilesetId;
+        var dataset_id = this.deleteDatasetId;
         var username = Cookies.get('username');
         var access_token = Cookies.get('access_token');
-        var url = SERVER_API.tilesets + '/' + username + "/" + tileset_id;
+        var url = SERVER_API.datasets + '/' + username + "/" + dataset_id;
         this.$http({url:url,method:'DELETE',headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$dispatch("delete_dataset", tileset_id);
-            this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
+            this.$dispatch("delete_dataset", dataset_id);
+            this.$broadcast('mailSent', { message: '删除成功！',timeout:1000 });
           }
         }, function(response) {
-          this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
+          this.$broadcast('mailSent', { message: '删除失败！',timeout:1000 });
         });
-        this.deleteTilesetId = "";
+        this.deleteDatasetId = "";
       }
-    },
-
-    editFile: function(tileset_id) {//编辑方法
-      
     }
+
   },
 
   computed: {
@@ -299,10 +228,8 @@ export default {
         textOk:'删除',
         textCancel:'取消'
       },
-      deleteTilesetId: "",
-      detailsData: {},
-      fieldsData: [],
-      fieldsLength: 0//被点击的卡片的field的总个数
+      deleteDatasetId: "",
+      detailsData: {}
     }
   }
 }
@@ -414,10 +341,6 @@ export default {
   margin:16px 50px 16px 50px; 
 }
 
-.preview-container{
-  margin-bottom:40px; 
-}
-
 .tags {
   margin-left: 24px;
   margin-right: 24px;
@@ -476,44 +399,6 @@ export default {
 .delete-button{
   position: relative;
   left: -18px;
-}
-
-.preview-container table {
-  font-family: verdana,arial,sans-serif;
-  font-size:11px;
-  color:#333333;
-  border-width: 1px;
-  border-color: #666666;
-  border-collapse: collapse;
-}
-.preview-container table th {
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #666666;
-  background-color: #dedede;
-}
-.preview-container table td {
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #666666;
-  background-color: #ffffff;
-}
-
-.preview-container div.fields {
-  display: flex;
-  flex-wrap:wrap;
-  margin-left:45px; 
-}
-
-.preview-container div.field {
-  border:1px solid #333333;
-  margin:5px;
-  padding:5px;
-  font-family:verdana,arial,sans-serif;
-  font-size:11px;
-  color:#333333;
 }
 
 .meta-container div.meta-data {
