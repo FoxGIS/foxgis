@@ -187,14 +187,15 @@ export default {
       var blobArr = [JSON.stringify(features)];
       var featureBlob = new Blob(blobArr, { "type" : "text/plain" }); // the blob
       var formData = new FormData();
-      formData.append("file", featureBlob, "testGeojson.json");
+      var filename = this.datajson.filename + '.json';
+      formData.append("file", featureBlob, filename);
 
       var username = Cookies.get('username');
       if(username === undefined){
         return;
       }
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.datasets + '/' + username;
+      var url = SERVER_API.tilesets + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
       .then(function(res){
         this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
