@@ -5,7 +5,7 @@
 
   <div class="search">
     <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传瓦片</div>
+    <div id="picker" >上传数据</div>
   </div>
 
   <div class='progress-bar' style="display:none">
