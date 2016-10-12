@@ -235,7 +235,7 @@ export default {
       prepareNextFile:true,//自动准备下一个文件
       Vue:that
     }
-    commonMethod.uploaderData(option,'fonts');
+    commonMethod.uploaderData(option,'font');
     
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {

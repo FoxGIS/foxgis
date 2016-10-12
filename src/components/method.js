@@ -18,42 +18,54 @@ export default {
   */
   uploaderData: function(data,type) {
     var uploader = WebUploader.create(data);
-    uploader.on('filesQueued',function(file){//添加文件到队列
-      var totalSize = 0;
-      if(file.length===0){
-        this.options.Vue.$broadcast('mailSent', { message: "你已上传过该文件！",timeout:3000 });
+    uploader.on('error',function(type){//验证文件格式
+      if (type==="Q_TYPE_DENIED"){
+        this.options.Vue.$broadcast('mailSent',{message:"文件格式不对！",timeout:3000});
         return;
       }
+    });
+    uploader.on('filesQueued',function(file){//添加文件到队列
       this.options.Vue.uploadStatus.total_files = file.length;
       this.options.Vue.uploadStatus.fileIds = [];
-      if(type==='upload' || type==='icons' || type==='data' || type==='tile'){
-        for(let i=0;i<file.length;i++){
-          this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
-          totalSize+=file[i].size;
-        }
-      }else if(type === 'fonts'){
-        var fonts = this.options.Vue.fonts;
-        var flag = 0;
-        var existFiles = [];
-        for(let i=0;i<file.length;i++){
-          flag = 0;
-          for(let j=0;j<fonts.length;j++){
-            if(file[i].name===fonts[j].filename){
-              flag = 1;
-              break;
-            }
+      var totalSize = 0;
+      var datas = [];
+      var flag = 0;
+      var existFiles = [];
+      if(type==='upload'){
+        datas = this.options.Vue.uploads;
+      }else if(type==='tile' || type==='icon' || type==='data'){
+        datas = this.options.Vue.dataset;
+      }else if(type==='font'){
+        datas = this.options.Vue.fonts;
+      }
+      
+      for(let i=0;i<file.length;i++){
+        flag = 0;
+        for(let j=0;j<datas.length;j++){
+          var temp = '';
+          if(type==='upload' || type==='icon' || type==='tile'){
+            temp = datas[j].name;
+          }else if(type==='data'){
+            temp = datas[j].filename;
+          }else if(type==='font'){
+            temp = datas[j].filename.split('.')[0];
           }
-          if(flag===1){
-            existFiles.push(file[i].name);
-            this.removeFile(file[i],true);
-            continue;
+
+          if(file[i].name.split('.')[0]===temp){
+            flag = 1;
+            break;
           }
-          this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
-          totalSize+=file[i].size;
         }
-        if(existFiles.length>0){
-          this.options.Vue.$broadcast('mailSent', { message: existFiles.toString()+"已存在！",timeout:3000 });
+        if(flag===1){
+          existFiles.push(file[i].name);
+          this.removeFile(file[i],true);
+          continue;
         }
+        this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
+        totalSize+=file[i].size;
+      }
+      if(existFiles.length>0){
+        this.options.Vue.$broadcast('mailSent', { message: existFiles.toString()+"已存在！",timeout:3000 });
       }
 
       if (totalSize / 1024 > 1024) {
@@ -92,17 +104,17 @@ export default {
         }
         data.upload_at = util.dateFormat(new Date(data.upload_at));
         this.options.Vue.uploads.unshift(data);
-      }else if(type === 'icons'){
+      }else if(type === 'icon'){
         var activeCards = this.options.Vue.$el.querySelector('.active');
         if(activeCards){
           activeCards.className = activeCards.className.replace(' active','');
         }//去掉active card
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
-      }else if(type === 'fonts'){
+      }else if(type === 'font'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.fonts.unshift(data);
-      }else if(type === 'data'){
+      }else if(type === 'data' || type==='tile'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
       }

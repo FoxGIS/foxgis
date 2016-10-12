@@ -78,7 +78,7 @@ export default {
       accept:{//接受的文件格式
         title: 'Datas',
         extensions: 'json',
-        mimeTypes: 'text/plain'
+        mimeTypes: 'application/json'
       },
       Vue:that
     }

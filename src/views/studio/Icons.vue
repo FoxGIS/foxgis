@@ -80,7 +80,7 @@ export default {
       },
       Vue:that
     }
-    commonMethod.uploaderData(option,'icons');
+    commonMethod.uploaderData(option,'icon');
 
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
