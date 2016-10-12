@@ -28,7 +28,7 @@ export default {
         }else if(model==='data'){
           message = "只支持json格式的文件";
         }else if(model==='font'){
-          message = "只支持ttf格式的文件";
+          message = "只支持ttf、otf格式的文件";
         }else if(model==='icon'){
           message = "只支持包含svg文件的zip文件";
         }else if(model==='tile'){

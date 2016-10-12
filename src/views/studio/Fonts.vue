@@ -235,7 +235,7 @@ export default {
       prepareNextFile:true,//自动准备下一个文件
       accept:{//接受的文件格式
         title: 'Fonts',
-        extensions: 'ttf',
+        extensions: 'ttf,otf',
         mimeTypes: 'application/ttf'
       },
       Vue:that
