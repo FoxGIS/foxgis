@@ -18,8 +18,10 @@ export default {
   */
   uploaderData: function(data,model) {
     var uploader = WebUploader.create(data);
+    var isAlreadyUpload = true;
     uploader.on('error',function(type){//验证文件格式
       if (type==="Q_TYPE_DENIED"){
+        isAlreadyUpload = false;
         var message = "文件格式不对！";
         if(model==='upload'){
 
@@ -36,6 +38,10 @@ export default {
       }
     });
     uploader.on('filesQueued',function(file){//添加文件到队列
+      if(isAlreadyUpload && file.length===0){
+        this.options.Vue.$broadcast('mailSent',{message:"你已上传过该文件！",timeout:3000});
+        return;
+      }
       var totalSize = 0;
       this.options.Vue.uploadStatus.total_files = file.length;
       this.options.Vue.uploadStatus.fileIds = [];
