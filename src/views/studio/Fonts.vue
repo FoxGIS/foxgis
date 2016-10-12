@@ -233,6 +233,11 @@ export default {
       auto:true,//选择文件后自动上传
       compress:false,//是否压缩
       prepareNextFile:true,//自动准备下一个文件
+      accept:{//接受的文件格式
+        title: 'Fonts',
+        extensions: 'ttf',
+        mimeTypes: 'application/ttf'
+      },
       Vue:that
     }
     commonMethod.uploaderData(option,'font');

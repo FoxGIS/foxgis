@@ -14,58 +14,59 @@ export default {
    *   Vue:that,
    *   formData:{}//参数
    * }
-   * type:string //标识模块
+   * model:string //标识模块
   */
-  uploaderData: function(data,type) {
+  uploaderData: function(data,model) {
     var uploader = WebUploader.create(data);
     uploader.on('error',function(type){//验证文件格式
       if (type==="Q_TYPE_DENIED"){
-        this.options.Vue.$broadcast('mailSent',{message:"文件格式不对！",timeout:3000});
-        return;
+        var message = "文件格式不对！";
+        if(model==='upload'){
+
+        }else if(model==='data'){
+          message = "只支持json格式的文件";
+        }else if(model==='font'){
+          message = "只支持ttf格式的文件";
+        }else if(model==='icon'){
+          message = "只支持包含svg文件的zip文件";
+        }else if(model==='tile'){
+          message = "只支持mbtiles、json、shapefile格式的文件";
+        }
+        this.options.Vue.$broadcast('mailSent',{message:message,timeout:3000});
       }
     });
     uploader.on('filesQueued',function(file){//添加文件到队列
+      var totalSize = 0;
       this.options.Vue.uploadStatus.total_files = file.length;
       this.options.Vue.uploadStatus.fileIds = [];
-      var totalSize = 0;
-      var datas = [];
-      var flag = 0;
-      var existFiles = [];
-      if(type==='upload'){
-        datas = this.options.Vue.uploads;
-      }else if(type==='tile' || type==='icon' || type==='data'){
-        datas = this.options.Vue.dataset;
-      }else if(type==='font'){
-        datas = this.options.Vue.fonts;
-      }
-      
-      for(let i=0;i<file.length;i++){
-        flag = 0;
-        for(let j=0;j<datas.length;j++){
-          var temp = '';
-          if(type==='upload' || type==='icon' || type==='tile'){
-            temp = datas[j].name;
-          }else if(type==='data'){
-            temp = datas[j].filename;
-          }else if(type==='font'){
-            temp = datas[j].filename.split('.')[0];
-          }
-
-          if(file[i].name.split('.')[0]===temp){
-            flag = 1;
-            break;
-          }
+      if(model==='upload' || model==='icon' || model==='data' || model==='tile'){
+        for(let i=0;i<file.length;i++){
+          this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
+          totalSize+=file[i].size;
         }
-        if(flag===1){
-          existFiles.push(file[i].name);
-          this.removeFile(file[i],true);
-          continue;
+      }else if(model === 'font'){
+        var fonts = this.options.Vue.fonts;
+        var flag = 0;
+        var existFiles = [];
+        for(let i=0;i<file.length;i++){
+          flag = 0;
+          for(let j=0;j<fonts.length;j++){
+            if(file[i].name===fonts[j].filename){
+              flag = 1;
+              break;
+            }
+          }
+          if(flag===1){
+            existFiles.push(file[i].name);
+            this.removeFile(file[i],true);
+            continue;
+          }
+          this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
+          totalSize+=file[i].size;
         }
-        this.options.Vue.uploadStatus.fileIds.push({'id':file[i].id,'status':0});
-        totalSize+=file[i].size;
-      }
-      if(existFiles.length>0){
-        this.options.Vue.$broadcast('mailSent', { message: existFiles.toString()+"已存在！",timeout:3000 });
+        if(existFiles.length>0){
+          this.options.Vue.$broadcast('mailSent', { message: existFiles.toString()+"已存在！",timeout:3000 });
+        }
       }
 
       if (totalSize / 1024 > 1024) {
@@ -96,7 +97,7 @@ export default {
       this.options.Vue.uploadStatus.current_file +=1;
       var data = response;
       data.checked = false;//为新增加的文件添加checked属性
-      if(type === 'upload'){
+      if(model === 'upload'){
         if (data.size / 1024 > 1024) {
           data.size = (data.size / 1048576).toFixed(2) + 'MB';
         }else{
@@ -104,17 +105,17 @@ export default {
         }
         data.upload_at = util.dateFormat(new Date(data.upload_at));
         this.options.Vue.uploads.unshift(data);
-      }else if(type === 'icon'){
+      }else if(model === 'icon'){
         var activeCards = this.options.Vue.$el.querySelector('.active');
         if(activeCards){
           activeCards.className = activeCards.className.replace(' active','');
         }//去掉active card
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
-      }else if(type === 'font'){
+      }else if(model === 'font'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.fonts.unshift(data);
-      }else if(type === 'data' || type==='tile'){
+      }else if(model === 'data' || model==='tile'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
       }
