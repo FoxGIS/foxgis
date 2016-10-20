@@ -3,6 +3,7 @@
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div id="style-header">
       <span style="color:white;">{{styleObj.name}}</span>
+      <i class="material-icons copy-layer" v-on:click="copyStyleLayer" title="复制样式">content_copy</i>
       <i class="material-icons new-layer" v-on:click="showCreateStyle" title="新建样式">create</i>
       <i class="material-icons delete-layer" v-on:click="deleteStyleLayer" title="删除样式">delete</i>
     </div>
@@ -1691,7 +1692,7 @@ export default {
 
 #style-header span {
   display: inline-block;
-  width: 125px;
+  width: 101px;
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
