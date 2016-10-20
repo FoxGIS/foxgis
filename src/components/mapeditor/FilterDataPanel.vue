@@ -312,7 +312,7 @@ export default {
             $(".field-tips").hide();
           }
         },function(response){
-          
+          this.$parent.$broadcast('mailSent', { message: '字段值请求失败！',timeout:3000 });
         });
       }
       
@@ -332,6 +332,10 @@ export default {
       var arr = e.target.value.split('');
       var last = arr[arr.length-1];
       $(".filter-item input.field_data")[index].value = e.target.value;
+      if(last === '，'){
+        this.$parent.$broadcast('mailSent', { message: '多个值之间只能使用英文逗号来分隔！',timeout:3000 });
+        return;
+      }
       if(last === ','){
         $(".field-tips").hide();
       }else{
