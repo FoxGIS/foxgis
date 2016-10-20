@@ -8,5 +8,6 @@ window.SERVER_API = {
   sprites: baseURL + '/sprites',
   uploads: baseURL + '/uploads',
   stats:baseURL + '/stats',
-  templates:baseURL + '/templates'
+  templates:baseURL + '/templates',
+  ngccs:baseURL + '/ngccs'
 }

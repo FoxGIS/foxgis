@@ -103,16 +103,33 @@
             <option value="in">包含</option>
             <option value="!in">不包含</option>
           </select>
-          <input type="text" name="filter-value" :value="filter.value" @change="filterChange($event,$index)">
+          <input type="text" class="field_data" name="filter-value" title="{{filterValueTitle}}" :value="filter.value" @change="filterChange($event,$index)" @click="showInputTips($event,$index)" @input="editFieldData($event,$index)" @mouseover="changeTile($event)">
           <i class="material-icons" v-on:click="deleteFilterItem($event,$index)" title="删除过滤">clear</i>
         </div>
       </div>
     </div>
+
+    <div class="field-tips">
+      <div v-if="displayFieldData.field_name&&displayFieldData.field_data.length>0">
+        <ul v-if="displayFieldData.field_name==='class'||displayFieldData.field_name==='gb'">
+          <li name="filter-value" title="{{data.description}}" v-for="data in displayFieldData.field_data" @click="inputTipsClick($event)">
+            <span name="filter-value" title="{{data.description}}">{{data.value}}</span>
+          </li>
+        </ul>
+        <ul v-else>
+          <li name="filter-value" v-for="data in displayFieldData.field_data" @click="inputTipsClick($event)">
+            <span name="filter-value">{{data}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </template> 
 
 <script>
 import Cookies from 'js-cookie'
+import _ from 'lodash'
 export default {
   methods: {
     propertyChange:function(e){
@@ -163,14 +180,16 @@ export default {
       this.$dispatch("layer-property-change",params);
     },
     filterChange:function(e,index) {
+      if(e.target.name && e.target.name === "filter-field"){
+        $(".filter-item input.field_data")[index].value = "";
+        $(".filter-item input.field_data")[index].title = "";
+      }
       if(this.selecteddata.panel_type==="create"){
         return;
       }
-      if(e.target.name==="filter-value"){
-        this.selecteddata.filter.filters[index].value=e.target.value;
-      }
+      
       var tem = this.selecteddata.filter;
-      var filter = [];
+      var filter = [];9
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
           if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){
@@ -178,7 +197,7 @@ export default {
           }
           var field = this.selecteddata.filter.filters[i].field;
           var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
+          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tem.filters[i].value.indexOf(',')!==-1||tem.filters[i].value.indexOf('，')!==-1){//值为数组
             var valueArr = tem.filters[i].value.split(",");
             if(type==="Number"){
               for(let p=0;p<valueArr.length;p++){
@@ -233,7 +252,7 @@ export default {
           this.selecteddata.folder = e.target.value;    
         }   
         if(e.target.tagName==="SELECT"){    
-          params.type = "change folder";    
+          params.type = "change folder";
           params.id = $(e.target).find("option:selected").data("id");   
           params.name = e.target.value;   
           this.$dispatch("layer-folder-change",params);   
@@ -246,11 +265,146 @@ export default {
     },    
     inputBlur:function(e){    
       $(e.target).css("background-color","transparent");    
-    } 
+    },
+    showInputTips:function(e,index){
+      if(e.target.name==="filter-value"){
+        if(!e.target.value){
+          this.keyword = '';
+        }
+        var tablename = this.selecteddata['source-layer'];
+        var fieldname = this.selecteddata.filter.filters[index].field;
+        if(!fieldname){
+          this.field_data = [];
+          return;
+        }
+        var top = e.target.offsetTop+400+index*50+"px";
+        if(this.selecteddata.panel_type==="create"){
+          top = e.target.offsetTop+370+index*50+"px";
+        }
+        
+        if(this.field_data.length>0){
+          if(fieldname === this.field_data[0].field_name){
+            this.clickIndex = index;
+            $(".field-tips").css({
+              "left":e.target.offsetLeft+4+"px",
+              "top":top
+            });
+            $(".field-tips").show();
+            return;
+          }
+        }
+        
+        var url = SERVER_API.ngccs+'?tablename='+tablename+'&fieldname='+fieldname;
+        this.$http({ url: url, method: 'GET' })
+        .then(function(response) {
+          var data = response.data;
+          this.field_data = data;
+          var value = e.target.value;
+          var tips = [];
+          if(this.field_data.length>0){
+            this.clickIndex = index;
+            $(".field-tips").css({
+              "left":e.target.offsetLeft+4+"px",
+              "top":top
+            });
+            $(".field-tips").show();
+          }else{
+            $(".field-tips").hide();
+          }
+        },function(response){
+          
+        });
+      }
+      
+    },
+    inputTipsClick:function(e){//选择了提示框中的关键词
+      var index = this.clickIndex;
+      var oldArr = $(".filter-item input.field_data")[index].value.split(',');
+      oldArr[oldArr.length-1] = e.target.innerText;
+      oldArr = _.uniq(oldArr);
+      var value = oldArr.join();
+      $(".filter-item input.field_data")[index].value = value;
+      this.selecteddata.filter.filters[index].value = value;
+      this.filterChange(e,index);
+      $(".field-tips").hide();
+    },
+    editFieldData:function(e,index){ 
+      var arr = e.target.value.split('');
+      var last = arr[arr.length-1];
+      $(".filter-item input.field_data")[index].value = e.target.value;
+      if(last === ','){
+        $(".field-tips").hide();
+      }else{
+        if(this.field_data.length>0){
+          arr = e.target.value.split(',');
+          this.keyword = arr[arr.length-1];
+          this.selecteddata.filter.filters[index].value = e.target.value;
+          this.filterChange(e,index);
+          var top = e.target.offsetTop+400+index*50+"px";
+          if(this.selecteddata.panel_type==="create"){
+            top = e.target.offsetTop+370+index*50+"px";
+          }
+          $(".field-tips").css({
+            "left":e.target.offsetLeft+4+"px",
+            "top":top
+          });
+          $(".field-tips").show();
+        }
+      }
+    },
+    changeTile:function(e){
+      this.filterValueTitle = e.target.value;
+    }
   },
   data(){
     return {
-      
+      field_data: [],      //字段名对应的数据
+      keyword:'',          //筛选关键字
+      clickIndex:0,        //点击的过滤字段的index
+      filterValueTitle:''
+    }
+  },
+  computed: {
+    displayFieldData:function(){
+      if(this.field_data.length>0){
+        if(!this.keyword){
+          return this.field_data[0];
+        }
+        var data = this.field_data[0].field_data;
+        var field = this.field_data[0].field_name;
+        var temp = {
+          "field_name": field,
+          "field_data": [],
+          "description": this.field_data[0].description,
+          "type": this.field_data[0].type
+        };
+        for(let i=0;i<data.length;i++){
+          if(field === 'gb' || field === 'class'){
+            if(temp.type==="number"){
+              if(data[i].value === Number(this.keyword)){
+                temp.field_data.push(data[i]);
+              }
+            }else{
+              if(data[i].value.indexOf(this.keyword) === 0){
+                temp.field_data.push(data[i]);
+              }
+            }
+          }else{
+            if(temp.type==="number"){
+              if(data[i] === Number(this.keyword)){
+                temp.field_data.push(data[i]);
+              }
+            }else{
+              if(data[i].indexOf(this.keyword) === 0){
+                temp.field_data.push(data[i]);
+              }
+            }
+          }
+        }
+        return temp;
+      }else{
+        return this.field_data;
+      } 
     }
   },
   watch:{
@@ -381,5 +535,49 @@ select[name="filter-condition"]{
   width: 140px;    
   margin-top: 1px;   
   background-color: transparent;   
+}
+
+.field-tips{
+  padding: 5px;
+  width: 75px;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 1px 1px 3px #ededed;
+  -webkit-box-shadow: 1px 1px 3px #ededed;
+  -moz-box-shadow: 1px 1px 3px #ededed;
+  -o-box-shadow: 1px 1px 3px #ededed;
+  z-index: 9999;
+}
+
+.field-tips li{
+  list-style-type :none;
+  cursor: pointer;
+}
+
+.field-tips li:hover{
+  background-color: #e4e4e4;
+}
+
+.field-tips::-webkit-scrollbar {
+  width: 6px;
+}
+
+.field-tips::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.field-tips::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+.field-tips::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
 }
 </style>
