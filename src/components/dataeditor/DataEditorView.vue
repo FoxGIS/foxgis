@@ -239,6 +239,7 @@ export default {
         this.saveFeatures();
       }
       this.saveStatus = true;
+      $("#property-edit").hide();
       this.map.remove();
       this.map ={};
       window.location.href = "#!/studio/data";
