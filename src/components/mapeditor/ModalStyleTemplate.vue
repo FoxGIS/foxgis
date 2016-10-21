@@ -120,6 +120,16 @@ export default {
     },
     newTemplateOK:function(){
       var files = $("#new-template_panel input[name='template-file']")[0].files;
+      var index = files[0].name.indexOf('.json');
+      if(index === -1){
+        this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
+        return;
+      }else{
+        if(files[0].name.length-index !== 5){
+          this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
+          return;
+        }
+      }
       if(files.length===0){
         this.$broadcast("mailSent",{message:"模板文件不能为空！",timeout:3000});
         return;
