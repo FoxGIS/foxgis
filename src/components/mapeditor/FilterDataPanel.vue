@@ -546,6 +546,7 @@ select[name="filter-condition"]{
   width: 75px;
   max-height: 200px;
   overflow-y: auto;
+  display: none;
   position: absolute;
   background-color: white;
   border-left: 1px solid #ccc;
