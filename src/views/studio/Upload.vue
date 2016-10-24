@@ -448,7 +448,7 @@ export default {
 
     deleteUpload: function(upload_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
-      this.$el.querySelector('#delete-dialog').style.display = 'block'
+      this.$el.querySelector('#delete-dialog').style.display = 'block';
       this.deleteUploadId.push(upload_id);
     },
     batchDeleteUpload:function(){//显示批量删除弹框

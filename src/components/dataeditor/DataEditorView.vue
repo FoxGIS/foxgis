@@ -45,6 +45,8 @@
   </div>
 
   <foxgis-dialog-prompt id="save-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
+
+  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="deletecontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
 </template>
 
 <script>
@@ -160,8 +162,13 @@ export default {
     addPolygon:function(){//添加面状要素
       this.draw.changeMode("draw_polygon")
     },
-    deleteSelected:function(){//删除选中的要素
-      this.draw.trash();
+    deleteSelected:function(){//显示删除弹框
+      $("#delete-dialog").show();
+    },
+    deleteAction:function(status){//删除选中的要素
+      if(status==='ok'){
+        this.draw.trash();
+      }
     },
     importFeatures:function(){//从文件导入新的要素
       var input = document.createElement("input");
@@ -232,6 +239,7 @@ export default {
         this.saveFeatures();
       }
       this.saveStatus = true;
+      $("#property-edit").hide();
       this.map.remove();
       this.map ={};
       window.location.href = "#!/studio/data";
@@ -265,6 +273,11 @@ export default {
         title: '存在未保存的改动，是否保存？',
         textOk:'保存',
         textCancel:'不保存'
+      },
+      deletecontent: {//删除样式对话框的内容
+        title: '确定删除该样式吗？',
+        textOk:'确定',
+        textCancel:'取消'
       }
     }
   }
@@ -422,7 +435,7 @@ a:hover{
   height: 25px;
   line-height: 25px;
 }
-#save-dialog{
+#save-dialog,#delete-dialog{
   display: none;
 }
 </style>

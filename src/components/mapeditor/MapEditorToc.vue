@@ -3,6 +3,7 @@
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div id="style-header">
       <span style="color:white;">{{styleObj.name}}</span>
+      <i class="material-icons copy-layer" v-on:click="showCopyLayer" title="复制样式">content_copy</i>
       <i class="material-icons new-layer" v-on:click="showCreateStyle" title="新建样式">create</i>
       <i class="material-icons delete-layer" v-on:click="deleteStyleLayer" title="删除样式">delete</i>
     </div>
@@ -352,8 +353,18 @@
     <foxgis-icon-panel id="icon-select-panel" class="panel" :dataset="spriteObj"></foxgis-icon-panel>
     <foxgis-stops-panel id="stops-panel" class="panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
 
-  </div>
+    <div id="copy-layer-panel">
+      <b>图层名称</b>
 
+      <mdl-textfield label="图层名称" floating-label="图层名称" id="copy-layer-name" class="textfield" :value=""></mdl-textfield>
+
+      <div class="action">
+        <mdl-button raised colored v-mdl-ripple-effect @click="copyPanelClose">取消</mdl-button>      
+        <mdl-button accent raised v-mdl-ripple-effect @click="copyNewLayer">确定</mdl-button>
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -945,7 +956,7 @@ export default {
     deleteStyleLayer:function(){
       if($("#property-panel").is(":visible")){
         var currentLayer = this.currentLayer;
-        var layers = this.styleObj.layers
+        var layers = this.styleObj.layers;
         for(let i=0,length=layers.length;i<length;i++){
           if(layers[i].id === currentLayer.id){
             layers.splice(i,1);
@@ -959,6 +970,49 @@ export default {
       }else{
         this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
       }
+    },
+    showCopyLayer:function(){
+      if($("#property-panel").is(":visible")){
+        $("#copy-layer-panel").show();
+      }else{
+        this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
+      }
+    },
+    copyPanelClose:function(){
+      $("#copy-layer-name").val("");
+      $("#copy-layer-panel").hide();
+    },
+    copyNewLayer:function(){
+      var value = $("#copy-layer-name").val().trim();
+      var currentLayer = this.currentLayer;
+      var layers = this.styleObj.layers;
+      var index = 0;
+      var isName = false;
+      if(value){
+        var temp = JSON.parse(JSON.stringify(currentLayer));
+        for(let i=0,length=layers.length;i<length;i++){
+          if(layers[i].id === temp.id){
+            index = i;
+          }
+          if(layers[i].id === value){
+            isName = true;
+          }
+        }
+        if(!isName){
+          temp.id=value;
+          layers.splice(index+1,0,temp);
+          $("#property-panel").hide();
+          $("#icon-select-panel").hide();
+          $("#copy-layer-name").val("");
+          $("#copy-layer-panel").hide();
+          this.changeStyle(this.styleObj);
+          this.$broadcast("mailSent",{message:"请保存样式!",timeout:3000});
+        }else{
+          this.$broadcast("mailSent",{message:"图层名称已存在，请重新输入!",timeout:3000});
+        }
+      }else{
+        this.$broadcast("mailSent",{message:"请输入图层名称！",timeout:3000});
+      } 
     },
     eledragstart: function(e){
       e.dataTransfer.setData('dragid',e.target.id);
@@ -1749,7 +1803,7 @@ export default {
 
 #style-header span {
   display: inline-block;
-  width: 125px;
+  width: 101px;
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
@@ -2154,5 +2208,37 @@ a {
   padding: 5px 0px 5px 5px;
   border: none;
   width: 150px;
+}
+
+#copy-layer-panel {
+  position: absolute;
+  width: 300px;
+  height: 150px;
+  padding: 10px;
+  background-color: rgb(237, 233, 217);
+  left: 510px;
+  top: 150px;
+  z-index: 1;
+  overflow: hidden;
+  display: none;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  color: #333;
+}
+
+#copy-layer-panel>b{
+  margin-left: 20px;
+  font-size: 18px;
+}
+#copy-layer-panel .textfield{
+  width: 200px;
+  margin-left: 30px;
+}
+#copy-layer-panel>div.action{
+  text-align: center;
+  margin-bottom: 20px;
+}
+#copy-layer-panel>div.action button:nth-child(2){
+  margin-left: 50px;
 }
 </style>

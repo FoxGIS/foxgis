@@ -54,7 +54,7 @@
     });
 
     $(document).mouseup(function(e){
-      var _con = $(".key-tips,.panel,#location-select,.location-tips");   // 隐藏目标
+      var _con = $(".key-tips,.panel,#location-select,.location-tips,.field-tips");   // 隐藏目标
       var colpick = $(".colpick");
       if(!_con.is(e.target) && _con.has(e.target).length === 0 && !colpick.is(e.target) && colpick.has(e.target).length === 0){
         _con.hide();
