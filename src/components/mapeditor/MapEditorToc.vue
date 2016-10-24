@@ -47,12 +47,12 @@
       </div>
       <div v-if="curPanelLayer.type=='symbol'">
         <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation data style-control-active" v-on:click="styleControlClick" title="选择数据">数据</a>
-          <a class="mdl-navigation symbol" v-on:click="styleControlClick" title="设置符号属性">布局</a>
+          <a class="mdl-navigation symbol style-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
           <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
           <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
+          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
-        <div id="data-div" class="style-set" style="display: block">
+        <div id="data-div" class="style-set" style="display: none">
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
         <div id="text-div" class="style-set" style="display: none">
@@ -127,7 +127,7 @@
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
-        <div id="symbol-div" class="style-set" style="display: none">
+        <div id="symbol-div" class="style-set" style="display: block">
           <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
@@ -153,13 +153,13 @@
 
       <div v-if="curPanelLayer.type=='fill'">
         <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation data style-control-active" v-on:click="styleControlClick" title="选择数据">数据</a>
-          <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
-        <div id="data-div" class="style-set" style="display: block">
+        <div id="data-div" class="style-set" style="display: none">
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
-        <div id="style-div" class="style-set" style="display: none">
+        <div id="style-div" class="style-set" style="display: block">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -194,13 +194,13 @@
 
       <div v-if="curPanelLayer.type=='line'" >
         <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation data style-control-active" v-on:click="styleControlClick" title="选择数据">数据</a>
-          <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
-        <div id="data-div" class="style-set" style="display: block">
+        <div id="data-div" class="style-set" style="display: none">
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
-        <div id="style-div" class="style-set" style="display: none">
+        <div id="style-div" class="style-set" style="display: block">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -256,8 +256,8 @@
 
       <div v-if="curPanelLayer.type=='circle'">
         <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation data style-control-active" v-on:click="styleControlClick" title="选择数据">数据</a>
-          <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
         <div id="data-div" class="style-set" style="display: block">
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
@@ -293,13 +293,13 @@
 
       <div v-if="curPanelLayer.type=='raster'">
         <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation data style-control-active" v-on:click="styleControlClick" title="选择数据">数据</a>
-          <a class="mdl-navigation style" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
+          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
-        <div id="data-div" class="style-set" style="display: block">
+        <div id="data-div" class="style-set" style="display: none">
           <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
         </div>
-        <div id="style-div" class="style-set" style="display: none">
+        <div id="style-div" class="style-set" style="display: block">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -398,10 +398,13 @@ export default {
       if($("#property-panel").is(":visible")){
         $("#property-panel").hide();
       }
+
       var newLayerPanel = $("#new-layer-panel");
       if(newLayerPanel.is(":visible")){
         newLayerPanel.hide();
+        this.$dispatch("map-view-change","hide");
       }else{
+        this.$dispatch("map-view-change","show");
         newLayerPanel.show();
         this.selectedData={
           'panel_type':'create',
@@ -435,18 +438,23 @@ export default {
       e.target.className = claName;
       $(".style-set").css("display","none");
       if($(e.target).hasClass("text")){
+        this.$dispatch("map-view-change","hide");
         $('#text-div').css("display","block");
       }
       if($(e.target).hasClass("icon")){
+        this.$dispatch("map-view-change","hide");
         $("#icon-div").css("display","block");
       }
       if($(e.target).hasClass("symbol")){
+        this.$dispatch("map-view-change","hide");
         $("#symbol-div").css("display","block");
       }
       if($(e.target).hasClass("data")){
+        this.$dispatch("map-view-change","show");
         $("#data-div").css("display","block");
       }
       if($(e.target).hasClass("style")){
+        this.$dispatch("map-view-change","hide");
         $("#style-div").css("display","block");
       }
     },
@@ -591,6 +599,7 @@ export default {
         return;
       }
       if((this.curPanelLayer.id===clickLayer.id)&&$("#property-panel").is(":visible")){
+        this.$dispatch("map-view-change","hide");
         $("#property-panel").hide();
       }else{
         $("#new-layer-panel").hide();
@@ -921,6 +930,7 @@ export default {
       this.createPanelClose();
     },
     createPanelClose:function(){
+      this.$dispatch("map-view-change","hide");
       $("#new-layer-panel input[name='id']").val("new_layer");
       $("#new-layer-panel select[name='source']").val("");
       $("#new-layer-panel select[name='source-layer']").val("");
@@ -942,6 +952,7 @@ export default {
             break;
           }
         }
+        this.$dispatch("map-view-change","hide");
         $("#property-panel").hide();
         $("#icon-select-panel").hide();
         this.changeStyle(this.styleObj);
@@ -1090,8 +1101,8 @@ export default {
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','');
     },
     closePanel: function(e){
-      var panel = this.$el.querySelector("#property-panel");
-      panel.style.display = 'none';
+      this.$dispatch("map-view-change","hide");
+      $("#property-panel").hide();
     },
     onShowIconPanel:function(e){
       var iconPanel = $("#icon-select-panel");
@@ -1228,6 +1239,23 @@ export default {
     },
     getFolderId:function(){
       return Math.random().toString(16).substr(2);
+    },
+    isFolderExisted:function(params){
+      var flag = false;
+      if(params.type==="new folder"){//input
+        var keys = Object.keys(this.Folders);
+        for(let i=0;i<keys.length;i++){//检索输入的文件夹名称是否已存在，flag=1表示已存在
+          if(params.name === this.Folders[keys[i]].name){
+            params.id = keys[i];
+            flag = true;
+            break;
+          }
+        }
+        if(!flag){params.id = this.getFolderId();}
+      }else if(params.type==="change folder"){//select
+        flag = true;
+      }
+      return flag;
     }
   },
   events: {
@@ -1284,47 +1312,77 @@ export default {
       this.changeStyle(data);
     },
     'layer-folder-change':function(params){//修改文件夹
-      if(params.type==="new folder"){//input
-        var folder_id = this.getFolderId();
-        var keys = Object.keys(this.Folders);
-        var flag=0;
-        for(let i=0;i<keys.length;i++){
-          if(params.name === this.Folders[keys[i]].name){
-            folder_id = keys[i];
-            flag=1;
-            break;
-          }
-        }
-        if(flag===0){//表示新建文件夹
-          if(this.styleObj.metadata){
-            if(!this.styleObj.metadata["mapbox:groups"]){
-              this.styleObj.metadata["mapbox:groups"] = {};
-            }
-            this.styleObj.metadata["mapbox:groups"][folder_id] = {
-              name:params.name,
-              "collapsed": false
-            };
-          }else{
-            this.styleObj.metadata = {};
-            this.styleObj.metadata["mapbox:groups"] = {};
-            this.styleObj.metadata["mapbox:groups"][folder_id] = {
-              name:$("#new-layer-panel input[name='folder']").val(),
-              "collapsed": false
-            };
-          }
-        }
-      }else if(params.type==="change folder"){//select
-        var folder_id = params.id;
-      }
       var currentLayer = this.currentLayer;
-      if(params.name===""){
-        delete currentLayer.metadata["mapbox:group"];
-      }else{
-        if(!currentLayer.metadata){
-          currentLayer.metadata = {};
+      //1、名称为空，删除文件夹
+      if(params.name === ""){
+        delete currentLayer.metadata["mapbox:group"];//删除当前图层的文件夹
+        var layers = this.styleObj.layers;
+        var f = 0;
+        for(var i=0;i<layers.length;i++){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===params.id){
+            f = 1;
+            return;
+          }
         }
-        currentLayer.metadata["mapbox:group"] = folder_id;
-      } 
+        if(f===0){
+          delete this.styleObj.metadata["mapbox:groups"][folder_id];
+        }
+        var data = JSON.parse(JSON.stringify(this.styleObj))
+        this.changeStyle(data);
+        return;
+      }
+      //2、添加文件夹
+      var flag = this.isFolderExisted(params);//判断文件夹是否已存在
+      var folder_id = params.id;
+      if(!currentLayer.metadata){
+        currentLayer.metadata = {};
+      }
+      currentLayer.metadata["mapbox:group"] = folder_id;
+      if(!flag){//文件夹不存在
+        if(this.styleObj.metadata){
+          if(!this.styleObj.metadata["mapbox:groups"]){
+            this.styleObj.metadata["mapbox:groups"] = {};
+          } 
+        }else{
+          this.styleObj.metadata = {};
+          this.styleObj.metadata["mapbox:groups"] = {};
+        }
+        this.styleObj.metadata["mapbox:groups"][folder_id] = {
+          name:params.name,
+          "collapsed": false
+        };
+      }else{//文件夹存在
+        var layers = this.styleObj.layers;
+        var currLayer_index,currFolder_index=[];
+        for(var i=0;i<layers.length;i++){
+          console.log(i);
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===folder_id&&layers[i].id!==currentLayer.id){
+            currFolder_index.push(i);
+          }
+          if(layers[i].id===currentLayer.id){
+            currLayer_index = i;
+          }
+        }
+        var rule1 = currFolder_index.indexOf(currLayer_index-1);
+        var rule2 = currFolder_index.indexOf(currLayer_index+1);
+        if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
+          if(currLayer_index<currFolder_index[0]){
+            var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+            for(var j = currLayer_index;j <= currFolder_index[0]-2;j++){
+              layers.splice(j,1,layers[j+1]);
+            }
+            layers.splice(currFolder_index[0]-1,1,tem);
+          }
+          if(currLayer_index>currFolder_index[currFolder_index.length-1]){
+            var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+            for(var j = currLayer_index;j >= currFolder_index[currFolder_index.length-1]+2;j--){
+              layers.splice(j,1,layers[j-1]);
+            }
+            layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
+          }
+        }
+      }
+    
       var data = JSON.parse(JSON.stringify(this.styleObj))
       this.changeStyle(data);
     }
