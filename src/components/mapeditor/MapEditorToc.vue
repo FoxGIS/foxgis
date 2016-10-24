@@ -28,139 +28,142 @@
     </div>
 
     <div id="property-panel">
+      <!-- 标题 -->
       <div id="property-header">{{curPanelLayer.id}}</div>
-      <div v-if="curPanelLayer.type=='background'">
-        <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-          <div class="property-value">
-            <input type="text" :value="value" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
-            <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-          </div>
-        </div>
-        <!-- layout -->
-        <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
-          <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-          <div class="property-value">
-            <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-          </div>
-        </div>
-      </div>
-      <div v-if="curPanelLayer.type=='symbol'">
-        <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation symbol style-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
-          <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
-          <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
+      <!-- 导航栏 -->
+      <div>
+        <nav class="mdl-navigation" id="property-control">
+          <a class="mdl-navigation style style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
           <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
         </nav>
-        <div id="data-div" class="style-set" style="display: none">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
-        </div>
-        <div id="text-div" class="style-set" style="display: none">
-          <b>绘图属性</b>
-          <div v-for="(name,value) in propertyGroup.text.paint" class="property-item">
+      </div>
+      <!-- 样式设置 -->
+      <div id="style-div" class="style-set">
+        <!-- 背景 -->
+        <div v-if="curPanelLayer.type=='background'">
+          <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name.indexOf('color')==-1">
-              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+            <div class="property-value">
+              <input type="text" :value="value" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
+              <input class="color" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
             </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-            </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
           </div>
-          <b>输出属性</b>
-          <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
+          <!-- layout -->
+          <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name=='text-field'">
-              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerFields">{{'{'+field+'}'}}</option>
-              </select>
-              <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange'>
-              <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
-            </div>
-            <div class="property-value" v-if="name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
-              <input type="text" :value="value" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
-              <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
-            </div>
-            <div class="property-value" v-if="name=='text-anchor'">
-              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="center">中心</option>
-                <option value="left">右</option>
-                <option value="right">左</option>
-                <option value="top">下</option>
-                <option value="bottom">上</option>
-                <option value="top-left">右下</option>
-                <option value="top-right">左下</option>
-                <option value="bottom-left">右上</option>
-                <option value="bottom-right">左上</option>
-              </select>
-            </div>
-            <div class="property-value" v-if="name=='text-allow-overlap'||name=='text-ignore-placement'">
-              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
-          </div>
-        </div>
-        <div id="icon-div" class="style-set" style="display: none">
-          <b>绘图属性</b>
-          <div v-for="(name,value) in propertyGroup.icon.paint" class="property-item">
-            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name.indexOf('color')==-1">
-              <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
-            </div>
-            <div class="property-value" v-if="name.indexOf('color')!=-1">
-              <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
-            </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
-          </div>
-          <b>输出属性</b>
-          <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
-            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
-              <input type="text" :value="value" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
-              <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
-            </div>
-            <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
-              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            </div>
-            <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
-          </div>
-        </div>
-        <div id="symbol-div" class="style-set" style="display: block">
-          <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
-            <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
-              <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
-            </div>
-            <div class="property-value" v-if="name=='symbol-avoid-edges'">
-              <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-            </div>
-            <div class="property-value" v-if="name=='visibility'">
+            <div class="property-value">
               <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
               <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
             </div>
-            <div class="property-value" v-if="name=='symbol-placement'">
-              <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                <option value="point">点</option>
-                <option value="line">线</option>
-              </select>
+          </div>
+        </div>
+        <!-- 点状符号 -->
+        <div v-if="curPanelLayer.type=='symbol'">
+          <nav class="mdl-navigation" id="symbol-property-control">
+            <a class="mdl-navigation symbol symbol-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
+            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
+            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
+          </nav>
+          <!-- 注记 -->
+          <div id="text-div" class="symbol-set" style="display: none">
+            <b>绘图属性</b>
+            <div v-for="(name,value) in propertyGroup.text.paint" class="property-item">
+              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+              <div class="property-value" v-if="name.indexOf('color')==-1">
+                <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <div class="property-value" v-if="name.indexOf('color')!=-1">
+                <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
+              </div>
+              <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
+            </div>
+            <b>输出属性</b>
+            <div v-for="(name,value) in propertyGroup.text.layout" class="property-item">
+              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+              <div class="property-value" v-if="name=='text-field'">
+                <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                  <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerFields">{{'{'+field+'}'}}</option>
+                </select>
+                <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange'>
+                <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
+              </div>
+              <div class="property-value" v-if="name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
+                <input type="text" :value="value" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
+                <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
+              </div>
+              <div class="property-value" v-if="name=='text-anchor'">
+                <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                  <option value="center">中心</option>
+                  <option value="left">右</option>
+                  <option value="right">左</option>
+                  <option value="top">下</option>
+                  <option value="bottom">上</option>
+                  <option value="top-left">右下</option>
+                  <option value="top-right">左下</option>
+                  <option value="bottom-left">右上</option>
+                  <option value="bottom-right">左上</option>
+                </select>
+              </div>
+              <div class="property-value" v-if="name=='text-allow-overlap'||name=='text-ignore-placement'">
+                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              </div>
+              <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
+            </div>
+          </div>
+          <!-- 图标 -->
+          <div id="icon-div" class="symbol-set" style="display: none">
+            <b>绘图属性</b>
+            <div v-for="(name,value) in propertyGroup.icon.paint" class="property-item">
+              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+              <div class="property-value" v-if="name.indexOf('color')==-1">
+                <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <div class="property-value" v-if="name.indexOf('color')!=-1">
+                <input class="color" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
+              </div>
+              <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
+            </div>
+            <b>输出属性</b>
+            <div v-for="(name,value) in propertyGroup.icon.layout" class="property-item">
+              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+              <div class="property-value" v-if="name.indexOf('color')==-1&&name!=='icon-allow-overlap'&&name!=='icon-ignore-placement'">
+                <input type="text" :value="value" name="{{name}}" v-if="name==='icon-image'" v-on:change='propertyChange' v-on:click='onShowIconPanel' data-type='layout'/>
+                <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
+              </div>
+              <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
+                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              </div>
+              <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
+            </div>
+          </div>
+          <!-- 布局 -->
+          <div id="symbol-div" class="symbol-set" style="display: block">
+            <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
+              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+              <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
+                <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+              </div>
+              <div class="property-value" v-if="name=='symbol-avoid-edges'">
+                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              </div>
+              <div class="property-value" v-if="name=='visibility'">
+                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              </div>
+              <div class="property-value" v-if="name=='symbol-placement'">
+                <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                  <option value="point">点</option>
+                  <option value="line">线</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div v-if="curPanelLayer.type=='fill'">
-        <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
-          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
-        </nav>
-        <div id="data-div" class="style-set" style="display: none">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
-        </div>
-        <div id="style-div" class="style-set" style="display: block">
+        <!-- 面状符号 -->
+        <div v-if="curPanelLayer.type=='fill'">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -190,18 +193,8 @@
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
-        
-      </div>
-
-      <div v-if="curPanelLayer.type=='line'" >
-        <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
-          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
-        </nav>
-        <div id="data-div" class="style-set" style="display: none">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
-        </div>
-        <div id="style-div" class="style-set" style="display: block">
+        <!-- 线状符号 -->
+        <div v-if="curPanelLayer.type=='line'">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -252,18 +245,8 @@
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
-        
-      </div>
-
-      <div v-if="curPanelLayer.type=='circle'">
-        <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
-          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
-        </nav>
-        <div id="data-div" class="style-set" style="display: block">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
-        </div>
-        <div id="style-div" class="style-set" style="display: none">
+        <!-- 圆 -->
+        <div v-if="curPanelLayer.type=='circle'">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -289,18 +272,8 @@
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
-        
-      </div>
-
-      <div v-if="curPanelLayer.type=='raster'">
-        <nav class="mdl-navigation" id="symbol-property-control">
-          <a class="mdl-navigation style  style-control-active" v-on:click="styleControlClick" title="设置样式">样式</a>
-          <a class="mdl-navigation data" v-on:click="styleControlClick" title="选择数据">数据</a>
-        </nav>
-        <div id="data-div" class="style-set" style="display: none">
-          <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
-        </div>
-        <div id="style-div" class="style-set" style="display: block">
+        <!-- 栅格 -->
+        <div v-if="curPanelLayer.type=='raster'">
           <b>绘图属性</b>
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
@@ -319,9 +292,12 @@
             <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
           </div>
         </div>
-        
       </div>
-      <i class="material-icons" id="property-panel-close" v-on:click="closePanel">clear</i>
+      <!-- 数据选择 -->
+      <div id="data-div" class="style-set" style="display: none">
+        <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
+      </div>
+      <i class="material-icons" id="property-panel-close" v-on:click="closePropertyPanel">clear</i>
     </div>
 
     <div id="new-layer-panel">
@@ -436,38 +412,51 @@ export default {
     },
     //属性面板的tab菜单
     styleControlClick:function(e){
-      //移除之前的active
-      var activeCards = this.$el.querySelector('.style-control-active');
-      if(activeCards&&activeCards!==e.target){
-        activeCards.className = activeCards.className.replace(' style-control-active','');
+      if(e.target.parentElement.id==="property-control"){
+        //移除之前的active
+        var activeCards = this.$el.querySelector('.style-control-active');
+        if(activeCards&&activeCards!==e.target){
+          activeCards.className = activeCards.className.replace(' style-control-active','');
+        }
+        //给当前的dom添加active
+        var claName = e.target.className;
+        if(claName.indexOf('style-control-active')===-1){
+          claName += ' style-control-active';
+        }
+        e.target.className = claName;
+        $(".style-set").css("display","none");
+        if($(e.target).hasClass("data")){
+          this.$dispatch("map-view-change","show");
+          $("#data-div").css("display","block");
+        }
+        if($(e.target).hasClass("style")){
+          this.$dispatch("map-view-change","hide");
+          $("#style-div").css("display","block");
+        }
+      }else if(e.target.parentElement.id==="symbol-property-control"){
+        //移除之前的active
+        var activeCards = this.$el.querySelector('.symbol-control-active');
+        if(activeCards&&activeCards!==e.target){
+          activeCards.className = activeCards.className.replace(' symbol-control-active','');
+        }
+        //给当前的dom添加active
+        var claName = e.target.className;
+        if(claName.indexOf('symbol-control-active')===-1){
+          claName += ' symbol-control-active';
+        }
+        e.target.className = claName;
+        $(".symbol-set").css("display","none");
+        if($(e.target).hasClass("text")){
+          $('#text-div').css("display","block");
+        }
+        if($(e.target).hasClass("icon")){
+          $("#icon-div").css("display","block");
+        }
+        if($(e.target).hasClass("symbol")){
+          $("#symbol-div").css("display","block");
+        }
       }
-      //给当前的dom添加active
-      var claName = e.target.className;
-      if(claName.indexOf('style-control-active')===-1){
-        claName += ' style-control-active';
-      }
-      e.target.className = claName;
-      $(".style-set").css("display","none");
-      if($(e.target).hasClass("text")){
-        this.$dispatch("map-view-change","hide");
-        $('#text-div').css("display","block");
-      }
-      if($(e.target).hasClass("icon")){
-        this.$dispatch("map-view-change","hide");
-        $("#icon-div").css("display","block");
-      }
-      if($(e.target).hasClass("symbol")){
-        this.$dispatch("map-view-change","hide");
-        $("#symbol-div").css("display","block");
-      }
-      if($(e.target).hasClass("data")){
-        this.$dispatch("map-view-change","show");
-        $("#data-div").css("display","block");
-      }
-      if($(e.target).hasClass("style")){
-        this.$dispatch("map-view-change","hide");
-        $("#style-div").css("display","block");
-      }
+      
     },
     fixType: function(layer){
       //有的layer没有type属性，有ref属性,补充这个信息
@@ -610,8 +599,7 @@ export default {
         return;
       }
       if((this.curPanelLayer.id===clickLayer.id)&&$("#property-panel").is(":visible")){
-        this.$dispatch("map-view-change","hide");
-        $("#property-panel").hide();
+        this.closePropertyPanel();
       }else{
         $("#new-layer-panel").hide();
         $("#property-panel").show();
@@ -963,9 +951,7 @@ export default {
             break;
           }
         }
-        this.$dispatch("map-view-change","hide");
-        $("#property-panel").hide();
-        $("#icon-select-panel").hide();
+        this.closePropertyPanel();
         this.changeStyle(this.styleObj);
       }else{
         this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
@@ -1154,7 +1140,7 @@ export default {
     sublayerMouseleave: function(e){
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','');
     },
-    closePanel: function(e){
+    closePropertyPanel: function(){
       this.$dispatch("map-view-change","hide");
       $("#property-panel").hide();
     },
@@ -1409,7 +1395,6 @@ export default {
         var layers = this.styleObj.layers;
         var currLayer_index,currFolder_index=[];
         for(var i=0;i<layers.length;i++){
-          console.log(i);
           if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===folder_id&&layers[i].id!==currentLayer.id){
             currFolder_index.push(i);
           }
@@ -2059,7 +2044,7 @@ a {
   z-index: 1;
 }
 
-#symbol-property-control{
+#property-control,#symbol-property-control{
     width: 310px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -2070,7 +2055,7 @@ a {
     background-color: #2061C6;
 }
 
-#symbol-property-control a{
+#property-control a,#symbol-property-control a{
     color: white;
     box-sizing: border-box;
     width: 50px;
@@ -2078,11 +2063,27 @@ a {
     padding: 3px 0 3px 10px;
 }
 
-#symbol-property-control .style-control-active{
+#property-control .style-control-active{
     color: #2061C6;
     background-color: #E5E2D3;
 }
 
+#symbol-property-control{
+  margin-bottom: 10px;
+  background-color: rgb(237, 233, 217);
+}
+#symbol-property-control a{
+  color:#000000;
+}
+#symbol-property-control a:hover{
+  color: #2061C6;
+  font-weight: bold;
+}
+#symbol-property-control .symbol-control-active{
+  color: #2061C6;
+  font-weight: bold;
+  border-bottom: 2px solid;
+}
 #stops-panel{
   position: absolute;
   left: 515px;
