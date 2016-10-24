@@ -352,7 +352,7 @@
 
     <foxgis-icon-panel id="icon-select-panel" class="panel" :dataset="spriteObj"></foxgis-icon-panel>
     <foxgis-stops-panel id="stops-panel" class="panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
-
+    <div class='copy_modal'>
     <div id="copy-layer-panel">
       <b>图层名称</b>
 
@@ -363,7 +363,7 @@
         <mdl-button accent raised v-mdl-ripple-effect @click="copyNewLayer">确定</mdl-button>
       </div>
     </div>
-
+    </div>
   </div>
 </template>
 
@@ -963,6 +963,7 @@ export default {
     showCopyLayer:function(){
       if($("#property-panel").is(":visible")){
         $("#copy-layer-panel").show();
+        $(".copy_modal").show();
       }else{
         this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
       }
@@ -970,6 +971,7 @@ export default {
     copyPanelClose:function(){
       $("#copy-layer-name").val("");
       $("#copy-layer-panel").hide();
+      $(".copy_modal").hide();
     },
     copyNewLayer:function(){
       var value = $("#copy-layer-name").val().trim();
@@ -994,6 +996,7 @@ export default {
           $("#icon-select-panel").hide();
           $("#copy-layer-name").val("");
           $("#copy-layer-panel").hide();
+          $(".copy_modal").hide();
           this.changeStyle(this.styleObj);
           this.$broadcast("mailSent",{message:"请保存样式!",timeout:3000});
         }else{
@@ -2155,17 +2158,20 @@ a {
 #copy-layer-panel {
   position: absolute;
   width: 300px;
-  height: 150px;
   padding: 10px;
-  background-color: rgb(237, 233, 217);
-  left: 510px;
-  top: 150px;
+  background-color: white;
   z-index: 1;
   overflow: hidden;
   display: none;
   font-size: 14px;
-  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
+  border-radius: 3px;
+  float: none;
+  top: 30%;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 #copy-layer-panel>b{
@@ -2182,5 +2188,15 @@ a {
 }
 #copy-layer-panel>div.action button:nth-child(2){
   margin-left: 50px;
+}
+.copy_modal {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: none;
+  background-color: rgba(0,0,0,.5);
+  z-index: 100;
 }
 </style>
