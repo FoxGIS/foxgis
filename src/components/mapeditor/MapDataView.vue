@@ -1,7 +1,7 @@
 <template>
   <div id='map-dataview-container'>
     <div id='dataview-info-container'>
-      <div style="padding:10px;background-color:#383737;;border-radius:4px">
+      <div style="padding:10px;background-color:#272727;;border-radius:4px">
         <div id="layer-container">
           <div v-for="(layer,meta) in querySourceLayers" class="layer">
             <i class='material-icons' v-if="meta.type=='Point'||meta.type=='MultiPoint'">grade</i>
