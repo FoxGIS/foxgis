@@ -3828,6 +3828,7 @@ TODOS
 
 					function uploadImg(blob,imgType,filename){
 						var options = window.OPTIONS;
+						debugger;
 						var upload_url = options.API.uploads + '/' + options.username+'?access_token='+options.access_token;
 						var location = options.location;
 						if(options.selectedDistrict){
@@ -3837,7 +3838,11 @@ TODOS
 						formData.append("image", blob, filename+"."+imgType.toLowerCase());
 						formData.append('year', new Date().getFullYear());
 						formData.append('name', filename);
-						formData.append('location', location);	        
+						formData.append('location', location);
+						if(options.scale){
+							formData.append('scale',options.scale);
+						}
+						
 						var xhr = new XMLHttpRequest();
 						//设置回调函数    
 						xhr.onreadystatechange = function(){

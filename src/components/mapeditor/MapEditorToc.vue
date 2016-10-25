@@ -329,17 +329,18 @@
     <foxgis-icon-panel id="icon-select-panel" class="panel" :dataset="spriteObj"></foxgis-icon-panel>
     <foxgis-stops-panel id="stops-panel" class="panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
     <div class='copy_modal'>
-    <div id="copy-layer-panel">
-      <b>图层名称</b>
+      <div id="copy-layer-panel">
+        <b>图层名称</b>
 
-      <mdl-textfield label="图层名称" floating-label="图层名称" id="copy-layer-name" class="textfield" :value=""></mdl-textfield>
+        <mdl-textfield label="图层名称" floating-label="图层名称" id="copy-layer-name" class="textfield" :value=""></mdl-textfield>
 
-      <div class="action">
-        <mdl-button raised colored v-mdl-ripple-effect @click="copyPanelClose">取消</mdl-button>      
-        <mdl-button accent raised v-mdl-ripple-effect @click="copyNewLayer">确定</mdl-button>
+        <div class="action">
+          <mdl-button raised colored v-mdl-ripple-effect @click="copyPanelClose">取消</mdl-button>      
+          <mdl-button accent raised v-mdl-ripple-effect @click="copyNewLayer">确定</mdl-button>
+        </div>
       </div>
     </div>
-    </div>
+    <foxgis-dialog-prompt id="layer-folder-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
   </div>
 </template>
 
@@ -583,6 +584,50 @@ export default {
         }
       }
       return mylayers;
+    },
+    saveAction:function(statas){
+      if(statas==='ok'){
+        this.moveTocLayer();
+      }else{
+        this.tempCurrentLayer.metadata = {};
+        this.$broadcast("mailSent",{message:"请重新输入文件夹名称！",timeout:3000});
+      }
+      $("#layer-folder-dialog").hide();
+    },
+    //当文件夹存在时，给出相应的提示
+    moveTocLayer:function(){
+      var currentLayer = this.tempCurrentLayer;
+      var folder_id = this.tempFolder_id;
+      var layers = this.styleObj.layers;
+      var currLayer_index,currFolder_index=[];
+      for(var i=0;i<layers.length;i++){
+        if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===folder_id&&layers[i].id!==currentLayer.id){
+          currFolder_index.push(i);
+        }
+        if(layers[i].id===currentLayer.id){
+          currLayer_index = i;
+        }
+      }
+      var rule1 = currFolder_index.indexOf(currLayer_index-1);
+      var rule2 = currFolder_index.indexOf(currLayer_index+1);
+      if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
+        if(currLayer_index<currFolder_index[0]){
+          var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+          for(var j = currLayer_index;j <= currFolder_index[0]-2;j++){
+            layers.splice(j,1,layers[j+1]);
+          }
+          layers.splice(currFolder_index[0]-1,1,tem);
+        }
+        if(currLayer_index>currFolder_index[currFolder_index.length-1]){
+          var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+          for(var j = currLayer_index;j >= currFolder_index[currFolder_index.length-1]+2;j--){
+            layers.splice(j,1,layers[j-1]);
+          }
+          layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
+        }
+      }
+      var data = JSON.parse(JSON.stringify(this.styleObj))
+      this.changeStyle(data);
     },
     //点击图层列表时，显示当前图层的属性设置面板
     showPropertyPanel:function(layer_id){
@@ -1381,6 +1426,8 @@ export default {
         currentLayer.metadata = {};
       }
       currentLayer.metadata["mapbox:group"] = folder_id;
+      this.tempFolder_id = folder_id;
+      this.tempCurrentLayer = currentLayer;
       if(!flag){//文件夹不存在
         if(this.styleObj.metadata){
           if(!this.styleObj.metadata["mapbox:groups"]){
@@ -1394,39 +1441,15 @@ export default {
           name:params.name,
           "collapsed": false
         };
+        var data = JSON.parse(JSON.stringify(this.styleObj))
+        this.changeStyle(data);
       }else{//文件夹存在
-        var layers = this.styleObj.layers;
-        var currLayer_index,currFolder_index=[];
-        for(var i=0;i<layers.length;i++){
-          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===folder_id&&layers[i].id!==currentLayer.id){
-            currFolder_index.push(i);
-          }
-          if(layers[i].id===currentLayer.id){
-            currLayer_index = i;
-          }
-        }
-        var rule1 = currFolder_index.indexOf(currLayer_index-1);
-        var rule2 = currFolder_index.indexOf(currLayer_index+1);
-        if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
-          if(currLayer_index<currFolder_index[0]){
-            var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
-            for(var j = currLayer_index;j <= currFolder_index[0]-2;j++){
-              layers.splice(j,1,layers[j+1]);
-            }
-            layers.splice(currFolder_index[0]-1,1,tem);
-          }
-          if(currLayer_index>currFolder_index[currFolder_index.length-1]){
-            var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
-            for(var j = currLayer_index;j >= currFolder_index[currFolder_index.length-1]+2;j--){
-              layers.splice(j,1,layers[j-1]);
-            }
-            layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
-          }
+        if(params.type === "change folder"){
+          this.moveTocLayer();
+        }else{
+          $("#layer-folder-dialog").show();
         }
       }
-    
-      var data = JSON.parse(JSON.stringify(this.styleObj))
-      this.changeStyle(data);
     }
   },
   data: function() {
@@ -1434,6 +1457,8 @@ export default {
       tocLayers: [],
       curPanelLayer: {},
       currentLayer: {},
+      tempCurrentLayer: {},
+      tempFolder_id: '',
       styleObj: {},
       sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source,
       sourceLayers:[],
@@ -1460,6 +1485,11 @@ export default {
         pngUrl:"",
         icons:[],
         description:""
+      },
+      dialogcontent: {//文件夹提示框
+        title: '该文件夹已经存在，是否移入已有文件夹？',
+        textOk:'是',
+        textCancel:'否'
       },
       translate: {
         'color': '颜色',
@@ -2257,5 +2287,8 @@ a {
   display: none;
   background-color: rgba(0,0,0,.5);
   z-index: 100;
+}
+#layer-folder-dialog{
+  display: none;
 }
 </style>
