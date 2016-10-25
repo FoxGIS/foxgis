@@ -3828,7 +3828,6 @@ TODOS
 
 					function uploadImg(blob,imgType,filename){
 						var options = window.OPTIONS;
-						debugger;
 						var upload_url = options.API.uploads + '/' + options.username+'?access_token='+options.access_token;
 						var location = options.location;
 						if(options.selectedDistrict){
