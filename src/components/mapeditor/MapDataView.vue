@@ -90,7 +90,12 @@ export default {
       .then(function(res){//从服务器获取地图的stylejson样式
         var data = res.data;
         var initStyle = JSON.parse(JSON.stringify(data));
-        this.mapInit(initStyle);
+        if(this.map.loaded&&this.map.loaded()){
+          this.map.setZoom(this.params.zoom);
+          this.map.setCenter(this.params.center);
+        }else{
+          this.mapInit(initStyle);
+        }
       },function(){
         this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
       });

@@ -384,6 +384,7 @@ export default {
     //点击新建图层，显示新建图层面板，初始化面板参数
     showCreateStyle:function(){
       if($("#property-panel").is(":visible")){
+        $("#property-control .style")[0].click();
         $("#property-panel").hide();
       }
 
@@ -646,7 +647,9 @@ export default {
       if((this.curPanelLayer.id===clickLayer.id)&&$("#property-panel").is(":visible")){
         this.closePropertyPanel();
       }else{
-        $("#new-layer-panel").hide();
+        if($("#new-layer-panel").is(":visible")){
+          this.createPanelClose();
+        }
         $("#property-panel").show();
         this.$dispatch("hide-mapbounds");
         this.currentLayer = clickLayer;
@@ -1189,8 +1192,10 @@ export default {
       e.currentTarget.className = e.currentTarget.className.replace(' sublayer-over','');
     },
     closePropertyPanel: function(){
-      this.$dispatch("map-view-change","hide");
-      $("#property-panel").hide();
+      if($("#property-panel").is(":visible")){
+        $("#property-control .style")[0].click();
+        $("#property-panel").hide();
+      }
     },
     onShowIconPanel:function(e){
       var iconPanel = $("#icon-select-panel");
@@ -1398,6 +1403,9 @@ export default {
       }
       var data = JSON.parse(JSON.stringify(this.styleObj));
       this.changeStyle(data);
+    },
+    "main-control-click":function(){
+      this.closePropertyPanel();
     },
     'layer-folder-change':function(params){//修改文件夹
       var currentLayer = this.currentLayer;

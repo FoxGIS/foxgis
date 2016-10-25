@@ -11,7 +11,6 @@
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></a>
       <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
-      
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
@@ -50,14 +49,17 @@ export default {
     },
     //行政区按钮 click
     'districtControlClick': function(e){
+      this.$broadcast("main-control-click");
       this.changeControlStyle(e,'district');
     },
     //svg编辑器点击事件
     'SVGEditorClick': function(e){
+      this.$broadcast("main-control-click");
       this.changeControlStyle(e,'svg-editor');
     },
     //style 编辑
     'styleEditorClick': function(e){
+      this.$broadcast("main-control-click");
       if(e.currentTarget.className.indexOf('control-active')!==-1){
         return;
       }
@@ -130,6 +132,7 @@ export default {
     },
     //返回工程列表方法
     backToProject:function(){
+      this.$broadcast("main-control-click");
       if(this.styleSaveStatus===false){
         $("#delete-dialog").show();
       }else{
@@ -163,6 +166,7 @@ export default {
     },
     printMap: function(e){  
       if(e.target.textContent === '输出'){
+        this.$emit("map-view-change","hide");
         $("#property-panel").hide();
         if(this.selectedDistrictBounds.length!=0){
           var bounds = {
