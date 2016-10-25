@@ -590,42 +590,40 @@ export default {
       if(statas==='ok'){
         this.moveTocLayer();
       }else{
-        this.tempCurrentLayer.metadata = {};
+        var currentLayer = this.currentLayer;
+        if(currentLayer.metadata&&currentLayer.metadata["mapbox:group"]){
+          var folder_id = this.currentLayer.metadata["mapbox:group"];
+          this.selectedData.folder = this.Folders[folder_id].name;
+        }else{
+          this.selectedData.folder = "";
+        }
         this.$broadcast("mailSent",{message:"请重新输入文件夹名称！",timeout:3000});
       }
       $("#layer-folder-dialog").hide();
     },
     //当文件夹存在时，给出相应的提示
     moveTocLayer:function(){
-      var currentLayer = this.tempCurrentLayer;
-      var folder_id = this.tempFolder_id;
+      var currLayer_index = this.tempCurrLayer_index;
+      var currFolder_index = this.tempCurrFolder_index;
       var layers = this.styleObj.layers;
-      var currLayer_index,currFolder_index=[];
-      for(var i=0;i<layers.length;i++){
-        if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===folder_id&&layers[i].id!==currentLayer.id){
-          currFolder_index.push(i);
-        }
-        if(layers[i].id===currentLayer.id){
-          currLayer_index = i;
-        }
+      var currentLayer = this.currentLayer;
+      if(!currentLayer.metadata){
+        currentLayer.metadata = {};
       }
-      var rule1 = currFolder_index.indexOf(currLayer_index-1);
-      var rule2 = currFolder_index.indexOf(currLayer_index+1);
-      if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
-        if(currLayer_index<currFolder_index[0]){
-          var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
-          for(var j = currLayer_index;j <= currFolder_index[0]-2;j++){
-            layers.splice(j,1,layers[j+1]);
-          }
-          layers.splice(currFolder_index[0]-1,1,tem);
+      currentLayer.metadata["mapbox:group"] = this.folder_id;
+      if(currLayer_index<currFolder_index[0]){
+        var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+        for(var j = currLayer_index;j <= currFolder_index[0]-2;j++){
+          layers.splice(j,1,layers[j+1]);
         }
-        if(currLayer_index>currFolder_index[currFolder_index.length-1]){
-          var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
-          for(var j = currLayer_index;j >= currFolder_index[currFolder_index.length-1]+2;j--){
-            layers.splice(j,1,layers[j-1]);
-          }
-          layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
+        layers.splice(currFolder_index[0]-1,1,tem);
+      }
+      if(currLayer_index>currFolder_index[currFolder_index.length-1]){
+        var tem = JSON.parse(JSON.stringify(layers[currLayer_index]));
+        for(var j = currLayer_index;j >= currFolder_index[currFolder_index.length-1]+2;j--){
+          layers.splice(j,1,layers[j-1]);
         }
+        layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
       }
       var data = JSON.parse(JSON.stringify(this.styleObj))
       this.changeStyle(data);
@@ -1430,13 +1428,14 @@ export default {
       //2、添加文件夹
       var flag = this.isFolderExisted(params);//判断文件夹是否已存在
       var folder_id = params.id;
-      if(!currentLayer.metadata){
-        currentLayer.metadata = {};
-      }
-      currentLayer.metadata["mapbox:group"] = folder_id;
+      this.folder_id = folder_id;
       this.tempFolder_id = folder_id;
       this.tempCurrentLayer = currentLayer;
       if(!flag){//文件夹不存在
+        if(!currentLayer.metadata){
+          currentLayer.metadata = {};
+        }
+        currentLayer.metadata["mapbox:group"] = this.folder_id;
         if(this.styleObj.metadata){
           if(!this.styleObj.metadata["mapbox:groups"]){
             this.styleObj.metadata["mapbox:groups"] = {};
@@ -1449,15 +1448,37 @@ export default {
           name:params.name,
           "collapsed": false
         };
-        var data = JSON.parse(JSON.stringify(this.styleObj))
-        this.changeStyle(data);
       }else{//文件夹存在
-        if(params.type === "change folder"){
-          this.moveTocLayer();
-        }else{
+        var layers = this.styleObj.layers;
+        var currLayer_index,currFolder_index=[];
+        for(var i=0;i<layers.length;i++){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===this.folder_id&&layers[i].id!==currentLayer.id){
+            currFolder_index.push(i);
+          }
+          if(layers[i].id===currentLayer.id){
+            currLayer_index = i;
+          }
+        }
+        var rule1 = currFolder_index.indexOf(currLayer_index-1);
+        var rule2 = currFolder_index.indexOf(currLayer_index+1);
+        if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
+          this.tempCurrFolder_index = currFolder_index;
+          this.tempCurrLayer_index = currLayer_index;
           $("#layer-folder-dialog").show();
+          /*if(params.type === "change folder"){
+            this.moveTocLayer();
+          }else{
+            $("#layer-folder-dialog").show();
+          }*/
+        }else{
+          if(!currentLayer.metadata){
+            currentLayer.metadata = {};
+          }
+          currentLayer.metadata["mapbox:group"] = this.folder_id;
         }
       }
+      var data = JSON.parse(JSON.stringify(this.styleObj))
+      this.changeStyle(data); 
     }
   },
   data: function() {
@@ -1465,8 +1486,9 @@ export default {
       tocLayers: [],
       curPanelLayer: {},
       currentLayer: {},
-      tempCurrentLayer: {},
-      tempFolder_id: '',
+      tempCurrFolder_index: [],
+      folder_id:"",
+      tempCurrLayer_index: 0,
       styleObj: {},
       sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source,
       sourceLayers:[],
