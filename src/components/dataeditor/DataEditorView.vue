@@ -205,10 +205,41 @@ export default {
       var url = SERVER_API.tilesets + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
       .then(function(res){
-        this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
+        if(res.ok){
+          var tileset_id = res.data.tileset_id;
+          this.editTagsAndScope(tileset_id);
+          this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
+        }
       },function(res){
         this.$broadcast("mailSent",{message:"导出失败",timeout:3000});
       }); 
+    },
+    editTagsAndScope:function(tileset_id){//更新tags、scope字段
+      var username = Cookies.get('username');
+      if(username === undefined){
+        return;
+      }
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
+      var tags = this.datajson.tags;
+      var scope = this.datajson.scope;
+      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+            
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '标签添加失败！',timeout:3000 });  
+      });
+
+      this.$http({url:url,method:'PATCH',data:{'scope':scope},headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+            
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '共享范围添加失败！',timeout:3000 });  
+      });
     },
     saveFeatures: function(){//保存当前更改
       this.saveStatus=true;
