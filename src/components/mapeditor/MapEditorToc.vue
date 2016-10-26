@@ -1465,11 +1465,6 @@ export default {
           this.tempCurrFolder_index = currFolder_index;
           this.tempCurrLayer_index = currLayer_index;
           $("#layer-folder-dialog").show();
-          /*if(params.type === "change folder"){
-            this.moveTocLayer();
-          }else{
-            $("#layer-folder-dialog").show();
-          }*/
         }else{
           if(!currentLayer.metadata){
             currentLayer.metadata = {};
