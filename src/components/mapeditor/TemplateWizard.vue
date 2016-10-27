@@ -151,6 +151,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import _ from 'lodash'
 export default{
     methods: {
       nextStep:function(step){//点击下一步执行的方法
@@ -194,6 +195,9 @@ export default{
           }
           var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
+          if(glyphs_url){
+            this.changeMdlTextfield("#template-wizard_panel #glyphs-url",true);
+          }
           $('.step2').css('display','none');
           $('.step3').css('display','block');
         }
@@ -211,10 +215,14 @@ export default{
       changeGlyphsUrl:function(){//获取字体的url
         if(this.glyphs_checked === 'other'){
           $("#template-wizard_panel #glyphs-url").val('');
+          this.changeMdlTextfield("#template-wizard_panel #glyphs-url",false);
         }else if(this.glyphs_checked === 'self'){
           var username = Cookies.get('username');
           var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
+          if(glyphs_url){
+            this.changeMdlTextfield("#template-wizard_panel #glyphs-url",true);
+          }
         }
       },
       newTemplateCancel:function(){//取消按钮的方法
@@ -252,8 +260,26 @@ export default{
         }
         if(this.glyphs_checked === 'other'){
           $("#template-wizard_panel #glyphs-url").val('');
+          this.changeMdlTextfield("#template-wizard_panel #glyphs-url",false);
         }
         $("#template-wizard_panel").hide();
+      },
+      changeMdlTextfield:function(name,isDirty){
+        var attr = $(name)[0].parentNode.parentNode.attributes;
+        for(let i=0;i<attr.length;i++){
+          if(attr[i].name === 'class'){
+            if(isDirty){
+              attr[i].value += ' is-dirty';
+            }else{
+              var array = attr[i].value.split(' ');
+              array = _.remove(array, function(n) {
+                return n !== 'is-dirty';
+              });
+              attr[i].value = array.join(' ');
+            }
+            break;
+          }
+        }
       }
     },
     attached(){

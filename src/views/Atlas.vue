@@ -775,8 +775,12 @@ export default {
 
 .details table th{
   width: 55px;
-  text-align: right;
+  text-align: justify;
   font-weight: bold;
+  text-justify: distribute-all-lines;
+  text-align-last: justify;
+  -moz-text-align-last: justify;
+  -webkit-text-align-last: justify;
 }
 
 .details tr td:nth-child(4){
