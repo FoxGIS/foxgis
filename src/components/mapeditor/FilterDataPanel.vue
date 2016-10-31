@@ -10,29 +10,16 @@
 
     <div class="property-item">
       <div class="property-name"><span >数据源</span></div>
-      <div class="property-value">
-        <select name="source" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.source">
-          <option value="">选择数据源</option>
-          <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
-        </select>
-        <select name="source" @change="propertyChange" v-model="selecteddata.source" v-else>
-          <option value="">选择数据源</option>
-          <option value="{{source.sourceName}}" v-for="source in sources">{{source.sourceName}}</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="property-item">
-      <div class="property-name"><span >源图层</span></div>
-      <div class="property-value">
-        <select name="source-layer" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata['source-layer']">
-          <option value="">选择数据图层</option>
-          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}</option>
-        </select>
-        <select name="source-layer" @change="propertyChange" v-model="selecteddata['source-layer']" v-else>
-          <option value="">选择数据图层</option>
-          <option value="{{layer.id}}" v-for="layer in sourcelayers">{{layer.id}}</option>
-        </select>
+      <div class="property-value source-container">
+        <a href="javascript:void(0)" v-on:click.prevent="showSelectSource">
+          <div class="s_c" v-if="selecteddata.source===''">
+            <b>未选择数据源</b>
+          </div>
+          <div class="s_c" v-else>
+            <div class="source-id"><b>{{selecteddata.source}}</b></div>
+            <div class="source-layer"><span>{{selecteddata['source-layer']}}</span></div>
+          </div>
+        </a>
       </div>
     </div>
 
@@ -109,6 +96,8 @@
       </div>
     </div>
 
+    <foxgis-data-select class="panel data-select-panel" :sources="sources" v-if="selecteddata.panel_type==='create'"></foxgis-data-select>
+
     <div class="field-tips">
       <div v-if="displayFieldData.field_name&&displayFieldData.field_data.length>0">
         <ul v-if="displayFieldData.field_name==='class'||displayFieldData.field_name==='gb'">
@@ -130,49 +119,28 @@
 <script>
 import Cookies from 'js-cookie'
 import _ from 'lodash'
+import { changeStyle } from '../../vuex/actions'
 export default {
+  vuex: {
+    getters: {
+      style: state => state.map.style
+    },
+    actions: {
+      changeStyle
+    }
+  },
   methods: {
     propertyChange:function(e){
       var value = $(e.target).val();
-      if(e.target.name==="source"){//当用户更改source时，获取该source中包含哪些source-layer
-        var source = value;
-        if(source===""){
-          this.sourcelayers=[];
-        }
-        for(let i=0;i<this.sources.length;i++){
-          if(source === this.sources[i].sourceName){
-            if(this.sources[i].sourceLayers){
-              this.sourcelayers = this.sources[i].sourceLayers;
-            }else{
-              var access_token = Cookies.get('access_token');
-              this.$http({url:this.sources[i].sourceUrl,method:"GET",headers:{'x-access-token':access_token}})
-              .then(function(res){
-                var data = res.data;
-                this.sourcelayers = data.vector_layers||[];
-              },function(res){
-
-              });
-            } 
-          }
-        }
-      }
-      if(e.target.name==="source-layer"){//当用户更改source-layer时，获取该source-layer中包含哪些字段
-        if(e.target.value===""){
-          this.layerfields={};
-        }
-        var curr_sourcelayer = e.target.value;
-        for(let j=0;j<this.sourcelayers.length;j++){
-          if(curr_sourcelayer===this.sourcelayers[j].id){
-            this.layerfields = this.sourcelayers[j].fields;
-            break;
-          }
-        }
-      }
-      if(this.selecteddata.panel_type==="create"){
-        return;
+      if(e.target.name==="id"){
+        this.selecteddata.id = value;
       }
       if(e.target.name==="minzoom"||e.target.name==="maxzoom"){
         value = Number(value);
+        this.selecteddata[e.target.name]=value;
+      }
+      if(this.selecteddata.panel_type==="create"){
+        return;
       }
       var params = {};
       params.name = e.target.name;
@@ -184,12 +152,8 @@ export default {
         $(".filter-item input.field_data")[index].value = "";
         $(".filter-item input.field_data")[index].title = "";
       }
-      if(this.selecteddata.panel_type==="create"){
-        return;
-      }
-      
       var tem = this.selecteddata.filter;
-      var filter = [];9
+      var filter = [];
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
           if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){
@@ -197,7 +161,7 @@ export default {
           }
           var field = this.selecteddata.filter.filters[i].field;
           var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tem.filters[i].value.indexOf(',')!==-1||tem.filters[i].value.indexOf('，')!==-1){//值为数组
+          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tem.filters[i].value.indexOf(',')!==-1||tem.filters[i].value.indexOf(',')!==-1){//值为数组
             var valueArr = tem.filters[i].value.split(",");
             if(type==="Number"){
               for(let p=0;p<valueArr.length;p++){
@@ -218,6 +182,9 @@ export default {
         filter = [tem.condition].concat(filter);
       }else{
         filter = ["all"];
+      }
+      if(this.selecteddata.panel_type==="create"){
+        return;
       }
       var params = {};
       params.name = 'filter';
@@ -240,25 +207,21 @@ export default {
       this.filterChange(e,index);
     },
     folderChange:function(e){    
-      if(this.selecteddata.panel_type==="create"){    
-        return;   
-      }   
-      if(this.selecteddata.panel_type==="update"){    
+      if(this.selecteddata.panel_type==="update"){
         var params = {};    
         if(e.target.tagName==="INPUT"){   
           params.type = "new folder";   
-          params.name = e.target.value;   
-          this.$dispatch("layer-folder-change",params);   
+          params.name = e.target.value;     
           this.selecteddata.folder = e.target.value;    
         }   
         if(e.target.tagName==="SELECT"){    
           params.type = "change folder";
           params.id = $(e.target).find("option:selected").data("id");   
-          params.name = e.target.value;   
-          this.$dispatch("layer-folder-change",params);   
+          params.name = e.target.value;     
           this.selecteddata.folder = e.target.value;    
-        }   
-      }   
+        }
+        this.$dispatch("layer-folder-change",params);
+      }    
     },    
     inputFocus:function(e){   
       $(e.target).css("background-color","white");    
@@ -277,9 +240,9 @@ export default {
           this.field_data = [];
           return;
         }
-        var top = e.target.offsetTop+400+index*50+"px";
+        var top = e.target.offsetTop+380+index*50+"px";
         if(this.selecteddata.panel_type==="create"){
-          top = e.target.offsetTop+370+index*50+"px";
+          top = e.target.offsetTop+350+index*50+"px";
         }
         
         if(this.field_data.length>0){
@@ -344,9 +307,9 @@ export default {
           this.keyword = arr[arr.length-1];
           this.selecteddata.filter.filters[index].value = e.target.value;
           this.filterChange(e,index);
-          var top = e.target.offsetTop+400+index*50+"px";
+          var top = e.target.offsetTop+380+index*50+"px";
           if(this.selecteddata.panel_type==="create"){
-            top = e.target.offsetTop+370+index*50+"px";
+            top = e.target.offsetTop+350+index*50+"px";
           }
           $(".field-tips").css({
             "left":e.target.offsetLeft+4+"px",
@@ -358,6 +321,75 @@ export default {
     },
     changeTile:function(e){
       this.filterValueTitle = e.target.value;
+    },
+    showSelectSource:function(){ 
+      this.sources=[];this.usedSourceIds = [];
+      var usedSourceNames = Object.keys(this.localStyle.sources);
+      for(let i = 0;i<usedSourceNames.length;i++){
+        var url = this.localStyle.sources[usedSourceNames[i]].url;
+        if(url){
+          var t = url.split("/");
+          var id = t[t.length-1];
+          this.usedSourceIds.push(id);
+        }
+      }
+      this.getSystemSources();//获取系统的数据
+      this.getPublicSources();//获取公开的数据
+      this.$el.querySelector('.data-select-panel').style.display="block";
+    },
+    getSource:function(id,url){
+      var access_token = Cookies.get('access_token');
+      var source = {
+        id:id,
+        name:"",
+        owner:"",
+        used:false,
+        createdAt:"",
+        filesize:0,
+        url:url,
+        vector_layers:[],
+      };
+      if(this.usedSourceIds.indexOf(id)!==-1){source.used=true;}
+      this.$http({url:source.url,method:"GET",data:{id:source.id},headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        var params = res.request.params;//请求参数
+        for(let m=0;m<this.sources.length;m++){
+          var date = new Date(data.createdAt);
+          if(this.sources[m].id===params.id){
+            this.sources[m].name = data.name;
+            this.sources[m].owner = data.owner;
+            this.sources[m].createdAt = date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate();
+            if (data.filesize / 1024 > 1024) {
+              data.filesize = (data.filesize / 1048576).toFixed(2) + 'MB';
+            } else {
+              data.filesize = (data.filesize / 1024).toFixed(2) + 'KB';
+            }
+            this.sources[m].filesize = data.filesize;
+            this.sources[m].vector_layers = data.vector_layers;
+          }
+        }
+      },function(res){});
+      this.sources.push(source);
+    },
+    getSystemSources:function(){
+      var access_token = Cookies.get('access_token');
+      var systemSourceIds = ["admin2"];//暂时不加admin
+      for(let i = 0;i<systemSourceIds.length;i++){
+        var url = SERVER_API.tilesets+"/foxgis/"+systemSourceIds[i];
+        this.getSource(systemSourceIds[i],url);
+      }
+    },
+    getPublicSources:function(){
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets;
+      this.$http({url:url,method:"GET",headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        for(let i=0;i<data.length;i++){
+          var id = data[i].tileset_id;
+          var url = SERVER_API.tilesets+"/"+data[i].owner+"/"+id;
+          this.getSource(id,url);
+        }
+      },function(res){});
     }
   },
   data(){
@@ -365,7 +397,23 @@ export default {
       field_data: [],      //字段名对应的数据
       keyword:'',          //筛选关键字
       clickIndex:0,        //点击的过滤字段的index
-      filterValueTitle:''
+      filterValueTitle:'',
+      localStyle:{},
+      usedSourceIds:[],
+      sources:[]//所有供选择的数据源，用于新建样式图层时选择source,
+    }
+  },
+  events:{
+    "select-a-layer":function(params){
+      this.selecteddata.source = params.source||"";
+      this.selecteddata['source-layer'] = params.source_layer||"";
+      var fields = params.fields;
+      if(fields){
+        this.layerfields = fields;
+      }
+    },
+    "get-source":function(params){
+      this.getSource(params.id,params.url);
     }
   },
   computed: {
@@ -424,10 +472,15 @@ export default {
           $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }
       }
+    },
+    style: {
+      handler:function(style,oldStyle){
+        this.localStyle = JSON.parse(JSON.stringify(style));
+      }
     }
   },
 
-  props:['sources','selecteddata','sourcelayers','layerfields','folders']
+  props:['selecteddata','folders','layerfields']
 }
 </script>
 
@@ -474,7 +527,9 @@ export default {
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
-
+.property-value input[name='id']{
+  width: 170px;
+}
 .property-value select {
   background-color: rgba(255, 255, 255, 0.9);
   display: inline-block;
@@ -584,5 +639,36 @@ select[name="filter-condition"]{
 /* 滑块颜色 */
 .field-tips::-webkit-scrollbar-thumb {
   background-color: #2061C6;
+}
+
+.data-select-panel{
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  background-color: #eaeaea;
+  left: 310px;
+  top: 50px;
+  z-index: 1;
+  display: none;
+  font-size: 14px;
+  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
+  color: #333333;
+}
+
+.source-container{
+  background-color: #e4e0cf;
+  height: 50px;
+  width: 175px;
+}
+.source-container:hover{
+  background-color: #e0dac3;
+}
+.source-container a{
+  text-decoration: none;
+  color: blue;
+}
+.source-container .s_c{
+  height: 100%;
+  padding: 5px;
 }
 </style>

@@ -52,6 +52,7 @@ import IconPanel from './components/mapeditor/IconPanel'
 import FilterData from './components/mapeditor/FilterDataPanel'
 import StopsPanel from './components/mapeditor/StopsPanel.vue'
 import TemplateWizard from './components/mapeditor/TemplateWizard.vue'
+import DataSelectPanel from './components/mapeditor/DataSelectPanel.vue'
 
 import DataEditorView from './components/dataeditor/DataEditorView.vue'
 
@@ -79,6 +80,7 @@ Vue.component('foxgis-location-select',LocationSelect)
 Vue.component('foxgis-dialog-prompt',DialogPrompt)
 Vue.component('foxgis-dialog-input',DialogInput)
 Vue.component('foxgis-icon-panel',IconPanel)
+Vue.component('foxgis-data-select',DataSelectPanel)
 Vue.component('foxgis-filter-data',FilterData)
 Vue.component('foxgis-svgeditor',SVGEditor)
 Vue.component('foxgis-stops-panel',StopsPanel)

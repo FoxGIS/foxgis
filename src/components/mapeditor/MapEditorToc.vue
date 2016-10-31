@@ -295,16 +295,16 @@
       </div>
       <!-- 数据选择 -->
       <div id="data-div" class="style-set" style="display: none">
-        <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
+        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePropertyPanel">clear</i>
     </div>
 
     <div id="new-layer-panel">
       <div id="property-header">新建图层</div>
-      <foxgis-filter-data :sources="sources" :selecteddata="selectedData" :sourcelayers="sourceLayers" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
+      <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
-      <mdl-button colored raised id="btn-cancel" @click="createPanelClose">取消</mdl-button>
+      <mdl-button colored raised id="btn-cancel" @click="createPanelClose">关闭</mdl-button>
     </div>
 
     <div id="font-select-panel" class="panel">
@@ -409,7 +409,7 @@ export default {
           },
           'folder':""
         }
-        this.sourceLayers=[];
+        //this.sourceLayers=[];
       }
     },
     //属性面板的tab菜单
@@ -697,27 +697,30 @@ export default {
         }else{
           this.selectedData.folder = "";
         }
-        if(this.selectedData.source===""){
-          this.sourceLayers=[];
+        if(this.selectedData['source-layer']){
+          this.getLayerFields(this.selectedData.source,this.selectedData['source-layer']);
+        }else{
+          this.layerFields = {};
         }
-        for(let j=0;j<this.sources.length;j++){
-          if(this.selectedData.source === this.sources[j].sourceName){
-            this.sourceLayers = this.sources[j].sourceLayers;
-            break;
-          }
-        }
-        if(!this.sourceLayers){
-          return;
-        }
-        if(this.selectedData['source-layer']===""){
-          this.layerFields={};
-        }
-        for(let k=0;k<this.sourceLayers.length;k++){
-          if(this.selectedData['source-layer'] === this.sourceLayers[k].id){
-            this.layerFields = this.sourceLayers[k].fields;
-            break;
-          }
-        }
+      }
+    },
+    //获取所选图层的属性字段
+    getLayerFields:function(source_name,source_layer){
+      var source = this.styleObj.sources[source_name];
+      if(source.url){
+        var access_token = Cookies.get('access_token');
+        this.$http({ url: source.url, method: 'GET',data:{layer:source_layer},headers: { 'x-access-token': access_token } })
+            .then(function(response) {
+              var vector_layers = response.data.vector_layers;
+              for (var i = 0; i < vector_layers.length; i++) {
+                if(vector_layers[i].id===response.request.params.layer){
+                  this.$set('layerFields',vector_layers[i].fields);
+                  break;
+                }
+              }
+            }, function(response) {})
+      }else{
+        this.layerFields = {};
       }
     },
     //点击文件夹时检查文件夹的展开状态以及图层列表
@@ -831,7 +834,7 @@ export default {
       this.changeStyle(data);
     },
     createNewLayer:function(){
-      var id = $("#new-layer-panel input[name='id']").val();
+      var id = this.selectedData.id;
       if(id===""){
         this.$broadcast("mailSent",{message:"样式ID不能为空！",timeout:3000});
         return;
@@ -844,13 +847,10 @@ export default {
         }
       }
 
-      var sourceDom = $("#new-layer-panel select[name='source']")[0];
-      var source = sourceDom.options[sourceDom.selectedIndex].value;
-      var sourceLayerDom = $("#new-layer-panel select[name='source-layer']")[0];
-      var source_layer = sourceLayerDom.options[sourceLayerDom.selectedIndex].value;
-
-      var minzoom = $("#new-layer-panel input[name='minzoom']").val();
-      var maxzoom = $("#new-layer-panel input[name='maxzoom']").val();
+      var source = this.selectedData.source;
+      var source_layer = this.selectedData["source-layer"];
+      var minzoom = this.selectedData.minzoom;
+      var maxzoom = this.selectedData.maxzoom;
       var filterElems = $("#new-layer-panel .filter-item");
       var filterItems = [];
       for(let i=0;i<filterElems.length;i++){
@@ -895,12 +895,9 @@ export default {
         return;
       }
       if(type!=="raster"&&source_layer===""){
-        this.$broadcast("mailSent",{message:"源图层不能为空！",timeout:3000});
+        this.$broadcast("mailSent",{message:"矢量数据源图层不能为空！",timeout:3000});
         return;
       }
-      if(maxzoom===""){maxzoom=22;}
-      minzoom=Number(minzoom);
-      maxzoom=Number(maxzoom);
       if(maxzoom<minzoom){
         this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});
         return;
@@ -960,19 +957,6 @@ export default {
         }
       }
       this.styleObj.layers.push(layer);
-      if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
-        for(let i=0;i<this.sources.length;i++){
-          if(this.sources[i].sourceName===layer.source){
-            var tilejsonUrl = this.sources[i].sourceUrl;
-            break;
-          }
-        }
-        this.styleObj.sources[layer.source] = {
-          "url":tilejsonUrl,
-          "type":layer.type==="raster"?"raster":"vector"
-        }
-      }
-      
       this.changeStyle(this.styleObj);
       this.createPanelClose();
     },
@@ -981,7 +965,7 @@ export default {
       $("#new-layer-panel input[name='id']").val("new_layer");
       $("#new-layer-panel select[name='source']").val("");
       $("#new-layer-panel select[name='source-layer']").val("");
-      this.sourceLayers=[];
+      //this.sourceLayers=[];
 
       $("#new-layer-panel input[name='minzoom']").val(0);
       $("#new-layer-panel input[name='maxzoom']").val(22);
@@ -1406,6 +1390,7 @@ export default {
     },
     "main-control-click":function(){
       this.closePropertyPanel();
+      this.createPanelClose();
     },
     'layer-folder-change':function(params){//修改文件夹
       var currentLayer = this.currentLayer;
@@ -1468,9 +1453,6 @@ export default {
       tempCurrentLayer: {},
       tempFolder_id: '',
       styleObj: {},
-      sources:[],//用于计算sourcesLayes，用于新建样式图层时选择source,
-      sourceLayers:[],
-      layerFields:{},//对象，图层里的字段
       filterObj:{},//数据过滤，包含condition和一个filters数组
       selectedData:{
         'panel_type':'',//create or update
@@ -1482,6 +1464,7 @@ export default {
         'maxzoom':22,
         'filter':[]
       },
+      layerFields:{},
       Folders:{},
       stopsData:{
         hasStops:false,
@@ -1675,75 +1658,13 @@ export default {
       }
     }
   },
-  attached(){
-    var username = Cookies.get('username');
-    if(username === undefined){
-      return;
-    }
-    var access_token = Cookies.get('access_token');
-    var url = SERVER_API.tilesets + '/' + username;
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      if (response.data.length > 0) {
-        var data = response.data;
-        for(let i = 0;i<data.length;i++){
-          var source = {};
-          source.sourceName = data[i].name;
-          source.sourceUrl = response.request.url+'/'+data[i].tileset_id;
-          source.id = data[i].tileset_id;
-          var flag=0;//标记source是否重复
-          for(let j = 0;j<this.sources.length;j++){//判断是否有重复source
-            if(this.sources[j].id===source.id){
-              flag=1;
-              break;
-            }
-          } 
-          if(flag===0){
-            this.sources.push(source);
-          }
-        }
-      }
-    }, function(response) {
-      this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
-    })
-  },
   watch: {
     style: {
       handler: function(style,oldStyle){
         if(Object.keys(style).length===0){return;}
         var access_token = Cookies.get('access_token');
         this.styleObj = JSON.parse(JSON.stringify(style));
-        if(!_.isEqual(style.sources,oldStyle.sources)){//sources发生变化时，重新计算this.sources
-          var sourceNames = Object.keys(this.styleObj.sources);
-          for(let j = 0;j<sourceNames.length;j++){
-            var source = {};
-            source.sourceName = sourceNames[j];
-            if(this.styleObj.sources[sourceNames[j]].url&&this.styleObj.sources[sourceNames[j]].type==="vector"){
-              source.sourceUrl = this.styleObj.sources[sourceNames[j]].url;
-              var t = source.sourceUrl.split("/");
-              source.id = t[t.length-1];
-              this.$http({url:source.sourceUrl,method:"GET",data:source,headers:{'x-access-token':access_token}}).then(function(res){
-                var data = res.data;
-                var params = res.request.params;//请求参数
-                for(let m=0;m<this.sources.length;m++){
-                  if(this.sources[m].sourceName===params.sourceName){
-                    this.sources[m].sourceLayers = data.vector_layers;
-                  }
-                }
-              },function(res){
 
-              });
-            }
-            for(let i = 0;i<this.sources.length;i++){
-              if(this.sources[i].id===source.id){
-                this.sources.splice(i,1);
-                break;
-              }
-            } 
-            this.sources.push(source);
-          }
-        }
-        
         if(style.glyphs&&style.glyphs!==oldStyle.glyphs){//glyth发生变化时，重新请求字体列表  
           var glyphUrl = this.styleObj.glyphs;
           var index = glyphUrl.indexOf("/{fontstack}");
@@ -1953,9 +1874,6 @@ a {
   left: 200px;
   top: 0px;
   z-index: 1;
-  padding-right: 10px;
-  overflow-x: hidden;
-  overflow-y: auto;
   display: none;
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
@@ -1972,9 +1890,6 @@ a {
   left: 200px;
   top: 0px;
   z-index: 1;
-  padding-right: 10px;
-  overflow-x: hidden;
-  overflow-y: auto;
   display: none;
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
@@ -1992,21 +1907,21 @@ a {
   margin-top: 10px;
 }
 
-#property-panel::-webkit-scrollbar {
+#style-div::-webkit-scrollbar {
   width: 6px;
 }
 
-#property-panel::-webkit-scrollbar:horizontal {
+#style-div::-webkit-scrollbar:horizontal {
   height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
-#property-panel::-webkit-scrollbar-track {
+#style-div::-webkit-scrollbar-track {
   background-color: #e1f5fe;
 }
 
 /* 滑块颜色 */
-#property-panel::-webkit-scrollbar-thumb {
+#style-div::-webkit-scrollbar-thumb {
   background-color: #2061C6;
 }
 
@@ -2014,7 +1929,7 @@ a {
   background-color: rgba(0,0,0,0.5);
   color: white;
   margin-bottom: 3px;
-  padding: 5px 0px 5px 10px;
+  padding: 5px 0px 5px 0px;
   width: 300px;
 }
 
@@ -2086,7 +2001,7 @@ a {
 }
 
 #property-control,#symbol-property-control{
-    width: 310px;
+    width: 300px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
     -ms-flex-direction: row;
@@ -2226,7 +2141,7 @@ a {
 
 .open-stops{
   position: absolute;
-  right: -5px;
+  right: 6px;
   top: 3px;
   color: #f17070;
   background-color: #bdbdbd;
@@ -2298,5 +2213,11 @@ a {
 }
 #layer-folder-dialog{
   display: none;
+}
+
+#style-div{
+  height: calc(100% - 63px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

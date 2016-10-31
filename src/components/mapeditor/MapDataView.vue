@@ -79,6 +79,11 @@ export default {
       map.addControl(new mapboxgl.Navigation());
       this.map = map;
       map.on('click', this.mapClick);
+      map.on('drag', this.mapDrag);
+    },
+    mapDrag:function(){
+      var info = this.$el.querySelector("#dataview-info-container");
+      info.style.display = 'none';
     }
   },
   events:{
@@ -120,6 +125,7 @@ export default {
   height: calc(100% - 55px);
   width: calc(100% - 230px);
   box-sizing: border-box;
+  visibility: hidden;
 }
 
 #dataview-info-container {
