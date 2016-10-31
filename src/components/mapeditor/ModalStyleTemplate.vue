@@ -100,6 +100,14 @@ export default {
       if(styleName === ''){
         this.$broadcast("mailSent",{message:"请输入地图名称",timeout:3000});
         return;
+      }else{
+        var attr = $("#template-wizard_panel #template-name")[0].parentNode.parentNode.attributes;
+        for(let i=0;i<attr.length;i++){
+          if(attr[i].name === 'class'){
+            attr[i].value += ' is-dirty';
+            break;
+          }
+        }
       }
       if(checked.dataset.type === "empty"){
         this.customTemplate();

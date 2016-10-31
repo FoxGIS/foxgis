@@ -233,6 +233,14 @@ export default {
       if(e.target.name==="filter-value"){
         if(!e.target.value){
           this.keyword = '';
+        }else{
+          var arr = e.target.value.split('');
+          var last = arr[arr.length-1];
+          if(last === ','){
+            this.keyword = '';
+          }else{
+            this.keyword = e.target.value;
+          }
         }
         var tablename = this.selecteddata['source-layer'];
         var fieldname = this.selecteddata.filter.filters[index].field;
@@ -431,26 +439,22 @@ export default {
           "type": this.field_data[0].type
         };
         for(let i=0;i<data.length;i++){
+          var value = '';
           if(field === 'gb' || field === 'class'){
             if(temp.type==="number"){
-              if(data[i].value === Number(this.keyword)){
-                temp.field_data.push(data[i]);
-              }
+              value = data[i].value.toString();
             }else{
-              if(data[i].value.indexOf(this.keyword) === 0){
-                temp.field_data.push(data[i]);
-              }
+              value = data[i].value
             }
           }else{
             if(temp.type==="number"){
-              if(data[i] === Number(this.keyword)){
-                temp.field_data.push(data[i]);
-              }
+              value = data[i].toString();
             }else{
-              if(data[i].indexOf(this.keyword) === 0){
-                temp.field_data.push(data[i]);
-              }
-            }
+              value = data[i]
+            } 
+          }
+          if(value.indexOf(this.keyword) > -1){
+            temp.field_data.push(data[i]);
           }
         }
         return temp;
