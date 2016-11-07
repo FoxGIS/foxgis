@@ -6,8 +6,14 @@ export default {
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var seconds = date.getSeconds();
-    if (month < 9) {
+    if (month < 10) {
       month = '0' + month;
+    }
+    if(minutes < 10){
+      minutes = '0' + minutes;
+    }
+    if(seconds < 10){
+      seconds = '0' + seconds;
     }
     var formateString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     return formateString;

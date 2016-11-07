@@ -1,14 +1,18 @@
 <template>
   <div id="pagination">
-    <ul>
-      <li id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'">
-        <span><i class="material-icons">navigate_before</i></span>
-      </li>
-      <li class="waves-effect" v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><span>{{ pageConfig.first_page + page }}</span></li>
-      <li id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'">
-        <span><i class="material-icons">navigate_next</i></span>
-      </li>
-    </ul>
+    <table>
+      <tbody>
+        <tr>
+          <td id="page-pre" disabled v-on:click="prePage" v-bind:class="pageConfig.current_page > 1?'':'disabled'" style="width:50px;">
+            <a>上一页</a>
+          </td>
+          <td v-for="page in show_page_num"  v-bind:class="{ 'page-active': pageConfig.current_page == page + pageConfig.first_page}" v-on:click="setPage(page)"><a>{{ pageConfig.first_page + page }}</a></td>
+          <td id="page-next" v-on:click="nextPage" v-bind:class="(total_items/pageConfig.page_item_num > 1)&&(pageConfig.current_page < parseInt(total_items/pageConfig.page_item_num)+1)?'':'disabled'" style="width:50px;">
+            <a>下一页</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -86,43 +90,46 @@ export default {
 #pagination {
   text-align: center;
   display: block;
+  -webkit-user-select: none;  /* Chrome all / Safari all /opera15+*/  
+  -moz-user-select: none;     /* Firefox all */  
+  -ms-user-select: none;      /* IE 10+ */  
+  user-select: none;
 }
 
-#pagination li.disabled {
+#pagination table {
+  border-collapse:collapse;
+  text-align:left;
+  margin:10px auto 10px;
+}
+
+#pagination td.disabled a{
   color: #9c9696;
 }
 
-#pagination .material-icons {
-  vertical-align: middle;
-}
-
-#pagination ul {
+#pagination tr {
   padding: 10px;
   display: inline-block;
 }
 
-#pagination li {
+#pagination td {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 5px;
   list-style-type: disc;
   cursor: pointer;
-  width: 30px;
+  text-align: center;
 }
 
-#pagination li:not(.page-active):hover {
-  background-color: #eaa5bd;
-  font-weight: bold;
+#pagination td:not(.page-active) a:hover {
+  text-decoration: underline;
 }
 
-#pagination li.page-active {
-  background-color: #ff4081;
+#pagination td.page-active a{
+  color: #ff4081;
   font-weight: bolder;
 }
 
-#pagination li span {
-  padding: 6px;
-  line-height: 30px;
-  font-size: 1.2em;
+#pagination td a {
+  color: #4285f4;
 }
 
 #page-pre {
@@ -131,6 +138,5 @@ export default {
 
 #page-next {
   margin-left: 10px;
-  vertical-align: middle;
 }
 </style>
