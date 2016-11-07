@@ -117,6 +117,7 @@ export default {
   list-style-type: disc;
   cursor: pointer;
   text-align: center;
+  width:30px;
 }
 
 #pagination td:not(.page-active) a:hover {
