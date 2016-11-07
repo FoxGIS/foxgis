@@ -2,7 +2,7 @@
   "version": 8,
   "pitch": 0,
   "bearing": 0,
-  "name": "夜晚样式",
+  "name": "data_select",
   "sources": {
     "data2012": {
       "type": "vector",

@@ -21,7 +21,6 @@
       <button v-on:click="printMap" id="print-button">输出</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
-    <foxgis-mapdata-view id="mapdata-view"></foxgis-mapdata-view>
     <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
   </div>
 </div>
@@ -286,17 +285,10 @@ export default {
       this.$broadcast('map-bounds-change',options);
     },
     "map-view-change":function(action){
-      if(action==="hide"){
-        document.getElementById("map-dataview-container").style.visibility="hidden";
-        return;
-      }
       var center = this.style.center;
       var zoom = this.style.zoom;
       var params = {action:action,center:center,zoom:zoom}
-      if(params.action==="show"){
-        document.getElementById("map-dataview-container").style.visibility="visible";
-        this.$broadcast("datamap-init",params);
-      } 
+      this.$broadcast("datamap-init",params);
     }
   },
   watch:{

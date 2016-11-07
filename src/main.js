@@ -44,7 +44,6 @@ import DataCards from './components/datacards/DataCards'
 
 import TOC from './components/mapeditor/MapEditorToc.vue'
 import MapEditorView from './components/mapeditor/MapEditorView.vue'
-import MapDataView from './components/mapeditor/MapDataView.vue'
 import MapStyleEditor from './components/mapeditor/MapStyleEditor.vue'
 import MapDistrictSelect from './components/mapeditor/MapDistrictSelect'
 import ModalStyleTemplate from './components/mapeditor/ModalStyleTemplate'
@@ -71,7 +70,6 @@ Vue.component('foxgis-data-cards-tile', DataCardsTile)
 Vue.component('foxgis-data-cards-icon', DataCardsIcon)
 Vue.component('foxgis-toc', TOC)
 Vue.component('foxgis-drafmap',MapEditorView)
-Vue.component('foxgis-mapdata-view',MapDataView)
 Vue.component('foxgis-style-editor',MapStyleEditor)
 Vue.component('foxgis-district-select',MapDistrictSelect)
 Vue.component('foxgis-style-template',ModalStyleTemplate)
