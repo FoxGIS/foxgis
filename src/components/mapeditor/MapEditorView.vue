@@ -388,14 +388,10 @@ export default {
     "datamap-init":function(params){
       this.params = params;
       if(this.params.action==="hide"){
-        if(this.map.loaded&&this.map.loaded()){
-          if(this.map.style.stylesheet.name==="data_select"){
-            this.map.setStyle(this.localStyle);
-            this.map.setZoom(this.params.zoom);
-            this.map.setCenter(this.params.center);
-          }
-        }else{
-          this.mapInit(this.localStyle);
+        if(this.map.setStyle&&this.map.style.stylesheet.name==="data_select"){
+          this.map.setStyle(this.localStyle);
+          this.map.setZoom(this.params.zoom);
+          this.map.setCenter(this.params.center);
         }
         return;
       }
@@ -405,14 +401,10 @@ export default {
       .then(function(res){//从服务器获取地图的stylejson样式
         var data = res.data;
         var initStyle = JSON.parse(JSON.stringify(data));
-        if(this.map.loaded&&this.map.loaded()){
-          if(this.map.style.stylesheet.name!=="data_select"){
-            this.map.setStyle(initStyle);
-            this.map.setZoom(this.params.zoom);
-            this.map.setCenter(this.params.center);
-          }
-        }else{
-          this.mapInit(initStyle);
+        if(this.map.setStyle&&this.map.style.stylesheet.name!=="data_select"){
+          this.map.setStyle(initStyle);
+          this.map.setZoom(this.params.zoom);
+          this.map.setCenter(this.params.center);
         }
       },function(){
         this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
