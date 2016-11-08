@@ -168,7 +168,7 @@ export default {
               type = _.filter(this.types,["name",field])[0].type;
             }
           }
-          var tempValue = tem.filters[i].value+"";
+          var tempValue = tem.filters[i].value = String(tem.filters[i].value);
           if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tempValue.indexOf(',')!==-1){//值为数组
             var valueArr = tem.filters[i].value.split(",");
             if(type.toLowerCase()==="number"){
