@@ -47,9 +47,9 @@
     <div class="property-item">
       <div class="property-name"><span >级别</span></div>
       <div class="property-value">
-        <input type="text" name="minzoom" style="width:80px;" value="{{selecteddata.minzoom}}" @change="propertyChange">
+        <input type="text" name="minzoom" style="width:80px;" :value="selecteddata.minzoom" @change="propertyChange">
         <label class="label minzoom-label">小</label>
-        <input type="text" name="maxzoom" style="width:80px;" value="{{selecteddata.maxzoom}}" @change="propertyChange">
+        <input type="text" name="maxzoom" style="width:80px;" :value="selecteddata.maxzoom" @change="propertyChange">
         <label class="label maxzoom-label">大</label>
       </div>
     </div>

@@ -896,23 +896,16 @@ export default {
         this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});
         return;
       }
-
-      var layout = this.defaultProperty[datatype].layout;
-      var paint = this.defaultProperty[datatype].paint;
+      var layout = this.defaultStyle[datatype].layout||{};
+      var paint = this.defaultStyle[datatype].paint||{};
       var layer = {
         'id':id,
         "source":source,
         'type':datatype,
         "minzoom":minzoom,
         "maxzoom":maxzoom,
-        'layout':{},
-        'paint':{}
-      }
-      if(layer.type==="symbol"){
-        layer.layout = {
-          "text-field":"",
-          "text-font":["SimHei Regular"]
-        }
+        'layout':layout,
+        'paint':paint
       }
       if(source_layer!==""){
         layer['source-layer'] = source_layer;
@@ -1567,6 +1560,49 @@ export default {
         fill: 'filter_b_and_w',
         circle: 'lens',
         raster: 'image'
+      },
+      defaultStyle: {
+        'background': {
+          'paint': {
+            'background-color': '#000000'
+          }
+        },
+        'fill': {
+          'paint': {
+            'fill-color': '#000000',
+            'fill-opacity': 1
+          }
+        },
+        'line': {
+          'paint': {
+            'line-color': '#000000',
+            'line-opacity': 1,
+            'line-width': 1
+          }
+        },
+        'raster': {
+          'paint': {
+            'raster-opacity': 1
+          }
+        },
+        'circle': {
+          'paint': {
+            'circle-color': '#000000',
+            'circle-radius': 5,
+            'circle-opacity': 1,
+          }
+        },
+        'symbol': {
+          'paint': {
+            'text-opacity':1,
+            'text-color': '#000000'
+          },
+          'layout': {
+            'text-field':'',
+            'text-font':['SimHei Regular'],
+            'text-size': 16
+          }
+        }
       },
       defaultProperty: {
         'background': {
