@@ -161,16 +161,24 @@ export default {
           }
           var field = this.selecteddata.filter.filters[i].field;
           var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tem.filters[i].value.indexOf(',')!==-1||tem.filters[i].value.indexOf(',')!==-1){//值为数组
+          if(!type){
+            type = _.filter(this.types,["name",field])[0].type;
+          }else{
+            if(type.toLowerCase() !== "string" || type.toLowerCase() !== "number"){
+              type = _.filter(this.types,["name",field])[0].type;
+            }
+          }
+          var tempValue = tem.filters[i].value+"";
+          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tempValue.indexOf(',')!==-1){//值为数组
             var valueArr = tem.filters[i].value.split(",");
-            if(type==="Number"){
+            if(type.toLowerCase()==="number"){
               for(let p=0;p<valueArr.length;p++){
                 valueArr[p] = Number(valueArr[p]);
               }
             }
             var t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr);
           }else{
-            if(type==="Number"){
+            if(type.toLowerCase()==="number"){
               tem.filters[i].value=Number(tem.filters[i].value);
             }
             var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
@@ -279,8 +287,10 @@ export default {
               "top":top
             });
             $(".field-tips").show();
+            this.types.push({"type":this.field_data[0].type,"name":fieldname});
           }else{
             $(".field-tips").hide();
+            this.types.push({"type":"string","name":fieldname});
           }
         },function(response){
           this.$parent.$broadcast('mailSent', { message: '字段值请求失败！',timeout:3000 });
@@ -412,8 +422,8 @@ export default {
       filterValueTitle:'',
       localStyle:{},
       usedSourceIds:[],
-      selectedSource:{},
-      sources:[]//所有供选择的数据源，用于新建样式图层时选择source,
+      sources:[],//所有供选择的数据源，用于新建样式图层时选择source,
+      types:[]
     }
   },
   events:{
