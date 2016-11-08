@@ -3865,7 +3865,7 @@ TODOS
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
 						if (!$('#image-slider').length) {
-							$('<div><label>Quality: <input id="image-slider" type="range" min="1" max="100" value="92" /></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+							$('<div style="margin-top: 10px;"><label>Quality: <input id="image-slider" type="range" min="1" max="100" value="92" style="background-color: #eee;border-radius: 15px;-webkit-appearance: none;height: 10px;-webkit-box-shadow: 0 1px 0 0px #959595, 0 1px 0 #959595 inset, 0px 2px 10px 0px #959595 inset, 1px 0px 2px rgba(0, 0, 0, 0.4) inset, 0 0px 1px rgba(0, 0, 0, 0.6) inset;"/></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
 						}
 					}
 					else {
