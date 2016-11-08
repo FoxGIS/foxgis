@@ -415,6 +415,7 @@ export default {
     "select-a-layer":function(params){
       this.selecteddata.source = params.source||"";
       this.selecteddata['source-layer'] = params.source_layer||"";
+      this.selecteddata.source_url = params.url||"";
       var fields = params.fields;
       if(fields){
         this.layerfields = fields;

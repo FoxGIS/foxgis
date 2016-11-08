@@ -400,6 +400,7 @@ export default {
           'id':'new_layer',
           'source':'',
           'source-layer':'',
+          'source_url':'',
           'type':'symbol',
           'minzoom':0,
           'maxzoom':22,
@@ -683,6 +684,7 @@ export default {
           'id':this.curPanelLayer.id,
           'source':this.curPanelLayer.source||"",
           'source-layer':this.curPanelLayer['source-layer']||"",
+          'source_url':'',
           'type':this.curPanelLayer.type||'fill',
           'minzoom':this.curPanelLayer.minzoom||0,
           'maxzoom':this.curPanelLayer.maxzoom||22,
@@ -952,6 +954,13 @@ export default {
           layer.metadata = {
             "mapbox:group": folder_id
           };
+        }
+      }
+      if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
+        var url = this.selectedData.source_url;
+        this.styleObj.sources[layer.source] = {
+          "url":url,
+          "type":layer.type==="raster"?"raster":"vector"
         }
       }
       this.styleObj.layers.push(layer);
@@ -1476,6 +1485,7 @@ export default {
         'id':'new_layer',
         'source':'',
         'source-layer':'',
+        'source_url':'',
         'type':'symbol',
         'minzoom':0,
         'maxzoom':22,
