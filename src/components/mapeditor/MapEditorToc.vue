@@ -772,7 +772,9 @@ export default {
           value = this.defaultProperty[currentLayer['type']][targetDom.dataset.type][targetDom.name];
         }
       }
-
+      if(value===""){
+        value=undefined;
+      }
       var temp = Number(value);
       if(!isNaN(temp)){//number
         value = temp;
