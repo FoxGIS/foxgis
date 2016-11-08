@@ -888,7 +888,7 @@ export default {
         this.$broadcast("mailSent",{message:"数据源不能为空！",timeout:3000});
         return;
       }
-      if(type!=="raster"&&source_layer===""){
+      if(datatype!=="raster"&&source_layer===""){
         this.$broadcast("mailSent",{message:"矢量数据源图层不能为空！",timeout:3000});
         return;
       }
