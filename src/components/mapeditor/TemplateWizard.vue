@@ -182,7 +182,7 @@ export default{
           } 
           var dataType_select = $("#template-wizard_panel #dataType-select").val();
           var sources_url = $("#template-wizard_panel #sources-url").val();
-          if(sources_url===""){
+          if(!sources_url){
             this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
           } 
@@ -231,12 +231,12 @@ export default{
       newTemplateOK:function(){//确定按钮的方法
         var username = Cookies.get('username');
         var sprite_url  = $("#template-wizard_panel #sprite-url").val();
-        if(sprite_url===""){
+        if(!sprite_url){
           this.$parent.$broadcast("mailSent",{message:"符号库地址不能为空",timeout:3000});
           return;
         } 
         var glyphs_url  = $("#template-wizard_panel #glyphs-url").val();
-        if(glyphs_url===""){
+        if(!glyphs_url){
           this.$parent.$broadcast("mailSent",{message:"字体地址不能为空",timeout:3000});
           return;
         } 
