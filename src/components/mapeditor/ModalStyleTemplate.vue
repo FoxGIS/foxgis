@@ -128,6 +128,10 @@ export default {
     },
     newTemplateOK:function(){
       var files = $("#new-template_panel input[name='template-file']")[0].files;
+      if(files.length === 0){
+        this.$broadcast("mailSent",{message:"请选择json格式的文件！",timeout:3000});
+        return;
+      }
       var index = files[0].name.indexOf('.json');
       if(index === -1){
         this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
