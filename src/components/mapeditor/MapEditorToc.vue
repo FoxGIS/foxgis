@@ -851,6 +851,7 @@ export default {
       var source_layer = this.selectedData["source-layer"];
       var minzoom = this.selectedData.minzoom;
       var maxzoom = this.selectedData.maxzoom;
+      var type = this.selectedData.type;
       var filterElems = $("#new-layer-panel .filter-item");
       var filterItems = [];
       for(let i=0;i<filterElems.length;i++){
@@ -881,13 +882,6 @@ export default {
         var filter = [condition].concat(filterItems);
       }else if(filterItems.length===1){
         var filter = filterItems[0];
-      }
-
-      var ratioDom = $("#new-layer-panel input[name='type']");
-      for(let i=0;i<ratioDom.length;i++){
-        if(ratioDom[i].checked){
-          var type = ratioDom[i].value;
-        }
       }
 
       if(source===""){

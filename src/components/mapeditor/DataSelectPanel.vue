@@ -17,12 +17,12 @@
           </div>
           <div class="source-detail">
             <div class="layer-container" v-for="layer in source.vector_layers">
-              <a href="javascript:void(0)" title="{{layer.id}}" @click.stop.prevent="sourceSelected(source.name,source.url,layer.id, layer.fields)">
+              <a href="javascript:void(0)" title="{{layer.id}}" @click.stop.prevent="sourceSelected(source,layer.id, layer.fields)">
                 <div><span>{{layer.id}}</span></div>
               </a>
             </div>
             <div class="layer-container" v-if="source.vector_layers.length===0">
-              <a href="javascript:void(0)" title="{{source.name}}" data-source="{{source.name}}" @click.stop.prevent="sourceSelected(source.name,source.url)">
+              <a href="javascript:void(0)" title="{{source.name}}" data-source="{{source.name}}" @click.stop.prevent="sourceSelected(source)">
                 <div><span>{{source.name}}</span></div>
               </a>
             </div>
@@ -42,12 +42,12 @@
           </div>
           <div class="source-detail">
             <div class="layer-container" v-for="layer in source.vector_layers">
-              <a href="javascript:void(0)" title="{{layer.id}}" @click.stop.prevent="sourceSelected(source.name,source.url,layer.id,layer.fields)">
+              <a href="javascript:void(0)" title="{{layer.id}}" @click.stop.prevent="sourceSelected(source,layer.id,layer.fields)">
                 <div><span>{{layer.id}}</span></div>
               </a>
             </div>
             <div class="layer-container" v-if="source.vector_layers.length===0">
-              <a href="javascript:void(0)" title="{{source.name}}" data-source="{{source.name}}" @click.stop.prevent="sourceSelected(source.name,source.url)">
+              <a href="javascript:void(0)" title="{{source.name}}" data-source="{{source.name}}" @click.stop.prevent="sourceSelected(source)">
                 <div><span>{{source.name}}</span></div>
               </a>
             </div>
@@ -64,12 +64,11 @@ import commonMethod from '../../components/method.js'
 export default {
   props:['sources'],
   methods: {
-    sourceSelected:function(source,url,layer,fields) {
+    sourceSelected:function(source,layer,fields) {
       var source = source;
-      var url = url;
       var source_layer = layer;
       var fields = fields;
-      this.$dispatch("select-a-layer",{source:source,url:url,source_layer:source_layer,fields:fields});
+      this.$dispatch("select-a-layer",{source:source,source_layer:source_layer,fields:fields});
       $(".data-select-panel").hide();
     },
     getSource:function(id,url){
@@ -81,6 +80,8 @@ export default {
         "used":false,
         "createdAt":"",
         "filesize":0,
+        "minzoom":0,
+        "maxzoom":22,
         "url":url,
         "vector_layers":[]
       };
@@ -93,6 +94,8 @@ export default {
           if(this.sources[m].id===params.id){
             this.sources[m].name = data.name;
             this.sources[m].owner = data.owner;
+            this.sources[m].minzoom = data.minzoom||0;
+            this.sources[m].maxzoom = data.maxzoom||22;
             this.sources[m].createdAt = date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate();
             if (data.filesize / 1024 > 1024) {
               data.filesize = (data.filesize / 1048576).toFixed(2) + 'MB';

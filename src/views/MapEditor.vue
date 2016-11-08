@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl'
+/*import mapboxgl from 'mapbox-gl'*/
 import Cookies from 'js-cookie'
 import { diff, validate} from 'mapbox-gl-style-spec'
 import { changeStyle } from '../vuex/actions'
