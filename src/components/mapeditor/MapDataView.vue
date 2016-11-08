@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl'
+/*import mapboxgl from 'mapbox-gl'*/
 import { diff, validate} from 'mapbox-gl-style-spec'
 import Cookies from 'js-cookie'
 export default {
@@ -104,6 +104,14 @@ export default {
       },function(){
         this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
       });
+    },
+    'mapEditor-close':function(){
+      if(this.map.remove){
+        this.map.remove();
+        this.map = {};
+        var info = this.$el.querySelector("#dataview-info-container");
+        info.style.display = 'none';
+      }
     }
   },
   data: function(){

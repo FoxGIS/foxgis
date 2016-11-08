@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl'
+/*import mapboxgl from 'mapbox-gl'*/
 import { diff, validate} from 'mapbox-gl-style-spec'
 import Draw from 'gl-draw-foxgis'
 import Cookies from 'js-cookie'

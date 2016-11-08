@@ -35,7 +35,7 @@
         <div id="new-template_panel" class="edit-panel" v-if="userRole==='admin'">
           <div class="item">
             <span class="title">新建模板</span>
-            <input type="file" name="template-file" class="textfield" accept=".json">
+            <input type="file" name="template-file" class="textfield" accept=".json" @change="selectTemplate">
             <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield"></mdl-textfield>
             <mdl-textfield label="替换字段默认值" floating-label="默认值" id="template-replace" class="textfield"></mdl-textfield>
             <div class="action">
@@ -258,6 +258,14 @@ export default {
         },function(res){
           this.$broadcast("mailSent",{message:"删除失败！",timeout:3000});
         });
+      }
+    },
+    selectTemplate:function(e){
+      var file = e.target.files[0];
+      var d = file.name.length-5;
+      if(d<0||file.name.lastIndexOf(".json")!==d){
+        this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
+       $(e.target).val("");
       }
     }
   },

@@ -851,6 +851,7 @@ export default {
       var source_layer = this.selectedData["source-layer"];
       var minzoom = this.selectedData.minzoom;
       var maxzoom = this.selectedData.maxzoom;
+      var datatype = this.selectedData.type;
       var filterElems = $("#new-layer-panel .filter-item");
       var filterItems = [];
       for(let i=0;i<filterElems.length;i++){
@@ -883,13 +884,6 @@ export default {
         var filter = filterItems[0];
       }
 
-      var ratioDom = $("#new-layer-panel input[name='type']");
-      for(let i=0;i<ratioDom.length;i++){
-        if(ratioDom[i].checked){
-          var type = ratioDom[i].value;
-        }
-      }
-
       if(source===""){
         this.$broadcast("mailSent",{message:"数据源不能为空！",timeout:3000});
         return;
@@ -903,12 +897,12 @@ export default {
         return;
       }
 
-      var layout = this.defaultProperty[type].layout;
-      var paint = this.defaultProperty[type].paint;
+      var layout = this.defaultProperty[datatype].layout;
+      var paint = this.defaultProperty[datatype].paint;
       var layer = {
         'id':id,
         "source":source,
-        'type':type,
+        'type':datatype,
         "minzoom":minzoom,
         "maxzoom":maxzoom,
         'layout':{},

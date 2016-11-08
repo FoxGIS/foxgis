@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl'
+/*import mapboxgl from 'mapbox-gl'*/
 import { diff, validate} from 'mapbox-gl-style-spec'
 import { changeStyle } from '../../vuex/actions'
 import Cookies from 'js-cookie'
@@ -386,10 +386,12 @@ export default {
       this.hideBoundsBox();
     },
     'mapEditor-close':function(){
-      this.map.remove();
-      this.map = {};
-      var info = this.$el.querySelector("#info-container");
-      info.style.display = 'none';
+      if(this.map.remove){
+        this.map.remove();
+        this.map = {};
+        var info = this.$el.querySelector("#info-container");
+        info.style.display = 'none';
+      }
       window.location.href = "#!/studio/maps";
     }
   },

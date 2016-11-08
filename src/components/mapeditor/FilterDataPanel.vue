@@ -26,20 +26,20 @@
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
       <div class="property-value">
-        <input type="radio" value="circle" v-if="selecteddata.panel_type=='update'" disabled>
-        <input type="radio" value="circle" v-else>
+        <input type="radio" value="circle" id="circle_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
+        <input type="radio" value="circle" id="circle_create" v-else v-model="selecteddata.type">
         <label for="one">圆</label>
-        <input type="radio" value="symbol" v-if="selecteddata.panel_type=='update'" disabled>
-        <input type="radio" value="symbol" v-else>
+        <input type="radio" value="symbol" id="symbol_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
+        <input type="radio" value="symbol" id="symbol_create" v-else v-model="selecteddata.type">
         <label for="two">点</label>
-        <input type="radio" value="line" v-if="selecteddata.panel_type=='update'" disabled>
-        <input type="radio" value="line" v-else>
+        <input type="radio" value="line" id="line_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
+        <input type="radio" value="line" id="line_create" v-else v-model="selecteddata.type">
         <label for="two">线</label>
-        <input type="radio" value="fill" v-if="selecteddata.panel_type=='update'" disabled>
-        <input type="radio" value="fill" v-else>
+        <input type="radio" value="fill" id="fill_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
+        <input type="radio" value="fill" id="fill_create" v-else v-model="selecteddata.type">
         <label for="one">面</label></br>
-        <input type="radio" value="raster" v-if="selecteddata.panel_type=='update'" disabled>
-        <input type="radio" value="raster" v-else>
+        <input type="radio" value="raster" id="raster_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
+        <input type="radio" value="raster" id="raster_create" v-else v-model="selecteddata.type">
         <label for="two">栅格</label>
       </div>
     </div> 
@@ -364,6 +364,8 @@ export default {
         used:false,
         createdAt:"",
         filesize:0,
+        minzoom:0,
+        maxzoom:22,
         url:url,
         vector_layers:[],
       };
@@ -376,6 +378,8 @@ export default {
           if(this.sources[m].id===params.id){
             this.sources[m].name = data.name;
             this.sources[m].owner = data.owner;
+            this.sources[m].minzoom = data.minzoom||0;
+            this.sources[m].maxzoom = data.maxzoom||22;
             this.sources[m].createdAt = date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate();
             if (data.filesize / 1024 > 1024) {
               data.filesize = (data.filesize / 1048576).toFixed(2) + 'MB';
@@ -424,15 +428,15 @@ export default {
   },
   events:{
     "select-a-layer":function(params){
-      this.selecteddata.source = params.source||"";
+      this.selecteddata.minzoom = params.source.minzoom;
+      this.selecteddata.maxzoom = params.source.maxzoom;
+      this.selecteddata.source = params.source.name||"";
       this.selecteddata['source-layer'] = params.source_layer||"";
+      this.selecteddata.source_url = params.source.url||"";
       var fields = params.fields;
       if(fields){
         this.layerfields = fields;
       }
-    },
-    "get-source":function(params){
-      this.getSource(params.id,params.url);
     }
   },
   computed: {
@@ -475,7 +479,7 @@ export default {
     }
   },
   watch:{
-    selecteddata:{
+    /*selecteddata:{
       handler:function(data,olddata){
         if(this.selecteddata.panel_type==="update"){//给radio元素赋值
           $(".select-data input[type='radio']").removeAttr("name");
@@ -487,7 +491,7 @@ export default {
           $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
         }
       }
-    },
+    },*/
     style: {
       handler:function(style,oldStyle){
         this.localStyle = JSON.parse(JSON.stringify(style));
