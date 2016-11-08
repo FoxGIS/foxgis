@@ -161,12 +161,15 @@ export default {
         var str = data.thumb['background-image'];
         data.thumb['background-image'] = str.substr(0,str.length-2)+"?access_token="+access_token+"')";
         this.templates.push(data);
-        $("#new-template_panel").hide();
+        this.clearNewTemplatePanel();
       },function(res){
         this.$broadcast("mailSent",{message:"创建失败",timeout:3000});
       }); 
     },
     newTemplateCancel:function(){
+      this.clearNewTemplatePanel();
+    },
+    clearNewTemplatePanel:function(){
       $("#new-template_panel input[name='template-file']").val("");
       $("#new-template_panel #template-name").val("");
       $("#new-template_panel #template-replace").val("");
