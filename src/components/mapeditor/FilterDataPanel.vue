@@ -152,6 +152,9 @@ export default {
         $(".filter-item input.field_data")[index].value = "";
         $(".filter-item input.field_data")[index].title = "";
       }
+      if(e.target.name && e.target.name === "filter-value"){
+        this.selecteddata.filter.filters[index].value = e.target.value;
+      }
       var tem = this.selecteddata.filter;
       var filter = [];
       if(tem.filters.length>0){
@@ -161,11 +164,11 @@ export default {
           }
           var field = this.selecteddata.filter.filters[i].field;
           var type = $($("#data-div .filter-item")[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
-          if(!type){
-            type = _.filter(this.types,["name",field])[0].type;
-          }else{
-            if(type.toLowerCase() !== "string" || type.toLowerCase() !== "number"){
+          if((type.toLowerCase() !== "string" && type.toLowerCase() !== "number")||!type){
+            if(_.filter(this.types,["name",field]).length!==0){
               type = _.filter(this.types,["name",field])[0].type;
+            }else{
+              type = "string";
             }
           }
           var tempValue = tem.filters[i].value = String(tem.filters[i].value);
@@ -183,6 +186,7 @@ export default {
             }
             var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
           }
+          
           filter.push(t);
         }
       }
@@ -287,10 +291,8 @@ export default {
               "top":top
             });
             $(".field-tips").show();
-            this.types.push({"type":this.field_data[0].type,"name":fieldname});
           }else{
             $(".field-tips").hide();
-            this.types.push({"type":"string","name":fieldname});
           }
         },function(response){
           this.$parent.$broadcast('mailSent', { message: '字段值请求失败！',timeout:3000 });
@@ -422,8 +424,7 @@ export default {
       filterValueTitle:'',
       localStyle:{},
       usedSourceIds:[],
-      sources:[],//所有供选择的数据源，用于新建样式图层时选择source,
-      types:[]
+      sources:[]//所有供选择的数据源，用于新建样式图层时选择source,
     }
   },
   events:{
@@ -437,6 +438,7 @@ export default {
       if(fields){
         this.layerfields = fields;
       }
+      this.$dispatch("get-types",params.source_layer);
     }
   },
   computed: {
@@ -479,19 +481,6 @@ export default {
     }
   },
   watch:{
-    /*selecteddata:{
-      handler:function(data,olddata){
-        if(this.selecteddata.panel_type==="update"){//给radio元素赋值
-          $(".select-data input[type='radio']").removeAttr("name");
-          $("#data-div input[type='radio']").attr("name","type");
-          $("#data-div input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
-        }else{
-          $(".select-data input[type='radio']").removeAttr("name");
-          $("#new-layer-panel input[type='radio']").attr("name","type");
-          $("#new-layer-panel input[name='type'][value="+this.selecteddata.type+"]").attr("checked",true);
-        }
-      }
-    },*/
     style: {
       handler:function(style,oldStyle){
         this.localStyle = JSON.parse(JSON.stringify(style));
@@ -499,7 +488,7 @@ export default {
     }
   },
 
-  props:['selecteddata','folders','layerfields']
+  props:['selecteddata','folders','layerfields','types']
 }
 </script>
 

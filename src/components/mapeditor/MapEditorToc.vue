@@ -295,14 +295,14 @@
       </div>
       <!-- 数据选择 -->
       <div id="data-div" class="style-set" style="display: none">
-        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
+        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePropertyPanel">clear</i>
     </div>
 
     <div id="new-layer-panel">
       <div id="property-header">新建图层</div>
-      <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders"></foxgis-filter-data>
+      <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">关闭</mdl-button>
     </div>
@@ -691,6 +691,7 @@ export default {
           'filter':filter,
           'folder':""
         }
+        this.$emit("get-types",this.selectedData['source-layer']);
         if(this.curPanelLayer.metadata&&this.curPanelLayer.metadata["mapbox:group"]){
           var folder_id = this.curPanelLayer.metadata["mapbox:group"];
           this.selectedData.folder = this.Folders[folder_id].name;
@@ -863,16 +864,23 @@ export default {
         var operator = $(filterElems[i]).children("select[name='filter-operator']").val();
         var value = $(filterElems[i]).children("input[name='filter-value']").val();
         var type = $(filterElems[i]).children("select[name='filter-field']").children("option[value="+field+"]").attr("type");
+        if((type.toLowerCase() !== "string" && type.toLowerCase() !== "number")||!type){
+          if(_.filter(this.types,["name",field]).length!==0){
+            type = _.filter(this.types,["name",field])[0].type;
+          }else{
+            type = "string";
+          }
+        }
         if(operator==="in"||operator==="!in"){//值为数组
           value = value.split(",");
-          if(type==="Number"){
+          if(type.toLowerCase()==="number"){
             for(let p=0;p<value.length;p++){
               value[p] = Number(value[p]);
             }
           }
           temp = _.concat([operator,field],value);
         }else{
-          if(type==="Number"){
+          if(type.toLowerCase()==="number"){
             value=Number(value);
           }
           temp = [operator,field,value];
@@ -1388,6 +1396,17 @@ export default {
       this.closePropertyPanel();
       this.createPanelClose();
     },
+    "get-types":function(tablename){
+      var url = SERVER_API.ngccs+'?tablename='+tablename;
+      this.types = [];
+      this.$http({ url: url, method: 'GET' })
+      .then(function(response) {
+        var data = response.data;
+        for(var i = 0;i<data.length;i++){
+          this.types.push({"type":data[i].type,"name":data[i].field_name});
+        }
+      },function(response){});
+    },
     'layer-folder-change':function(params){//修改文件夹
       var currentLayer = this.currentLayer;
       //1、名称为空，删除文件夹
@@ -1467,6 +1486,7 @@ export default {
       tempCurrFolder_index: [],
       folder_id:"",
       tempCurrLayer_index: 0,
+      types:[],//当前属性字段的数据类型
       styleObj: {},
       filterObj:{},//数据过滤，包含condition和一个filters数组
       selectedData:{
