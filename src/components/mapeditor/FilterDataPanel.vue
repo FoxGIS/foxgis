@@ -190,8 +190,10 @@ export default {
           filter.push(t);
         }
       }
-      if(filter.length>0){
+      if(filter.length>1){
         filter = [tem.condition].concat(filter);
+      }else if(filter.length===1){
+        filter = filter[0];
       }else{
         filter = ["all"];
       }

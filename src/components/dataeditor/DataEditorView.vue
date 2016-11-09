@@ -40,7 +40,7 @@
     <div class="property-item" v-for="property in properties">
       <input type="text" name="field" v-model="property[0]" @change="propertyChange">
       <input type="text" name="value" v-model="property[1]" @change="propertyChange">
-      <i class="material-icons" v-on:click="deleteField($event,$index)" title="删除分级">clear</i>
+      <i class="material-icons" v-on:click="deleteField($event,$index)" title="删除字段">clear</i>
     </div>
   </div>
 
