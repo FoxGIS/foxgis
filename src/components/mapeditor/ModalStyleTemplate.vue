@@ -100,6 +100,14 @@ export default {
       if(styleName === ''){
         this.$broadcast("mailSent",{message:"请输入地图名称",timeout:3000});
         return;
+      }else{
+        var attr = $("#template-wizard_panel #template-name")[0].parentNode.parentNode.attributes;
+        for(let i=0;i<attr.length;i++){
+        if(attr[i].name === 'class'){
+            attr[i].value += ' is-dirty';
+            break;
+          }
+        }
       }
       if(checked.dataset.type === "empty"){
         this.customTemplate();
@@ -125,6 +133,16 @@ export default {
       if(files.length===0){
         this.$broadcast("mailSent",{message:"模板文件不能为空！",timeout:3000});
         return;
+      }
+      var index = files[0].name.indexOf('.json');
+      if(index === -1){
+        this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
+        return;
+      }else{
+        if(files[0].name.length-index !== 5){
+          this.$broadcast("mailSent",{message:"仅支持json格式的文件！",timeout:3000});
+          return;
+        }
       }
       var name = $("#new-template_panel #template-name").val();
       var replace = $("#new-template_panel #template-replace").val();

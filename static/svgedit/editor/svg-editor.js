@@ -3668,6 +3668,7 @@ TODOS
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
 					var height = parseInt(viewBox.split(' ')[3]);
 					var width = parseInt(viewBox.split(' ')[2]);
+					debugger;
 					var scale = parseInt($("#image-resolution input[name='resolution']:checked").val())||4;
 					svg.attr("height",height*scale);
 					svg.attr("width",width*scale);
@@ -3875,7 +3876,7 @@ TODOS
 
 				var sel = $("#dialog_content select");
 				if (!$('#image-resolution').length) {
-					$('<div id="image-resolution"><label>分辨率: <input type="radio" value="1" name="resolution"/>72<input type="radio" value="2" name="resolution"/>144<input type="radio" value="3" name="resolution"/>216<input type="radio" value="4" name="resolution" checked/>288</label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+					$('<div id="image-resolution"><label>分辨率: </label><input type="radio" value="1" name="resolution" id="resolution_72"/><label for="resolution_72">72</label><input type="radio" value="2" name="resolution" id="resolution_144"/><label for="resolution_144">144</label><input type="radio" value="3" name="resolution" id="resolution_216"/><label for="resolution_216">216</label><input type="radio" value="4" name="resolution" id="resolution_288" checked/><label for="resolution_288">288</label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
 				}
 			};
 

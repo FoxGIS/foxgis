@@ -31,6 +31,7 @@ export default {
   methods: {
     createMapClick: function(){
       document.getElementById("template-container").style.display = 'block';
+      this.$el.querySelector('#style-name').value = "";
     },
     createStyle: function(data){
       var access_token = Cookies.get('access_token');
