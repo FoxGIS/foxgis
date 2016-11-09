@@ -38,8 +38,8 @@
       <span style="margin-left:26px;">当前要素无属性字段，你可以点击“添加属性”为该要素添加属性字段和属性值。</span>
     </div>
     <div class="property-item" v-for="property in properties">
-      <input type="text" name="field" v-model="property[0]" @change="propertyChange">
-      <input type="text" name="value" v-model="property[1]" @change="propertyChange">
+      <input type="text" name="field" v-model="property[0]">
+      <input type="text" name="value" v-model="property[1]" @change="propertyChange($event,$index)">
       <i class="material-icons" v-on:click="deleteField($event,$index)" title="删除字段">clear</i>
     </div>
   </div>
@@ -130,28 +130,25 @@ export default {
       }
       this.currNodes = n;
     },
-    propertyChange:function(){//input.change事件，更改要素属性时执行
-      var properties = {};
+    propertyChange:function(e,index){//input.change事件，更改要素属性时执行
       this.saveStatus = false;
+      var field = this.properties[index][0];
+      var value = this.properties[index][1]||"";
       var id = this.currFeatures[0].id;
-      for(let i=0;i<this.properties.length;i++){
-        var temp = Number(this.properties[i][1]);
-        if(!isNaN(temp)){
-          properties[this.properties[i][0]] =  temp;
-        }else{
-          properties[this.properties[i][0]] = this.properties[i][1];
-        }
+      if(!field){//字段名未输入
+        this.$broadcast('mailSent', { message: '请输入字段名！',timeout:3000 });
+        return;
       }
-      this.currFeatures[0].properties = properties;
-      this.draw.delete(id).add(this.currFeatures[0]);
-      this.draw.changeMode("direct_select",{featureId: id});
+      this.draw.setFeatureProperty(id,field,value);
     },
     addField:function(){//添加属性字段
       this.properties.push(["",""]);
     },
     deleteField:function(e,index){//删除属性字段
+      var id = this.currFeatures[0].id;
+      var field = this.properties[index][0];
+      this.draw.setFeatureProperty(id,field,undefined);
       this.properties.splice(index,1);
-      this.propertyChange();
     },
     addPoint:function(){//添加点状要素
       this.draw.changeMode("draw_point");
