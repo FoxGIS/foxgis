@@ -60,7 +60,7 @@
     <div class="select" v-if="sources_checked === 'self'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
-        <option value="{{s.value}}" v-for="s in sourcesOptions">{{s.name}}</option>
+        <option value="{{s.url}}" data-url={{s.url}} v-for="s in sourcesOptions">{{s.name}}</option>
       </select>
       <mdl-tooltip for="source-url_help2">{{toolTips.sourceUrl.local}}</mdl-tooltip>
       <mdl-button class="tip-button" id="source-url_help2" fab primary >
@@ -71,7 +71,7 @@
     <div class="select" v-if="sources_checked === 'public'">
       <div>数据源地址</div>
       <select id="sources-url" class="select-item">
-        <option value="{{s.value}}" v-for="s in publicSources">{{s.name}}</option>
+        <option value="{{s.url}}" v-for="s in publicSources">{{s.name}}</option>
       </select>
       <mdl-tooltip for="source-url_help3">{{toolTips.sourceUrl.publicTip}}</mdl-tooltip>
       <mdl-button class="tip-button" id="source-url_help3" fab primary >
@@ -109,7 +109,7 @@
     <div class="select" v-if="sprite_checked === 'self'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
-        <option value="{{s.value}}" v-for="s in spriteOptions">{{s.name}}</option>
+        <option value="{{s.url}}" v-for="s in spriteOptions">{{s.name}}</option>
       </select>
       <mdl-tooltip for="sprite-url_help2">{{toolTips.spriteUrl.local}}</mdl-tooltip>
       <mdl-button class="tip-button" id="sprite-url_help2" fab primary>
@@ -120,7 +120,7 @@
     <div class="select" v-if="sprite_checked === 'public'">
       <div>符号库地址</div>
       <select id="sprite-url" class="select-item">
-        <option value="{{s.value}}" v-for="s in publicSprite">{{s.name}}</option>
+        <option value="{{s.url}}" v-for="s in publicSprite">{{s.name}}</option>
       </select>
       <mdl-tooltip for="sprite-url_help3">{{toolTips.spriteUrl.publicTip}}</mdl-tooltip>
       <mdl-button class="tip-button" id="sprite-url_help3" fab primary>
@@ -186,9 +186,6 @@ export default{
             this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
           } 
-          if(this.sources_checked === 'self'){
-            sources_url = SERVER_API.tilesets + '/' + username + '/' + sources_url;
-          }
           this.json.sources[sources_name] = {
             "type": dataType_select,
             "url": sources_url
@@ -240,9 +237,6 @@ export default{
           this.$parent.$broadcast("mailSent",{message:"字体地址不能为空",timeout:3000});
           return;
         } 
-        if(this.sprite_checked === 'self'){
-          sprite_url = SERVER_API.sprites + '/' + username + '/' + sprite_url + '/sprite';
-        }
         this.json.sprite = sprite_url;
         this.json.glyphs = glyphs_url;
         this.$dispatch("style-params",{'name':this.json.name,'type':'empty','json':this.json});
@@ -298,7 +292,8 @@ export default{
           for(let i=0;i<data.length;i++){
             var options = {
               name:data[i].name,
-              value:data[i].tileset_id
+              value:data[i].tileset_id,
+              url:tilesetsUrl+'/'+data[i].tileset_id
             }
             this.sourcesOptions.push(options);
           }
@@ -316,7 +311,8 @@ export default{
           for(let i=0;i<data.length;i++){
             var options = {
               name:data[i].name,
-              value:data[i].tileset_id
+              value:data[i].tileset_id,
+              url:publicTilesetsUrl+'/'+data[i].owner+'/'+data[i].tileset_id
             }
             this.publicSources.push(options);
           }
@@ -334,7 +330,8 @@ export default{
           for(let i=0;i<data.length;i++){
             var options = {
               name:data[i].name,
-              value:data[i].sprite_id
+              value:data[i].sprite_id,
+              url:spritesUrl+'/'+data[i].sprite_id+'/sprite'
             }
             this.spriteOptions.push(options);
           }
@@ -352,7 +349,8 @@ export default{
           for(let i=0;i<data.length;i++){
             var options = {
               name:data[i].name,
-              value:data[i].sprite_id
+              value:data[i].sprite_id,
+              url:publicSpritesUrl+'/'+data[i].owner+'/'+data[i].sprite_id+'/sprite'
             }
             this.publicSprite.push(options);
           }
