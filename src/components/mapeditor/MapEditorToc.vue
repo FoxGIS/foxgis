@@ -160,6 +160,13 @@
                 </select>
               </div>
             </div>
+            <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
+              <div class="property-name"><span >标注盾牌</span></div>
+              <div class="property-value">
+                <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+              </div>
+            </div>
           </div>
         </div>
         <!-- 面状符号 -->
@@ -830,6 +837,30 @@ export default {
         }else {
           inputDomR.disabled = 'disabled';
           inputDomM.disabled = 'disabled';
+        }
+      }
+
+      var data = JSON.parse(JSON.stringify(this.styleObj));
+      this.changeStyle(data);
+    },
+    shieldChange:function(e){
+      var currentLayer = this.currentLayer;
+      var targetDom = e.target;
+      var value = targetDom.checked;
+
+      if(value===true){
+        if(!this.styleObj.metadata){
+          this.styleObj.metadata = {shield:[]};
+        }
+        if(!this.styleObj.metadata.shield){
+          this.styleObj.metadata.shield = [];
+        }
+        this.styleObj.metadata.shield.push(currentLayer.id);
+      }else{
+        for(var i = 0;i<this.styleObj.metadata.shield.length;i++){
+          if(this.styleObj.metadata.shield[i]===currentLayer.id){
+            this.styleObj.metadata.shield.splice(i,1);
+          }
         }
       }
 
