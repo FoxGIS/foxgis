@@ -28,6 +28,29 @@ import Cookies from 'js-cookie'
 import util from '../../components/util.js'
 import commonMethod from '../../components/method.js'
 export default {
+  methods:{
+    getCopyStatus:function(tileset_id){
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        if(response.data.complete){
+          var tileset = response.data.tileset;
+          tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
+          this.dataset.unshift(tileset);
+          this.$broadcast('mailSent', { message: tileset.name+'切片完成！',timeout:1000 });
+        }else{
+          var _this = this;
+          setTimeout(function(){
+            _this.getCopyStatus(tileset_id);
+          },1000);
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
+      })
+    }
+  },
   computed:{
     displayDataset:function(){
       var temp = this.dataset;
