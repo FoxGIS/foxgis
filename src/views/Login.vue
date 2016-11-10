@@ -1,13 +1,60 @@
 <template>
 <div>
-  <foxgis-layout>
+  <div class="bac">
+    <div class="title">
+      <span>辅助决策用图服务系统</span>
+    </div>
+    <div class="login-outer">
+      <div class='login-inner'>
+        <div class="login-head">
+          <div><span>用户登录</span></div>
+        </div>
+        <div id='error-info'></div>
+        <div class="login-form">
+          <table>
+            <tr>
+              <th>用户名:</th>
+              <td>
+                <input type="text" id="username">
+              </td>
+            </tr>
+            <tr>
+              <th>密 码:</th>
+              <td>
+                <input type="password" id="password">
+              </td>
+            </tr>
+          </table>
+          <mdl-button id='login-button' v-mdl-ripple-effect accent raised @keyup.enter='login' @click='login'>登  录</mdl-button>
+          <div class='sign-up'>
+          <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>
+        </div>
+        </div>
+        <!-- <div id='error-info'></div>
+        <mdl-textfield floating-label='用户名' id='username'></mdl-textfield>
+        <mdl-textfield floating-label='密码' type='password' id='password' @keyup.enter='login' pattern='(\w|[$,@]){6,}'></mdl-textfield>
+        <mdl-button class='login-button' v-mdl-ripple-effect accent raised @keyup.enter='login' @click='login'>登录</mdl-button>
+              
+        <div class='sign-up'>
+          <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>
+        </div> -->
+      </div>
+    </div>
+    <div class="footer">
+      <div>主管：国家测绘地理信息局 主办：国家基础地理信息中心</div>
+      <div>地址：北京海淀区莲花池西路28号    邮编：100830    E-mail:office@ngcc.cn</div>
+      <div>京ICP备12031976号-2    京公网安备11010802010297号</div>
+      <div>网站保留所有权，未经许可不得复制、镜像</div>
+    </div>
+  </div>
+  <!-- <foxgis-layout>
     <div class='wrapper'>
       <foxgis-data-cards class='login'>
         <div id='error-info'></div>
         <mdl-textfield floating-label='用户名' id='username'></mdl-textfield>
         <mdl-textfield floating-label='密码' type='password' id='password' @keyup.enter='login' pattern='(\w|[$,@]){6,}'></mdl-textfield>
         <mdl-button class='login-button' v-mdl-ripple-effect accent raised @keyup.enter='login' @click='login'>登录</mdl-button>
-
+  
         <div class='sign-up'>
           <mdl-anchor-button colored v-mdl-ripple-effect href='#!/register'>没有账号？去注册</mdl-anchor-button>
         </div>
@@ -19,7 +66,7 @@
         <div>网站保留所有权，未经许可不得复制、镜像</div>
       </div>
     </div>
-  </foxgis-layout>
+  </foxgis-layout> -->
 </div>
 </template>
 
@@ -98,64 +145,112 @@ export default {
 
 
 <style scoped>
-.wrapper {
-  height: calc(100% - 64px);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.bac{
+  position: absolute;
   text-align: center;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  background-image: url("../../static/images/login_bac.jpg");
+  background-repeat: round;
+}
+.title{
+  margin: 50px 0;
+  color: white;
+  font-size: 58px;
+  line-height: 60px;
 }
 
-.login {
-  width: 300px;
+.login-outer{
+  background-color:  rgba(255,255,255,0.5);
+  width: 340px;
   height: 250px;
-  padding: 20px;
+  padding: 6px;
+  position: relative;
+  margin: auto;
+}
+.login-inner {
+  background-color: white;
+  width: 340px;
+  height: 250px;
   position: relative;
   margin:auto;
 }
 
+.login-head{
+  height: 60px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.login-head div{
+  color: #007ed2;
+  font-size: 24px;
+  text-align: left;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.login-form table{
+  width: 280px;
+  margin: 0 30px;
+}
+
+.login-form table tr{
+  line-height: 50px;
+}
+.login-form table th{
+  width: 25%;
+  color: #007ed7;
+  text-align: justify;
+  text-justify: distribute-all-lines;
+  text-align-last: justify;
+  -moz-text-align-last: justify;
+  -webkit-text-align-last: justify;
+}
+.login-form table td{
+  width: 75%;
+}
+.login-form table td input{
+  height: 20px;
+  width: 93%;
+  padding: 2px;
+  margin-left: 10px;
+}
 .disable {
   background-color: #AD9AA1;
   pointer-events: none;
 }
 
-.login-button {
-  width: 100%;
-  font-size: 1em;
-}
-
-.tips {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.tips a {
-  text-decoration: none;
+#login-button {
+  font-family: inherit;
+  width: 125px;
+  font-size: 18px;
+  color: #fff;
+  background-color: #0890e0;
 }
 
 .sign-up {
-  border-top: 1px solid rgba(0,0,0,.1);
-  margin-top: 10px;
-  padding-top: 5px;
-  text-align: right;
+  color:#007ed2;
 }
 
 #error-info {
   position: absolute;
-  left: 10px;
-  top: 5px;
+  right: 10px;
+  top: 35px;
   color: red;
   font-size: 12px;
   display: none;
 }
 
 .footer{
-  position: relative;
+  position: absolute;
   width: 600px;
   height: 150px;
-  color: #3f51b5;
+  color: #fbfbfb;
   font: normal 12px/30px "SimSun";
+  bottom: 0px;
+  left: calc(50% - 300px);
 }
 
 </style>
