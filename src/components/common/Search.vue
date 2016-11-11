@@ -1,6 +1,6 @@
 <template>
 <div class="foxgis-search">
-  <i class="material-icons">search</i>
+  <!-- <i class="material-icons">search</i> -->
   <input type="text" placeholder="{{ placeholder }}" v-model="searchKeyWords"/>
 </div>
 </template>
@@ -36,7 +36,7 @@ input {
   outline: none;
 }
 
-.material-icons {
+/* .material-icons {
   padding: 8px 0px 8px 8px;
-}
+} */
 </style>

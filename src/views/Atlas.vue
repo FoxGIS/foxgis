@@ -3,52 +3,54 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <foxgis-layout>
     <div class="content">
-      <div class="search-bar" id="searchButton">
-        <div class="atlas-search">
-          <i class="material-icons">search</i>
-          <input id="search" type="text" placeholder="搜索" @keyup.enter="search"></input>
+      <div class="atlas-stats">
+        <div class="search-bar" id="searchButton">
+          <div class="atlas-search">
+            <input id="search" type="text" placeholder="输入搜索关键字" @keyup.enter="search"></input>
+          </div>
+          <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search" style="background-color: white;"><i class="material-icons">search</i></mdl-button>
         </div>
-        <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search">搜索</mdl-button>
-      </div>
 
-      <div class="filter">
-        <div style="width: 1000px;">
-          <div class="condition" v-if="theme_tags.length>0">
-            <strong>主题词：</strong>
-            <div class="items">
-              <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag.tag }}
-                <span>({{ tag.total }})</span>
-              </a>
+        <div class="filter">
+          <div style="width: 980px;">
+            <div class="condition" v-if="theme_tags.length>0">
+              <strong>主题词：</strong>
+              <div class="items">
+                <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag.tag }}
+                  <span>({{ tag.total }})</span>
+                </a>
+              </div>
+              <div class="more">
+                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+              </div>
             </div>
-            <div class="more">
-              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+            <div class="condition" v-if="location_tags.length>0">
+              <strong>制图区域：</strong>
+              <div class="items">
+                <a v-for="location in location_tags"
+                      @click="conditionClick($event,2)">{{ location.location }}
+                      <span>({{ location.total }})</span>
+                </a>
+              </div>
+              <div class="more">
+                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+              </div>
+            </div>
+            <div class="condition" v-if="year_tags.length>0">
+              <strong>制图年份：</strong>
+              <div class="items">
+                <a v-for="year in year_tags | orderBy" @click="conditionClick($event,3)">{{ year.year }}
+                  <span>({{ year.total }})</span>
+                </a>
+              </div>
+              <div class="more">
+                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
+              </div>
             </div>
           </div>
-          <div class="condition" v-if="location_tags.length>0">
-            <strong>制图区域：</strong>
-            <div class="items">
-              <a v-for="location in location_tags"
-                    @click="conditionClick($event,2)">{{ location.location }}
-                    <span>({{ location.total }})</span>
-              </a>
-            </div>
-            <div class="more">
-              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
-            </div>
-          </div>
-          <div class="condition" v-if="year_tags.length>0">
-            <strong>制图年份：</strong>
-            <div class="items">
-              <a v-for="year in year_tags | orderBy" @click="conditionClick($event,3)">{{ year.year }}
-                <span>({{ year.total }})</span>
-              </a>
-            </div>
-            <div class="more">
-              <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
-            </div>
-          </div>
-        </div>
-      </div> 
+        </div> 
+      </div>
+      
 
       <div class="search-results mdl-grid">
         <div class="atlas-container">
@@ -98,15 +100,25 @@
               </a>
               <div class="meta-info">
                 <div class="title">
-                  <p :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p><br>
-                  <p>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</p><br>
-                  <p>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</p><br>
-                  <p>下载次数：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].downloadNum}}</p>
-                </div>
-                <div class="preView">
-                  <mdl-anchor-button v-on:click.prevent="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
-
-                  <mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
+                  <table>
+                    <tr>
+                      <td colspan="2">
+                        <span :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span>制图区域：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</span></td>
+                      <td><span>制图年份：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</span></td>
+                    </tr>
+                    <tr>
+                      <td><span>下载次数：{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].downloadNum}}</span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td style="border-right: 1px solid #d2d2d2;"><mdl-anchor-button v-on:click.prevent="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" style="background-color: rgb(73,150,206);">预览</mdl-anchor-button></td>
+                      <td><mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" style="background-color: rgb(14,178,145);">下载</mdl-anchor-button></td>
+                    </tr>
+                  </table> 
                 </div>
               </div>
             </foxgis-data-cards>
@@ -214,7 +226,7 @@ export default {
       var $item = $(e.target).parent(".more").prev();
       if(e.target.innerHTML==="更多"){
         $item.css({
-          "max-height":"120px",
+          "max-height":"none",
           "overflow":"auto"
         });
         e.target.innerHTML = "收起";
@@ -621,22 +633,38 @@ export default {
   overflow: auto;
 }
 
+.atlas-stats{
+  width: 1000px;
+  background-color: white;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .search-bar {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .search-bar .search-button{
-  width: 60px;
-  height: 40px;
-  margin-left: 10px;
+  width: 70px;
+  height: 30px;
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #afafaf;
+  border-left: none;
 }
 
+.search-button .material-icons{
+  color: #2f80bc;
+}
 .atlas-search {
-  width: 700px;
-  height: 40px;
+  width: 500px;
+  height: 28px;
+  margin: 8px 0 8px 8px;
   background-color: #FFF;
   border: 1px solid #b8b8b8;
   border-bottom: 1px solid #ccc;
@@ -656,6 +684,11 @@ export default {
   border: none;
   outline: none;
 }
+
+::-webkit-input-placeholder { text-align: center; }
+::-moz-placeholder { text-align: center; } /* firefox 19+ */
+:-ms-input-placeholder { text-align: center; } /* ie */
+input:-moz-placeholder { text-align: center; }
 
 .atlas-search .material-icons {
   padding: 8px 0px 8px 8px;
@@ -713,24 +746,26 @@ export default {
 }
 
 .search-results {
-  background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%);
+  /* background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%); */
+  background-color: white;
   display: flex;
   flex-wrap: wrap;
-  width: 1240px;
+  width: 1000px;
   padding: 0px;
+  margin-top: 30px;
 }
 
 .search-results .atlas-container{
-  margin: 0 auto;
+  margin: 10px;
   height: 100%;
-  max-width: 1240px;
+  max-width: 1000px;
   flex-wrap: wrap;
   display: flex;
 }
 
 .foxgis-card {
-  width: 300px;
-  height: 300px;
+  width: 235px;
+  height: 310px;
   margin: 5px;
 }
 
@@ -815,43 +850,57 @@ span.delete-badge{
 .meta-info {
   margin-top: 5px;
   position: relative;
-  display: flex;
-  justify-content: space-between;
 }
 
-.meta-info div p {
+.meta-info div span {
   font-size: 12px;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Microsoft YaHei;
   margin-left: 8px;
-  width: 240px;
   height: 18px;
   line-height: 12px;
-  position: absolute;
-  display:block;/*内联对象需加*/
+}
+
+.title table{
+  width: 230px;
+  margin: 0 auto;
+  border-top: 1px solid #d2d2d2;
+}
+.title table tr:nth-child(3){
+  border-bottom: 1px solid #d2d2d2;
+}
+.title table tr{
+  width: 100%;
+}
+.title table td{
+  width: 50%;
+}
+.title table td,.title table tr{
   word-break:keep-all;/* 不换行 */
   white-space:nowrap;/* 不换行 */
   overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
   text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
+.title table tr:first-child{
+  font-weight: bold;
+}
 
+.title table td .mdl-button{
+  width: 40px;
+  color: white;
+  height: 23px;
+  margin: 5px auto;
+  line-height: 25px;
+  font-family:Microsoft YaHei;
+}
 .meta-info i {
   position: absolute;
   right: 10px;
 }
 
 .meta-info .title{
-  width: 240px;
+  width: 235px;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.meta-info .preView {
-  margin: auto;
-  padding:0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .modal,.modal2 {
@@ -898,7 +947,7 @@ span.delete-badge{
   padding: 3px 0px 3px 83px;
   position: relative;
   zoom: 1;
-  width: 900px;
+  width: 860px;
   overflow: hidden;
   max-height: 40px;
   display: -webkit-box;
@@ -910,7 +959,7 @@ span.delete-badge{
 
 .condition .more{
   position: absolute;
-  right: -30px;
+  right: -7px;
   top: 0px;
   width: 45px;
   overflow: hidden;
