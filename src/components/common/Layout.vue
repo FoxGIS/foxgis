@@ -2,8 +2,17 @@
 <div class="foxgis-layout">
   <div class="mdl-layout mdl-js-layout">
     <header class="mdl-layout__header mdl-layout__header--seamed">
+      <div class="header-top">
+        <div class="contact-us">
+          <a href="">关于我们 </a>|
+          <a href="">意见反馈 </a>|
+          <a href="">联系我们</a>
+        </div>
+      </div>
       <div class="mdl-layout__header-row">
-        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-layout-title">
+          <span>辅助决策用图</span>
+        </div>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
           <a class="mdl-navigation__link" v-link="{ path: '/atlas' }" v-bind:class="username==undefined?'disabled':''">图集</a>
@@ -13,10 +22,10 @@
           <a class="mdl-navigation__link" v-on:click="showUserCenter" v-else>{{username}}</a>
         </nav>
       </div>
-      <div class="userCenter">
+      <!-- <div class="userCenter">
         <a v-link="{ path: '/studio/user' }">用户管理</a>
         <a v-on:click.prevent="signout">注销</a>
-      </div>
+      </div> -->
     </header>
 
     <div class="mdl-layout--content">
@@ -75,11 +84,25 @@ export default {
 
 <style scoped>
 .mdl-layout__header {
-  height: 100px;
-  background-image: url('../../assets/header.jpg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: #3861CB;
+  height: 80px;
+  background-color: white;
+}
+
+.header-top{
+  background-color: rgb(39,48,55);
+  height: 25px;
+}
+
+
+.contact-us{
+  position: absolute;
+  color: gray;
+  right: 200px;
+}
+
+.contact-us a{
+  color: gray;
+  text-decoration: none;
 }
 
 .mdl-layout.has-drawer .mdl-layout__header > .mdl-layout-icon {
@@ -90,29 +113,37 @@ export default {
 }
 
 .mdl-layout__header-row {
-  height: 100px;
+  height: 55px;
+  width: 1000px;
+  margin:0 auto;
+  padding: 0;
 }
 
 .mdl-layout-title {
-  font-size: 1.5em;
+  color: rgb(27, 110, 171);
+  font-family: SimHei;
+  font-size: 26px;
 }
 
 .mdl-navigation{
   line-height: 30px;
   position: relative;
-  top: 34px;
-  left: 40px;
+  height: 100%;
+  left: 100px;
 }
 
 .mdl-navigation .v-link-active{
-  background-color: rgb(15, 199, 251);
+  background-color: rgb(15, 109, 178);
 }
 
 .mdl-layout__header-row .mdl-navigation__link {
   font-size: 1em;
-  line-height: 30px;
+  line-height: 55px;
   padding: 0 10px;
   cursor: pointer;
+  width: 85px;
+  text-align: center;
+  color: black;
 }
 
 .mdl-layout--content {
