@@ -12,6 +12,7 @@ import VueMdl from 'vue-mdl'
 
 import App from './views/App'
 import Home from './views/Home'
+import Stats from './views/Stats'
 import Atlas from './views/Atlas'
 import Login from './views/Login'
 import Register from './views/Register'
@@ -35,6 +36,8 @@ import Loading from './components/common/Loading'
 import LocationSelect from './components/common/LocationSelect'
 import Pagination from './components/common/Pagination'
 import SVGEditor from './components/common/SVGEditor.vue'
+import Footer from './components/common/Footer.vue'
+import Conditions from './components/common/Conditions.vue'
 
 import DataCardsMap from './components/datacards/DataCards-Map'
 import DataCardsData from './components/datacards/DataCards-Data'
@@ -63,6 +66,8 @@ Vue.use(Resource)
 
 Vue.component('foxgis-layout', Layout)
 Vue.component('foxgis-search', Search)
+Vue.component('foxgis-footer', Footer)
+Vue.component('foxgis-conditions', Conditions)
 Vue.component('foxgis-pagination', Pagination)
 Vue.component('foxgis-data-cards', DataCards)
 Vue.component('foxgis-data-cards-map', DataCardsMap)
@@ -100,6 +105,11 @@ router.map({
   '/home': {
     component: function (resolve) {
       require(['./views/Home.vue'], resolve)
+    }
+  },
+  '/stats': {
+    component: function (resolve) {
+      require(['./views/Stats.vue'], resolve)
     }
   },
   '/atlas': {
