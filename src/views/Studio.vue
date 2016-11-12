@@ -206,6 +206,7 @@ export default {
   padding: 8px 7px;
   color: #5d5d5d;
   cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,.1);
 }
 .mdl-layout__drawer .mdl-navigation .v-link-active {
   color: #2f80bc;
@@ -213,10 +214,6 @@ export default {
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
     background-color: #ffffff;
     color: #2f80bc;
-}
-.mdl-navigation {
-  border-top: 1px solid rgba(0,0,0,.1);
-  padding: 0;
 }
 
 .material-icons {

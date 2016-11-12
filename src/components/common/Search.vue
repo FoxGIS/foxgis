@@ -1,6 +1,5 @@
 <template>
 <div class="foxgis-search">
-  <!-- <i class="material-icons">search</i> -->
   <input type="text" placeholder="{{ placeholder }}" v-model="searchKeyWords"/>
 </div>
 </template>
@@ -15,7 +14,8 @@ export default {
 
 <style scoped>
 .foxgis-search {
-  height: 40px;
+  height: 28px;
+  margin:8px;
   background-color: #FFF;
   border: 1px solid #b8b8b8;
   border-bottom: 1px solid #ccc;
@@ -35,8 +35,8 @@ input {
   border: none;
   outline: none;
 }
-
-/* .material-icons {
-  padding: 8px 0px 8px 8px;
-} */
+::-webkit-input-placeholder { text-align: center; }
+::-moz-placeholder { text-align: center; } /* firefox 19+ */
+:-ms-input-placeholder { text-align: center; } /* ie */
+input:-moz-placeholder { text-align: center; }
 </style>
