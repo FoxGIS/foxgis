@@ -178,7 +178,7 @@ export default {
 
 <style scoped>
 .layout-container{
-  width: 1000px;
+  width: 1100px;
   /* background-color: white; */
   margin: 40px auto;
 }
@@ -190,10 +190,15 @@ export default {
   -webkit-transform: inherit;
   transform: inherit;
   box-shadow: none;
+  z-index: initial;
 }
 .mdl-layout__content{
-  width: 795px;
+  width: 895px;
   display: block;
+  clear:both;
+  float: right;
+  position: relative;
+  bottom: 336px;
 }
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-color: #e4e4e4;
