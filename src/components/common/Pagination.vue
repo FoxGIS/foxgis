@@ -94,12 +94,14 @@ export default {
   -moz-user-select: none;     /* Firefox all */  
   -ms-user-select: none;      /* IE 10+ */  
   user-select: none;
+  background-color: white;
+  margin: 0 auto;
 }
 
 #pagination table {
   border-collapse:collapse;
   text-align:left;
-  margin:10px auto 10px;
+  margin:0 auto;
 }
 
 #pagination td.disabled a{
@@ -117,24 +119,27 @@ export default {
   list-style-type: disc;
   cursor: pointer;
   text-align: center;
-  width:30px;
+  font-size: 14px;
+  width:20px;
+  border: 1px solid #c5c5c5;
+  border-radius: 2px;
 }
 
-#pagination td:not(.page-active) a:hover {
-  text-decoration: underline;
+#pagination td:not(.page-active):hover {
+  background-color: #4996ce;
 }
-
+#pagination td:hover a{
+  color: #ffffff;
+}
 #pagination td.page-active a{
-  color: #ff4081;
-  font-weight: bolder;
+  color: #ffffff;
 }
-
+#pagination td.page-active{
+  background-color: #4996ce;
+  border: none;
+}
 #pagination td a {
-  color: #4285f4;
-}
-
-#page-pre {
-  margin-right: 10px;
+  color: #000000;
 }
 
 #page-next {

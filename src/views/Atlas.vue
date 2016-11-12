@@ -126,7 +126,7 @@
         </div>
       </div>
     
-      <foxgis-pagination v-show="displayUploads.length>0?true:false" :type="'atlas'" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
+      <foxgis-pagination v-show="displayUploads.length>0?true:false" :type="'atlas'" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig" class="atlas-pagination"></foxgis-pagination>
   
       <div class="modal" @click="hidePreview">
         <div class="image-container" >
@@ -135,6 +135,7 @@
       </div>
 
       <div class="modal2"></div>
+      <foxgis-footer></foxgis-footer>
     </div>
   </foxgis-layout>
 </div>
@@ -963,5 +964,8 @@ span.delete-badge{
   top: 0px;
   width: 45px;
   overflow: hidden;
+}
+.atlas-pagination{
+  width: 1000px;
 }
 </style>
