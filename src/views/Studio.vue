@@ -2,40 +2,43 @@
 <div>
   <foxgis-layout>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-    <div class="mdl-layout__drawer">
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }">
-          <i class="material-icons">map</i>制图工程<span v-mdl-badge.number="map_nums"></span>
-        </a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/tile' }">
-          <i class="material-icons">layers</i>瓦片集<span v-mdl-badge.number="tileset_nums"></span>
-        </a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }">
-          <i class="material-icons">public</i>数据集<span v-mdl-badge.number="dataset_nums"></span>
-        </a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }">
-          <i class="material-icons">text_format</i>字体<span v-mdl-badge.number="font_nums"></span>
-        </a>
-        <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }">
-          <i class="material-icons">place</i>符号库<span v-mdl-badge.number="sprite_nums"></span>
-        </a>
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }">
-          <i class="material-icons">image</i>决策用图<span v-mdl-badge.number="upload_nums"></span>
-        </a>
-      </nav>
-      <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" v-link="{ path: '/studio/user' }">
-          <i class="material-icons">account_circle</i>{{username}}
-        </a>
-        <a class="mdl-navigation__link" v-on:click.prevent="signout">
-          <i class="material-icons">exit_to_app</i>注销
-        </a>
-      </nav>
+    <div class="layout-container">
+      <div class="mdl-layout__drawer">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/maps' }">
+            <i class="material-icons">map</i>制图工程<span v-mdl-badge.number="map_nums"></span>
+          </a>
+          <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/tile' }">
+            <i class="material-icons">layers</i>瓦片集<span v-mdl-badge.number="tileset_nums"></span>
+          </a>
+          <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/data' }">
+            <i class="material-icons">public</i>数据集<span v-mdl-badge.number="dataset_nums"></span>
+          </a>
+          <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/fonts' }">
+            <i class="material-icons">text_format</i>字体<span v-mdl-badge.number="font_nums"></span>
+          </a>
+          <a class="mdl-navigation__link" v-if="access === true" v-link="{ path: '/studio/sprites' }">
+            <i class="material-icons">place</i>符号库<span v-mdl-badge.number="sprite_nums"></span>
+          </a>
+          <a class="mdl-navigation__link" v-link="{ path: '/studio/uploads' }">
+            <i class="material-icons">image</i>决策用图<span v-mdl-badge.number="upload_nums"></span>
+          </a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" v-link="{ path: '/studio/user' }">
+            <i class="material-icons">account_circle</i>{{username}}
+          </a>
+          <a class="mdl-navigation__link" v-on:click.prevent="signout">
+            <i class="material-icons">exit_to_app</i>注销
+          </a>
+        </nav>
+      </div>
+      <div class="mdl-layout__content">
+        <router-view></router-view>
+      </div>
     </div>
-    <div class="mdl-layout__content">
-      <router-view></router-view>
-    </div>
+    
   </div>
   </foxgis-layout>
 </div>
@@ -174,35 +177,74 @@ export default {
 
 
 <style scoped>
+.layout-container{
+  width: 1000px;
+  /* background-color: white; */
+  margin: 40px auto;
+}
+.mdl-layout__drawer{
+  width: 200px;
+  display: block;
+  position: relative;
+  float: left;
+  -webkit-transform: inherit;
+  transform: inherit;
+  box-shadow: none;
+}
+.mdl-layout__content{
+  width: 795px;
+  display: block;
+}
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-color: #e4e4e4;
 }
 
+.mdl-layout__drawer .mdl-navigation{
+  padding: 0;
+}
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link{
+  padding: 8px 7px;
+  color: #5d5d5d;
+  cursor: pointer;
+}
+.mdl-layout__drawer .mdl-navigation .v-link-active {
+  color: #2f80bc;
+}
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
+    background-color: #ffffff;
+    color: #2f80bc;
+}
 .mdl-navigation {
   border-top: 1px solid rgba(0,0,0,.1);
-}
-
-.mdl-navigation a {
-  cursor: pointer;
+  padding: 0;
 }
 
 .material-icons {
   padding-right: 10px;
 }
 
-.v-link-active {
-  background-color: #e0e0e0;
-}
-
 .mdl-badge {
   position: absolute;
   white-space: nowrap;
-  margin-right: 24px;
+  margin-right: 5px;
   right: 76px;
 }
-
+.mdl-layout__drawer .mdl-navigation .v-link-active .mdl-badge[data-badge]:after{
+  background-color: #2f80bc;
+}
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover .mdl-badge[data-badge]:after{
+  background-color: #2f80bc;
+}
+.mdl-badge[data-badge]:after{
+  width: 22px;
+  height: 20px;
+  border-radius: 3px;
+  background: #9a9a9a;
+  color: #fff;
+  font-family: inherit;
+}
 .mdl-badge:after {
-  top: -3px!important;  
+  top: 1px!important;  
   right: -70px!important;
 }
 
