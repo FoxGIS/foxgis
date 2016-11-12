@@ -18,9 +18,9 @@
         <td>
           {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
         </td>
-        <td>
-          <a class="edit" v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><span>编辑<span></a>|
-          <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>
+        <td class="action">
+          <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>|
+          <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button colored v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
         </td>
       </tr>
     </table>
@@ -99,31 +99,12 @@ export default {
   background-color: #eee;
 }
 
-.wrapper table td a.edit {
-  text-decoration: none;
+.action{
+  text-align: center;
   color: #2f80bc;
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 500;
-  width: 40px;
-  line-height: 24px;
-  height: 24px;
-  min-width: inherit;
 }
 
-.wrapper table td a.edit:hover {
-  border: none;
-  border-radius: 2px;
-  background-color:#ececec;
-}
-
-.wrapper table td a.edit span {
-  display: inline-block;
-  position: relative;
-  top: 2px;
-}
-
-.wrapper .mdl-button {
+.action .mdl-button{
   padding: 0;
   width: 40px;
   line-height: 24px;
