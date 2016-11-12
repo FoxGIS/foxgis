@@ -15,10 +15,14 @@ export default {
 
 <style scoped>
 .foxgis-search {
-  height: 40px;
+  width: 400px;
+  height: 28px;
+  margin: 8px 0 8px 8px;
   background-color: #FFF;
   border: 1px solid #b8b8b8;
   border-bottom: 1px solid #ccc;
+  justify-content: center;
+  align-items: center;
   display: inline-flex;
 }
 
@@ -26,7 +30,7 @@ export default {
   border: 1px solid #4285F4;
 }
 
-input {
+.foxgis-search input {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -35,6 +39,11 @@ input {
   border: none;
   outline: none;
 }
+
+::-webkit-input-placeholder { text-align: center; }
+::-moz-placeholder { text-align: center; } /* firefox 19+ */
+:-ms-input-placeholder { text-align: center; } /* ie */
+input:-moz-placeholder { text-align: center; }
 
 /* .material-icons {
   padding: 8px 0px 8px 8px;

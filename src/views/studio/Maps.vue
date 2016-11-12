@@ -3,14 +3,16 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">map</i><span>制图工程</span></h5>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect v-on:click="createMapClick">新建地图</mdl-button>
-  </div>
-  <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
-  <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
-  <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
-  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
+  <div class="map-content">
+    <div class="search">
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <mdl-button raised colored v-mdl-ripple-effect style="line-height: 0;" v-on:click="createMapClick">新建地图</mdl-button>
+    </div>
+    <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
+    <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
+    <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
+    <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
+    </div>
 </div>
 </template>
 
@@ -190,28 +192,34 @@ export default {
 }
 
 h5 {
+  background-color: white;
   margin-top: 40px;
+  width: 750px;
 }
 
 .material-icons {
   padding: 10px;
-  margin-right: 5px;
+  margin: 10px 10px 10px 20px;
   vertical-align: middle;
   border-radius: 50%;
   color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 
 span {
   vertical-align: middle;
 }
 
+.map-content {
+  background-color: white;
+  margin-top: 30px;
+  width: 750px;
+}
+
 .search {
-  margin-top: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .modal {
@@ -228,10 +236,10 @@ span {
 }
 
 .foxgis-search + .mdl-button {
-  height: 40px;
+  height: 30px;
 }
 
 .foxgis-data-cards {
-  margin-top: 40px;
+  //margin-top: 40px;
 }
 </style>
