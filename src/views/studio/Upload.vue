@@ -109,9 +109,9 @@
     </div>
 
     <div class="action">
-      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
-      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
-      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>|
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>|
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
     </div>
     
   </div>
@@ -1154,7 +1154,7 @@ span {
 }
 
 .name {
-  margin: 10px 24px 0 24px;
+  margin: 10px 0 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1170,8 +1170,6 @@ span {
 }
 
 .tags {
-  margin-left: 24px;
-  margin-right: 24px;
   font-size: .8em;
 }
 
@@ -1198,7 +1196,7 @@ span {
 .card-checkbox{
   margin-left: 10px;
   float: left;
-  height: 130px;
+  height: 120px;
   width: 20px;
 }
 .card-checkbox .checkbox{
@@ -1208,7 +1206,6 @@ span {
 }
 
 .metadata {
-  margin: 0 24px 12px 24px;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
@@ -1305,7 +1302,7 @@ span {
   float: left;
   height: 100px;
   width: 100px;
-  margin: 15px 10px;
+  margin: 10px 10px 10px 0;
   transition: all 0.5s;
 }
 
@@ -1321,6 +1318,7 @@ span {
 
 .details{
   float: left;
+  width: 550px;
 }
 #batch-btn-box{
   margin-top:5px;
@@ -1420,12 +1418,20 @@ span {
   display: none;
   cursor: pointer;
 }
-
+.action{
+  width: 150px;
+  float: left;
+  height: 120px;
+  line-height: 120px;
+  text-align: right;
+  color: #2f80bc;
+}
 .action .mdl-button{
-  padding: 0 6px;
+  padding: 0;
   width: 40px;
   line-height: 24px;
   height: 24px;
   min-width: inherit;
+  color: #2f80bc;
 }
 </style>

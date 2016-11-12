@@ -96,6 +96,7 @@ export default {
   user-select: none;
   background-color: white;
   margin: 0 auto;
+  padding-top: 30px;
 }
 
 #pagination table {
