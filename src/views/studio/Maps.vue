@@ -242,7 +242,7 @@ span {
 }
 
 .search-button:hover {
-  background-color:#eee;
+  background-color:#dedede;
   border-radius: 5px;
 }
 

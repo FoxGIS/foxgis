@@ -18,7 +18,7 @@
         <td>
           {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
         </td>
-        <td>
+        <td style="color: #2f80bc;">
           <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }">编辑</a>|
           <span v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</span>
         </td>
@@ -67,7 +67,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 50px;
   overflow: hidden;
   text-align: center;
 }
