@@ -121,9 +121,16 @@ export default {
       }else if(model === 'font'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.fonts.unshift(data);
-      }else if(model === 'data' || model==='tile'){
+      }else if(model === 'data'){
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
+      }else if(model==='tile'){
+        this.options.Vue.$broadcast('mailSent', { message: '上传完成,等待切片！',timeout:1000 });
+        this.options.Vue.getCopyStatus(data.tileset_id);
+        if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
+          initProgressBar(this.options.Vue.uploadStatus);
+          return;
+        }
       }
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
         initProgressBar(this.options.Vue.uploadStatus);
