@@ -19,6 +19,8 @@ export default {
   background-color: #FFF;
   border: 1px solid #b8b8b8;
   border-bottom: 1px solid #ccc;
+  justify-content: center;
+  align-items: center;
   display: inline-flex;
 }
 
@@ -26,7 +28,7 @@ export default {
   border: 1px solid #4285F4;
 }
 
-input {
+.foxgis-search input {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -35,8 +37,10 @@ input {
   border: none;
   outline: none;
 }
+
 ::-webkit-input-placeholder { text-align: center; }
 ::-moz-placeholder { text-align: center; } /* firefox 19+ */
 :-ms-input-placeholder { text-align: center; } /* ie */
 input:-moz-placeholder { text-align: center; }
+
 </style>

@@ -3,14 +3,20 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">map</i><span>制图工程</span></h5>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <mdl-button raised colored v-mdl-ripple-effect v-on:click="createMapClick">新建地图</mdl-button>
+  <div class="map-content">
+    <div class="search">
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div v-on:click="createMapClick" class="search-button">
+        <i class="material-icons">create</i>新建地图
+      </div>
+    </div>
+    <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
   </div>
-  <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
+
   <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
   <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
   <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
+
 </div>
 </template>
 
@@ -183,35 +189,68 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 83.3333%;
+  width: 750px;
   max-width: 1000px;
-  margin-left: auto;
+  margin-left: 45px;
   margin-right: auto;
 }
 
 h5 {
-  margin-top: 40px;
+  background-color: white;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
-.material-icons {
-  padding: 10px;
+h5 .material-icons {
+  font-size: 20px;
   margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  color: #2f80bc;
 }
 
 span {
   vertical-align: middle;
 }
 
+.map-content {
+  background-color: white;
+  margin-top: 30px;
+  width: 100%;
+}
+
 .search {
-  margin-top: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.search-button {
+  position: absolute;
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  margin-top: 8px;
+  margin-left: 50px;
+}
+
+.search-button:hover {
+  background-color:#eee;
+  border-radius: 5px;
+}
+
+.search-button .material-icons {
+  font-size: 20px;
+  margin-right: 5px;
+  vertical-align: middle;
+  color: #2f80bc;
 }
 
 .modal {
@@ -223,15 +262,11 @@ span {
   bottom: 0;
 }
 
-.foxgis-search {
-  width: calc(100% - 100px);
-}
-
 .foxgis-search + .mdl-button {
-  height: 40px;
+  height: 30px;
 }
 
-.foxgis-data-cards {
-  margin-top: 40px;
+.foxgis-search {
+  width: 400px;
 }
 </style>

@@ -1,18 +1,33 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="card" v-for="u in pageConfig.page_item_num" v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-    <div class="name">
-      <p>{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name }}</p>
-      <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button accent raised v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
-    </div>
-    <div class="meta">
-      <p>创建于 : {{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}  · 最后一次编辑 : {{  dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt }}</p>
-      <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>
-    </div>
+  <div class="wrapper">
+    <table>
+      <tr>
+        <th>制图名称</th>
+        <th>创建时间</th>
+        <th>最后修改时间</th>
+        <th>操作</th>
+      </tr>
+      <tr v-for="u in pageConfig.page_item_num" v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+        <td>
+          {{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name }}
+        </td>
+        <td>
+          {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt}}
+        </td>
+        <td>
+          {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
+        </td>
+        <td>
+          <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }">编辑</a>|
+          <span v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</span>
+        </td>
+      </tr>
+    </table>
   </div>
 
   <foxgis-pagination v-show="dataset.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
-  
+
 </div>
 </template>
 
@@ -48,72 +63,47 @@ export default {
 
 
 <style scoped>
-.card {
-  border-radius: 2px 2px 0 0;
-  transform: translatez(0);
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,.12);
-  outline: none;
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
   overflow: hidden;
-  transition: .2s;
+  text-align: center;
 }
-
-.card+.card {
-  margin-top: 1px;
+.wrapper table {
+  width: 100%;
+  font-family: verdana,arial,sans-serif;
+  font-size:11px;
+  color:#333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
-
-.card:focus, .card:hover {
-  box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 12px -12px;
+.wrapper table th {
+  padding: 10px 0px;
+  background-color: #eee;
 }
-
-.card .name {
-  margin: 24px 24px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
+.wrapper table td {
+  padding: 10px 0px;
+  background-color: #ffffff;
+  word-break:keep-all;/* 不换行 */
+  white-space:nowrap;/* 不换行 */
+  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+  text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
-
-.name p {
-  font-size: 1em;
-  margin: 0;
+.wrapper table td a {
+  text-decoration: none;
+  color: #2f80bc;
+  padding-right: 5px;
 }
-
-.card .meta {
-  margin: 5px 24px;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.wrapper table td span {
+  color: #2f80bc;
+  cursor: pointer;
+  padding-left: 5px;
 }
-
-.card-details {
-  opacity: 0;
-  max-height: 0;
-  margin: 24px 24px 0;
-  transition: .2s;
-}
-
-.card-details p {
-  font-weight: bolder;
-}
-
-.card-details li {
-  list-style: none;
-  margin-left: 10px;
-  padding: 5px 0;
-}
-
-.meta p {
-  color: #9E9E9E;
-  font-size:12px;
-  margin: 0;
-}
-
-.meta .mdl-button {
-  text-align: right;
-  min-width: 0;
-  left: -18px;
+.wrapper table tr:nth-child(odd) td {
+  background-color: #eee;
 }
 </style>
