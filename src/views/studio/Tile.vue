@@ -3,9 +3,13 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">layers</i><span>瓦片集</span></h5>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传数据</div>
+  <div class="tile-head">
+    <div class="search">
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div id="picker" >
+        <i class="material-icons">file_upload</i>上传数据
+      </div>
+    </div>
   </div>
 
   <div class='progress-bar' style="display:none">
@@ -160,35 +164,44 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 83.3333%;
+  width: 850px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 h5 {
-  margin-top: 40px;
+  background-color: white;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
-.material-icons {
-  padding: 10px;
+h5 .material-icons {
+  font-size: 20px;
   margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  color: #2f80bc;
 }
 
 span {
   vertical-align: middle;
 }
 
+.tile-head{
+  width: 100%;
+  background-color: white;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .search {
-  margin-top: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 30px;
+  text-align: center; 
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .modal {
@@ -201,7 +214,7 @@ span {
 }
 
 .foxgis-search {
-  width: calc(100% - 100px);
+  width: 400px;
 }
 
 .foxgis-search + .mdl-button {
@@ -244,7 +257,7 @@ span {
 /* 上传文件按钮 */
 #picker{
   width: 88px;
-  height: 40px;
+  height: 30px;
   position: relative;
   display: inline-block;
   line-height: 1.428571429;

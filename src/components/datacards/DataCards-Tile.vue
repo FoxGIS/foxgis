@@ -2,30 +2,38 @@
 <div class="foxgis-data-cards">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
-      <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
+    <div class="card-click">
+      <i class="material-icons" v-on:click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)" title="显示详情">lock_outline</i>
     </div>
 
-    <div class = "tags">
-      <span>主题词:</span>
-      <span class="tag" v-for="tag in dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
-        <span>{{ tag }}</span>
-        <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
-      </span>
-      <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-    </div>
-
-    <div class="meta">
-      <p>
-      上传时间：<span style="width:200px;display: inline-block;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
-      共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-          <option value="private">私有</option>
-          <option value="public">公开</option>
-        </select>
-      <div>
-        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>
+    <div class="card-middle">
+      <div class="name">
+        <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
       </div>
+
+      <div class = "tags">
+        <span>主题词:</span>
+        <span class="tag" v-for="tag in dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
+          <span>{{ tag }}</span>
+          <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
+        </span>
+        <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+      </div>
+
+      <div class="meta">
+        <p>
+        上传时间：<span style="width:200px;display: inline-block;">{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
+        共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+            <option value="private">私有</option>
+            <option value="public">公开</option>
+          </select>
+        </p>
+      </div>
+    </div>
+
+    <div class="card-right">
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>|
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
     </div>
 
     <div class="details">
@@ -36,11 +44,11 @@
         <div class="meta-data content">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
             <span>最大缩放级别：{{detailsData.maxzoom}}</span>
-            <span v-if="detailsData.bounds">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
+            <span v-if="detailsData.bounds" style="width:300px;">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
             <span>最小缩放级别：{{detailsData.minzoom}}</span>
             <span>格式：{{detailsData.format}}</span>
             <span>数据大小：{{calculation(detailsData.filesize)}}</span>
-            <span style="width:600px;">访问地址：{{detailsData.url}}</span>
+            <span style="width:600px;padding-bottom:20px;">访问地址：{{detailsData.url}}</span>
         </div>
       </div>
       <div class="description-container">
@@ -48,7 +56,7 @@
           <b>瓦片描述</b>
         </div>
         <div class="description content">
-          <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="4" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
+          <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
         </div>
         
       </div>
@@ -110,16 +118,23 @@ export default {
       var access_token = Cookies.get('access_token');
       var that = this;
       var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
+      if(e.target.textContent === "lock_outline"){
+        e.target.textContent = "lock_open";
+        e.target.title = "隐藏详情";
+      }else{
+        e.target.textContent = "lock_outline";
+        e.target.title = "显示详情";
+      }
       //移除之前的active
       var activeCards = this.$el.querySelector('.active');
-      if(activeCards&&activeCards!==e.target.parentElement){
+      if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前的dom添加active
-      var claName = e.target.parentElement.className;
+      var claName = e.target.parentElement.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
-        e.target.parentElement.className = claName;
+        e.target.parentElement.parentElement.className = claName;
       }else{
         claName += ' active';
         //do somthing
@@ -129,10 +144,10 @@ export default {
           that.detailsData.url = url;
           that.fieldsLength = response.data.vector_layers.length;
           that.fieldsData = [];
-          e.target.parentElement.className = claName;
+          e.target.parentElement.parentElement.className = claName;
         }, function(response) {
           this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
-          e.target.parentElement.className = claName;
+          e.target.parentElement.parentElement.className = claName;
         })
       }
   
@@ -320,28 +335,58 @@ export default {
   border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
   outline: none;
   overflow: hidden;
   transition: .2s;
 }
 
-.card+.card {
-  margin-top: 1px;
+.card + .card {
+  margin-top: 5px;
 }
 
-.card:focus, .card:hover {
-  box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 12px -12px;
+.card-click{
+  float: left;
+  height: 120px;
+  width: 50px;
+  text-align: center;
+}
+
+.card-click .material-icons {
+  position: relative;
+  top: 55px;
+  cursor:pointer;
+}
+
+.card-middle {
+  float: left;
+  width: 650px;
+  height: 120px;
+}
+
+.card-right{
+  width: 100px;
+  float: left;
+  height: 120px;
+  line-height: 120px;
+  text-align: right;
+  color: #2f80bc;
+}
+.card-right .mdl-button{
+  padding: 0;
+  width: 40px;
+  line-height: 24px;
+  height: 24px;
+  min-width: inherit;
+  color: #2f80bc;
 }
 
 .card .name {
-  margin: 24px 24px 0;
+  margin: 24px 0 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
-  cursor: pointer;
 }
 
 .name input {
@@ -371,7 +416,7 @@ export default {
   height:auto; 
 }
 .card .meta {
-  margin: 5px 24px;
+  margin: 5px 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
@@ -383,9 +428,7 @@ export default {
 }
 
 .active .tags{
-  margin-top: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  margin-top: 12px; 
   font-size: 16px;
   transition: 0.2s;
 }
@@ -407,6 +450,7 @@ export default {
   max-height: 4000px;
   opacity: 1;
   transition:0.5s;
+  float: left;
 }
 
 .foxgis-data-cards .card.active {
@@ -415,10 +459,11 @@ export default {
 }
 
 .title{
-  margin:12px 35px;
+  padding: 12px 35px 0 35px;
 }
+
 .content{
-  margin:16px 50px 16px 50px; 
+  padding: 16px 50px 0 50px;
 }
 
 .preview-container{
@@ -426,8 +471,6 @@ export default {
 }
 
 .tags {
-  margin-left: 24px;
-  margin-right: 24px;
   font-size: 13px;
   transition: 0.2s;
 }
@@ -468,7 +511,7 @@ export default {
 
 .modal {
   position: fixed;
-  left: 240px;
+  left: 0px;
   right: 0px;
   top:0px;
   bottom: 0px;
@@ -478,11 +521,6 @@ export default {
   display: none;
   z-index: 9999;
   overflow: auto;
-}
-
-.delete-button{
-  position: relative;
-  left: -18px;
 }
 
 .preview-container table {
@@ -523,12 +561,25 @@ export default {
   color:#333333;
 }
 
+.meta-container{
+  background-color: #eee;
+} 
+
+.property-container {
+  background-color: #eee;
+  padding-bottom:20px;
+} 
+
 .meta-container div.meta-data {
   display: flex;
   flex-wrap: wrap;
 }
 
 .meta-container div.meta-data span {
-  width:300px;
+  width:200px;
+}
+
+.details .mdl-textfield div {
+  border: 1px solid #bdbdbd;
 }
 </style>
