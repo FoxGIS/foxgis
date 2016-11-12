@@ -7,14 +7,16 @@
     <div class="search">
       <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
       <div v-on:click="createMapClick" class="search-button">
-        <i class="material-icons">file_upload</i>新建地图
+        <i class="material-icons">create</i>新建地图
       </div>
     </div>
     <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
-    <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
-    <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
-    <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
-    </div>
+  </div>
+
+  <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
+  <foxgis-loading id="create-loading" class='modal'></foxgis-loading>
+  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="deleteAction"></foxgis-dialog-prompt>
+
 </div>
 </template>
 
