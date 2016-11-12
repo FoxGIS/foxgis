@@ -44,66 +44,76 @@
 
 
   <div id="batch-btn-box">
-    <div id="batch-button">
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchProcess" class="select-btn">批量编辑</mdl-anchor-button>
-      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload" class="select-btn">批量删除</mdl-anchor-button>
-    </div>
     <div id="select-button">
-      <mdl-anchor-button primary raised v-mdl-ripple-effect @click="selectAll" class="select-btn" id="select-all">全选</mdl-anchor-button>
-      <mdl-anchor-button primary raised v-mdl-ripple-effect @click="inverseSelect" class="select-btn">反选</mdl-anchor-button>
+      <a class="select-btn" v-on:click.stop.prevent="selectAll">
+        <div class="outer"><div class="inner"></div></div>
+        <span>全选</span>
+      </a>
+      <a class="select-btn" v-on:click.stop.prevent="inverseSelect">
+        <div class="outer"><div class="inner"></div></div>
+        <span>反选</span>
+      </a>
+    </div>
+    <div id="batch-button">
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchProcess">批量编辑</mdl-anchor-button>
+      <mdl-anchor-button accent raised v-mdl-ripple-effect @click="batchDeleteUpload">批量删除</mdl-anchor-button>
     </div>
   </div>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayUploads.length">
-
+    <div class="card-checkbox"><input type="checkbox" class="checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked"></div>
     <div class="small-pic">
        <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])">
     </div>
 
-    <div class="name">
-      <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" />
-
-      <mdl-anchor-button accent raised v-mdl-ripple-effect style="min-width: 68px;padding: 0 6px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
-    </div>
-
-    <div class = "tags">
-      <span>主题词:</span>
-      <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
-        <span>{{ tag }}</span>
-        <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
-      </span>
-      <input type="text" maxlength="10" @input="showInputTips($event,$index,'tag')" @click="showInputTips($event,$index,'tag')">
-      <a title="完成" class="add-tag-finish" @click="inputTipsClickFinish($index,'tag')">√</a>
-    </div>
-    <input type="checkbox" class="card-checkbox" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].checked" style>
-    <div class="metadata">
-      <div>
-        <p>
-          制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @input="showInputTips($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index,'location')"/>
-
-          比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
-
-          图幅大小：<span>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
-        </p>
-        <p>
-          制图年份：<select id="year" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-            <option v-for="year in selectYearsData" value="{{year}}">{{year}}</option>
-          </select>
-
-          共享范围：<select id="scope" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-            <option value="private">私有</option>
-            <option value="public">公开</option>
-          </select>
-
-          文件大小：<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size }}</span>
-
-          文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
-        </p>
+    <div class="details">
+      <div class="name">
+        <input type="text" maxlength="50" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" :title="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" />
       </div>
-      <div class="action">
-        <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
-        <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+
+      <div class = "tags">
+        <span>主题词:</span>
+        <span class="tag" v-for="tag in displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
+          <span>{{ tag }}</span>
+          <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
+        </span>
+        <input type="text" maxlength="10" @input="showInputTips($event,$index,'tag')" @click="showInputTips($event,$index,'tag')">
+        <a title="完成" class="add-tag-finish" @click="inputTipsClickFinish($index,'tag')">√</a>
+      </div>
+      
+      <div class="metadata">
+        <div>
+          <p>
+            制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @input="showInputTips($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index,'location')"/>
+
+            比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
+
+            图幅大小：<span>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</span>
+          </p>
+          <p>
+            制图年份：<select id="year" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year" @change="editTime($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+              <option v-for="year in selectYearsData" value="{{year}}">{{year}}</option>
+            </select>
+
+            共享范围：<select id="scope" style="margin: 0 12px 0 0;" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+              <option value="private">私有</option>
+              <option value="public">公开</option>
+            </select>
+
+            文件大小：<span>{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size }}</span>
+
+            文件格式：<span style="width:30px;">{{ displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format }}</span>
+          </p>
+        </div>
+        
       </div>
     </div>
+
+    <div class="action">
+      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect style="padding: 0 6px;" @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
+    </div>
+    
   </div>
 
   <foxgis-pagination v-show="displayUploads.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
@@ -397,13 +407,24 @@ export default {
       }
     },
 
-    selectAll:function(){//全选
-      for(let i = 0;i<this.displayUploads.length;i++){
-        this.displayUploads[i].checked=true;
+    selectAll:function(e){//全选
+      var target = $(e.currentTarget);
+      if(target.hasClass("select-all-active")){//处于全选状态，执行全不选操作
+       target.removeClass("select-all-active");
+        for(let i = 0;i<this.displayUploads.length;i++){
+          this.displayUploads[i].checked=false;
+        }
+      }else{
+        target.addClass("select-all-active");
+        for(let i = 0;i<this.displayUploads.length;i++){
+          this.displayUploads[i].checked=true;
+        }
       }
+      
     },
 
     inverseSelect:function(){//反选
+      $(".select-btn").removeClass("select-all-active");
       for(let i = 0;i<this.displayUploads.length;i++){
         if(this.displayUploads[i].checked==true){
           this.displayUploads[i].checked=false;
@@ -494,6 +515,8 @@ export default {
           });
         }
         this.deleteUploadId = [];//重置deleteUploadId
+      }else{
+        this.deleteUploadId = [];
       }
     },
 
@@ -1039,7 +1062,7 @@ export default {
 <style scoped>
 .foxgis-upload {
   height: 100%;
-  width: 750px;
+  width: 850px;
   max-width: 1000px;
   margin-left: auto;
   margin-right: 0;
@@ -1173,11 +1196,15 @@ span {
   font: 14px "Times New Roman";
 }
 .card-checkbox{
-  position: absolute;
-  right: 0px;
-  top: calc(50% - 8px);
+  margin-left: 10px;
+  float: left;
+  height: 130px;
+  width: 20px;
+}
+.card-checkbox .checkbox{
   width: 16px;
   height: 16px;
+  margin: 55px auto;
 }
 
 .metadata {
@@ -1217,7 +1244,7 @@ span {
 
 .modal {
   position: fixed;
-  left: 240px;
+  left: 0px;
   right: 0px;
   top:0px;
   bottom: 0px;
@@ -1292,17 +1319,62 @@ span {
   height:auto;
 }
 
+.details{
+  float: left;
+}
 #batch-btn-box{
   margin-top:5px;
   position:relative;
   height:45px;
+  background-color: white;
+  border-bottom: 1px solid #e7e7e7;
 }
 #select-button{
-  position: absolute;
-  right:0;
+  position: absolute; 
+  margin: 10px;
 }
 #batch-button{
   position:absolute;
+  right:0;
+  margin: 10px;
+}
+
+#batch-button .mdl-button{
+  background-color: rgb(14,178,144);
+  height: 25px;
+  width: 60px;
+  line-height: 25px;
+  font-size: 14px;
+  padding: 0 8px;
+  font-family: inherit;
+}
+#batch-button .mdl-button:first-child{
+  background-color: rgb(14,178,144);
+}
+#batch-button .mdl-button:last-child{
+  background-color: rgb(178,69,10);
+}
+.select-btn{
+  color: black;
+  text-decoration: none;
+  margin-right: 20px;
+  cursor: pointer;
+}
+.select-btn .outer{
+  width: 15px;
+  height: 15px;
+  border: 1px solid #a0a0a0;
+  display: inline-block;
+  vertical-align: middle;
+}
+.select-all-active .inner{
+  margin: 2px;
+  background-color: #2f80bc;
+  width: 11px;
+  height: 11px;
+}
+.select-all-active{
+  color: #2f80bc;
 }
 .mdl-dialog__content{
   padding:6px 27px 3px;
@@ -1347,5 +1419,13 @@ span {
 .add-tag-finish{
   display: none;
   cursor: pointer;
+}
+
+.action .mdl-button{
+  padding: 0 6px;
+  width: 40px;
+  line-height: 24px;
+  height: 24px;
+  min-width: inherit;
 }
 </style>
