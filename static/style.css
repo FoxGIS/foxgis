@@ -1,13 +1,10 @@
 .webuploader-pick{
   position: relative;
   cursor: pointer;
-  background: #3F51B5;
-  color: #fff;
   text-align: center;
-  border-radius: 3px;
   overflow: hidden;
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   font-size: 14px;
 }
 
@@ -16,6 +13,23 @@
   clip: rect(1px,1px,1px,1px);
 }
 
+#picker{
+  position: relative;
+  display: inline-block;
+  line-height: 1.428571429;
+  vertical-align: middle;
+  left: 50px;
+  border-radius: 4px;
+}
+.webuploader-pick .material-icons{
+  font-size: 20px;
+  margin-right: 5px;
+  vertical-align: middle;
+  color: #2f80bc;
+}
+#picker:hover{
+  background-color: #dedede;
+}
 .mapboxgl-ctrl-top-left{
   display: none;
 }

@@ -6,7 +6,9 @@
   <div class="map-content">
     <div class="search">
       <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-      <mdl-button raised colored v-mdl-ripple-effect style="line-height: 0;" v-on:click="createMapClick">新建地图</mdl-button>
+      <div v-on:click="createMapClick" class="search-button">
+        <i class="material-icons">file_upload</i>新建地图
+      </div>
     </div>
     <foxgis-data-cards-map :dataset="displayDataset" v-on:delete-style="deleteStyle"></foxgis-data-cards-map>
     <foxgis-style-template id="template-container" v-on:style-params="createStyle" class='modal'></foxgis-style-template>
@@ -185,24 +187,26 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 83.3333%;
+  width: 750px;
   max-width: 1000px;
-  margin-left: auto;
+  margin-left: 45px;
   margin-right: auto;
 }
 
 h5 {
   background-color: white;
-  margin-top: 40px;
-  width: 750px;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
-.material-icons {
-  padding: 10px;
-  margin: 10px 10px 10px 20px;
+h5 .material-icons {
+  font-size: 20px;
+  margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
+  color: #2f80bc;
 }
 
 span {
@@ -212,7 +216,7 @@ span {
 .map-content {
   background-color: white;
   margin-top: 30px;
-  width: 750px;
+  width: 100%;
 }
 
 .search {
@@ -220,6 +224,31 @@ span {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e4e4e4;
+}
+
+.search-button {
+  position: absolute;
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  margin-top: 8px;
+  margin-left: 50px;
+}
+
+.search-button:hover {
+  background-color:#eee;
+  border-radius: 5px;
+}
+
+.search-button .material-icons {
+  font-size: 20px;
+  margin-right: 5px;
+  vertical-align: middle;
+  color: #2f80bc;
 }
 
 .modal {
@@ -231,15 +260,11 @@ span {
   bottom: 0;
 }
 
-.foxgis-search {
-  width: calc(100% - 100px);
-}
-
 .foxgis-search + .mdl-button {
   height: 30px;
 }
 
-.foxgis-data-cards {
-  //margin-top: 40px;
+.foxgis-search {
+  width: 400px;
 }
 </style>

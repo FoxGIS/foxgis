@@ -2,42 +2,45 @@
 <div class="foxgis-upload">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">image</i><span>决策用图</span></h5>
+  <div class="upload-head">
+    <div class="search">
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div id="picker" ><i class="material-icons">file_upload</i>上传决策用图
+      </div>
+    </div>
+    <div class='progress-bar' style="display:none">
+      <div class="activebar bar" :style="uploadStatus.percentage"></div>
+      <div class="bufferbar bar"></div>
+      <span id='uplate-status'>
+        <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
+        <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
+      </span>
+    </div>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传决策用图</div>
-  </div>
-  <div class='progress-bar' style="display:none">
-    <div class="activebar bar" :style="uploadStatus.percentage"></div>
-    <div class="bufferbar bar"></div>
-    <span id='uplate-status'>
-      <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
-      <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
-    </span>
-  </div>
-
-  <div class="filter">
-    <div class="condition">
-      <span>主题词：</span>
-      <a v-for="tag in theme_tags" v-if="$index<10"
-          @click="conditionClick($event,1)">{{ tag }}
-      </a>
-    </div>
-    <div class="condition">
-      <span>制图区域：</span>
-      <a v-for="location in location_tags" v-if="$index<8"
-          @click="conditionClick($event,2)" class = "{{this.selected_location_tags.indexOf(location.data)===-1?'none':'filter condition active'}}">{{ location.data }}
-          <span>({{ location.num }})</span>
-      </a>
-    </div>
-    <div class="condition">
-      <span>制图年份：</span>
-      <a v-for="year in year_tags | orderBy" v-if="$index<8"
-          @click="conditionClick($event,3)" class = "{{this.selected_year_tags.indexOf(year.data)===-1?'none':'filter condition active'}}">{{ year.data }}
-          <span>({{ year.num }})</span>
-      </a>
+    <div class="filter">
+      <div class="condition">
+        <span>主题词：</span>
+        <a v-for="tag in theme_tags" v-if="$index<10"
+            @click="conditionClick($event,1)">{{ tag }}
+        </a>
+      </div>
+      <div class="condition">
+        <span>制图区域：</span>
+        <a v-for="location in location_tags" v-if="$index<8"
+            @click="conditionClick($event,2)" class = "{{this.selected_location_tags.indexOf(location.data)===-1?'none':'filter condition active'}}">{{ location.data }}
+            <span>({{ location.num }})</span>
+        </a>
+      </div>
+      <div class="condition">
+        <span>制图年份：</span>
+        <a v-for="year in year_tags | orderBy" v-if="$index<8"
+            @click="conditionClick($event,3)" class = "{{this.selected_year_tags.indexOf(year.data)===-1?'none':'filter condition active'}}">{{ year.data }}
+            <span>({{ year.num }})</span>
+        </a>
+      </div>
     </div>
   </div>
+  
 
 
   <div id="batch-btn-box">
@@ -1036,39 +1039,50 @@ export default {
 <style scoped>
 .foxgis-upload {
   height: 100%;
-  width: 83.3333%;
+  width: 750px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 h5 {
-  margin-top: 40px;
+  background-color: white;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
 h5 .material-icons {
-  padding: 10px;
+  font-size: 20px;
   margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+  color: #2f80bc;
 }
 
 span {
   vertical-align: middle;
 }
 
+.upload-head{
+  width: 100%;
+  background-color: white;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .search {
-  margin-top: 40px;
-  display: flex;
+  margin-top: 30px;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center;*/
+  text-align: center; 
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .foxgis-search {
-  width: calc(100% - 130px);
+  width: 400px;
 }
 
 .foxgis-search + .mdl-button {
@@ -1300,11 +1314,7 @@ span {
 
 #picker{
   width: 116px;
-  height: 40px;
-  position: relative;
-  display: inline-block;
-  line-height: 1.428571429;
-  vertical-align: middle;
+  height: 30px;
 }
 
 #location-control{
