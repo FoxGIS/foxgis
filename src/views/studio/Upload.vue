@@ -1271,7 +1271,7 @@ span {
   display: block;
   position: relative;
   height: 4px;
-  width: calc(100% - 130px);
+  width: 100%;
   max-width: 100%;
 }
 

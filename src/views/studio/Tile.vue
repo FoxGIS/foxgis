@@ -230,7 +230,7 @@ span {
   display: block;
   position: relative;
   height: 4px;
-  width: calc(100% - 100px);
+  width: 100%;
   max-width: 100%;
 }
 
