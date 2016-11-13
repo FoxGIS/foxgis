@@ -3,7 +3,8 @@
     <div class="contact-us">
       <a href="">关于我们 </a>|
       <a href="">意见反馈 </a>|
-      <a href="">联系我们</a>
+      <a href="">联系我们 </a>|
+      <a href="/static/document/用户手册.doc">帮助</a>
     </div>
   </div>
 </template>
@@ -27,7 +28,7 @@
     color: gray;
     line-height: 40px;
     margin: 0 auto;
-    width: 250px;
+    width: 270px;
   }
 
   .contact-us a{
