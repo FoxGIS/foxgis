@@ -147,7 +147,7 @@ export default {
 
     function initProgressBar(uploadStatus){
       $('.progress-bar').css('display','none');//所有状态初始化
-      $('.webuploader-pick').css('background-color','#3F51B5');
+      $('.webuploader-pick').css('background-color','#fff');
       $('#picker input').removeAttr('disabled');
       uploadStatus.current_file=1;
       uploadStatus.total_files=0;
