@@ -373,10 +373,6 @@ span {
   width:calc(100% - 100px);;
 }
 
-.result_data {
-  margin-top: 40px;
-}
-
 .result_data .card:nth-child(odd){
   background-color: rgb(250,250,250);
 }
