@@ -19,8 +19,8 @@
           {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
         </td>
         <td class="action">
-          <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>|
-          <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button colored v-mdl-ripple-effect>编辑</mdl-anchor-button></a>
+          <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button colored v-mdl-ripple-effect>编辑</mdl-anchor-button></a>|
+          <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>
         </td>
       </tr>
     </table>
@@ -70,6 +70,7 @@ export default {
   overflow: hidden;
   text-align: center;
 }
+
 .wrapper table {
   width: 100%;
   font-family: verdana,arial,sans-serif;
@@ -83,7 +84,7 @@ export default {
 
 .wrapper table th {
   padding: 10px 0px;
-  background-color: #eee;
+  background-color: rgb(250,250,250);
 }
 
 .wrapper table td {
@@ -96,7 +97,7 @@ export default {
 }
 
 .wrapper table tr:nth-child(odd) td {
-  background-color: #eee;
+  background-color: rgb(250,250,250);
 }
 
 .action{

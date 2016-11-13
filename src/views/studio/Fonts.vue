@@ -25,11 +25,11 @@
     <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
 
       <div class="card-click">
-        <i class="material-icons" @click="showDetails($event,displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)" title="显示详情">lock_outline</i>
+        <i class="material-icons">lock_outline</i>
       </div>
 
       <div class="card-middle">
-        <div class="name">
+        <div class="name" @click="showDetails($event,displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">
           <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
         </div>
         <div class="meta">
@@ -45,8 +45,8 @@
       </div>
 
       <div class="card-right">
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>|
-        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">下载</mdl-anchor-button>
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">下载</mdl-anchor-button>|
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
       </div>
 
       <div class="details">
@@ -87,23 +87,22 @@ import commonMethod from '../../components/method.js'
 export default {
   methods: {
     showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
-      if(e.target.textContent === "lock_outline"){
-        e.target.textContent = "lock_open";
-        e.target.title = "隐藏详情";
-      }else{
-        e.target.textContent = "lock_outline";
-        e.target.title = "显示详情";
-      }
       //移除之前的active
       var activeCards = this.$el.querySelector('.active');
+      var icons=this.$el.querySelector('.isOpen');
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
+        icons.className = icons.className.replace(' isOpen','');
+        icons.innerText = 'lock_outline';
       }
       //给当前dom的父控件添加active
+      var iconName = e.target.parentElement.parentElement.children[0].children[0].className;
       var claName = e.target.parentElement.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
+        iconName = iconName.replace(' isOpen','');
       }else{
+        iconName += ' isOpen';
         claName += ' active';
         this.coverages = [];
         for(let i=0;i<this.fonts.length;i++){
@@ -118,6 +117,12 @@ export default {
         }
       }
       e.target.parentElement.parentElement.className= claName;
+      e.target.parentElement.parentElement.children[0].children[0].className = iconName;
+      if(iconName.indexOf('isOpen')!=-1){
+        e.target.parentElement.parentElement.children[0].children[0].innerText ='lock_open';
+      }else{
+        e.target.parentElement.parentElement.children[0].children[0].innerText = 'lock_outline';
+      }
     },
 
     parseImgURL:function(font) {//返回缩略图的url
@@ -368,9 +373,12 @@ span {
   width:calc(100% - 100px);;
 }
 
-
 .result_data {
   margin-top: 40px;
+}
+
+.result_data .card:nth-child(odd){
+  background-color: rgb(250,250,250);
 }
 
 .card {
@@ -397,13 +405,16 @@ span {
 .card-click .material-icons {
   position: relative;
   top: 55px;
-  cursor:pointer;
 }
 
 .card-middle {
   float: left;
   width: 650px;
   height: 120px;
+}
+
+.card-middle select {
+  background-color: transparent;
 }
 
 .card-right{
@@ -430,6 +441,7 @@ span {
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  cursor:pointer;
 }
 
 .result_data .card.active {

@@ -23,8 +23,8 @@
     </div>
 
     <div class="card-right">
-      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>|
-      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadSprite((pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadSprite((pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>|
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
     </div>
 
     <div class="details" id="icon-details">
