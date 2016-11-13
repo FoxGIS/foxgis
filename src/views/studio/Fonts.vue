@@ -3,9 +3,13 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">text_format</i><span>字体</span></h5>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传字体</div>
+  <div class="font-head">
+    <div class="search">
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div id="picker" >
+        <i class="material-icons">file_upload</i>上传字体
+      </div>
+    </div>
   </div>
   
   <div class='progress-bar' style="display:none">
@@ -19,21 +23,32 @@
 
   <div class="result_data">
     <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < displayFonts.length">
-      <div class="name" @click="showDetails($event,displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">
-        <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
-        <mdl-anchor-button accent raised v-mdl-ripple-effect @click="downloadFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">下载</mdl-anchor-button>
-      </div>
-      <div class="meta">
-        <p>
-          上传时间：<span>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
 
-          共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-            <option value="private">私有</option>
-            <option value="public">公开</option>
-          </select>
-        </p>
-        <mdl-anchor-button colored v-mdl-ripple-effect class="delete-button" @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>
+      <div class="card-click">
+        <i class="material-icons" @click="showDetails($event,displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)" title="显示详情">lock_outline</i>
       </div>
+
+      <div class="card-middle">
+        <div class="name">
+          <p>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname }}</p>
+        </div>
+        <div class="meta">
+          <p>
+            上传时间：<span>{{ displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
+
+            共享范围：<select id="scope" v-model="displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+              <option value="private">私有</option>
+              <option value="public">公开</option>
+            </select>
+          </p>
+        </div>
+      </div>
+
+      <div class="card-right">
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteFont($event,(pageConfig.current_page-1)*pageConfig.page_item_num+$index)">删除</mdl-anchor-button>|
+        <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFont(displayFonts[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].fontname)">下载</mdl-anchor-button>
+      </div>
+
       <div class="details">
         <div class="font-panel">
           <div class="meta-title">
@@ -72,13 +87,20 @@ import commonMethod from '../../components/method.js'
 export default {
   methods: {
     showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
+      if(e.target.textContent === "lock_outline"){
+        e.target.textContent = "lock_open";
+        e.target.title = "隐藏详情";
+      }else{
+        e.target.textContent = "lock_outline";
+        e.target.title = "显示详情";
+      }
       //移除之前的active
       var activeCards = this.$el.querySelector('.active');
-      if(activeCards&&activeCards!==e.target.parentElement){
+      if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
       }
       //给当前dom的父控件添加active
-      var claName = e.target.parentElement.className;
+      var claName = e.target.parentElement.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
       }else{
@@ -95,7 +117,7 @@ export default {
           this.coverages[j].cov = cov*100+'%';
         }
       }
-      e.target.parentElement.className= claName;
+      e.target.parentElement.parentElement.className= claName;
     },
 
     parseImgURL:function(font) {//返回缩略图的url
@@ -294,39 +316,48 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 83.3333%;
+  width: 850px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 h5 {
-  margin-top: 40px;
+  background-color: white;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
 h5 .material-icons {
-  padding: 10px;
+  font-size: 20px;
   margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  color: #2f80bc;
 }
 
 span {
   vertical-align: middle;
 }
 
+.font-head{
+  width: 100%;
+  background-color: white;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .search {
-  margin-top: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 30px;
+  text-align: center;
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .foxgis-search {
-  width: calc(100% - 100px);
+  width: 400px;
 }
 
 .foxgis-search + .mdl-button {
@@ -353,21 +384,52 @@ span {
 }
 
 .card+.card {
-  margin-top: 1px;
+  margin-top: 5px;
 }
 
-.card:focus, .card:hover {
-  box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 12px -12px;
+.card-click{
+  float: left;
+  height: 120px;
+  width: 50px;
+  text-align: center;
+}
+
+.card-click .material-icons {
+  position: relative;
+  top: 55px;
+  cursor:pointer;
+}
+
+.card-middle {
+  float: left;
+  width: 650px;
+  height: 120px;
+}
+
+.card-right{
+  width: 100px;
+  float: left;
+  height: 120px;
+  line-height: 120px;
+  text-align: right;
+  color: #2f80bc;
+}
+
+.card-right .mdl-button{
+  padding: 0;
+  width: 40px;
+  line-height: 24px;
+  height: 24px;
+  min-width: inherit;
+  color: #2f80bc;
 }
 
 .card .name {
-  margin: 24px 24px 0;
+  margin: 24px 0 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
-  cursor: pointer;
 }
 
 .result_data .card.active {
@@ -383,33 +445,11 @@ span {
 }
 
 .card .meta {
-  margin: 5px 24px;
+  margin: 20px 0 5px 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.card-details {
-  opacity: 0;
-  max-height: 0;
-  margin: 24px 24px 0;
-  transition: .2s;
-}
-
-.card-details p {
-  font-weight: bolder;
-}
-
-.card-details li {
-  list-style: none;
-  margin-left: 10px;
-  padding: 5px 0;
-}
-
-.active .card-details {
-  max-height: 4000px;
-  opacity: 1;
 }
 
 .active .meta {
@@ -417,7 +457,6 @@ span {
 }
 
 .active .name {
-  border-bottom: 1px solid #e0e0e0;
   padding: 12px 12px 15px;
 }
 
@@ -437,6 +476,8 @@ span {
 .active .details{
   max-height: 1000px;
   opacity: 1;
+  transition:0.5s;
+  float: left;
 }
 
 .details .meta-title{
@@ -465,17 +506,17 @@ span {
 }
 
 .meta span{
-    border: 0;
-    width: 200px;
-    color: #9E9E9E;
-    font-size: 12px;
-    margin: 0;
-    display: inline-block;
+  border: 0;
+  width: 200px;
+  color: #9E9E9E;
+  font-size: 12px;
+  margin: 0;
+  display: inline-block;
 }
 
 .modal {
   position: fixed;
-  left: 240px;
+  left: 0px;
   right: 0px;
   top:0px;
   bottom: 0px;
@@ -485,11 +526,6 @@ span {
   display: none;
   z-index: 9999;
   overflow: auto;
-}
-
-.delete-button{
-  position: relative;
-  left: -18px;
 }
 
 /* 进度条样式 */
@@ -524,7 +560,7 @@ span {
 /* 上传文件按钮 */
 #picker{
   width: 88px;
-  height: 40px;
+  height: 30px;
   position: relative;
   display: inline-block;
   line-height: 1.428571429;
