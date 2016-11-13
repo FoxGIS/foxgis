@@ -2,10 +2,28 @@
   <div>
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div id="style-header">
-      <span style="color:white;">{{styleObj.name}}</span>
-      <i class="material-icons copy-layer" v-on:click="showCopyLayer" title="复制样式">content_copy</i>
-      <i class="material-icons new-layer" v-on:click="showCreateStyle" title="新建样式">create</i>
-      <i class="material-icons delete-layer" v-on:click="deleteStyleLayer" title="删除样式">delete</i>
+      <div class="block"></div>
+      <div class="text"><span>{{styleObj.name}}</span></div>
+    </div>
+    <div id="toc-toolbar">
+      <div>
+        <a href="" title="删除样式" v-on:click.stop.prevent="deleteStyleLayer">
+          <i class="material-icons copy-layer">delete</i></br>
+          <span>删除</span>
+        </a>
+      </div>
+      <div>
+        <a href="" title="复制样式" v-on:click.stop.prevent="showCopyLayer">
+          <i class="material-icons copy-layer">content_copy</i></br>
+          <span>复制</span>
+        </a>
+      </div>
+      <div>
+        <a href="" title="新建样式" v-on:click.stop.prevent="showCreateStyle">
+          <i class="material-icons copy-layer">create</i></br>
+          <span>新建</span>
+        </a>
+      </div> 
     </div>
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
@@ -14,12 +32,12 @@
             <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
             <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
             <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-            <i class="material-icons" v-if="layer.items==undefined">{{typeIcon[layer.type]}}</i>
+            <i class="material-icons" v-if="layer.items==undefined" style="background-image:url('../../static/icons/{{typeIcon[layer.type]}}')"></i>
             <span>{{layer.id}}</span>
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="material-icons">{{typeIcon[item.type]}}</i>
+              <i class="material-icons" style="background-image:url('../../static/icons/{{typeIcon[layer.type]}}')"></i>
               <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>
@@ -1607,10 +1625,10 @@ export default {
       },
       propertyGroup:{},
       typeIcon: {
-        symbol: 'grade',
-        line: 'remove',
+        symbol: 'point.svg',
+        line: 'line.svg',
         background: 'filter_hdr',
-        fill: 'filter_b_and_w',
+        fill: 'polygon.svg',
         circle: 'lens',
         raster: 'image'
       },
@@ -1853,32 +1871,53 @@ export default {
 <style scoped>
 
 #style-header {
-  height: 40px;
+  height: 20px;
   padding: 5px;
-  background-color: #2061C6;
 }
 
-#style-header span {
-  display: inline-block;
-  width: 101px;
-  height: 40px;
-  line-height: 40px;
+#style-header .block{
+  width: 5px;
+  height: 18px;
+  background-color: #2c67ed;
+  float: left;
+  margin: 2px;
+}
+#style-header .text{
+  position: relative;
   white-space: nowrap;
   text-overflow:ellipsis;
   overflow:hidden;
 }
 
-#style-header i {
+#toc-toolbar{
+  height: 35px;
+  border-bottom: 1px solid #e6e6e6;
+}
+#toc-toolbar div{
+  float: right;
+  margin: 0 5px;
+}
+#toc-toolbar a{
+  text-decoration: none;
   position: relative;
-  font-size: 24px;
-  vertical-align: middle;
-  cursor: pointer;
-  top:-15px;
+  bottom: 5px;
+}
+#toc-toolbar a span{
+  font-family: SimHei;
+  text-decoration: none;
+  font-size: 12px;
 }
 
-#style-header i:hover{
-  color: #545454;
-  border-bottom: 2px solid #545454;
+#toc-toolbar a i {
+  font-size: 18px;
+  vertical-align: middle;
+  cursor: pointer;
+  height: 14px;
+  line-height: 25px;
+}
+
+#toc-toolbar a:hover{
+  color: #1c7ec4;
 }
 
 #layer-control {
@@ -1886,7 +1925,6 @@ export default {
   border:solid 1px rgba(0,0,0,0.5);
   border-top: none;
   border-left: none;
-  background-color: #E5E2D3;
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 115px);
@@ -1895,6 +1933,7 @@ export default {
   color: #333;
   scrollbar-track-color:#e1f5fe;
   scrollbar-face-color:#2061C6;
+  clear: both;
 }
 
 #layer-control::-webkit-scrollbar {

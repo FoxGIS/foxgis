@@ -510,7 +510,7 @@ export default {
   flex-grow:1;
   position: absolute;
   left: 230px;
-  height: calc(100% - 55px);
+  height: 100%;
   width: calc(100% - 230px);
   box-sizing: border-box;
 }

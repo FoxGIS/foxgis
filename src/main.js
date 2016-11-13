@@ -26,7 +26,7 @@ import Data from './views/studio/Data'
 import Tile from './views/studio/Tile'
 import Icons from './views/studio/Icons'
 import Upload from './views/studio/Upload'
-import User from './views/studio/User'
+import User from './views/User'
 
 import Layout from './components/common/Layout'
 import Search from './components/common/Search'
@@ -127,6 +127,11 @@ router.map({
       require(['./views/Register.vue'], resolve)
     }
   },
+  '/user':{
+    component:function (resolve) {
+      require(['./views/User.vue'], resolve)
+    }
+  },
   '/studio': {
     component: function (resolve) {
       require(['./views/Studio.vue'], resolve)
@@ -165,11 +170,6 @@ router.map({
       '/uploads': {
         component:function (resolve) {
           require(['./views/studio/Upload.vue'], resolve)
-        }
-      },
-      '/user':{
-        component:function (resolve) {
-          require(['./views/studio/User.vue'], resolve)
         }
       }
     }
