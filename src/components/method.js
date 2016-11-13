@@ -85,7 +85,6 @@ export default {
     });
     uploader.on('uploadStart',function(file){//开始上传
       $('.progress-bar').css('display','block');
-      $('.webuploader-pick').css('background-color','#9E9E9E');
       $('#picker input').attr('disabled','disabled');
     });
     uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
@@ -147,7 +146,6 @@ export default {
 
     function initProgressBar(uploadStatus){
       $('.progress-bar').css('display','none');//所有状态初始化
-      $('.webuploader-pick').css('background-color','#fff');
       $('#picker input').removeAttr('disabled');
       uploadStatus.current_file=1;
       uploadStatus.total_files=0;

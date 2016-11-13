@@ -66,6 +66,9 @@ export default {
   props: ['dataset'],
   methods: {
     showDetails: function (e,dataset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
+      if(e.target.tagName !== 'DIV'){
+        return;
+      }
       var username = Cookies.get('username');
       if(username === undefined){
         return;
@@ -266,10 +269,6 @@ export default {
   outline: none;
   overflow: hidden;
   transition: .2s;
-}
-
-.card+.card {
-  margin-top: 5px;
 }
 
 .card-click{
