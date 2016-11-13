@@ -1142,7 +1142,6 @@ span {
 .card {
   transform: translatez(0);
   background: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
   outline: none;
   overflow: hidden;
   transition: .2s;

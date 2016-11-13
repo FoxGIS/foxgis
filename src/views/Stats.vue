@@ -9,7 +9,7 @@
           <div class="text"><span>用户贡献度</span></div>
         </div>
         <div class="conditions">
-          <foxgis-conditions></foxgis-conditions>
+          <foxgis-conditions :location_tags="location_tags" :year_tags="year_tags" :theme_tags="theme_tags" @condition-select = "conditionSelect($arguments,1)"></foxgis-conditions>
         </div>
         <div class="stats-container">
           <div class="stats-chart" id="user-download-chart">
@@ -17,27 +17,27 @@
         </div>   
       </div>
       <!-- 图件下载统计 -->
-      <div class="user-download stats">
+      <div class="image-download stats">
         <div class="stats-title">
           <div class="block"></div>
           <div class="text"><span>图件下载</span></div>
         </div>
         <div class="conditions">
-          <foxgis-conditions></foxgis-conditions>
+          <foxgis-conditions :location_tags="location_tags" :year_tags="year_tags" :theme_tags="theme_tags" @condition-select = "conditionSelect($arguments,2)"></foxgis-conditions>
         </div>
         <div class="stats-container">
           <div class="stats-chart" id="image-download-chart">
           </div>
         </div>   
       </div>
-      <!-- 图件资源统计 -->
-      <div class="user-download stats">
+      <!-- 用户上传统计 -->
+      <div class="user-upload stats">
         <div class="stats-title">
           <div class="block"></div>
           <div class="text"><span>图件资源</span></div>
         </div>
         <div class="conditions">
-          <foxgis-conditions></foxgis-conditions>
+          <foxgis-conditions :location_tags="location_tags" :year_tags="year_tags" :theme_tags="theme_tags" @condition-select = "conditionSelect($arguments,3)"></foxgis-conditions>
         </div>
         <div class="stats-container">
           <div class="stats-chart" id="user-upload-chart">
@@ -57,233 +57,343 @@
 import Cookies from 'js-cookie'
 import echarts from 'echarts'
 export default {
+  methods:{
+    conditionSelect:function(data,type){
+      var selectedLocations = data[0].selectedLocations;
+      var selectedYears = data[0].selectedYears;
+      var selectedThemes = data[0].selectedThemes;
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.uploads + '?';
+      if(selectedYears.length>0){
+        var yearStr = selectedYears.toString().replace("未指定","null");
+        url = url+"&year="+yearStr;
+      }
+      if(selectedLocations.length>0){
+        var locationStr = selectedLocations.toString().replace("未指定","null");
+        url = url+"&location="+locationStr;
+      }
+      if(selectedThemes.length>0){
+        var themeStr = selectedThemes.toString().replace("未指定","null");
+        url = url+"&tags="+themeStr;
+      }
+      //获取数据列表
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        var uploads = response.data;
+        this.calcStats(uploads,type);
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '获取数据失败！',timeout:3000 });
+      });
+    },
+    calcStats:function(uploads,type){
+      var xData = [];
+      var yData = [];
+      if(type===1){//用户贡献
+        for(var i=0;i<uploads.length;i++){
+          if(xData.indexOf(uploads[i].owner)===-1){
+            xData.push(uploads[i].owner);
+            yData.push(uploads[i].downloadNum)
+          }else{
+            yData[xData.indexOf(uploads[i].owner)] += uploads[i].downloadNum;
+          }
+        }
+        xData = this.username2organization(xData);
+        this.barOption.xAxis[0].data = xData;
+        this.barOption.series[0].data = yData;
+        this.userDownloadChart.setOption(this.barOption,true);
+        return;
+      }
+      if(type===2){//图件下载
+        for(var i=0;i<uploads.length;i++){
+          xData.push(uploads[i].name);
+          yData.push(uploads[i].downloadNum);
+          if(i>=100){break;}
+        }
+        this.lineOption.xAxis[0].data = xData;
+        this.lineOption.series[0].data = yData;
+        this.mapDownloadChart.setOption(this.lineOption,true);
+        return;
+      }
+      if(type===3){//用户上传
+        for(var i=0;i<uploads.length;i++){
+          if(xData.indexOf(uploads[i].owner)===-1){
+            xData.push(uploads[i].owner);
+            yData.push(1);
+          }else{
+            yData[xData.indexOf(uploads[i].owner)] += 1;
+          }
+        }
+        for(var i = 0;i<xData.length;i++){
+          for(var j=0;j<this.userDownloadStats.length;j++){
+            if(this.userDownloadStats[j].username===xData[i]){
+              xData[i] = this.userDownloadStats[j].location;
+              yData[i] = {value:yData[i],name:xData[i]};
+            }
+          }
+        }
+        this.pieOption.legend.data = xData;
+        this.pieOption.series[0].data = yData;
+        this.userUploadChart.setOption(this.pieOption,true);
+        return;
+      }
+    },
+    username2organization:function(username){//根据用户名查找用户单位,username为数组
+      var t = [];
+      for(var i = 0;i<username.length;i++){
+        for(var j=0;j<this.userDownloadStats.length;j++){
+          if(this.userDownloadStats[j].username===username[i]){
+            t[i] = this.userDownloadStats[j].organization;
+          }
+        }
+      }
+      return t;
+    }
+  },
   attached() {
     var access_token = Cookies.get('access_token');
     var username = Cookies.get('username');
     if(username === undefined){
       window.location.href = "#!/login";
     }
-    var url = SERVER_API.stats + '/uploads';
-    var that = this;
-    //获取数据列表
-    this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      if(response.data.length > 0){
-        var data = response.data;
-        var messages = [];
-        var xData = [];
-        var yData=[];
-        for(let i=0;i<data.length;i++){
-          if(data[i].location){
-            xData.push(data[i].location);
-            yData.push({value:data[i].total,name:data[i].location});
-          }else if(data[i].organization){
-            xData.push(data[i].organization);
-            yData.push({value:data[i].total,name:data[i].organization});
-          }else if(data[i].name){
-            xData.push(data[i].name);
-            yData.push({value:data[i].total,name:data[i].name});
-          }else if(data[i].owner){
-            xData.push(data[i].owner);
-            yData.push({value:data[i].total,name:data[i].owner});
-          }
-        }
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('user-upload-chart'));
-        // 绘制图表
-        myChart.setOption({
-          title: { text: '用户上传统计',x:'left' },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            top:"10%",
-            data:xData
-          },
-          series: [{
-            name: '上传数量',
-            center: ['70%', '60%'],
-            radius:'60%',
-            type: 'pie',
-            data: yData
-          }]
-        });   
-      }
-    }, function(response) {
-      console.log(response);
-    });
-    var mapDownloadUrl = SERVER_API.stats + '/filedownloads';
-    this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      if (response.data.length > 0) {
-        var data = response.data;
-        var messages = [];
-        var xData = [];
-        var yData = [];
-        data = data.sort();
-        for(let i=0;i<data.length;i++){
-          xData.push(data[i].name);
-          yData.push(data[i].downloadNum);
-        }
-        // 基于准备好的dom，初始化echarts实例
-        var uChart = echarts.init(document.getElementById('image-download-chart'));
-        // 绘制图表
-        uChart.setOption({
-          title: { text: '图件下载统计',x:'left' },
-          tooltip : {
-            trigger: 'axis'
-          },
-          legend: {
-            data:["图件下载次数"]
-          },
-          toolbox: {
-            show : true,
-            feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {show: true, type: ['line', 'bar']},
-              restore : {show: true},
-              saveAsImage : {show: true}
-            }
-          },
-          calculable : true,
-          xAxis:[
-            {
-              type : 'category',
-              axisLabel : {
-                interval:2,
-                rotate:-30
-              },
-              data : xData
-            }
-          ],
-          yAxis : [
-            {
-              type : 'value',
-              axisLabel : {
-                formatter: '{value}'
-              }
-            }
-          ],
-          series : [{
-            name:'图件下载次数',
-            type:'line',
-            data:yData,
-            markPoint : {
-              data:[
-                {type : 'max', name: '最大值'},
-                {type : 'min', name: '最小值'}
-              ]
-            },
-            markLine : {
-              data:[
-                {type : 'average', name: '平均值'}
-              ]
-            },
-            itemStyle:{
-              normal: {
-                color:"#2f80bc"
-              },
-              emphasis: {
-                
-              }
-            }
-          }]
-        });
-      }
-    }, function(response) {
-      console.log(response);
-    });
+    // 基于准备好的dom，初始化echarts实例
+    var userUploadChart = echarts.init(document.getElementById('user-upload-chart'));
+    this.userUploadChart = userUploadChart;
+    
+    // 基于准备好的dom，初始化echarts实例
+    var mapDownloadChart = echarts.init(document.getElementById('image-download-chart'));
+    this.mapDownloadChart = mapDownloadChart;
+    
+    // 基于准备好的dom，初始化echarts实例
+    var userDownloadChart = echarts.init(document.getElementById('user-download-chart'));
+    this.userDownloadChart = userDownloadChart;
+
+    //用户贡献度统计
     var userDownloadUrl = SERVER_API.stats + '/userdownloads';
     this.$http({ url: userDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
-      if (response.data.length > 0) {
-        var data = response.data;
-        var messages = [];
-        var xData = [];
-        var yData = [];
-        for(let i=0;i<data.length;i++){
-          if(data[i].organization){
-            xData.push(data[i].organization);
-          }else if(data[i].location){
-            xData.push(data[i].location);
-          }else if(data[i].name){
-            xData.push(data[i].name);
-          }else if(data[i].username){
-            xData.push(data[i].username);
-          }
-          yData.push(data[i].downloadNum);
-        }
-
-        // 基于准备好的dom，初始化echarts实例
-        var uChart = echarts.init(document.getElementById('user-download-chart'));
-        // 绘制图表
-        uChart.setOption({
-          title: { text: '用户贡献度',x:'left' },
-          tooltip : {
-            trigger: 'axis'
-          },
-          legend: {
-            data:["用户贡献度"]
-          },
-          toolbox: {
-            show : true,
-            feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {show: true, type: ['line', 'bar']},
-              restore : {show: true},
-              saveAsImage : {show: true}
-            }
-          },
-          calculable : true,
-          xAxis:[
-            {
-              type : 'category',
-              axisLabel : {
-                interval:1,
-                rotate:-30
-              },
-              data : xData
-            }
-          ],
-          yAxis : [
-            {
-              type : 'value'
-            }
-          ],
-          series : [{
-            name:'用户贡献度',
-            type:'bar',
-            data:yData,
-            markPoint : {
-              data:[
-                {type : 'max', name: '最大值'},
-                {type : 'min', name: '最小值'}
-              ]
-            },
-            markLine : {
-              data:[
-                {type : 'average', name: '平均值'}
-              ]
-            },
-            itemStyle:{
-              normal: {
-                color:"#2f80bc"
-              },
-              emphasis: {
-                
-              }
-            }
-          }]
-        });
-      }
+      var data = response.data;
+      this.userDownloadStats = data;
+      this.$http({ url: SERVER_API.uploads, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        var uploads = response.data;
+        this.calcStats(uploads,1);
+        this.calcStats(uploads,2);
+        this.calcStats(uploads,3);
+      }, function(response) {});
     }, function(response) {
       console.log(response);
+    });
+    //获取制图区域统计信息
+    var locationUrl = SERVER_API.stats+"/location";
+    this.$http({ url: locationUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        for(let i=0;i<data.length;i++){
+          if(!data[i].location){
+            data[i].location = "未指定";
+          }
+        }
+        this.location_tags = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取制图地区失败！',timeout:3000 });
+    });
+
+    //获取制图年份统计信息
+    var yearUrl = SERVER_API.stats+"/year";
+    this.$http({ url: yearUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        for(let i=0;i<data.length;i++){
+          if(!data[i].year){
+            data[i].year = "未指定";
+          }
+        }
+        this.year_tags = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取制图年份失败！',timeout:3000 });
+    });
+
+    //获取主题词统计信息
+    var tagUrl = SERVER_API.stats+"/tags";
+    this.$http({ url: tagUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if (response.data.length > 0) {
+        var data = response.data;
+        this.theme_tags = data;
+      }
+    },function(response){
+      this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
     });
   },
   
   data() {
     return {
+      location_tags:[],
+      year_tags:[],
+      theme_tags:[],
+      userDownloadStats:[],//用户贡献
+      userUploadStats:[],//用户上传
+      mapDownloadStats:[],//地图下载
+      userDownloadChart:{},
+      userUploadChart:{},
+      mapDownloadChart:{},
+      barOption:{
+        title: { text: '用户贡献度',x:'left' },
+        tooltip : {
+          trigger: 'axis'
+        },
+        legend: {
+          data:["用户贡献度"]
+        },
+        toolbox: {
+          show : true,
+          feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+          }
+        },
+        calculable : true,
+        xAxis:[
+          {
+            type : 'category',
+            axisLabel : {
+              interval:1,
+              rotate:-30
+            },
+            data : []
+          }
+        ],
+        yAxis : [
+          {
+            type : 'value'
+          }
+        ],
+        series : [{
+          name:'用户贡献度',
+          type:'bar',
+          barWidth: 20,
+          data:[],
+          markPoint : {
+            data:[
+              {type : 'max', name: '最大值'},
+              {type : 'min', name: '最小值'}
+            ]
+          },
+          markLine : {
+            data:[
+              {type : 'average', name: '平均值'}
+            ]
+          },
+          itemStyle:{
+            normal: {
+              color:"#2f80bc"
+            },
+            emphasis: {
+              
+            }
+          }
+        }]
+      },
+      lineOption:{
+        title: { text: '图件下载统计',x:'left' },
+        tooltip : {
+          trigger: 'axis'
+        },
+        legend: {
+          data:["图件下载次数"]
+        },
+        toolbox: {
+          show : true,
+          feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+          }
+        },
+        calculable : true,
+        xAxis:[
+          {
+            type : 'category',
+            axisLabel : {
+              interval:2,
+              rotate:-30
+            },
+            data : []
+          }
+        ],
+        yAxis : [
+          {
+            type : 'value',
+            axisLabel : {
+              formatter: '{value}'
+            }
+          }
+        ],
+        series : [{
+          name:'图件下载次数',
+          type:'line',
+          data:[],
+          markPoint : {
+            data:[
+              {type : 'max', name: '最大值'},
+              {type : 'min', name: '最小值'}
+            ]
+          },
+          markLine : {
+            data:[
+              {type : 'average', name: '平均值'}
+            ]
+          },
+          itemStyle:{
+            normal: {
+              color:"#2f80bc"
+            },
+            emphasis: {
+              
+            }
+          }
+        }]
+      },
+      pieOption:{
+        title: { text: '图件资源统计',x:'left' },
+        tooltip : {
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          top:"10%",
+          data:[]
+        },
+        toolbox: {
+          show : true,
+          feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+          }
+        },
+        series: [{
+          name: '上传数量',
+          center: ['70%', '60%'],
+          radius:'60%',
+          type: 'pie',
+          data: []
+        }]
+      }
+
     }
   }
 }
