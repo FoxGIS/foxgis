@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="meta-title">
+    <div class="meta-explain">
       <b>符号说明</b>
       <div class="description">
         <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value="dataset.description" @change="editDescription($event)"></mdl-textfield>
@@ -183,6 +183,12 @@ export default {
   background-color: #ababab;
   cursor:pointer;
 } 
+
+.meta-explain {
+  padding: 12px 0 0 5px;
+  margin: 0;
+  background-color: #eee;
+}
 
 .meta-title{
   margin-top: 12px;

@@ -2,12 +2,13 @@
 <div class="foxgis-data-cards">
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+
     <div class="card-click">
-      <i class="material-icons" v-on:click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)" title="显示详情">lock_outline</i>
+      <i class="material-icons">lock_outline</i>
     </div>
 
     <div class="card-middle">
-      <div class="name">
+      <div class="name" v-on:click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">
         <input type="text" maxlength="50" class="tileset-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}"/>
       </div>
 
@@ -32,8 +33,8 @@
     </div>
 
     <div class="card-right">
-      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>|
-      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadFile(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">下载</mdl-anchor-button>|
+      <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tileset_id)">删除</mdl-anchor-button>
     </div>
 
     <div class="details">
@@ -118,24 +119,23 @@ export default {
       var access_token = Cookies.get('access_token');
       var that = this;
       var url = SERVER_API.tilesets + '/' + username + '/' + tileset_id;
-      if(e.target.textContent === "lock_outline"){
-        e.target.textContent = "lock_open";
-        e.target.title = "隐藏详情";
-      }else{
-        e.target.textContent = "lock_outline";
-        e.target.title = "显示详情";
-      }
       //移除之前的active
       var activeCards = this.$el.querySelector('.active');
+      var icons=this.$el.querySelector('.isOpen');
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
+        icons.className = icons.className.replace(' isOpen','');
+        icons.innerText = 'lock_outline';
       }
       //给当前的dom添加active
+      var iconName = e.target.parentElement.parentElement.children[0].children[0].className;
       var claName = e.target.parentElement.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
+        iconName = iconName.replace(' isOpen','');
         e.target.parentElement.parentElement.className = claName;
       }else{
+        iconName += ' isOpen';
         claName += ' active';
         //do somthing
         this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
@@ -149,6 +149,13 @@ export default {
           this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
           e.target.parentElement.parentElement.className = claName;
         })
+      }
+
+      e.target.parentElement.parentElement.children[0].children[0].className = iconName;
+      if(iconName.indexOf('isOpen')!=-1){
+        e.target.parentElement.parentElement.children[0].children[0].innerText ='lock_open';
+      }else{
+        e.target.parentElement.parentElement.children[0].children[0].innerText = 'lock_outline';
       }
   
     },
@@ -355,13 +362,16 @@ export default {
 .card-click .material-icons {
   position: relative;
   top: 55px;
-  cursor:pointer;
 }
 
 .card-middle {
   float: left;
   width: 650px;
   height: 120px;
+}
+
+.card-middle select {
+  background-color: transparent;
 }
 
 .card-right{
@@ -372,6 +382,7 @@ export default {
   text-align: right;
   color: #2f80bc;
 }
+
 .card-right .mdl-button{
   padding: 0;
   width: 40px;
@@ -387,6 +398,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  cursor: pointer;
 }
 
 .name input {
@@ -396,6 +408,7 @@ export default {
   padding: 5px 5px 5px 0;
   width: 360px;
   transition: 0.2s;
+  background-color: transparent;
 }
 
 .small-pic {
@@ -415,6 +428,7 @@ export default {
   max-width:100%;
   height:auto; 
 }
+
 .card .meta {
   margin: 5px 0;
   font-size: 12px;
@@ -458,6 +472,10 @@ export default {
   margin: 24px -24px;
 }
 
+.foxgis-data-cards .card:nth-child(even){
+  background-color: rgb(250,250,250);
+}
+
 .title{
   padding: 12px 35px 0 35px;
 }
@@ -478,6 +496,7 @@ export default {
 .tags input {
   outline: none;
   border: 0;
+  background-color: transparent;
 }
 
 .tag {
