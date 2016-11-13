@@ -524,10 +524,6 @@ span {
 /* 上传文件按钮 */
 #picker{
   width: 88px;
-  height: 40px;
-  position: relative;
-  display: inline-block;
-  line-height: 1.428571429;
-  vertical-align: middle;
+  height: 30px;
 }
 </style>

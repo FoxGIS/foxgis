@@ -1,7 +1,8 @@
 <template>
   <div>
     <div id="style-header">
-      <b style="color:white;">行政区划</b>
+      <div class="block"></div>
+      <div class="text"><span>行政区划</span></div>
     </div>
     <div id="district-container"><ul id="admin-tree" class="ztree"></ul></div>
   </div>
@@ -42,16 +43,20 @@ export default {
 
 <style scoped>
 #style-header {
-  height: 40px;
-  padding: 5px;
-  background-color: #2061C6;
+  height: 20px;
+  padding: 15px 0 15px 5px;
+  border-bottom: 1px solid #e6e6e6;
 }
 
-#style-header b {
-  display: inline-block;
-  width: 125px;
-  height: 40px;
-  line-height: 40px;
+#style-header .block{
+  width: 5px;
+  height: 18px;
+  background-color: #2c67ed;
+  float: left;
+  margin: 2px;
+}
+#style-header .text{
+  position: relative;
   white-space: nowrap;
   text-overflow:ellipsis;
   overflow:hidden;

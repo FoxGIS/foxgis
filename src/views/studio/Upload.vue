@@ -112,8 +112,7 @@
       <mdl-anchor-button colored v-mdl-ripple-effect @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button>|
       <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">删除</mdl-anchor-button>|
       <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadUpload(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].upload_id)">下载</mdl-anchor-button>
-    </div>
-    
+    </div> 
   </div>
 
   <foxgis-pagination v-show="displayUploads.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
@@ -1140,7 +1139,6 @@ span {
 }
 
 .card {
-  border-radius: 2px 2px 0 0;
   transform: translatez(0);
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
@@ -1149,10 +1147,9 @@ span {
   transition: .2s;
 }
 
-.card + .card {
-  margin-top: 5px;
+.card input,.card select{
+  background-color: transparent;
 }
-
 .name {
   margin: 10px 0 0 0;
   display: flex;
@@ -1321,7 +1318,7 @@ span {
   width: 550px;
 }
 #batch-btn-box{
-  margin-top:5px;
+  margin-top:30px;
   position:relative;
   height:45px;
   background-color: white;
@@ -1433,5 +1430,8 @@ span {
   height: 24px;
   min-width: inherit;
   color: #2f80bc;
+}
+.foxgis-upload .card:nth-child(odd){
+  background-color: rgb(250,250,250);
 }
 </style>

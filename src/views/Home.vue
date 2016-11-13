@@ -3,6 +3,10 @@
   <foxgis-layout>
     <div class="content">
       <div class="home-show">
+        <!-- <video loop muted autoplay preload>
+          <source src="https://www.mapbox.com/mapbox-studio/header.webm" type="video/webm" width="100%" height="auto">
+          <source src="https://www.mapbox.com/mapbox-studio/header.mp4" type="video/mp4" width="100%" height="auto">
+        </video> -->
         <div class="home-title">
           <div>
             <span style="font-size: 20px;">辅助</span>
@@ -355,12 +359,17 @@ export default {
   overflow: auto;
 }
 
-.home-show{
+ .home-show{
   background-repeat: no-repeat;
   height: 250px;
   background-position: center;
   background-color: #2c98e1;
   background-image: url("../../static/images/login_bac.jpg");
+  overflow: hidden;
+} 
+.home-show video{
+  width: 100%;
+  height: auto;
 }
 .home-title{
   width: 800px;

@@ -306,7 +306,7 @@ export default {
 .stats-title{
   height: 40px;
   background-color: white;
-  border-bottom: 10px solid #e6e6e6;;
+  border-bottom: 10px solid #e6e6e6;
 }
 
 .stats-title .block{

@@ -25,20 +25,20 @@
           </a>
         </nav>
         <div class="mdl-layout-spacer"></div>
-        <nav class="mdl-navigation">
+        <!-- <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/studio/user' }">
             <i class="material-icons">account_circle</i>{{username}}
           </a>
           <a class="mdl-navigation__link" v-on:click.prevent="signout">
             <i class="material-icons">exit_to_app</i>注销
           </a>
-        </nav>
+        </nav> -->
       </div>
       <div class="mdl-layout__content">
         <router-view></router-view>
       </div>
     </div>
-    
+    <foxgis-footer></foxgis-footer>
   </div>
   </foxgis-layout>
 </div>
@@ -50,16 +50,7 @@ import Cookies from 'js-cookie'
 
 export default {
   methods: {
-    signout: function(){
-      Cookies.remove('username');
-      Cookies.remove('access_token');
-      Cookies.remove('name');
-      Cookies.remove('phone');
-      Cookies.remove('email');
-      Cookies.remove('location');
-      Cookies.remove('organization');
-      window.location.href = '/';
-    }
+    
   },
   ready() {
     /*global componentHandler */
@@ -198,7 +189,7 @@ export default {
   clear:both;
   float: right;
   position: relative;
-  bottom: 336px;
+  bottom: 252px;
 }
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-color: #e4e4e4;

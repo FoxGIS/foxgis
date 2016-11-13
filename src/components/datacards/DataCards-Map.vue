@@ -67,7 +67,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 50px;
   overflow: hidden;
   text-align: center;
 }

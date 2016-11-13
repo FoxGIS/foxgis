@@ -1,79 +1,88 @@
 <template>
-  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <div class="wrapper">
-    <div id="user-info">
-      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
-        <tbody>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
-            <td v-if="userInfo.username"><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
-            <td v-else><input disabled id="username-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
-            <td v-if="userInfo.is_verified"><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
-            <td v-else><input disabled id="verify-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr v-if="userInfo.showPasswordPanel === false" @click="changePassword" title="点此修改密码">
-            <td class="mdl-data-table__cell--non-numeric"><b>密码：</b></td>
-            <td><input disabled value="******"></td>
-          </tr>
-          <tr v-if="userInfo.showPasswordPanel === true">
-            <td class="mdl-data-table__cell--non-numeric"><b>旧密码：</b></td>
-            <td><input id="old-password-input" type="password" @change="changePassword" value=""></td>
-          </tr>
-          <tr v-if="userInfo.showPasswordPanel === true">
-            <td class="mdl-data-table__cell--non-numeric"><b>新密码：</b></td>
-            <td><input id="new-password-input" type="password" @change="changePassword" value=""></td>
-          </tr>
-          <tr v-if="userInfo.showPasswordPanel === true">
-            <td class="mdl-data-table__cell--non-numeric"><b>确认密码：</b></td>
-            <td><input id="new2-password-input" type="password" @change="changePassword" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
-            <td v-if="userInfo.name"><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
-            <td v-else><input id="name-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
-            <td v-if="userInfo.email"><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
-            <td v-else><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
-            <td v-if="userInfo.telephone"><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
-            <td v-else><input id="phone-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
-            <td v-if="userInfo.mobile"><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
-            <td v-else><input id="mobile-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
-            <td v-if="userInfo.location"><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
-            <td v-else><input disabled id="location-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
-            <td v-if="userInfo.organization"><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
-            <td v-else><input id="organization-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
-            <td v-if="userInfo.position"><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
-            <td v-else><input id="position-input" @change="infoChange" value=""></td>
-          </tr>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
-            <td v-if="userInfo.createdAt"><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
-            <td v-else><input disabled id="createdAt-input" value=""></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div>
+    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
+    <foxgis-layout>
+      <div class="wrapper">
+        <div id="user-info">
+          <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
+            <tbody>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>用户名：</b></td>
+                <td v-if="userInfo.username"><input disabled id="username-input" @change="infoChange" value="{{userInfo.username}}"></td>
+                <td v-else><input disabled id="username-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>是否验证：</b></td>
+                <td v-if="userInfo.is_verified"><input disabled id="verify-input" @change="infoChange" value="{{userInfo.is_verified}}"></td>
+                <td v-else><input disabled id="verify-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr v-if="userInfo.showPasswordPanel === false" @click="changePassword" title="点此修改密码">
+                <td class="mdl-data-table__cell--non-numeric"><b>密码：</b></td>
+                <td><input disabled value="******"></td>
+              </tr>
+              <tr v-if="userInfo.showPasswordPanel === true">
+                <td class="mdl-data-table__cell--non-numeric"><b>旧密码：</b></td>
+                <td><input id="old-password-input" type="password" @change="changePassword" value=""></td>
+              </tr>
+              <tr v-if="userInfo.showPasswordPanel === true">
+                <td class="mdl-data-table__cell--non-numeric"><b>新密码：</b></td>
+                <td><input id="new-password-input" type="password" @change="changePassword" value=""></td>
+              </tr>
+              <tr v-if="userInfo.showPasswordPanel === true">
+                <td class="mdl-data-table__cell--non-numeric"><b>确认密码：</b></td>
+                <td><input id="new2-password-input" type="password" @change="changePassword" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>姓名：</b></td>
+                <td v-if="userInfo.name"><input id="name-input" @change="infoChange" value="{{userInfo.name}}"></td>
+                <td v-else><input id="name-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>邮箱：</b></td>
+                <td v-if="userInfo.email"><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+                <td v-else><input id="email-input" @change="infoChange" value="{{userInfo.email}}"></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>固定电话：</b></td>
+                <td v-if="userInfo.telephone"><input id="phone-input" @change="infoChange" value="{{userInfo.telephone}}"></td>
+                <td v-else><input id="phone-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>手机号码：</b></td>
+                <td v-if="userInfo.mobile"><input id="mobile-input" @change="infoChange" value="{{userInfo.mobile}}"></td>
+                <td v-else><input id="mobile-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>位置：</b></td>
+                <td v-if="userInfo.location"><input disabled id="location-input" @change="infoChange" value="{{userInfo.location}}"></td>
+                <td v-else><input disabled id="location-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>单位：</b></td>
+                <td v-if="userInfo.organization"><input id="organization-input" @change="infoChange" value="{{userInfo.organization}}"></td>
+                <td v-else><input id="organization-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>职务/职称：</b></td>
+                <td v-if="userInfo.position"><input id="position-input" @change="infoChange" value="{{userInfo.position}}"></td>
+                <td v-else><input id="position-input" @change="infoChange" value=""></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>注册时间：</b></td>
+                <td v-if="userInfo.createdAt"><input disabled id="createdAt-input" value="{{userInfo.createdAt}}"></td>
+                <td v-else><input disabled id="createdAt-input" value=""></td>
+              </tr>
+            </tbody>
+          </table>
+          <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
+        </div>
+        
+        <foxgis-footer></foxgis-footer>
+      </div>
+      
+    </foxgis-layout>
   </div>
+  
 </template>
 
 
@@ -280,6 +289,16 @@ export default {
       }, function(response) {
           this.$broadcast('mailSent', { message: message+'修改失败！',timeout:3000 });
       });
+    },
+    logout: function(){
+      Cookies.remove('username');
+      Cookies.remove('access_token');
+      Cookies.remove('name');
+      Cookies.remove('phone');
+      Cookies.remove('email');
+      Cookies.remove('location');
+      Cookies.remove('organization');
+      window.location.href = '/';
     }
   
   },
@@ -322,7 +341,6 @@ export default {
 
 <style scoped>
 .wrapper {
-  position:absolute;
   width:100%;
   height:100%;
   display: -webkit-box;
@@ -336,9 +354,10 @@ export default {
   -ms-flex-direction: column;
   flex-direction: column;
   text-align: center;
+  overflow: auto;
 }
 #user-info{
-  margin: auto;
+  margin: 50px auto 20px auto;
 }
 #user-info table{
   width:350px;
@@ -357,5 +376,16 @@ input[disabled]{
 }
 input:hover{
   background-color:transparent;
+}
+#logout-button {
+  font-family: inherit;
+  width: 125px;
+  font-size: 18px;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.footer-bottom{
+  width: 100%;
 }
 </style>

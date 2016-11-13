@@ -1,8 +1,11 @@
 <template>
 <div>
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <div id="header"></div>
+  
   <div id="edit-wrap">
+    <!-- <div class="header-top">
+     <span>制图编辑器</span>
+    </div> -->
     <nav class="mdl-navigation" id="main-control">
       <img class="mdl-layout-icon" src="../assets/logo.png"></img>
       <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick" title="样式配置"><i class="material-icons">map</i></a>
@@ -179,7 +182,7 @@ export default {
         } 
         e.target.innerHTML = '确定';
         document.getElementById("back-button").disabled = false;
-        document.getElementById("back-button").style.background = '#ff4081'; 
+        document.getElementById("back-button").style.background = '#2061c6'; 
         document.getElementById("back-button").style.display = 'block';
       }else if(e.target.textContent === '确定'){
         var options = {};
@@ -314,6 +317,23 @@ export default {
 </script>
 
 <style scoped>
+
+/*  .header-top{
+ background-color: #2388d0;
+ height: 40px;
+ width: 230px;
+ position: absolute;
+ left: 0;
+ top: 0px;
+ text-align: center;
+}
+
+.header-top span{
+ font-size: 20px;
+ color: white;
+ line-height: 40px;
+} */
+
 #main-control .save-style{
   padding: 10px 0 5px 5px;
   bottom: 0px;
@@ -324,29 +344,19 @@ export default {
   background-color: blue;
 }
 
-#header {
-  height: 50px;
-  background-image: url('../assets/header.jpg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: #2061C6;
-  box-shadow: 0 5px 5px 0 rgba(32,97,198,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-  margin-bottom: 5px;
-}
-
 #edit-wrap {
   display: flex;
-  height: calc(100% - 50px);
+  height: 100%;
   flex-direction: column;
 }
 
 #main-control {
   width: 30px;
   flex-direction: column;
-  height: calc(100% - 55px);
+  height: 100%;
   box-sizing: border-box;
   position: absolute;
-  background-color: #2061C6;
+  background-color: #2388d0;
 }
 
 #main-control img {
@@ -369,21 +379,22 @@ export default {
 }
 
 #main-control .control-active {
-  color: #2061C6;
-  background-color: #E5E2D3;
+  color: #ffffff;
+  background-color: #1c7dc2;
 }
 
 #toc-container {
   width: 200px;
-  height: calc(100% - 55px);
+  height: 100%;
   box-sizing: border-box;
   position: absolute;
   left: 30px;
+  background-color: white;
 }
 
 #style-editor {
   width: 350px;
-  height: calc(100% - 55px);
+  height: 100%;
   padding: 0;
   border: 0px;
   box-sizing: border-box;
@@ -394,28 +405,29 @@ export default {
 
 #map-tool {
   position: absolute;
-  bottom: 20px;
-  left: 33px;
-  margin: 0 auto;
+  left: 30px;
+  bottom: 0px;
   display: flex;
-  width: 194px;
+  width: 200px;
+  height: 30px;
 }
 
 #map-tool button {
-  flex:1;
   color: #fff;
-  background-color: #ff4081;
+  background-color: #1c7ec4;
   border: none;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
   border-radius: 2px;
-  height: 36px;
-  line-height: 36px;
-  font-size: 16px;
+  height: 26px;
+  width: 55px;
+  line-height: 26px;
+  font-size: 14px;
   font-weight: 500;
-  min-width: 64px;
-  padding: 0 16px;
+  min-width: 30px;
+  padding: 0;
   cursor: pointer;
   vertical-align: middle;
+  margin: 0 20px;
 }
 
 #back-button {
