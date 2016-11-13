@@ -1105,7 +1105,6 @@ span {
   margin-right: auto;
 }
 .search {
-  margin-top: 30px;
   text-align: center; 
   border-bottom: 1px solid #e4e4e4;
 }
