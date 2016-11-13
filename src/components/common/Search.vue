@@ -33,7 +33,6 @@ export default {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 9px 0px;
   font: 16px arial,sans-serif;
   border: none;
   outline: none;

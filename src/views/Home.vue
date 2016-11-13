@@ -3,10 +3,6 @@
   <foxgis-layout>
     <div class="content">
       <div class="home-show">
-        <!-- <video loop muted autoplay preload>
-          <source src="https://www.mapbox.com/mapbox-studio/header.webm" type="video/webm" width="100%" height="auto">
-          <source src="https://www.mapbox.com/mapbox-studio/header.mp4" type="video/mp4" width="100%" height="auto">
-        </video> -->
         <div class="home-title">
           <div>
             <span style="font-size: 20px;">辅助</span>
@@ -218,48 +214,19 @@ export default {
       if(response.data.length > 0){
         var data = response.data;
         var messages = [];
-        /*var xData = [];
-        var yData=[];*/
         for(let i=0;i<data.length;i++){
           if(data[i].location){
           	messages.push({"name":data[i].location,"total":data[i].total});
-          	/*xData.push(data[i].location);
-          	yData.push({value:data[i].total,name:data[i].location});*/
           }else if(data[i].organization){
           	messages.push({"name":data[i].organization,"total":data[i].total});
-          	/*xData.push(data[i].organization);
-          	yData.push({value:data[i].total,name:data[i].organization});*/
           }else if(data[i].name){
           	messages.push({"name":data[i].name,"total":data[i].total});
-          	/*xData.push(data[i].name);
-          	yData.push({value:data[i].total,name:data[i].name});*/
           }else if(data[i].owner){
           	messages.push({"name":data[i].owner,"total":data[i].total});
-          	/*xData.push(data[i].owner);
-          	yData.push({value:data[i].total,name:data[i].owner});*/
           }
         }
         this.uploadInfo = messages;
-
-        /*// 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('stats-chart'));
-        // 绘制图表
-        myChart.setOption({
-          title: { text: '用户上传饼图',x:'center' },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            top:"10%",
-            data:xData
-          },
-          series: [{
-            name: '上传数量',
-            center: ['70%', '60%'],
-            radius:'60%',
-            type: 'pie',
-            data: yData
-          }]
-        });	*/	
+	
       }
     }, function(response) {
       console.log(response);
@@ -519,6 +486,7 @@ table tr td:nth-child(3){
   left: 250px;
   box-shadow: none;
   display: inline-block;
+  overflow: hidden;
 }
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover{
   background-color: #f3f2f2;

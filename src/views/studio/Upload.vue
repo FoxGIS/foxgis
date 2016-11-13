@@ -1133,6 +1133,7 @@ span {
 .filter .condition {
   margin: 2px 0;
   border-bottom: 1px dashed #e8e6e6;
+  min-height: 30px;
 }
 .filter .condition:last-child{
     border: none;

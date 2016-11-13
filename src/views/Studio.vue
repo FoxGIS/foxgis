@@ -24,7 +24,6 @@
             <i class="material-icons">image</i>决策用图<span v-mdl-badge.number="upload_nums"></span>
           </a>
         </nav>
-        <div class="mdl-layout-spacer"></div>
       </div>
       <div class="mdl-layout__content">
         <router-view></router-view>
@@ -161,6 +160,7 @@ export default {
 
 <style scoped>
 .layout-container{
+  position: relative;
   width: 1100px;
   /* background-color: white; */
   margin: 10px auto;
@@ -168,21 +168,22 @@ export default {
 .mdl-layout__drawer{
   width: 200px;
   display: block;
-  position: relative;
-  float: left;
+  position: absolute;
+  overflow: initial;
+  /* float: left; */
   -webkit-transform: inherit;
   transform: inherit;
   box-shadow: none;
   z-index: initial;
-  background-color: white;
+  background-color: transparent;
 }
 .mdl-layout__content{
   width: 895px;
   display: block;
   clear:both;
   float: right;
-  position: relative;
-  bottom: 252px;
+  /* position: relative;
+  bottom: 252px; */
 }
 .mdl-layout--fixed-drawer>.mdl-layout__content {
   background-color: #e4e4e4;
@@ -190,6 +191,7 @@ export default {
 
 .mdl-layout__drawer .mdl-navigation{
   padding: 0;
+  background-color: white;
 }
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link{
   padding: 8px 7px;
