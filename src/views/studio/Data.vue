@@ -198,10 +198,6 @@ span {
   height: 40px;
 }
 
-.foxgis-data-cards {
-  margin-top: 40px;
-}
-
 /* 进度条样式 */
 .progress-bar{
   display: block;
