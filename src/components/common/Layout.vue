@@ -133,8 +133,9 @@ export default {
   left: 100px;
 }
 
-.mdl-navigation .v-link-active{
+.mdl-layout__header-row .mdl-navigation__link.v-link-active{
   background-color: rgb(15, 109, 178);
+  color: white;
 }
 
 .mdl-layout__header-row .mdl-navigation__link {

@@ -11,44 +11,8 @@
           <mdl-button raised accent v-mdl-ripple-effect class="search-button" @click="search" style="background-color: white;"><i class="material-icons">search</i></mdl-button>
         </div>
 
-        <div class="filter">
-          <div style="width: 980px;">
-            <div class="condition" v-if="theme_tags.length>0">
-              <strong>主题词：</strong>
-              <div class="items">
-                <a v-for="tag in theme_tags" @click="conditionClick($event,1)">{{ tag.tag }}
-                  <span>({{ tag.total }})</span>
-                </a>
-              </div>
-              <div class="more">
-                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
-              </div>
-            </div>
-            <div class="condition" v-if="location_tags.length>0">
-              <strong>制图区域：</strong>
-              <div class="items">
-                <a v-for="location in location_tags"
-                      @click="conditionClick($event,2)">{{ location.location }}
-                      <span>({{ location.total }})</span>
-                </a>
-              </div>
-              <div class="more">
-                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
-              </div>
-            </div>
-            <div class="condition" v-if="year_tags.length>0">
-              <strong>制图年份：</strong>
-              <div class="items">
-                <a v-for="year in year_tags | orderBy" @click="conditionClick($event,3)">{{ year.year }}
-                  <span>({{ year.total }})</span>
-                </a>
-              </div>
-              <div class="more">
-                <a v-on:click.prevent="showMore" style="color: #b15ab1;">更多</a>
-              </div>
-            </div>
-          </div>
-        </div> 
+        <foxgis-conditions :location_tags="location_tags" :year_tags="year_tags" :theme_tags="theme_tags" @condition-select = "conditionSelect"></foxgis-conditions>
+
       </div>
       
 
@@ -240,12 +204,15 @@ export default {
         e.target.innerHTML = "更多";
       }
     },
-    conditionClick: function(e,type){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
+    conditionSelect: function(data){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
       this.pageConfig.skip = 0;
       this.pageConfig.page_item_num = 8;    
       this.pageConfig.current_page = 1;
       this.pageConfig.first_page = 1;
-      var str = e.target.textContent.trim();
+      this.selected_location_tags = data.selectedLocations;
+      this.selected_year_tags = data.selectedYears;
+      this.selected_theme_tags = data.selectedThemes;
+      /*var str = e.target.textContent.trim();
       str = str.substr(0, str.indexOf('(')).trim();
       if(e.target.className == 'filter condition active'){
         e.target.className = 'none';
@@ -279,7 +246,7 @@ export default {
           this.selected_theme_tags = _.uniq(this.selected_theme_tags);
         }
         
-      }
+      }*/
       this.getNewUploads();
     },
 
@@ -707,43 +674,6 @@ input:-moz-placeholder { text-align: center; }
   height: auto;
   padding: 0 10px;
   line-height: 30px;
-}
-
-.filter {
-  margin:5px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.filter span {
-  width: 70px;
-  display: inline-block;
-  font: normal 14px/5px "SimSun";
-}
-
-.filter .condition {
-  margin: 2px 0;
-  border: none;
-}
-
-.filter .condition a {
-  cursor: pointer;
-  text-decoration: none;
-  margin-left: 10px;
-  font-size: .9em;
-  color: #666;
-}
-
-.filter .condition a span {
-  width: auto;
-  color: #3f51b5;
-}
-
-.filter .condition .active{
-  cursor: pointer;
-  color: blue;
-  display: inline-block;
 }
 
 .search-results {

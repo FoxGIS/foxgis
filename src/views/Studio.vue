@@ -182,6 +182,7 @@ export default {
   transform: inherit;
   box-shadow: none;
   z-index: initial;
+  background-color: white;
 }
 .mdl-layout__content{
   width: 895px;
@@ -208,8 +209,8 @@ export default {
   color: #2f80bc;
 }
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
-    background-color: #ffffff;
-    color: #2f80bc;
+  background-color: #ffffff;
+  color: #2f80bc;
 }
 
 .material-icons {
