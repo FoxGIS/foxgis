@@ -18,27 +18,33 @@
     </div>
 
     <div class="filter">
-      <div class="condition">
-        <span>主题词：</span>
-        <a v-for="tag in theme_tags" v-if="$index<10"
-            @click="conditionClick($event,1)">{{ tag }}
-        </a>
-      </div>
-      <div class="condition">
-        <span>制图区域：</span>
-        <a v-for="location in location_tags" v-if="$index<8"
-            @click="conditionClick($event,2)" class = "{{this.selected_location_tags.indexOf(location.data)===-1?'none':'filter condition active'}}">{{ location.data }}
-            <span>({{ location.num }})</span>
-        </a>
-      </div>
-      <div class="condition">
-        <span>制图年份：</span>
-        <a v-for="year in year_tags | orderBy" v-if="$index<8"
-            @click="conditionClick($event,3)" class = "{{this.selected_year_tags.indexOf(year.data)===-1?'none':'filter condition active'}}">{{ year.data }}
-            <span>({{ year.num }})</span>
-        </a>
+      <div style="width:800px">
+        <div class="condition">
+          <strong>主题词：</strong>
+          <div class="items">
+            <a v-for="tag in theme_tags" v-if="$index<10" @click.stop.prevent="conditionClick($event,1)">{{ tag }}
+            </a>
+          </div>
+        </div>
+        <div class="condition">
+          <strong>制图区域：</strong>
+          <div class="items">
+            <a v-for="location in location_tags" v-if="$index<8" @click.stop.prevent="conditionClick($event,2)" class = "{{this.selected_location_tags.indexOf(location.data)===-1?'none':'active'}}">{{ location.data }}
+              <span>({{ location.num }})</span>
+            </a>
+          </div>
+        </div>
+        <div class="condition">
+          <strong>制图年份：</strong>
+          <div class="items">
+            <a v-for="year in year_tags | orderBy" v-if="$index<8" @click.stop.prevent="conditionClick($event,3)" class = "{{this.selected_year_tags.indexOf(year.data)===-1?'none':'active'}}">{{ year.data }}
+              <span>({{ year.num }})</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
   
 
@@ -435,10 +441,13 @@ export default {
     },
 
     conditionClick: function(e,type){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
-      var str = e.target.textContent.trim();
-      str = str.substr(0, str.indexOf('(')).trim();
-      if(e.target.className == 'filter condition active'){
-        e.target.className = 'none';
+      var target = $(e.currentTarget);
+      var str = target.text().trim();
+      if(str.indexOf('(')!==-1){
+        str = str.substr(0, str.indexOf('(')).trim();
+      }
+      if(target.hasClass("active")){
+        target.attr("class","none");
         if(type == 3){
           var index = this.selected_year_tags.indexOf(str);
           if(index != -1){
@@ -456,7 +465,7 @@ export default {
           }
         }
       }else{
-        e.target.className = 'filter condition active';
+        target.attr("class","active");
         if(type == 3){
           this.selected_year_tags.push(str);
           this.selected_year_tags = _.uniq(this.selected_year_tags);
@@ -1097,9 +1106,6 @@ span {
 }
 .search {
   margin-top: 30px;
-  /* display: flex;
-  justify-content: space-between;
-  align-items: center;*/
   text-align: center; 
   border-bottom: 1px solid #e4e4e4;
 }
@@ -1113,7 +1119,10 @@ span {
 }
 
 .filter {
-  margin-top: 20px;
+  margin:5px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .filter span {
@@ -1123,22 +1132,85 @@ span {
 }
 
 .filter .condition {
-  margin: 2px 0
+  margin: 2px 0;
+  border-bottom: 1px dashed #e8e6e6;
 }
-
+.filter .condition:last-child{
+    border: none;
+}
 .filter .condition a {
   cursor: pointer;
   text-decoration: none;
-  margin-left: 15px;
-  font-size: .9em;
+  margin: 2px 5px;
+  font-size: 14px;
   color: #666;
+  padding: 0 10px;
+  font-family: inherit;
 }
 
 .filter .condition a span {
   width: auto;
-  color: #3f51b5;
+  font-family: inherit;
+  font-size: 12px;
 }
 
+.filter .condition .active{
+  color: #1272bb;
+  display: inline-block;
+  border: 1px solid #1272bb;
+  border-radius: 10px;
+}
+.filter .condition .active span{
+  color: #1272bb;
+}
+.condition{
+  position: relative;
+  border-bottom: 1px dashed #c3c1c1;
+}
+
+.condition strong{
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 65px;
+  height: 18px;
+  color: #666;
+  font-size: 13px;
+  text-align: justify;
+  font-weight: bold;
+  text-justify: distribute-all-lines;
+  text-align-last: justify;
+  -moz-text-align-last: justify;
+  -webkit-text-align-last: justify;
+}
+
+.condition .items{
+  padding: 3px 0px 3px 63px;
+  position: relative;
+  zoom: 1;
+  width: 860px;
+  overflow: hidden;
+  max-height: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+/* .condition .more{
+  position: absolute;
+  right: 2px;
+  bottom: 6px;
+  width: 58px;
+  overflow: hidden;
+}
+
+.filter .condition .more a{
+  color: #2f2f2f;
+  font-size: 12px;
+  margin: 0;
+} */
 .card {
   transform: translatez(0);
   background: #fff;
@@ -1259,11 +1331,6 @@ span {
   clear: both;
   display: block;
   margin: 0 auto;
-}
-
-.filter .condition .active{
-  cursor: pointer;
-  color: blue;
 }
 
 .progress-bar{

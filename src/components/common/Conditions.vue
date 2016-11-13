@@ -5,7 +5,7 @@
         <strong>主题词：</strong>
         <div class="items">
           <a v-for="tag in theme_tags" @click.stop.prevent="conditionClick($event,1)">{{ tag.tag }}
-            <span>({{ tag.total }})</span>
+            <span v-if="tag.total">({{ tag.total }})</span>
           </a>
         </div>
         <div class="more">
@@ -16,7 +16,7 @@
         <strong>制图区域：</strong>
         <div class="items">
           <a v-for="location in location_tags" @click.stop.prevent="conditionClick($event,2)">{{ location.location }}
-            <span>({{ location.total }})</span>
+            <span v-if="location.total">({{ location.total }})</span>
           </a>
         </div>
         <div class="more">
@@ -27,7 +27,7 @@
         <strong>制图年份：</strong>
         <div class="items">
           <a v-for="year in year_tags | orderBy" @click.stop.prevent="conditionClick($event,3)">{{ year.year }}
-            <span>({{ year.total }})</span>
+            <span v-if="year.total">({{ year.total }})</span>
           </a>
         </div>
         <div class="more">
@@ -63,7 +63,9 @@ export default {
     conditionClick:function(e,type){
       var target = $(e.currentTarget);
       var str = target.text().trim();
-      str = str.substr(0, str.indexOf('(')).trim();
+      if(str.indexOf('(')!==-1){
+        str = str.substr(0, str.indexOf('(')).trim();
+      }
       if(target.hasClass("active")){
         target.removeClass("active");
         if(type == 3){

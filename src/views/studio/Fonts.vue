@@ -387,26 +387,18 @@ span {
   transition: .2s;
 }
 
-.card+.card {
-  margin-top: 5px;
-}
-
 .card-click{
   float: left;
-  height: 120px;
+  height: 80px;
   width: 50px;
   text-align: center;
-}
-
-.card-click .material-icons {
-  position: relative;
-  top: 55px;
+  line-height: 80px;
 }
 
 .card-middle {
   float: left;
   width: 650px;
-  height: 120px;
+  height: 80px;
 }
 
 .card-middle select {
@@ -416,8 +408,8 @@ span {
 .card-right{
   width: 100px;
   float: left;
-  height: 120px;
-  line-height: 120px;
+  height: 80px;
+  line-height: 80px;
   text-align: right;
   color: #2f80bc;
 }
@@ -432,7 +424,7 @@ span {
 }
 
 .card .name {
-  margin: 24px 0 0 0;
+  margin: 10px 0 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -442,7 +434,7 @@ span {
 
 .result_data .card.active {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 24px -24px;
+  margin: 10px 0;
 }
 
 .name p {
@@ -453,7 +445,7 @@ span {
 }
 
 .card .meta {
-  margin: 20px 0 5px 0;
+  margin: 10px 0 5px 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
