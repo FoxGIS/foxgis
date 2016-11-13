@@ -189,10 +189,10 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 750px;
+  width: 850px;
   max-width: 1000px;
-  margin-left: 45px;
-  margin-right: auto;
+  margin-left: auto;
+  margin-right: 0;
 }
 
 h5 {
@@ -229,7 +229,7 @@ span {
 }
 
 .search-button {
-  position: absolute;
+  position: relative;
   cursor: pointer;
   text-align: center;
   overflow: hidden;
@@ -237,13 +237,13 @@ span {
   height: 30px;
   line-height: 30px;
   font-size: 14px;
-  margin-top: 8px;
-  margin-left: 50px;
+  vertical-align: middle;
+  left: 50px;
 }
 
 .search-button:hover {
-  background-color:#eee;
-  border-radius: 5px;
+  background-color:#dedede;
+  border-radius: 4px;
 }
 
 .search-button .material-icons {
