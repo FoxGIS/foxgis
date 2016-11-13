@@ -47,6 +47,9 @@ export default {
   methods: {
     showDetails: function (e,sprite_id) {//卡片点击事件，显示卡片详情(e:event事件，sprite_id:卡片的id)
       //移除之前的active
+      if(e.target.tagName !== 'DIV'){
+        return;
+      }
       var activeCards = this.$el.querySelector('.active');
       var icons=this.$el.querySelector('.isOpen');
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
@@ -220,33 +223,29 @@ export default {
   transition: .2s;
 }
 
-.card+.card {
-  margin-top: 5px;
-}
-
 .card-click{
   float: left;
-  height: 120px;
+  height: 80px;
   width: 50px;
   text-align: center;
 }
 
 .card-click .material-icons {
   position: relative;
-  top: 55px;
+  top: 30px;
 }
 
 .card-middle {
   float: left;
   width: 650px;
-  height: 120px;
+  height: 80px;
 }
 
 .card-right{
   width: 100px;
   float: left;
-  height: 120px;
-  line-height: 120px;
+  height: 80px;
+  line-height: 80px;
   text-align: right;
   color: #2f80bc;
 }
@@ -261,7 +260,7 @@ export default {
 }
 
 .card .name {
-  margin: 24px 0 0 0;
+  margin: 10px 0 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -270,7 +269,7 @@ export default {
 }
 
 .card .meta {
-  margin: 24px 0 5px 0;
+  margin: 0 0 5px 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;

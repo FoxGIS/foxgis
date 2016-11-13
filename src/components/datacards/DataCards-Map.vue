@@ -73,8 +73,8 @@ export default {
 
 .wrapper table {
   width: 100%;
-  font-family: verdana,arial,sans-serif;
-  font-size:11px;
+  font-family: Microsoft Yahe;
+  font-size:14px;
   color:#333333;
   border-width: 1px;
   border-color: #666666;
@@ -85,6 +85,7 @@ export default {
 .wrapper table th {
   padding: 10px 0px;
   background-color: rgb(250,250,250);
+  font-weight: bold;
 }
 
 .wrapper table td {

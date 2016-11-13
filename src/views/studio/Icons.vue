@@ -166,7 +166,7 @@ span {
 .icon-head{
   width: 100%;
   background-color: white;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -176,7 +176,6 @@ span {
 }
 
 .search {
-  margin-top: 30px;
   text-align: center;
   border-bottom: 1px solid #e4e4e4;
 }

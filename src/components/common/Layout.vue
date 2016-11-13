@@ -6,7 +6,8 @@
         <div class="contact-us">
           <a href="">关于我们 </a>|
           <a href="">意见反馈 </a>|
-          <a href="">联系我们</a>
+          <a href="">联系我们 </a>|
+          <a href="/static/document/用户手册.doc">帮助</a>
         </div>
       </div>
       <div class="mdl-layout__header-row">
@@ -15,10 +16,9 @@
         </div>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" v-link="{ path: '/home' }" v-bind:class="username==undefined?'disabled':''" >首页</a>
-          <a class="mdl-navigation__link" v-link="{ path: '/stats' }" v-bind:class="username==undefined?'disabled':''" >统计</a>
           <a class="mdl-navigation__link" v-link="{ path: '/atlas' }" v-bind:class="username==undefined?'disabled':''">图集</a>
           <a class="mdl-navigation__link" v-link="{ path: '/studio' }" v-bind:class="username==undefined?'disabled':''">制图</a>
-          <a class="mdl-navigation__link" href="/static/document/用户手册.doc" v-bind:class="username==undefined?'disabled':''">帮助</a>
+          <a class="mdl-navigation__link" v-link="{ path: '/stats' }" v-bind:class="username==undefined?'disabled':''" >统计</a>
           <a class="mdl-navigation__link" v-link="{ path: '/login' }" v-if="username==undefined">登录</a>
           <a class="mdl-navigation__link" v-link="{ path: '/user' }" v-else>{{username}}</a>
         </nav>

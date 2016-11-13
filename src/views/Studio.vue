@@ -171,7 +171,7 @@ export default {
 .layout-container{
   width: 1100px;
   /* background-color: white; */
-  margin: 40px auto;
+  margin: 10px auto;
 }
 .mdl-layout__drawer{
   width: 200px;

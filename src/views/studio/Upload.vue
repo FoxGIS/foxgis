@@ -1100,7 +1100,7 @@ span {
 .upload-head{
   width: 100%;
   background-color: white;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -1385,7 +1385,7 @@ span {
   width: 550px;
 }
 #batch-btn-box{
-  margin-top:30px;
+  margin-top:10px;
   position:relative;
   height:45px;
   background-color: white;

@@ -569,13 +569,12 @@ export default {
 .atlas-stats{
   width: 1000px;
   background-color: white;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .search-bar {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -648,7 +647,7 @@ input:-moz-placeholder { text-align: center; }
   flex-wrap: wrap;
   width: 1000px;
   padding: 0px;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .search-results .atlas-container{

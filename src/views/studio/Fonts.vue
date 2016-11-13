@@ -88,6 +88,9 @@ export default {
   methods: {
     showDetails: function (e,fontname) {//卡片点击后显示/隐藏详情页
       //移除之前的active
+      if(e.target.tagName !== 'DIV'){
+        return;
+      }
       var activeCards = this.$el.querySelector('.active');
       var icons=this.$el.querySelector('.isOpen');
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
@@ -350,13 +353,12 @@ span {
 .font-head{
   width: 100%;
   background-color: white;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .search {
-  margin-top: 30px;
   text-align: center;
   border-bottom: 1px solid #e4e4e4;
 }

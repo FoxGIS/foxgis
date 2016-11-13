@@ -408,7 +408,7 @@ export default {
 .stats{
   width: 1000px;
   background-color: white;
-  margin-top: 40px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
