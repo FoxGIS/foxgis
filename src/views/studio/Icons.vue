@@ -3,10 +3,15 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <h5><i class="material-icons">place</i><span>符号库</span></h5>
 
-  <div class="search">
-    <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-    <div id="picker" >上传符号</div>
+  <div class="icon-head">
+    <div class="search">
+      <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div id="picker" >
+        <i class="material-icons">file_upload</i>上传符号
+      </div>
+    </div>
   </div>
+
   <div class='progress-bar' style="display:none">
     <div class="activebar bar" :style="uploadStatus.percentage"></div>
     <div class="bufferbar bar"></div>
@@ -132,41 +137,52 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 83.3333%;
+  width: 850px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 h5 {
-  margin-top: 40px;
+  background-color: white;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  color: #2f80bc;
 }
 
-.material-icons {
-  padding: 10px;
+h5 .material-icons {
+  font-size: 20px;
   margin-right: 5px;
   vertical-align: middle;
-  border-radius: 50%;
-  color: #FB8C00;
-  background-color: #FFF;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  color: #2f80bc;
 }
 
 span {
   vertical-align: middle;
 }
+
+.icon-head{
+  width: 100%;
+  background-color: white;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #upload-progress{
   width:calc(100% - 130px);;
 }
+
 .search {
-  margin-top: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 30px;
+  text-align: center;
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .foxgis-search {
-  width: calc(100% - 100px);
+  width: 400px;
 }
 
 .foxgis-search + .mdl-button {
@@ -192,6 +208,7 @@ span {
   background-color: #c2d6d4;
   width: 100%;
 }
+
 .progress-bar .activebar{
   z-index: 1;
   left: 0;
@@ -210,5 +227,9 @@ span {
 #picker{
   width: 88px;
   height: 30px;
+  position: relative;
+  display: inline-block;
+  line-height: 1.428571429;
+  vertical-align: middle;
 }
 </style>
