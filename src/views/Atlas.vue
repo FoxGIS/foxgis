@@ -203,24 +203,8 @@ export default {
         e.target.style.display = 'none';
       }
     },
-    showMore:function(e){//隐藏或显示“标签”的“更多”按钮
-      var $item = $(e.target).parent(".more").prev();
-      if(e.target.innerHTML==="更多"){
-        $item.css({
-          "max-height":"none",
-          "overflow":"auto"
-        });
-        e.target.innerHTML = "收起";
-      }else{
-        $item.scrollTop(0);
-        $item.css({
-          "max-height":"40px",
-          "overflow":"hidden"
-        });
-        e.target.innerHTML = "更多";
-      }
-    },
-    conditionSelect: function(data){//向对应的标签数组中添加或删除筛选值 type取值1:主题词,2:制图区域,3:制图年份
+
+    conditionSelect: function(data){//根据条件筛选
       this.pageConfig.skip = 0;
       this.pageConfig.page_item_num = 8;    
       this.pageConfig.current_page = 1;
@@ -228,41 +212,6 @@ export default {
       this.selected_location_tags = data.selectedLocations;
       this.selected_year_tags = data.selectedYears;
       this.selected_theme_tags = data.selectedThemes;
-      /*var str = e.target.textContent.trim();
-      str = str.substr(0, str.indexOf('(')).trim();
-      if(e.target.className == 'filter condition active'){
-        e.target.className = 'none';
-        if(type == 3){
-          var index = this.selected_year_tags.indexOf(str);
-          if(index != -1){
-            this.selected_year_tags.splice(index,1);
-          }
-        }else if(type == 2){
-          var index = this.selected_location_tags.indexOf(str);
-          if(index != -1){
-            this.selected_location_tags.splice(index,1);
-          }
-        }else if(type === 1){
-          var index = this.selected_theme_tags.indexOf(str);
-          if(index != -1){
-            this.selected_theme_tags.splice(index,1);
-          }
-        }
-        
-      }else{
-        e.target.className = 'filter condition active';
-        if(type == 3){
-          this.selected_year_tags.push(str);
-          this.selected_year_tags = _.uniq(this.selected_year_tags);//_.uniq(array)方法返回没有重复项的数组
-        }else if(type == 2){
-          this.selected_location_tags.push(str);
-          this.selected_location_tags = _.uniq(this.selected_location_tags);
-        }else if(type ===1){
-          this.selected_theme_tags.push(str);
-          this.selected_theme_tags = _.uniq(this.selected_theme_tags);
-        }
-        
-      }*/
       this.getNewUploads();
     },
 
@@ -899,13 +848,6 @@ span.delete-badge{
   flex-wrap: wrap;
 }
 
-.condition .more{
-  position: absolute;
-  right: -7px;
-  top: 0px;
-  width: 45px;
-  overflow: hidden;
-}
 .atlas-pagination{
   width: 1000px;
 }

@@ -14,6 +14,7 @@ export default {
 
 <style scoped>
 .foxgis-search {
+  padding: 1px;
   height: 28px;
   margin:8px;
   background-color: #FFF;
