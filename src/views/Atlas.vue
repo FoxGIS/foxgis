@@ -61,40 +61,56 @@
                   <img id='mini-thumbnail' v-bind:src = "parseImgURL(displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index])" @click="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
                   <span class="mdl-badge delete-badge" v-if="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].is_deleted === true" data-badge="已删除">d</span>
                   <div class="details">
-                    <table>
-                      <tr>
-                        <th>上传时间:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt}}</td>
-                        <th>图幅大小:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</td>
-                      </tr>
-                      <tr>
-                        <th>文件大小:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size}}</td>
-                        <th>文件格式:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format}}</td>
-                      </tr>
-                      <tr>
-                        <th>制图区域:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</td>
-                        <th>制图时间:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</td>
-                      </tr>
-                      <tr>
-                        <th>共享范围:</th>
-                        <td v-if="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope==='public'">公开</td>
-                        <td v-else>私有</td>
-                        <th>主 题 词:</th>
-                        <td title="{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags}}">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags}}</td>
-                      </tr>
-                      <tr>
-                        <th>比 例 尺:</th>
-                        <td v-if='displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale'>1:{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale}}</td>
-                        <td v-else>未填写</td>
-                        <th>上 传 者:</th>
-                        <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].owner}}</td>
-                      </tr>
-                    </table>
+                    <div style="padding: 20px 20px 10px 20px;">
+                      <table>
+                        <tr>
+                          <th>上传时间:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt}}</td>
+                        </tr>
+                        <tr>
+                          <th>图幅大小:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[0]}}mm×{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].dimensions[1]}}mm</td>
+                        </tr>
+                        <tr>
+                          <th>文件大小:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].size}}</td>
+                        </tr>
+                        <tr>
+                          <th>文件格式:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].format}}</td>
+                        </tr>
+                        <tr>
+                          <th>制图区域:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location}}</td>
+                        </tr>
+                        <tr>
+                          <th>制图时间:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].year}}</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div style="padding: 10px 20px 20px 20px;">
+                      <table>
+                        <tr>
+                          <th>共享范围:</th>
+                          <td v-if="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope==='public'">公开</td>
+                          <td v-else>私有</td>
+                        </tr>
+                        <tr>
+                          <th>主 题 词:</th>
+                          <td title="{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags}}">{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags}}</td>
+                        </tr>
+                        <tr>
+                          <th>比 例 尺:</th>
+                          <td v-if='displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale'>1:{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale}}</td>
+                          <td v-else>未填写</td>
+                        </tr>
+                        <tr>
+                          <th>上 传 者:</th>
+                          <td>{{displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].owner}}</td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </a>
@@ -793,10 +809,9 @@ input:-moz-placeholder { text-align: center; }
 
 .details{
   position: absolute;
-  width: 300px;
+  width: 235px;
   height: 210px;
-  background-color: #659BF7;
-  opacity: 0.9;
+  background-color: rgba(0, 0, 0, 0.8);
   top: 0;
   display: none;
 }
@@ -805,47 +820,43 @@ input:-moz-placeholder { text-align: center; }
   font-size: 12px;
   color: #fff;
   opacity: 1;
-  margin-top: 45px;
-  border: 1px solid;
+  width: 195px;
+}
+
+.details table tr {
+  line-height :15px;
 }
 
 .details table th{
   width: 55px;
   text-align: justify;
-  font-weight: bold;
   text-justify: distribute-all-lines;
   text-align-last: justify;
   -moz-text-align-last: justify;
   -webkit-text-align-last: justify;
 }
 
-.details tr td:nth-child(4){
+.details table tr td{
   display:block;/*内联对象需加*/
-  width:115px;
+  width:120px;
+  padding-left: 10px;
   word-break:keep-all;/* 不换行 */
   white-space:nowrap;/* 不换行 */
   overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
   text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
-.details tr td:nth-child(2){
-  display:block;/*内联对象需加*/
-  width:65px;
-  word-break:keep-all;/* 不换行 */
-  white-space:nowrap;/* 不换行 */
-  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
-  text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
-}
 .delete-badge[data-badge]:after{
   width: 100px;
   height: 22px;
   border-radius: 0;
   transform: rotate(45deg);
 }
+
 span.delete-badge{
   position: relative;
   bottom: 187px;
-  left: 295px;
+  left: 230px;
 }
 
 .meta-info {
