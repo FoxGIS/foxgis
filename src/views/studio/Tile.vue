@@ -6,7 +6,10 @@
   <div class="tile-head">
     <div class="search">
       <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-      <div class="show-status" @click="showStatusPanel"></div>
+      <a class="show-status" @click="showStatusPanel">
+        <i class="material-icons" v-if="tileCopyStatus.length>0" style="color:#0f6db2;font-weight: bold;">alarm</i>
+        <i class="material-icons" v-else style="color:gray;">alarm</i>
+      </a>
       <div id="picker" >
         <i class="material-icons">file_upload</i>上传数据
       </div>
@@ -300,7 +303,7 @@ span {
   position: absolute;
   z-index: 2;
   font-size: 14px;
-  right: 135px;
+  right: -70px;
   top: 80px;
   display: none;
   width: 200px;
@@ -351,13 +354,20 @@ span {
   cursor: pointer;
 }
 .show-status{
-  width: 10px;
-  height: 10px;
-  background-color: #2f80bc;
-  border-radius: 5px;
+  width: 20px;
+  height: 20px;
   position: absolute;
-  top: 20px;
-  right: 230px;
+  top: 15px;
+  right: 20px;
   cursor: pointer;
+  text-decoration: none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+.show-status i{
+  font-size: 16px;
+  line-height: 20px;
 }
 </style>
