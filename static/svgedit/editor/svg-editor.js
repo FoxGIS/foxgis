@@ -39,6 +39,7 @@ TODOS
 		editor.showSaveWarning = false;
 		editor.storagePromptClosed = false; // For use with ext-storage.js
 
+		var scaleClick = 0;
 		var left_gap,right_gap,top_gap,rect_gap,
 			bottom_gap = 40;
 		var svgCanvas, urldata,
@@ -867,7 +868,7 @@ TODOS
 							ctrl.bind('keydown', 'return', function() {ok.click();});
 						}
 						else if (type === 'select') {
-							var div = $('<div style="text-align:center;">');
+							var div = $('<div style="margin-left: 40px">');
 							ctrl = $('<select>').appendTo(div);
 							if (checkbox) {
 								var label = $('<label>').text(checkbox.label);
@@ -899,7 +900,12 @@ TODOS
 						else if (type === 'process') {
 							ok.hide();
 						}
-
+						$('#dialog_buttons input[type=button]').bind('mouseout',function(e){
+							$('#dialog_buttons input[type=button]').removeClass('mouse');
+						});
+						$('#dialog_buttons input[type=button]').bind('mouseover',function(e){
+							$(e.target).addClass('mouse');
+						});
 						box.show(); 
 
 						ok.click(function() {
@@ -3668,8 +3674,8 @@ TODOS
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
 					var height = parseInt(viewBox.split(' ')[3]);
 					var width = parseInt(viewBox.split(' ')[2]);
-					debugger;
-					var scale = parseInt($("#image-resolution input[name='resolution']:checked").val())||4;
+
+					var scale = this.scaleClick == 0 ? 4 : this.scaleClick;
 					svg.attr("height",height*scale);
 					svg.attr("width",width*scale);
 					var options = window.OPTIONS;
@@ -3866,7 +3872,7 @@ TODOS
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
 						if (!$('#image-slider').length) {
-							$('<div style="margin-top: 10px;"><label>Quality: <input id="image-slider" type="range" min="1" max="100" value="92" style="background-color: #eee;border-radius: 15px;-webkit-appearance: none;height: 10px;-webkit-box-shadow: 0 1px 0 0px #959595, 0 1px 0 #959595 inset, 0px 2px 10px 0px #959595 inset, 1px 0px 2px rgba(0, 0, 0, 0.4) inset, 0 0px 1px rgba(0, 0, 0, 0.6) inset;"/></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+							$('<div style="margin-top: 10px;"><label>压缩质量: <input id="image-slider" type="range" min="1" max="100" value="92" style="background-color: #eee;border-radius: 15px;-webkit-appearance: none;height: 10px;width: 240px;margin-left: 5px;-webkit-box-shadow: 0 1px 0 0px #959595, 0 1px 0 #959595 inset, 0px 2px 10px 0px #959595 inset, 1px 0px 2px rgba(0, 0, 0, 0.4) inset, 0 0px 1px rgba(0, 0, 0, 0.6) inset;"/></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
 						}
 					}
 					else {
@@ -3876,7 +3882,15 @@ TODOS
 
 				var sel = $("#dialog_content select");
 				if (!$('#image-resolution').length) {
-					$('<div id="image-resolution"><label>分辨率: </label><input type="radio" value="1" name="resolution" id="resolution_72"/><label for="resolution_72">72</label><input type="radio" value="2" name="resolution" id="resolution_144"/><label for="resolution_144">144</label><input type="radio" value="3" name="resolution" id="resolution_216"/><label for="resolution_216">216</label><input type="radio" value="4" name="resolution" id="resolution_288" checked/><label for="resolution_288">288</label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+					$('<div id="image-resolution"><span>分辨率: </span><div class="resolution"><span>72</span></div><div class="resolution"><span>144</span></div><div class="resolution"><span>216</span></div><div class="resolution click"><span>288</span></div></div>').appendTo(sel.parent()); // Todo: i18n-ize label
+					var that = this;
+					that.scaleClick = 0;
+					$('#image-resolution .resolution').bind('click',function(e){
+						$('#image-resolution .resolution').removeClass('click');
+						var parent = $(e.target).parent(".resolution");
+						parent.length == 0 ? $(e.target).addClass('click') : parent.addClass('click');
+						that.scaleClick = parseInt($(e.target).text())/72;
+					});
 				}
 			};
 
@@ -4872,7 +4886,7 @@ TODOS
 					{sel: '#tool_zoom', fn: clickZoom, evt: 'mouseup', key: ['Z', true]},
 					{sel: '#tool_clear', fn: clickClear, evt: 'mouseup', key: ['N', true]},
 					{sel: '#tool_export', fn: clickExport, evt: 'mouseup'},
-					{sel: '#tool_share', fn: clickShare, evt: 'mouseup'},
+					{sel: '#tool_share', fn: clickShare, evt: 'mouseup'},				
 					{sel: '#tool_open', fn: clickOpen, evt: 'mouseup', key: ['O', true]},
 					{sel: '#tool_import', fn: clickImport, evt: 'mouseup'},
 					{sel: '#tool_source', fn: showSourceEditor, evt: 'click', key: ['U', true]},

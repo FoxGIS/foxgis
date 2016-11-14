@@ -41,7 +41,11 @@ hr {
 }
 
 select {
-	margin-top: 4px;
+	margin-left: 187px;
+	width: 120px;
+	height: 30px;
+	border-color: #c3c3c3;
+	border-radius: 5px;
 }
 
 #svgroot {
@@ -1297,12 +1301,10 @@ ul li.current {
 }
 
 #dialog_content {
-	height: 115px;
+	height: 150px;
 	margin: 10px 10px 5px 10px;
-	background: #DDD;
 	overflow: auto;
 	text-align: left;
-	border: 1px solid #B0B0B0;
 }
 
 #dialog_content.prompt {
@@ -1310,27 +1312,49 @@ ul li.current {
 }
 
 #dialog_content p {
-	margin: 10px;
+	margin: 20px 0 10px 40px;
 	line-height: 1.3em;
 }
 
 #dialog_content #image-resolution{
 	margin-top: 5px;
-    text-align: center;
+  text-align: center;
+  display: flex;
 }
+
+#dialog_content #image-resolution span {
+	display: inline-block;
+	position: relative;
+	top: 6px;
+}
+
+#dialog_content #image-resolution div {
+	cursor: pointer;
+	margin: 0 5px;
+	width: 55px;
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid #c3c3c3;
+}
+
+#dialog_content #image-resolution div.click{
+	border: 1px solid #2388D0;
+	color: #2388D0;
+}
+
 #dialog_container {
 	position: absolute;
 	font-family: Verdana;
 	text-align: center;
 	left: 50%;
 	top: 50%;
-	width: 300px;
-	margin-left: -150px;
-	height: 165px;
-	margin-top: -80px;
+	width: 410px;
+	margin-left: -205px;
+	height: 220px;
+	margin-top: -110px;
 	position: fixed;
 	z-index: 50001;
-	background: #CCC;
+	background: white;
 	border: 1px outset #777;
 	font-family:Verdana,Helvetica,sans-serif;
 	font-size:0.8em;
@@ -1349,7 +1373,19 @@ ul li.current {
 }
 
 #dialog_buttons input[type=button] {
-	margin: 0 1em;
+	margin: 0 3em;
+	width: 100px;
+	height: 35px;
+	background-color: white;
+	border: 1px solid #c3c3c3;
+	border-radius: 5px;
+	cursor: pointer;
+	color: #000;
+}
+
+#dialog_buttons input[type=button].mouse{
+	border: 1px solid #2388D0;
+	color: #2388D0;
 }
 
 /* Slider
