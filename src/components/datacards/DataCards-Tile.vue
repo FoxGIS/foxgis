@@ -116,6 +116,7 @@ export default {
   props: ['dataset'],
   methods: {
     showDetails: function (e,tileset_id) {//卡片点击事件，显示卡片详情(e:event事件，tileset_id:卡片的id)
+      $(".fields").hide();
       if(e.target.tagName !== 'DIV'){
         return;
       }
@@ -576,7 +577,7 @@ export default {
 
 .preview-container div.fields {
   width: 170px;
-  display: flex;
+  display: none;
   flex-wrap:wrap;
   margin-left:45px; 
   -webkit-animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;

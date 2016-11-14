@@ -31,9 +31,14 @@ export default {
       }
       this.pageConfig.current_page += 1;
       var activeCards = this.$parent.$el.querySelector('.active');
+      var icons=this.$parent.$el.querySelector('.isOpen');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');
       }//去掉active card
+      if(icons){
+        icons.className = icons.className.replace(' isOpen','');
+        icons.innerText = 'lock_outline';
+      }
       if(this.pageConfig.current_page > this.show_page_num){
         this.pageConfig.first_page +=1;
       }
@@ -45,9 +50,14 @@ export default {
       }
       this.pageConfig.current_page -= 1;
       var activeCards = this.$parent.$el.querySelector('.active');
+      var icons=this.$parent.$el.querySelector('.isOpen');
       if(activeCards){
         activeCards.className = activeCards.className.replace(' active','');
       }//去掉active card
+      if(icons){
+        icons.className = icons.className.replace(' isOpen','');
+        icons.innerText = 'lock_outline';
+      }
       if(this.pageConfig.current_page < this.pageConfig.first_page){
         this.pageConfig.first_page -=1;
       }
@@ -58,9 +68,14 @@ export default {
         this.pageConfig.current_page = page+this.pageConfig.first_page;
       }else{
         var activeCards = this.$parent.$el.querySelector('.active');
+        var icons=this.$parent.$el.querySelector('.isOpen');
         if(activeCards){
           activeCards.className = activeCards.className.replace(' active','');
         }//去掉active card
+        if(icons){
+          icons.className = icons.className.replace(' isOpen','');
+          icons.innerText = 'lock_outline';
+        }
         this.pageConfig.current_page = page+1;
       }   
     }
