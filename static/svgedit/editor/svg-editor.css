@@ -1309,6 +1309,7 @@ ul li.current {
 
 #dialog_content.prompt {
 	height: 75px;
+	font-size: 18px;
 }
 
 #dialog_content p {
@@ -1369,7 +1370,7 @@ ul li.current {
 #dialog_buttons input[type=text] {
 	width: 90%;
 	display: block;
-	margin: 0 0 5px 11px;
+	margin: 0 0 40px 11px;
 }
 
 #dialog_buttons input[type=button] {
