@@ -3,7 +3,56 @@
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <foxgis-layout>
       <div class="wrapper">
+        <!-- 用户贡献统计 -->
         <div id="user-info">
+          <div class="username">
+            <span>{{userInfo.username}}</span>
+          </div>
+          <div class="info">
+            <div class="info-title"><span>用户信息</span></div>
+            <div class="details">
+              <table>
+                <tr>
+                  <th><span>用户名：</span></th>
+                  <td><span>{{userInfo.username}}</span></td>
+                  <th><span>是否验证：</span></th>
+                  <td ><span>{{userInfo.is_verified}}</span></td>
+                </tr>
+              </table>
+            </div>
+            <div class="info-title"><span>个人信息</span></div>
+            <div class="details">
+              <table>
+                <tr>
+                  <th><span>姓名：</span></th>
+                  <td><input id="name-input" value="{{userInfo.name}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                  <th><span>邮箱：</span></th>
+                  <td><input id="email-input" value="{{userInfo.email}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                </tr>
+                <tr>
+                  <th><span>手机：</span></th>
+                  <td><input id="mobile-input" value="{{userInfo.mobile}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                  <th><span>电话：</span></th>
+                  <td><input id="phone-input" value="{{userInfo.telephone}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                </tr>
+                <tr>
+                  <th><span>单位：</span></th>
+                  <td><input id="organization-input" value="{{userInfo.organization}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                  <th><span>职务：</span></th>
+                  <td><input id="position-input" value="{{userInfo.position}}" disabled><a @click.stop.prevent="infoChange">修改</a></td>
+                </tr>
+                <tr>
+                  <th><span>位置：</span></th>
+                  <td><input id="location-input" value="{{userInfo.location}}" disabled></td>
+                  <th><span>注册时间：</span></th>
+                  <td><span>{{userInfo.createdAt}}</span></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
+        <!-- <div id="user-info">
           <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id ="user-info-table">
             <tbody>
               <tr>
@@ -75,7 +124,7 @@
             </tbody>
           </table>
           <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
-        </div>
+        </div> -->
         
         <foxgis-footer></foxgis-footer>
       </div>
@@ -146,18 +195,24 @@ export default {
       /*------------------------------------*/
     },
     infoChange:function(e){
-      var info = e.target.value;
+      var info = $(e.currentTarget).siblings("input")[0].value;
+      var target = $(e.currentTarget).siblings("input")[0];
       var data = {};
       var message = "";
+      if(e.currentTarget.innerText==="修改"){
+        e.currentTarget.innerHTML="确定";
+        $(target).removeAttr("disabled").css("border","1px solid gray");
+        return;
+      }
       /*--------用户修改的是用户名-----------*/
-      if(e.target.id === "username-input"){//暂时禁止修改
+      if(target.id === "username-input"){//暂时禁止修改
         if(info === ''){
           this.$broadcast('mailSent', { message: '用户名不能为空',timeout:3000 });
-          e.target.value = this.userInfo.username;
+          target.value = this.userInfo.username||"";
           return;
         }else if(info.length>20){
           this.$broadcast('mailSent', { message: '用户名过长',timeout:3000 });
-          e.target.value = this.userInfo.username;
+          target.value = this.userInfo.username||"";
           return; 
         }
         data.username = info;
@@ -165,28 +220,28 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是用户验证信息-----------*/
-      if(e.target.id === "verify-input"){//暂时禁止修改
+      if(target.id === "verify-input"){//暂时禁止修改
         if(info === '已验证'){
           data.is_verified = true;
         }else if(info === '未验证'){
           data.is_verified = false; 
         }else{
           this.$broadcast('mailSent', { message: "输入错误！请输入“已验证”或“未验证”",timeout:3000 });
-          e.target.value = this.userInfo.is_verified;
+          target.value = this.userInfo.is_verified||"";
           return;
         }
         message = "验证信息";
       }
       /*------------------------------------*/
       /*--------用户修改的是姓名-----------*/
-      if(e.target.id === "name-input"){
+      if(target.id === "name-input"){
         if(info === ''){
           this.$broadcast('mailSent', { message: '姓名不能为空',timeout:3000 });
-          e.target.value = this.userInfo.name;
+          target.value = this.userInfo.name||"";
           return;
         }else if(info.length>10){
           this.$broadcast('mailSent', { message: '姓名过长',timeout:3000 });
-          e.target.value = this.userInfo.name;
+          target.value = this.userInfo.name||"";
           return; 
         }
         data.name = info;
@@ -195,12 +250,12 @@ export default {
       /*------------------------------------*/
 
       /*--------用户修改的是固定电话-----------*/
-      if(e.target.id === "phone-input"){
+      if(target.id === "phone-input"){
         if(info!=""){
           
         }else{
           this.$broadcast('mailSent', { message: '电话不能为空！',timeout:3000 });
-          e.target.value = this.userInfo.telephone;
+          target.value = this.userInfo.telephone||"";
           return;
         }
         data.telephone = info;
@@ -208,18 +263,18 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是移动电话-----------*/
-      if(e.target.id === "mobile-input"){
+      if(target.id === "mobile-input"){
         if(info!=""){
           var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
           var isok = reg.test(info);
           if(!isok){
             this.$broadcast('mailSent', { message: '电话格式不正确，请重新输入',timeout:3000 });
-            e.target.value = this.userInfo.mobile;
+            target.value = this.userInfo.mobile||"";
             return;
           }
         }else{
           this.$broadcast('mailSent', { message: '电话不能为空！',timeout:3000 });
-          e.target.value = this.userInfo.mobile;
+          target.value = this.userInfo.mobile||"";
           return;
         }
         data.mobile = info;
@@ -227,18 +282,18 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是邮箱-----------*/
-      if(e.target.id === "email-input"){
+      if(target.id === "email-input"){
         if (info != "") {
           var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
           var isok= reg.test(info);
           if (!isok) {
             this.$broadcast('mailSent', { message: '邮箱格式不正确，请重新输入！',timeout:3000 });
-            e.target.value = this.userInfo.email;
+            target.value = this.userInfo.email||"";
             return;
           }
         }else{
           this.$broadcast('mailSent', { message: '邮箱地址不能为空！',timeout:3000 });
-          e.target.value = this.userInfo.email;
+          target.value = this.userInfo.email||"";
           return;
         }
         data.email = info;
@@ -246,10 +301,10 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是位置-----------*/
-      if(e.target.id === "location-input"){
+      if(target.id === "location-input"){
         if(info === ''){
           this.$broadcast('mailSent', { message: '位置名不能为空',timeout:3000 });
-          e.target.value = this.userInfo.location;
+          target.value = this.userInfo.location||"";
           return;
         }
         data.location = info;
@@ -257,10 +312,10 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是单位-----------*/
-      if(e.target.id === "organization-input"){
+      if(target.id === "organization-input"){
         if(info===""){
           this.$broadcast('mailSent', { message: '单位名称不能为空！',timeout:3000 });
-          e.target.value = this.userInfo.organization;
+          target.value = this.userInfo.organization||"";
           return;
         }
         data.organization = info;
@@ -268,10 +323,10 @@ export default {
       }
       /*------------------------------------*/
       /*--------用户修改的是职务/职称-----------*/
-      if(e.target.id === "position-input"){
+      if(target.id === "position-input"){
         if(info===""){
           this.$broadcast('mailSent', { message: '职位名称不能为空！',timeout:3000 });
-          e.target.value = this.userInfo.position;
+          target.value = this.userInfo.position||"";
           return;
         }
         data.position = info;
@@ -284,6 +339,8 @@ export default {
       this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
+          e.target.innerHTML="修改";
+          $(target).attr("disabled",true).css("border","none");
           this.$broadcast('mailSent', { message: message+'修改成功！',timeout:3000 });
         }
       }, function(response) {
@@ -305,7 +362,7 @@ export default {
   attached() {
     var username = Cookies.get('username');
     if(username === undefined){
-      return ;
+      window.location.href = "#!/login";
     }
     var access_token = Cookies.get('access_token');
     var url = SERVER_API.users + '/' + username;
@@ -358,31 +415,71 @@ export default {
 }
 #user-info{
   margin: 50px auto 20px auto;
-}
-#user-info table{
-  width:350px;
-  height:400px;
+  width: 1000px;
+  background-color: white;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#user-info input{
-  width:190px;
-  outline:none;
-  border:0;
-  text-align:right;
-  background-color:transparent;
+.username{
+  height: 20px;
+  background-color: white;
+  font-size: 18px;
+  text-align: left;
+  line-height: 20px;
+  padding: 10px; 
+  color:#0f6db2;
+  border-bottom: 10px solid #e6e6e6;
 }
-input[disabled]{
-  color: #989898;
+
+.info .info-title{
+  height: 40px;
+  background-color: rgb(250,250,250);
+  line-height: 40px;
+  padding-left: 20px;
+  text-align: left;
+  border-bottom: 1px solid #dedede;
 }
-input:hover{
-  background-color:transparent;
+table{
+  width: 960px;
+  margin: 20px;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
 }
+tr{
+  line-height: 35px;
+}
+table th{
+  width: 10%;
+  text-align: right;
+}
+table td{
+  width: 40%;
+  text-align: left;
+}
+td input{
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  cursor: text;
+  padding: 0 0 5px 5px;
+  border-radius: 4px;
+}
+td a{
+  cursor: pointer;
+  margin-left: 10px;
+  color: #0f6db2;
+}
+
 #logout-button {
   font-family: inherit;
   width: 125px;
   font-size: 18px;
   color: #fff;
   margin-top: 20px;
+  line-height: 31px;
 }
 
 .footer-bottom{

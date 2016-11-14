@@ -35,12 +35,12 @@
             <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
             <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
             <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-            <i class="material-icons" v-if="layer.items==undefined" style="background-image:url('../../static/icons/{{typeIcon[layer.type]}}')"></i>
+            <i class="material-icons" v-if="layer.items==undefined" :style="'background-image:url(../../static/icons/'+typeIcon[layer.type]+')'"></i>
             <span>{{layer.id}}</span>
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="material-icons" style="background-image:url('../../static/icons/{{typeIcon[layer.type]}}')"></i>
+              <i class="material-icons" :style="'background-image:url(../../static/icons/'+typeIcon[layer.type]+')'"></i>
               <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>

@@ -17,8 +17,8 @@
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
-      <a class="mdl-navigation__link" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></a>
-      <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
+      <a class="back btm" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></br>返回</a>
+      <a class="save-style btm" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></br>保存</a>
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
@@ -253,6 +253,7 @@ export default {
     if(username === undefined){
       window.location.href = "#!/login";
     }
+    this.styleSaveStatus = true;
     var access_token = Cookies.get('access_token');
     if(styleId !== null && access_token !== undefined){
       var url = SERVER_API.styles + '/' + username + '/' + styleId;
@@ -339,14 +340,22 @@ export default {
   text-decoration: none;
 }
 
-#main-control .save-style{
-  padding: 10px 0 5px 5px;
-  bottom: 0px;
+#main-control .btm{
+  text-align: center;
+  padding: 20px 0;
+  font-size: 12px;
   position: absolute;
   cursor: pointer;
 }
-.save-style:hover{
-  background-color: blue;
+
+#main-control .save-style{
+  bottom: 0px;
+}
+#main-control .back{
+  bottom: 80px;
+}
+.btm:hover{
+  background-color: #1c7dc2;
 }
 
 #edit-wrap {
@@ -459,6 +468,7 @@ export default {
   width: calc(100% - 30px);
   height: calc(100% - 25px);
 }
+
 /* #mapdata-view{
   visibility: hidden;
 } */
