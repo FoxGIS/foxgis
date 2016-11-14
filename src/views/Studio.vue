@@ -182,6 +182,7 @@ export default {
   display: block;
   clear:both;
   float: right;
+  position: initial;
   /* position: relative;
   bottom: 252px; */
 }

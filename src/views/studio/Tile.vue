@@ -6,12 +6,32 @@
   <div class="tile-head">
     <div class="search">
       <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <div class="show-status" @click="showStatusPanel"></div>
       <div id="picker" >
         <i class="material-icons">file_upload</i>上传数据
       </div>
     </div>
   </div>
 
+  <div id="tile-copy">
+    <div id='info-tip'></div>
+    <div class="status-container">
+      <div v-if="tileCopyStatus.length===0">
+        <span>没有文件正在上传</span>
+      </div>
+      <div v-for="status in tileCopyStatus" v-else>
+        <div class="file-name">
+          <span>{{status.name}}</span>
+        </div>
+        <div class="file-prog">
+          <span v-if="status.status==='upload'" style="color:red">正在上传</span>
+          <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
+          <span v-if="status.status==='complete'" style="color:green">完成</span>
+        </div> 
+      </div>
+    </div>
+    <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
+  </div>
   <div class='progress-bar' style="display:none">
     <div class="activebar bar" :style="uploadStatus.percentage"></div>
     <div class="bufferbar bar"></div>
@@ -43,7 +63,13 @@ export default {
           var tileset = response.data.tileset;
           tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
           this.dataset.unshift(tileset);
-          this.$broadcast('mailSent', { message: tileset.name+'切片完成！',timeout:1000 });
+          for(var i=0;i<this.tileCopyStatus.length;i++){
+            if(this.tileCopyStatus[i].id===tileset.tileset_id){
+              this.tileCopyStatus[i].status="complete";
+              break;
+            }
+          }
+          //this.$broadcast('mailSent', { message: tileset.name+'切片完成！',timeout:1000 });
         }else{
           var _this = this;
           setTimeout(function(){
@@ -53,6 +79,16 @@ export default {
       }, function(response) {
         this.$broadcast('mailSent', { message: '数据集请求失败！',timeout:3000 });
       })
+    },
+    closeTileCopy:function(){
+      $("#tile-copy").hide();
+    },
+    showStatusPanel:function() {
+      if($("#tile-copy").is(':visible')){
+        $("#tile-copy").hide();
+      }else{
+        $("#tile-copy").show();
+      }
     }
   },
   computed:{
@@ -143,8 +179,9 @@ export default {
         progress:0,//总体上传进度（0-100）
         total_files:0,//上传文件数目
         total_size:"0KB",
-        current_file:1//当前正在第几个文件
-      }
+        current_file:1//当前正在第几个文件 
+      },
+      tileCopyStatus:[]//上传数据切片状态
     }
   },
 
@@ -201,6 +238,7 @@ span {
 .search {
   text-align: center; 
   border-bottom: 1px solid #e4e4e4;
+  position: relative;
 }
 
 .modal {
@@ -257,5 +295,69 @@ span {
   display: inline-block;
   line-height: 1.428571429;
   vertical-align: middle;
+}
+#tile-copy{
+  position: absolute;
+  z-index: 2;
+  font-size: 14px;
+  right: 135px;
+  top: 80px;
+  display: none;
+  width: 200px;
+  -webkit-animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+  animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+}
+#tile-copy .status-container{
+  padding: 10px;
+  max-height: 150px;
+  overflow: auto;
+  border-radius: 4px;
+  background-color: rgba(189,189,189,0.9);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+.status-container .file-name{
+  width: 65%;
+  display: inline-block;
+}
+.status-container .file-prog{
+  width: 30%;
+  display: inline-block;
+  font-size: 12px;
+  text-align: right;
+}
+.status-container>div:nth-child(odd){
+  background-color: rgba(220,220,220,0.5);
+}
+.status-container>div:nth-child(even){
+  background-color: rgba(240,240,240,0.5);
+}
+.status-container>div{
+  border-bottom: 1px dashed #cecece;
+  padding: 1px 5px;
+}
+#info-tip {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid rgba(189,189,189,0.9);
+  margin: 0 auto;
+}
+#tile-copy .material-icons{
+  position: absolute;
+  top: 7px;
+  right: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.show-status{
+  width: 10px;
+  height: 10px;
+  background-color: #2f80bc;
+  border-radius: 5px;
+  position: absolute;
+  top: 20px;
+  right: 230px;
+  cursor: pointer;
 }
 </style>

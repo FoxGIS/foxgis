@@ -84,6 +84,10 @@ export default {
 
     });
     uploader.on('uploadStart',function(file){//开始上传
+      if(model==="tile"){
+        $("#tile-copy").show();
+        this.options.Vue.tileCopyStatus.push({name:file.name,id:"",status:"upload"});
+      }
       $('.progress-bar').css('display','block');
       $('#picker input').attr('disabled','disabled');
     });
@@ -124,7 +128,15 @@ export default {
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
       }else if(model==='tile'){
-        this.options.Vue.$broadcast('mailSent', { message: '上传完成,等待切片！',timeout:1000 });
+        //this.options.Vue.$broadcast('mailSent', { message: '上传完成,等待切片！',timeout:1000 });
+        for(var i=0;i<this.options.Vue.tileCopyStatus.length;i++){
+          if(this.options.Vue.tileCopyStatus[i].name===file.name){
+            this.options.Vue.tileCopyStatus[i].status="copy";
+            this.options.Vue.tileCopyStatus[i].id=data.tileset_id;
+            break;
+          }
+        }
+        //this.options.Vue.tileCopyStatus.push({tileset_id:data.tileset_id,name:data.tileset_id,complete:false});
         this.options.Vue.getCopyStatus(data.tileset_id);
         if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
           initProgressBar(this.options.Vue.uploadStatus);
