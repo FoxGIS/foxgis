@@ -80,18 +80,22 @@
               <th>最小缩放级别</th>
               <th>最大缩放级别</th>
               <th>字段</th>
-              <th>详情</th>
             </tr>
             <tr v-for="u in detailsData.vector_layers">
-              <td>{{u.id}}</td>
+              <td style="text-align: left;padding: 8px 0 8px 20px;">{{u.id}}</td>
               <td>{{u.minzoom}}</td>
               <td>{{u.maxzoom}}</td>
-              <td style= "cursor:pointer;"><a v-on:click='lookFields(u.fields,$index)'>查看</a></td>
-              <td>{{u.description}}</td>
+              <td style= "cursor:pointer;">
+                <div @click='lookFields(u.fields,$index)'>查看</div>
+              </td>
             </tr>
           </table>
-          <div class="fields" style="width: 380px;float: right;">
-            <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
+          <div class="fields" style="float: right;">
+            <div class='info-tip'></div>
+            <div class="fields-container">
+              <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
+            </div>
+            <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
           </div>
         </div>
         
@@ -165,8 +169,13 @@ export default {
 
     lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
-      var height = (index-this.fieldsLength)*37;
-      $('.fields').css("margin",height+'px'+' 0 0 420px');
+      var height = (index-this.fieldsLength)*37+37;
+      $('.fields').css("margin",height+'px'+' 140px 0 420px');
+      $(".fields").show();
+    },
+
+    closeTileCopy:function(){
+      $(".fields").hide();
     },
 
     calculation: function(size){//计算文件大小
@@ -551,7 +560,7 @@ export default {
 }
 .preview-container table th {
   border-width: 1px;
-  padding: 8px;
+  padding: 8px 70px;
   border-style: solid;
   border-color: #666666;
   background-color: #dedede;
@@ -559,24 +568,36 @@ export default {
 .preview-container table td {
   border-width: 1px;
   padding: 8px;
+  text-align: center;
   border-style: solid;
   border-color: #666666;
   background-color: #ffffff;
 }
 
 .preview-container div.fields {
+  width: 170px;
   display: flex;
   flex-wrap:wrap;
   margin-left:45px; 
+  -webkit-animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+  animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+}
+
+.fields-container {
+  padding: 10px;
+  max-height: 150px;
+  width: 150px;
+  overflow: auto;
+  border-radius: 4px;
+  background-color: rgba(189,189,189,0.9);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 
 .preview-container div.field {
-  border:1px solid #333333;
-  margin:5px;
   padding:5px;
   font-family:verdana,arial,sans-serif;
   font-size:11px;
-  color:#333333;
+  color:#000000;
 }
 
 .meta-container{
@@ -599,5 +620,40 @@ export default {
 
 .details .mdl-textfield div {
   border: 1px solid #bdbdbd;
+}
+
+.fields .info-tip {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid rgba(189,189,189,0.9);
+  margin: 0 auto;
+}
+
+.fields .material-icons{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fields-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fields-container::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.fields-container::-webkit-scrollbar-track {
+  background-color: #c3c3c3;
+}
+
+/* 滑块颜色 */
+.fields-container::-webkit-scrollbar-thumb {
+  background-color: #e1f5fe;
 }
 </style>
