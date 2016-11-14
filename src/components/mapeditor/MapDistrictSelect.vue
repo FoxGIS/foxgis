@@ -63,16 +63,17 @@ export default {
 }
 
 #district-control {
-  width: 200px;
-  height: calc(100% - 165px);
+  width: 250px;
+  height: calc(100% - 65px);
   box-sizing: border-box;
   position: absolute;
+  top: 25px;
   left: 30px;
 }
 #district-container{
   overflow: auto;
   position: absolute;
-  width: 200px;
-  height: 100%;
+  width: 250px;
+  height: calc(100% - 50px);
 }
 </style>

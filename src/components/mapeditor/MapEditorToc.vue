@@ -2,29 +2,32 @@
   <div>
     <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div id="style-header">
-      <div class="block"></div>
-      <div class="text"><span>{{styleObj.name}}</span></div>
-    </div>
-    <div id="toc-toolbar">
-      <div>
-        <a href="" title="删除样式" v-on:click.stop.prevent="deleteStyleLayer">
-          <i class="material-icons copy-layer">delete</i></br>
-          <span>删除</span>
-        </a>
+      <div class="style-title">
+        <div class="block"></div>
+        <div class="text"><span>{{styleObj.name}}</span></div>
       </div>
-      <div>
-        <a href="" title="复制样式" v-on:click.stop.prevent="showCopyLayer">
-          <i class="material-icons copy-layer">content_copy</i></br>
-          <span>复制</span>
-        </a>
+      <div id="toc-toolbar">
+        <div>
+          <a href="" title="删除样式" v-on:click.stop.prevent="deleteStyleLayer">
+            <i class="material-icons copy-layer">delete</i></br>
+            <span>删除</span>
+          </a>
+        </div>
+        <div>
+          <a href="" title="复制样式" v-on:click.stop.prevent="showCopyLayer">
+            <i class="material-icons copy-layer">content_copy</i></br>
+            <span>复制</span>
+          </a>
+        </div>
+        <div>
+          <a href="" title="新建样式" v-on:click.stop.prevent="showCreateStyle">
+            <i class="material-icons copy-layer">create</i></br>
+            <span>新建</span>
+          </a>
+        </div> 
       </div>
-      <div>
-        <a href="" title="新建样式" v-on:click.stop.prevent="showCreateStyle">
-          <i class="material-icons copy-layer">create</i></br>
-          <span>新建</span>
-        </a>
-      </div> 
     </div>
+    
     <div id="layer-control" v-on:drop="eledrop" v-on:dragover.prevent="eledragover">
       <div class="layer" v-for="layer in tocLayers" id="layer{{$index}}" draggable="true" v-on:dragstart="eledragstart" v-on:dragenter.prevent="eledragenter">
         <a>
@@ -1871,10 +1874,17 @@ export default {
 <style scoped>
 
 #style-header {
-  height: 20px;
+  height: 36px;
   padding: 5px;
+  border-bottom: 1px solid #e6e6e6;
 }
-
+.style-title{
+  width: 124px;
+  line-height: 36px;
+  display: inline-block;
+  position: relative;
+  bottom: 10px;
+}
 #style-header .block{
   width: 5px;
   height: 18px;
@@ -1887,11 +1897,12 @@ export default {
   white-space: nowrap;
   text-overflow:ellipsis;
   overflow:hidden;
+  line-height: 18px;
 }
 
 #toc-toolbar{
   height: 35px;
-  border-bottom: 1px solid #e6e6e6;
+  display: inline-block;
 }
 #toc-toolbar div{
   float: right;
@@ -1922,12 +1933,11 @@ export default {
 
 #layer-control {
   padding-top: 5px;
-  border:solid 1px rgba(0,0,0,0.5);
   border-top: none;
   border-left: none;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 115px);
+  height: calc(100% - 45px);
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
@@ -2020,7 +2030,7 @@ a {
   width: 300px;
   height: 100%;
   background-color: rgb(237, 233, 217);
-  left: 200px;
+  left: 250px;
   top: 0px;
   z-index: 1;
   display: none;

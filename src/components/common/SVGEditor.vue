@@ -41,10 +41,10 @@ export default {
 <style scoped>
 #svg-wrap {
   display: block;
-  height: calc(100% - 55px);
+  height: 100%;
   flex-direction: column;
   position: absolute;
-  width: calc(100% - 30px);
+  width: 100%;
   right: 0px;
 }
 </style>
