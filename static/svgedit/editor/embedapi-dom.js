@@ -78,7 +78,7 @@ $(function () {'use strict';
     $('body').append(
         $('<iframe src="svg-editor.html?extensions=ext-xdomain-messaging.js' +
             url + // Append arguments to this file onto the iframe
-            '" id="svgedit" onload="initEmbed();" style="position: absolute;top: 0;width: calc(100% - 12px) ;height: calc(100% - 10px);"></iframe>'
+            '" id="svgedit" onload="initEmbed();" style="position: absolute;top: 0;left:0;width: calc(100% - 12px) ;height: calc(100% - 4px);"></iframe>'
         )
     );
     frame = document.getElementById('svgedit');

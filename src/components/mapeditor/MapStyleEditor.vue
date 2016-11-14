@@ -42,7 +42,7 @@ export default {
 <style scoped>
 #code {
   height: 99%;
-  width: 350px;
+  width: 250px;
   overflow: visible;
   padding: 0;
   border: 0px;

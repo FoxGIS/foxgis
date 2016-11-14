@@ -1,5 +1,5 @@
 ﻿body {
-	background: #D0D0D0;
+	background: #ffffff;
 }
 
 html, body, div{
@@ -79,7 +79,7 @@ select {
 
 #rulers > div {
 	position: absolute;
-	background: #DDD;
+	background: #fff;
 	z-index: 1;
 	overflow: hidden;
 }
@@ -212,7 +212,8 @@ select {
 #sidepanel_handle {
 	display: inline-block;
 	position: absolute;
-	background-color: #D0D0D0;
+	background-color: #ffffff;
+  border: 1px solid #d0d0d0;
 	font-weight: bold;
 	left: 0;
 	top: 40%;
@@ -361,8 +362,10 @@ div.palette_item:first-child {
 	position: relative;
 	top: -2px;
 	left: -2px;
-	width: 95px;
+	width: 60px;
 	line-height: 26px;
+	border: 1px solid #c5c5c5;
+	height: 18px;
 }
 
 #main_icon:hover {
@@ -394,7 +397,7 @@ div.palette_item:first-child {
 #main_button .dropdown {
 	position: absolute;
 	right: 7px;
-	top: 4px;
+	top: 2px;
 }
 
 #main_icon span {
@@ -405,10 +408,10 @@ div.palette_item:first-child {
 	right: 0;
 	display: block;
 	z-index: 2;
-	font-weight: bold;
-	padding-left: 34px;
-	line-height: 32px;
-	font-family: sans-serif;
+	padding-left: 15px;
+	line-height: 26px;
+	color: rgb(146,146,146);
+	font-family: "Microsoft YaHei" ! important;
 }
 
 #main_menu {
@@ -500,7 +503,7 @@ div.palette_item:first-child {
 	left: 1px;
 	margin-top: -2px;
 	padding-left: 2px;
-	background: #D0D0D0; /* Needed so flyout icons don't appear on the left */
+	/* background: #D0D0D0; Needed so flyout icons don't appear on the left */
 	z-index: 4;
 }
 
@@ -703,10 +706,6 @@ span.zoom_tool {
 	width: 24px;
 	margin: 2px 2px 4px 2px;
 	padding: 3px;
-	-webkit-box-shadow: inset 1px 1px 2px white, 1px 1px 1px rgba(0,0,0,0.3);
-	moz-box-shadow: inset 1px 1px 2px white, 1px 1px 1px rgba(0,0,0,0.3);
-	box-shadow: inset 1px 1px 2px white, 1px 1px 1px rgba(0,0,0,0.3);
-	background-color: #E8E8E8;
 	cursor: pointer;
 	border-radius: 3px;
 	-moz-border-radius: 3px;

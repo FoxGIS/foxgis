@@ -3,17 +3,22 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   
   <div id="edit-wrap">
-    <!-- <div class="header-top">
-     <span>制图编辑器</span>
-    </div> -->
+    <div class="header-top">
+      <div class="contact-us">
+        <a href="">关于我们 </a>|
+        <a href="">意见反馈 </a>|
+        <a href="">联系我们 </a>|
+        <a href="/static/document/用户手册.doc">帮助</a>
+      </div>
+    </div>
     <nav class="mdl-navigation" id="main-control">
       <img class="mdl-layout-icon" src="../assets/logo.png"></img>
       <a class="mdl-navigation__link control-active" v-on:click.stop.prevent="layerControlClick" title="样式配置"><i class="material-icons">map</i></a>
       <a class="mdl-navigation__link" v-on:click.stop.prevent="districtControlClick" title="行政区划"><i class="material-icons">extension</i></a>
       <a class="mdl-navigation__link" v-on:click.prevent="styleEditorClick" title="样式源码"><i class="material-icons">build</i></a>
       <a class="mdl-navigation__link" id="svgeditor-open" v-on:click.prevent="SVGEditorClick" title="打开SVG编辑器"><i class="material-icons">place</i></a>
-      <a class="mdl-navigation__link" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></a>
-      <a class="save-style" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></a>
+      <a class="back btm" v-on:click.prevent="backToProject" title="返回工程列表"><i class="material-icons">reply</i></br>返回</a>
+      <a class="save-style btm" v-on:click.prevent="styleSaveClick" title="保存样式"><i class="material-icons">save</i></br>保存</a>
     </nav>
     <foxgis-district-select id="district-control"></foxgis-district-select>
     <foxgis-style-editor id="style-editor"></foxgis-style-editor>
@@ -81,13 +86,13 @@ export default {
       // 传入style 字符串到textarea
       this.$broadcast('editor-init',this.style);
 
-      //移动map，扩宽区域
+      /*//移动map，扩宽区域
       var mapContainer = document.getElementById("map-editorview-container");
       if(mapContainer.style.display == 'none'){
         mapContainer = document.getElementById("map-layout-container");
       }
       mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px";
-      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px";
+      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px";*/
       document.getElementById("map-tool").style.display = 'none';
     },
     changeControlStyle:function(e,type){
@@ -248,6 +253,7 @@ export default {
     if(username === undefined){
       window.location.href = "#!/login";
     }
+    this.styleSaveStatus = true;
     var access_token = Cookies.get('access_token');
     if(styleId !== null && access_token !== undefined){
       var url = SERVER_API.styles + '/' + username + '/' + styleId;
@@ -317,31 +323,39 @@ export default {
 </script>
 
 <style scoped>
-
-/*  .header-top{
- background-color: #2388d0;
- height: 40px;
- width: 230px;
- position: absolute;
- left: 0;
- top: 0px;
- text-align: center;
+.header-top{
+  background-color: rgb(39,48,55);
+  height: 25px;
 }
 
-.header-top span{
- font-size: 20px;
- color: white;
- line-height: 40px;
-} */
 
-#main-control .save-style{
-  padding: 10px 0 5px 5px;
-  bottom: 0px;
+.contact-us{
+  position: absolute;
+  color: gray;
+  right: 200px;
+}
+
+.contact-us a{
+  color: gray;
+  text-decoration: none;
+}
+
+#main-control .btm{
+  text-align: center;
+  padding: 20px 0;
+  font-size: 12px;
   position: absolute;
   cursor: pointer;
 }
-.save-style:hover{
-  background-color: blue;
+
+#main-control .save-style{
+  bottom: 0px;
+}
+#main-control .back{
+  bottom: 80px;
+}
+.btm:hover{
+  background-color: #1c7dc2;
 }
 
 #edit-wrap {
@@ -353,17 +367,18 @@ export default {
 #main-control {
   width: 30px;
   flex-direction: column;
-  height: 100%;
+  height: calc(100% - 25px);
   box-sizing: border-box;
   position: absolute;
-  background-color: #2388d0;
+  top: 25px;
+  background-color: #18517e;
 }
 
 #main-control img {
   width: 30px;
   height: 30px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 #main-control a {
@@ -384,22 +399,24 @@ export default {
 }
 
 #toc-container {
-  width: 200px;
-  height: 100%;
+  width: 250px;
+  height: calc(100% - 65px);
   box-sizing: border-box;
   position: absolute;
   left: 30px;
+  top: 25px;
   background-color: white;
 }
 
 #style-editor {
-  width: 350px;
-  height: 100%;
+  width: 250px;
+  height: calc(100% - 65px);
   padding: 0;
   border: 0px;
   box-sizing: border-box;
   position: absolute;
   left: 30px;
+  top: 25px;
   display: none;
 }
 
@@ -408,8 +425,10 @@ export default {
   left: 30px;
   bottom: 0px;
   display: flex;
-  width: 200px;
+  width: 250px;
   height: 30px;
+  background-color: #f7f7f7;
+  padding-top: 10px;
 }
 
 #map-tool button {
@@ -427,7 +446,7 @@ export default {
   padding: 0;
   cursor: pointer;
   vertical-align: middle;
-  margin: 0 20px;
+  margin: 0 33px;
 }
 
 #back-button {
@@ -440,6 +459,14 @@ export default {
 
 #delete-dialog{
   display: none;
+}
+#svg-editor{
+  display: block;
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  width: calc(100% - 30px);
+  height: calc(100% - 25px);
 }
 
 /* #mapdata-view{
