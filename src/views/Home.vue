@@ -6,8 +6,8 @@
         <div class="home-title">
           <div>
             <span style="font-size: 20px;">辅助</span>
-            <span style="    font-size: 28px;line-height: 40px;">决策用图</span><br />
-            <span style="    font-size: 40px;line-height: 40px;font-style: italic;">服务系统</span>
+            <span style="font-size: 28px;line-height: 40px;">决策用图</span><br />
+            <span style="font-size: 40px;line-height: 40px;font-style: italic;">服务系统</span>
           </div>
         </div>
       </div>
@@ -350,7 +350,7 @@ export default {
   width: 1000px;
   height: 250px;
   background-color: white;
-  margin-top: 15px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
