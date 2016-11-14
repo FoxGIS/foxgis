@@ -195,6 +195,7 @@ span {
   height: 4px;
   width: 100%;
   max-width: 100%;
+  z-index: 1;
 }
 
 .progress-bar .bufferbar{
