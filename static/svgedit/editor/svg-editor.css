@@ -41,7 +41,7 @@ hr {
 }
 
 select {
-	margin-left: 187px;
+	margin-left: 180px;
 	width: 120px;
 	height: 30px;
 	border-color: #c3c3c3;
@@ -1300,24 +1300,23 @@ ul li.current {
 }
 
 #dialog_content {
-	height: 150px;
-	margin: 10px 10px 5px 10px;
+	height: 130px;
+	margin: 10px 20px 5px 20px;
 	overflow: auto;
-	text-align: left;
 }
 
 #dialog_content.prompt {
 	height: 75px;
-	font-size: 18px;
 }
 
 #dialog_content p {
-	margin: 20px 0 10px 40px;
+	margin: 20px 0 10px 0px;
 	line-height: 1.3em;
+	text-align: left;
 }
 
 #dialog_content #image-resolution{
-	margin-top: 5px;
+	margin-top: 10px;
   text-align: center;
   display: flex;
 }
@@ -1348,10 +1347,10 @@ ul li.current {
 	text-align: center;
 	left: 50%;
 	top: 50%;
-	width: 410px;
-	margin-left: -205px;
-	height: 220px;
-	margin-top: -110px;
+	width: 350px;
+	margin-left: -175px;
+	height: 200px;
+	margin-top: -100px;
 	position: fixed;
 	z-index: 50001;
 	background: white;
@@ -1373,7 +1372,7 @@ ul li.current {
 }
 
 #dialog_buttons input[type=button] {
-	margin: 0 3em;
+	margin: 0 2em;
 	width: 100px;
 	height: 35px;
 	background-color: white;

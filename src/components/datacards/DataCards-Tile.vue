@@ -86,7 +86,7 @@
               <td>{{u.minzoom}}</td>
               <td>{{u.maxzoom}}</td>
               <td style= "cursor:pointer;">
-                <div @click='lookFields(u.fields,$index)'>查看</div>
+                <div @click='lookFields(u.fields,$index,$event)'>查看</div>
               </td>
             </tr>
           </table>
@@ -168,10 +168,10 @@ export default {
   
     },
 
-    lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
+    lookFields:function(fields,index,e){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
       var height = (index-this.fieldsLength)*37+37;
-      $('.fields').css("margin",height+'px'+' 140px 0 420px');
+      $('.fields').css("margin",height+'px'+' 15px 0 230px');
       $(".fields").show();
     },
 
@@ -205,7 +205,7 @@ export default {
             input[i].blur();
             input[i].value = this.dataset[page+i].name;
           }
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 });  
         }
       }, function(response) {
         this.$broadcast('mailSent', { message: '修改数据名称失败！',timeout:3000 });
@@ -221,7 +221,7 @@ export default {
       this.$http({url:url,method:'PATCH',data:{'scope':scope},headers: { 'x-access-token': access_token }})
       .then(function(response){
         if(response.ok){
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 });  
         }
       },function(response){
         this.$broadcast('mailSent', { message: '修改共享范围失败！',timeout:3000 });
@@ -239,7 +239,7 @@ export default {
       .then(function(response){
         if(response.ok){
           var data = response.data;
-          this.$broadcast('mailSent', { message: '修改成功！',timeout:3000 }); 
+          this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 }); 
         }    
       }, function(response) {
         this.$broadcast('mailSent', { message: '修改失败！',timeout:3000 });
@@ -256,7 +256,7 @@ export default {
       this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
       .then(function(response){
         if(response.ok){
-          this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });  
+          this.$broadcast('mailSent', { message: '删除成功！',timeout:1000 });  
         }
       }, function(response) {
         this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });  
@@ -268,7 +268,7 @@ export default {
         var tags = this.dataset[index].tags;
         var tileset_id = this.dataset[index].tileset_id;
         if(tags.indexOf(e.target.value)!=-1){
-          this.$broadcast('mailSent', { message: '该标签已存在！',timeout:3000 }); 
+          this.$broadcast('mailSent', { message: '该标签已存在！',timeout:1000 }); 
           return;
         }
         tags.push(e.target.value);
@@ -279,7 +279,7 @@ export default {
         this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
         .then(function(response){
           if(response.ok){
-            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:3000 });  
+            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:1000 });  
           }
         }, function(response) {
           this.$broadcast('mailSent', { message: '标签添加失败！',timeout:3000 });  
@@ -303,7 +303,7 @@ export default {
         .then(function(response){
           if(response.ok){
             this.$dispatch("delete_tileset", tileset_id);
-            this.$broadcast('mailSent', { message: '删除成功！',timeout:3000 });
+            this.$broadcast('mailSent', { message: '删除成功！',timeout:1000 });
           }
         }, function(response) {
           this.$broadcast('mailSent', { message: '删除失败！',timeout:3000 });
@@ -418,24 +418,6 @@ export default {
   width: 360px;
   transition: 0.2s;
   background-color: transparent;
-}
-
-.small-pic {
-  float: left;
-  height: 100px;
-  width: 100px;
-  margin: 15px 10px;
-  transition: all 0.5s;
-}
-
-.small-pic:hover {
-  opacity: 0.7;
-}
-
-.small-pic img {
-  border-radius: 5px;
-  max-width:100%;
-  height:auto; 
 }
 
 .card .meta {

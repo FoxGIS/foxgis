@@ -868,7 +868,7 @@ TODOS
 							ctrl.bind('keydown', 'return', function() {ok.click();});
 						}
 						else if (type === 'select') {
-							var div = $('<div style="margin-left: 40px">');
+							var div = $('<div style="position: absolute;top: 20px;">');
 							ctrl = $('<select>').appendTo(div);
 							if (checkbox) {
 								var label = $('<label>').text(checkbox.label);
