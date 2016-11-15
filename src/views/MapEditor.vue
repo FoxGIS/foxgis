@@ -350,6 +350,7 @@ export default {
 }
 .base-title span:last-child{
   color: #b1b1b1;
+  font-family: SimHei;
 }
 .contact-us{
   position: absolute;
