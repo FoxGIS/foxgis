@@ -145,7 +145,7 @@ export default {
   cursor: pointer;
   width: 85px;
   text-align: center;
-  color: black;
+  color: #313131;
 }
 
 .mdl-layout--content {

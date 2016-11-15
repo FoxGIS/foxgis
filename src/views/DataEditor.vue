@@ -1,8 +1,15 @@
 <template>
 <div>
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
-  <div id="header"></div>
   <div id="edit-wrap">
+    <div class="header-top">
+      <div class="contact-us">
+        <a href="">关于我们 </a>|
+        <a href="">意见反馈 </a>|
+        <a href="">联系我们 </a>|
+        <a href="/static/document/用户手册.doc">帮助</a>
+      </div>
+    </div>
     <foxgis-data-view></foxgis-data-view>
   </div>
 </div>
@@ -51,64 +58,26 @@ export default {
 </script>
 
 <style scoped>
-#main-control .save-style{
-  padding: 10px 0 5px 5px;
-  bottom: 0px;
-  position: absolute;
-  cursor: pointer;
+.header-top{
+  background-color: rgb(39,48,55);
+  height: 25px;
 }
 
-#header {
-  height: 50px;
-  background-image: url('../assets/header.jpg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: #2061C6;
-  box-shadow: 0 5px 5px 0 rgba(32,97,198,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-  margin-bottom: 5px;
+
+.contact-us{
+  position: absolute;
+  color: gray;
+  right: 200px;
+}
+
+.contact-us a{
+  color: gray;
+  text-decoration: none;
 }
 
 #edit-wrap {
   display: flex;
   height: calc(100% - 50px);
   flex-direction: column;
-}
-
-#main-control {
-  width: 30px;
-  flex-direction: column;
-  height: calc(100% - 55px);
-  box-sizing: border-box;
-  position: absolute;
-  background-color: #2061C6;
-}
-
-#main-control img {
-  width: 30px;
-  height: 30px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-#main-control a {
-  color: white;
-  box-sizing: border-box;
-  width: 30px;
-  cursor: pointer;
-  padding: 20px 0 20px 5px;
-}
-
-#main-control a i {
-  font-size: 16px;
-}
-
-#main-control .control-active {
-  color: #2061C6;
-  background-color: #E5E2D3;
-}
-
-
-#delete-dialog{
-  display: none;
 }
 </style>

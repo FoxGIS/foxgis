@@ -688,7 +688,8 @@ input:-moz-placeholder { text-align: center; }
   position: absolute;
   width: 235px;
   height: 210px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #659BF7;
+  opacity: 0.9;
   top: 0;
   display: none;
 }

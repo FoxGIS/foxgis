@@ -106,12 +106,14 @@ export default {
       }
       if(type===2){//图件下载
         for(var i=0;i<uploads.length;i++){
-          xData.push(uploads[i].name);
+          var clipName = uploads[i].name.length>3?(uploads[i].name.substr(0,3)+"···"):uploads[i].name;
+          xData.push(clipName);
           yData.push(uploads[i].downloadNum);
-          if(i>=100){break;}
+          var sum = eval(yData.join('+'))||0;
         }
-        this.lineOption.xAxis[0].data = xData;
-        this.lineOption.series[0].data = yData;
+        this.lineOption.xAxis[0].data = xData.slice(0,100);
+        this.lineOption.series[0].data = yData.slice(0,100);
+        this.lineOption.title.text = "图件下载统计("+sum+")";
         this.mapDownloadChart.setOption(this.lineOption,true);
         return;
       }
@@ -124,6 +126,7 @@ export default {
             yData[xData.indexOf(uploads[i].owner)] += 1;
           }
         }
+        var sum = eval(yData.join('+'))||0;
         for(var i = 0;i<xData.length;i++){
           for(var j=0;j<this.userDownloadStats.length;j++){
             if(this.userDownloadStats[j].username===xData[i]){
@@ -134,6 +137,7 @@ export default {
         }
         this.pieOption.legend.data = xData;
         this.pieOption.series[0].data = yData;
+        this.pieOption.title.text = "图件资源统计("+sum+")";
         this.userUploadChart.setOption(this.pieOption,true);
         return;
       }
@@ -143,7 +147,12 @@ export default {
       for(var i = 0;i<username.length;i++){
         for(var j=0;j<this.userDownloadStats.length;j++){
           if(this.userDownloadStats[j].username===username[i]){
-            t[i] = this.userDownloadStats[j].organization;
+            var organization = this.userDownloadStats[j].organization;
+            if(organization){
+              t[i] = organization.length>3?(organization.substr(0,3)+"···"):organization;
+            }else{
+              t[i] = this.userDownloadStats[j].location;
+            }
           }
         }
       }

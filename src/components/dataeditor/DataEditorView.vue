@@ -26,21 +26,30 @@
   </div>
 
   <div id="property-edit">
-    <div style="margin-top:5px;margin-bottom:5px;">
-      <b style="font-family: SimHei Regular;">属性编辑</b>
-      <a v-on:click.prevent="addField" style="font-size:14px;">添加属性</a>
-      <i class="material-icons delete-feature" v-on:click="deleteSelected" title="删除样式">delete</i>
+    <div class="title">
+      <div class="block"></div>
+      <div class="text"><span>属性编辑</span></div>
+      <div class="action">
+        <i class="material-icons" v-on:click="addField" title="添加属性">add</i>
+        <i class="material-icons" v-on:click="deleteSelected" title="删除要素">delete</i>
+      </div>
     </div>
-    <div v-if="properties.length>0">
-      <span style="margin-left:10px;">字段</span><span style="float:right;margin-right: 50px;">值</span>
+    <div v-if="properties.length>0" style="margin-top: 4px;">
+      <table>
+        <tr>
+          <td style="width:25%;">字段</td>
+          <td style="width:55%;">值</td>
+          <td style="width:20%;">操作</td>
+        </tr>
+        <tr v-for="property in properties">
+          <td><input type="text" name="field" v-model="property[0]"></td>
+          <td><input type="text" name="value" v-model="property[1]" @change="propertyChange($event,$index)"></td>
+          <td><a v-on:click.stop.prevent="deleteField($event,$index)">删除</a></td>
+        </tr>
+      </table>
     </div>
     <div class="property-none" v-else>
       <span style="margin-left:26px;">当前要素无属性字段，你可以点击“添加属性”为该要素添加属性字段和属性值。</span>
-    </div>
-    <div class="property-item" v-for="property in properties">
-      <input type="text" name="field" v-model="property[0]">
-      <input type="text" name="value" v-model="property[1]" @change="propertyChange($event,$index)">
-      <i class="material-icons" v-on:click="deleteField($event,$index)" title="删除字段">clear</i>
     </div>
   </div>
 
@@ -136,10 +145,11 @@ export default {
       var value = this.properties[index][1]||"";
       var id = this.currFeatures[0].id;
       if(!field){//字段名未输入
-        this.$broadcast('mailSent', { message: '请输入字段名！',timeout:3000 });
+        this.$broadcast('mailSent', { message: '请输入字段名！',timeout:1000 });
         return;
       }
       this.draw.setFeatureProperty(id,field,value);
+      this.$broadcast('mailSent', { message: '修改成功！',timeout:1000 });
     },
     addField:function(){//添加属性字段
       this.properties.push(["",""]);
@@ -303,7 +313,7 @@ export default {
         textCancel:'不保存'
       },
       deletecontent: {//删除样式对话框的内容
-        title: '确定删除该样式吗？',
+        title: '确定删除该要素吗？',
         textOk:'确定',
         textCancel:'取消'
       }
@@ -317,7 +327,8 @@ export default {
   flex:1;
   flex-grow:1;
   position: absolute;
-  height: calc(100% - 55px);
+  height: calc(100% - 45px);
+  top: 25px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -344,16 +355,15 @@ export default {
   position: absolute;
   top: 75px;
   left: 50px;
-  width: 207px;
+  width: 320px;
   height: 30px;
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: rgb(22,82,126);
   /* border-radius: 4px; */
 }
 .draw-btn{
   position: absolute;
-  top: 75px;
-  left: 262px;
+  top: 73px;
+  left: 410px;
   width: 150px;
   height: 30px;
   background-color: white;
@@ -387,81 +397,91 @@ export default {
   background-image: url("../../../static/icons/polygon.svg");
 }
 
+.title{
+  height: 40px;
+  background-color: white;
+  border: 1px solid #dadada;
+}
+
+.title .block{
+  width: 5px;
+  height: 18px;
+  background-color: #2c67ed;
+  float: left;
+  margin: 10px;
+}
+.title .text{
+  position: relative;
+  float: left;
+  top: 8px;
+}
+.title .action{
+  float: right;
+  position: relative;
+  top: 10px;
+  color: #3190d3;
+}
+
+.action i{
+  cursor: pointer;
+}
+table{
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+table tr:first-child{
+  background-color: #e8e8e8;
+}
+table tr{
+  line-height: 30px;
+}
+td input{
+  padding-left: 5px;
+  margin-top: 5px;
+  height: 20px;
+  border: 1px solid #c5c5c5;
+  color:#777777;
+}
+td input[name='field']{
+  width: 60px;
+}
+td input[name='value']{
+  width: 110px;
+}
+td a{
+  color: rgb(36,137,209);
+  font-size: 14px;
+  cursor: pointer;
+}
 #property-edit{
   position: absolute;
   display: none;
-  width: 200px;
+  width: 320px;
   top: 150px;
   left: 50px;
   background-color: white;
   overflow: auto;
-  border: 1px solid #c3c3c3;
-  padding: 5px;
 }
 .property-none{
   padding: 20px;
   font-size: 13px;
   color: gray;
 }
-.property-item{
-  position: relative;
-  width: 200px;
-}
-.property-item input:nth-child(odd){
-  padding-left: 5px;
-  margin-top: 5px;
-  width: 60px;
-  height: 20px;
-  border: 1px solid #c5c5c5;
-  border-radius: 3px;
-}
-
-.property-item input:nth-child(even){
-  padding-left: 5px;
-  margin-top: 5px;
-  width: 110px;
-  height: 20px;
-  border: 1px solid #c5c5c5;
-  border-radius: 3px;
-}
-
-.property-item i{
-  position: absolute;
-  font-size: 12px;
-  top: 10px;
-  cursor: pointer;
-  right: 0px;
-}
-
-.property-item i:hover{
-  color: red;
-  font-weight: bold;
-}
-
-a:hover{
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.delete-feature{
-  position: relative;
-  font-size: 24px;
-  vertical-align: middle;
-  cursor: pointer;
-  top: -4px;
-  left: 27px;
-}
-
-.delete-feature:hover{
-  color: #868686;
-}
 
 .mdl-btn{
-  margin: 2px;
-  min-width: 20px;
-  padding: 0 8px;
-  height: 25px;
-  line-height: 25px;
+  width: 76px;
+  padding: 0;
+  height: 30px;
+  line-height: 30px;
+  min-width: initial;
+}
+.control-btn .mdl-button{
+  color: white;
+  border-radius: 0;
+}
+.control-btn .mdl-button:hover{
+  background-color: rgb(36,137,209);
 }
 #save-dialog,#delete-dialog{
   display: none;
