@@ -86,7 +86,7 @@
               <td>{{u.minzoom}}</td>
               <td>{{u.maxzoom}}</td>
               <td style= "cursor:pointer;">
-                <div @click='lookFields(u.fields,$index)'>查看</div>
+                <div @click='lookFields(u.fields,$index,$event)'>查看</div>
               </td>
             </tr>
           </table>
@@ -168,10 +168,10 @@ export default {
   
     },
 
-    lookFields:function(fields,index){//查看字段的点击事件(fields:字段,index:点击的行号)
+    lookFields:function(fields,index,e){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
       var height = (index-this.fieldsLength)*37+37;
-      $('.fields').css("margin",height+'px'+' 140px 0 420px');
+      $('.fields').css("margin",height+'px'+' 15px 0 230px');
       $(".fields").show();
     },
 
