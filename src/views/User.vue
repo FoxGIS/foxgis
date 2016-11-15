@@ -126,7 +126,7 @@ import Cookies from 'js-cookie'
 export default {
   methods:{
     changePassword:function(e){
-      $(".modal").show();
+      $(".modal").fadeIn(300);
     },
     pwdOK:function(){
       var oldPwd = $("#old-pwd").val();
@@ -152,7 +152,7 @@ export default {
       $("#old-pwd").val("");
       $("#new-pwd1").val("");
       $("#new-pwd2").val("");
-      $(".modal").hide();
+      $(".modal").fadeOut(300);
     },
     changePwd:function(){
       var oldPwd = $("#old-pwd").val();
@@ -178,7 +178,7 @@ export default {
         if(response.ok){
           var token = response.data.access_token;
           Cookies.set('access_token',token);
-          $(".modal").hide();
+          $(".modal").fadeOut(300);
           this.$broadcast("mailSent",{message:"密码修改成功",timeout:3000});
         }
       }, function(response) {
