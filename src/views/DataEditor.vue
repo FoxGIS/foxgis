@@ -3,11 +3,17 @@
   <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <div id="edit-wrap">
     <div class="header-top">
-      <div class="contact-us">
-        <a href="">关于我们 </a>|
-        <a href="">意见反馈 </a>|
-        <a href="">联系我们 </a>|
-        <a href="/static/document/用户手册.doc">帮助</a>
+      <div class="header">
+        <div class="base-title">
+          <span>辅助决策用图服务系统</span>
+          <span>|在线数据编辑</span>
+        </div>
+        <div class="contact-us">
+          <a href="">关于我们 </a>|
+          <a href="">意见反馈 </a>|
+          <a href="">联系我们 </a>|
+          <a href="/static/document/用户手册.doc">帮助</a>
+        </div>
       </div>
     </div>
     <foxgis-data-view></foxgis-data-view>
@@ -59,19 +65,35 @@ export default {
 
 <style scoped>
 .header-top{
-  background-color: rgb(39,48,55);
+  background-color: rgb(76,90,100);
   height: 25px;
 }
 
-
+.header-top .header{
+  width: 80%;
+  margin:0 auto;
+}
+.base-title{
+  float: left;
+}
+.base-title span:first-child{
+  color: white;
+  background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(250, 250, 250, 1)), to(rgba(140, 140, 140, 1)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+}
+.base-title span:last-child{
+  color: #b1b1b1;
+}
 .contact-us{
   position: absolute;
-  color: gray;
+  color: #b1b1b1;
   right: 200px;
 }
 
 .contact-us a{
-  color: gray;
+  color: #b1b1b1;
   text-decoration: none;
 }
 

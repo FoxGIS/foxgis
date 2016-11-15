@@ -35,7 +35,7 @@
         <div class="als-container" id="share-image" style="height:200px;">
           <div class="als-viewport">
             <ul class="als-wrapper">
-              <li class="als-item" v-for="image in images"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}" /></li>
+              <li class="als-item" v-for="image in images" @click="showPreview(image.path)"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}"/></li>
             </ul>
           </div>
         </div>
@@ -49,7 +49,7 @@
         <div class="als-container" id="product-image" style="height:200px;">
           <div class="als-viewport">
             <ul class="als-wrapper">
-              <li class="als-item" v-for="image in images"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}" /></li>
+              <li class="als-item" v-for="image in images" @click="showPreview(image.path)"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}" /></li>
             </ul>
           </div>
         </div>
@@ -167,6 +167,11 @@
         
       </div>
 
+      <div class="modal" @click="hidePreview">
+        <div class="image-container" >
+           <img id='thumbnail'>
+        </div>
+      </div>
       <foxgis-footer></foxgis-footer>
 	  </div>
   </foxgis-layout>
@@ -198,7 +203,16 @@ export default {
       }else if($(e.target).hasClass("uploads")){
         $("#uploads-des").css("display","inline-block");
       }
-    }
+    },
+    showPreview:function(path){
+      document.querySelector('#thumbnail').src = path;
+      document.querySelector('.modal').style.display = 'block';
+    },
+    hidePreview: function(e) {//隐藏图片预览
+      if (e.target.className.indexOf('modal') != -1) {
+        e.target.style.display = 'none';
+      }
+    },
   },
   attached() {
     var access_token = Cookies.get('access_token');
@@ -231,23 +245,45 @@ export default {
     }, function(response) {
       console.log(response);
     });
-
-    $("#share-image").als({
-      visible_items: 3,
-      scrolling_items: 2,
-      orientation: "horizontal",
-      circular: "yes",
-      autoscroll: "yes",
-      interval: 3000
+    var mapDownloadUrl = SERVER_API.stats+"/filedownloads";
+    this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      if(response.data.length > 0){
+        var data = response.data;
+        var images = [];
+        for(let i=0;i<10;i++){
+          var imageUrl = SERVER_API.uploads+"/"+data[i].owner+"/"+data[i].upload_id+"/thumbnail?width=400&height=300&quality=50&access_token="+access_token;
+          this.images[i].image_id = data[i].id;
+          this.images[i].path = imageUrl;
+          this.images[i].title = data[i].name;
+        }
+        //this.images = images;
+        $("#share-image").als("destroy");
+        var als = $("#share-image").als({
+          visible_items: 3,
+          scrolling_items: 1,
+          orientation: "horizontal",
+          circular: "yes",
+          autoscroll: "yes",
+          interval: 3000
+        }); 
+      }
+    }, function(response) {
+      console.log(response);
     });
+    
     $("#product-image").als({
       visible_items: 4,
       scrolling_items: 2,
       orientation: "horizontal",
       circular: "yes",
-      autoscroll: "yes",
+      autoscroll: "no",
       interval: 3000
     });
+  },
+  beforeDestroy() {
+    // 销毁实例
+    
   },
 	
   data() {
@@ -277,6 +313,22 @@ export default {
         image_id: 'pic4',
         path:'../../static/images/show/06.jpg',
         title:'样图6'
+      },{
+        image_id: 'pic4',
+        path:'../../static/images/show/06.jpg',
+        title:'样图7'
+      },{
+        image_id: 'pic4',
+        path:'../../static/images/show/06.jpg',
+        title:'样图8'
+      },{
+        image_id: 'pic4',
+        path:'../../static/images/show/06.jpg',
+        title:'样图9'
+      },{
+        image_id: 'pic4',
+        path:'../../static/images/show/06.jpg',
+        title:'样图10'
       }],
       serviceShowMessage:[{
         title:"在线图集",
@@ -523,5 +575,29 @@ table tr td:nth-child(3){
 }
 #atlas-des{
   display: inline-block;
+}
+.modal{
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9999;
+  overflow: auto;
+}
+
+.image-container {
+  max-width: 1000px;
+  margin: 100px auto 0 auto;
+}
+
+.image-container img {
+  clear: both;
+  display: block;
+  margin: 0 auto;
 }
 </style>

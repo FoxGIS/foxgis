@@ -5,7 +5,7 @@
 
   <div class="icon-head">
     <div class="search">
-      <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
+      <foxgis-search :placeholder="'输入搜索关键字'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
       <div id="picker" >
         <i class="material-icons">file_upload</i>上传符号
       </div>

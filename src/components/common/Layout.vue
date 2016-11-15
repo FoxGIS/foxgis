@@ -3,11 +3,16 @@
   <div class="mdl-layout mdl-js-layout">
     <header class="mdl-layout__header mdl-layout__header--seamed">
       <div class="header-top">
-        <div class="contact-us">
-          <a href="">关于我们 </a>|
-          <a href="">意见反馈 </a>|
-          <a href="">联系我们 </a>|
-          <a href="/static/document/用户手册.doc">帮助</a>
+        <div class="header">
+          <div class="base-title">
+            <span>辅助决策用图服务系统</span>
+          </div>
+          <div class="contact-us">
+            <a href="">关于我们 </a>|
+            <a href="">意见反馈 </a>|
+            <a href="">联系我们 </a>|
+            <a href="/static/document/用户手册.doc">帮助</a>
+          </div>
         </div>
       </div>
       <div class="mdl-layout__header-row">
@@ -90,19 +95,30 @@ export default {
 }
 
 .header-top{
-  background-color: rgb(39,48,55);
+  background-color: rgb(76,90,100);
   height: 25px;
 }
-
-
+.header-top .header{
+  width: 1100px;
+  margin:0 auto;
+}
+.base-title{
+  float: left;
+}
+.base-title span{
+  color: white;
+  background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(250, 250, 250, 1)), to(rgba(140, 140, 140, 1)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+}
 .contact-us{
-  position: absolute;
-  color: gray;
-  right: 200px;
+  color: #b1b1b1;
+  float: right;
 }
 
 .contact-us a{
-  color: gray;
+  color: #b1b1b1;
   text-decoration: none;
 }
 
@@ -115,13 +131,13 @@ export default {
 
 .mdl-layout__header-row {
   height: 55px;
-  width: 1000px;
+  width: 1100px;
   margin:0 auto;
   padding: 0;
 }
 
-.mdl-layout-title {
-  color: rgb(27, 110, 171);
+.mdl-layout__header-row .mdl-layout-title span{
+  color: #2f80bc;
   font-family: SimHei;
   font-size: 26px;
 }

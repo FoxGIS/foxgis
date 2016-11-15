@@ -95,8 +95,8 @@
                       <td></td>
                     </tr>
                     <tr>
-                      <td style="border-right: 1px solid #d2d2d2;"><mdl-anchor-button v-on:click.prevent="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" style="background-color: rgb(73,150,206);">预览</mdl-anchor-button></td>
-                      <td><mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" style="background-color: rgb(14,178,145);">下载</mdl-anchor-button></td>
+                      <td style="border-right: 1px solid #d2d2d2;"><mdl-anchor-button v-on:click.prevent="showPreview($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">预览</mdl-anchor-button></td>
+                      <td><mdl-anchor-button v-on:click.prevent="downloadUpload($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button></td>
                     </tr>
                   </table> 
                 </div>
@@ -776,7 +776,7 @@ span.delete-badge{
 
 .title table td .mdl-button{
   width: 40px;
-  color: white;
+  color: #2f80bc;
   height: 23px;
   margin: 5px auto;
   line-height: 25px;

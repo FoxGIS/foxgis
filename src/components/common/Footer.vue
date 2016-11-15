@@ -19,20 +19,20 @@
 <style scoped>
   .footer-bottom{
     bottom: 0px;
-    background-color: rgb(39,48,55);
+    background-color: rgb(76,90,100);
     height: 40px;
     margin-top: 50px;
   }
 
   .contact-us{
-    color: gray;
+    color: #b1b1b1;
     line-height: 40px;
     margin: 0 auto;
     width: 270px;
   }
 
   .contact-us a{
-    color: gray;
+    color: #b1b1b1;
     text-decoration: none;
   }
 </style>

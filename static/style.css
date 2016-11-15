@@ -33,3 +33,8 @@
 .mapboxgl-ctrl-top-left{
   display: none;
 }
+
+input,select,span,p{
+  color:#505050;
+  font-family: "Microsoft YaHei" ! important;
+}
