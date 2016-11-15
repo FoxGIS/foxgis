@@ -47,16 +47,21 @@
         </div>
       </div>
 
-      <div class="product-show show">
+      <div class="product-show show" style="height: 550px;">
         <div class="show-title">
           <div class="block"></div>
-          <div class="text"><span>制图成果展示</span></div>
+          <div class="text"><span>地图展示</span></div>
         </div>
-        <div class="als-container" id="product-image" style="height:200px;">
-          <div class="als-viewport">
-            <ul class="als-wrapper">
-              <li class="als-item" v-for="image in images" @click="showPreview(image.path)"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}" /></li>
-            </ul>
+        <div class="product-container">
+          <div class="product-img">
+            <img :src="activeImg.path" title="{{activeImg.title}}"></img>
+          </div>
+          <div class="product-text">
+            <span>{{activeImg.title}}</span>
+          </div>
+          <div class="change_img">
+            <a class="image_item active" data-img='pic1' @click="changeImg($event)"></a>
+            <a class="image_item" data-img='pic2' @click="changeImg($event)"></a>
           </div>
         </div>
       </div>
@@ -219,6 +224,18 @@ export default {
         e.target.style.display = 'none';
       }
     },
+    changeImg:function(e){
+      var image_id = e.target.dataset.img;
+      this.activeImg = {};
+      $('.image_item').removeClass('active');
+      $(e.target).addClass('active');
+      for(var i=0;i<this.clickImages.length;i++){
+        if(this.clickImages[i].image_id === image_id){
+          this.activeImg = this.clickImages[i];
+          break;
+        }
+      }
+    }
   },
   attached() {
     var access_token = Cookies.get('access_token');
@@ -228,6 +245,7 @@ export default {
     }
     var url = SERVER_API.stats + '/uploads';
     var that = this;
+    this.activeImg = this.clickImages[0];
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
@@ -278,14 +296,6 @@ export default {
       console.log(response);
     });
     
-    $("#product-image").als({
-      visible_items: 4,
-      scrolling_items: 2,
-      orientation: "horizontal",
-      circular: "yes",
-      autoscroll: "no",
-      interval: 3000
-    });
   },
   beforeDestroy() {
     // 销毁实例
@@ -295,6 +305,16 @@ export default {
   data() {
   	return {
   	  uploadInfo:[],
+      activeImg: {},
+      clickImages: [{
+        image_id: 'pic1',
+        path:'../../static/images/show/01.jpg',
+        title:'样图1'
+      },{
+        image_id: 'pic2',
+        path:'../../static/images/show/02.jpg',
+        title:'样图2'
+      }],
       images: [{
         image_id: 'pic1',
         path:'../../static/images/show/01.jpg',
@@ -419,7 +439,6 @@ export default {
 .show-title{
   height: 40px;
   background-color: white;
-  border-bottom: 1px solid #e6e6e6;;
 }
 
 .show-title .block{
@@ -458,7 +477,6 @@ export default {
 .als-viewport{
   position: relative;
   overflow: hidden;
-  margin: 20px auto;
 }
 .als-wrapper{
   display: block;
@@ -494,7 +512,7 @@ li span {
   left:15px;
   width:24px;
   height:24px;
-  background-image:url('../../static/icons/hot.gif')
+  background-image:url('../../static/icons/hot.gif');
 }
 
 table tr td:nth-child(1){
@@ -618,5 +636,50 @@ table tr td:nth-child(3){
   clear: both;
   display: block;
   margin: 0 auto;
+}
+
+.product-container {
+  height:510px;
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+}
+
+.product-img {
+  margin: 10px 0 0 20px;
+  width:600px;
+  height:440px;
+}
+
+.product-img img {
+  width: 600px;
+  height: 440px;
+}
+
+.product-text {
+  height: 440px;
+  width: 290px;
+  margin: 10px 40px 0 40px;
+  border: 1px solid #c3c3c3;
+}
+
+.change_img {
+  height: 50px;
+  width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.change_img a.image_item{
+  display: inline-block;
+  width: 40px;
+  height: 5px;
+  background-color: #bbb;
+  cursor: pointer;
+  margin: 25px 5px;
+}
+
+.change_img a.active{
+  background-color: #2F80BC;
 }
 </style>
