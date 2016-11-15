@@ -1,29 +1,33 @@
 <template>
 <div class="foxgis-data-cards">
-  <div class="wrapper">
-    <table>
-      <tr>
-        <th>制图名称</th>
-        <th>创建时间</th>
-        <th>最后修改时间</th>
-        <th>操作</th>
-      </tr>
-      <tr v-for="u in pageConfig.page_item_num" v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
-        <td>
-          {{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name }}
-        </td>
-        <td>
-          {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt}}
-        </td>
-        <td>
-          {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
-        </td>
-        <td class="action">
-          <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button colored v-mdl-ripple-effect>编辑</mdl-anchor-button></a>|
-          <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>
-        </td>
-      </tr>
-    </table>
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
+  <div class="card" v-for="u in pageConfig.page_item_num" v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
+
+    <div class="card-middle">
+      <div class="name">
+        <p>{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}</p>
+      </div>
+
+      <div class = "tags">
+        <span>主题词:</span>
+        <span class="tag" v-for="tag in dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].tags" track-by="$index">
+          <span>{{ tag }}</span>
+          <a title="删除标签" @click="deleteTag((pageConfig.current_page-1)*pageConfig.page_item_num+$parent.$index, $index)">×</a>
+        </span>
+        <input type="text" maxlength="10" @change="addTag($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+      </div>
+
+      <div class="meta">
+        <p>
+        创建于 : {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt}}  · 最后一次编辑 : {{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].updatedAt}}
+        </p>
+      </div>
+    </div>
+
+    <div class="card-right">
+      <a v-link="{ path: '/mapeditor/'+dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id }"><mdl-anchor-button colored v-mdl-ripple-effect>编辑</mdl-anchor-button></a>|
+      <mdl-anchor-button colored v-mdl-ripple-effect v-on:click="deleteStyle(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].style_id)">删除</mdl-anchor-button>
+    </div>
   </div>
 
   <foxgis-pagination v-show="dataset.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
@@ -32,11 +36,53 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   props: ['dataset'],
   methods: {
     deleteStyle: function(style_id){//删除卡片
       this.$dispatch('delete-style',style_id);
+    },
+
+    deleteTag: function(pId, tag_id) {//删除主题词的标签
+      var tags = this.dataset[pId].tags;
+      var style_id = this.dataset[pId].style_id;
+      tags.splice(tag_id, 1);
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.styles + '/' + username + '/'+ style_id;
+      this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+      .then(function(response){
+        if(response.ok){
+          this.$broadcast('mailSent', { message: '删除成功！',timeout:1000 });  
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '删除失败！',timeout:1000 });  
+      });
+    },
+
+    addTag: function(e, index) {//添加主题词标签
+      if (e.target.value) {
+        var tags = this.dataset[index].tags;
+        var style_id = this.dataset[index].style_id;
+        if(tags.indexOf(e.target.value)!=-1){
+          this.$broadcast('mailSent', { message: '该标签已存在！',timeout:1000 }); 
+          return;
+        }
+        tags.push(e.target.value);
+        e.target.value = '';
+        var username = Cookies.get('username');
+        var access_token = Cookies.get('access_token');
+        var url = SERVER_API.styles + '/' + username + '/'+ style_id;
+        this.$http({url:url,method:'PATCH',data:{'tags':tags},headers:{'x-access-token':access_token}})
+        .then(function(response){
+          if(response.ok){
+            this.$broadcast('mailSent', { message: '标签添加成功！',timeout:1000 });  
+          }
+        }, function(response) {
+          this.$broadcast('mailSent', { message: '标签添加失败！',timeout:1000 });  
+        });
+      }
     },
     
   },
@@ -61,57 +107,126 @@ export default {
 
 </script>
 
-
 <style scoped>
-.wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.card {
+  border-radius: 2px 2px 0 0;
+  transform: translatez(0);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+  outline: none;
   overflow: hidden;
-  text-align: center;
+  transition: .2s;
 }
 
-.wrapper table {
-  width: 100%;
-  font-family: Microsoft Yahe;
-  font-size:14px;
-  color:#333333;
-  border-width: 1px;
-  border-color: #666666;
-  border-collapse: collapse;
-  table-layout: fixed;
+.card-middle {
+  float: left;
+  width: 700px;
+  height: 120px;
 }
 
-.wrapper table th {
-  padding: 10px 0px;
-  background-color: rgb(250,250,250);
-  font-weight: bold;
+.card-middle .name {
+  margin: 24px 24px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  text-align: left;
 }
 
-.wrapper table td {
-  padding: 10px 0px;
-  background-color: #ffffff;
-  word-break:keep-all;/* 不换行 */
-  white-space:nowrap;/* 不换行 */
-  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
-  text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+.card-middle .name p {
+  font-size: 1em;
+  margin: 0;
 }
 
-.wrapper table tr:nth-child(odd) td {
-  background-color: rgb(250,250,250);
+.card-middle .meta {
+  margin: 5px 24px;
+  font-size: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
-.action{
-  text-align: center;
+.card-middle .meta p {
+  color: #9e9e9e;
+  font-size: 12px;
+  margin: 0;
+}
+
+.card-middle .meta .mdl-button {
+  text-align: right;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+.card-right{
+  width: 100px;
+  float: left;
+  height: 120px;
+  line-height: 120px;
+  text-align: right;
   color: #2f80bc;
 }
 
-.action .mdl-button{
+.card-right .mdl-button{
   padding: 0;
   width: 40px;
   line-height: 24px;
   height: 24px;
   min-width: inherit;
   color: #2f80bc;
+}
+
+.active .meta {
+  display: none;
+}
+
+.active .tags{
+  margin-top: 12px; 
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.foxgis-data-cards .card:nth-child(even){
+  background-color: rgb(250,250,250);
+}
+
+.tags {
+  font-size: 13px;
+  transition: 0.2s;
+  margin: 5px 24px;
+}
+
+.tags input {
+  outline: none;
+  border: 0;
+  background-color: transparent;
+}
+
+.tag {
+  background: #eee;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 3px;
+  vertical-align: middle;
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.tag a {
+  text-decoration: none;
+  margin-left: 5px;
+  font: 14px "Times New Roman";
 }
 </style>
