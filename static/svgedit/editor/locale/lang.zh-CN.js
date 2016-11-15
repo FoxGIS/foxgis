@@ -185,7 +185,7 @@ svgEditor.readLang({
 		"grid": "网格",
 		"snapping_onoff": "吸附开/关",
 		"snapping_stepsize": "吸附步长:",
-		"grid_color": "网格颜色"
+		"grid_color": "网格颜色:"
 	},
 	shape_cats: {
 		"basic": "常规",
