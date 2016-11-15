@@ -514,6 +514,8 @@ span {
   font-size: 12px;
   margin: 0;
   display: inline-block;
+  position: relative;
+  top: -2px;
 }
 
 .modal {
