@@ -41,11 +41,11 @@ hr {
 }
 
 select {
-	margin-left: 180px;
 	width: 120px;
 	height: 30px;
 	border-color: #c3c3c3;
 	border-radius: 5px;
+	font-family: "Microsoft YaHei" ! important;
 }
 
 #svgroot {
@@ -416,7 +416,7 @@ div.palette_item:first-child {
 
 #main_menu {
 	z-index: 12;
-	background: #eee;
+	background: #fff;
 	position: relative;
 	width: 230px;
 	padding: 5px;
@@ -427,7 +427,7 @@ div.palette_item:first-child {
 	display: none;
 	overflow: hidden;
 	clear: both;
-	top: -9px;
+	top: -5px;
 }
 
 #main_menu ul,
@@ -493,6 +493,10 @@ div.palette_item:first-child {
 
 #tools_top .tool_sep {
 	margin-top: 5px;
+}
+
+input#image_url {
+	width: 250px;
 }
 
 #tools_left {
@@ -601,12 +605,23 @@ div.toolset label span {
 
 input[type=text] {
 	padding: 2px;
+	border-radius: 5px;
+	border: 1px solid #c3c3c3;
+	font-family: "Microsoft YaHei";
+	width: 70px;
 }
 
 #tools_left .tool_button,
 #tools_left .tool_button_current {
 	position: relative;
 	z-index: 11;
+}
+
+#xy_panel input , input#image_height , input#image_width{
+	border-radius: 5px;
+	border: 1px solid #c3c3c3;
+	font-family: "Microsoft YaHei";
+	width: 70px;
 }
 
 .flyout_arrow_horiz {
@@ -639,7 +654,7 @@ span.zoom_tool {
 	border-top: 1px solid #FFFFFF;
 	border-right: 1px solid #808080;
 	border-bottom: 1px solid #808080;
-	background-color: #E8E8E8;
+	background-color: #FCFCFC;
 }
 
 .dropdown button.down {
@@ -1126,11 +1141,12 @@ ul li.current {
 	position: absolute;
 	top: 50px;
 	padding: 10px;
-	background-color: #B0B0B0;
+	background-color: #fff;
 	border: 1px outset #777;
 	opacity: 1.0;
 /*	width: 450px;*/
-	font-family: Verdana, Helvetica, sans-serif;
+	color: rgb(146,146,146);
+	font-family: "Microsoft YaHei" ! important;
 	font-size: .8em;
 	z-index: 20001;
 }
@@ -1195,6 +1211,9 @@ ul li.current {
 #canvas_title, #canvas_bg_url {
 	display: block;
 	width: 96%;
+	border-radius: 5px;
+	border: 1px solid #c3c3c3;
+	font-family: "Microsoft YaHei" ! important;
 }
 
 
@@ -1257,6 +1276,8 @@ ul li.current {
 
 #tool_prefs_option {
 	float: right;
+	color: rgb(146,146,146);
+	font-family: "Microsoft YaHei" ! important;
 }
 
 .toolbar_button button {

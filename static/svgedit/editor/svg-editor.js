@@ -869,7 +869,7 @@ TODOS
 						}
 						else if (type === 'select') {
 							var div = $('<div style="position: absolute;top: 20px;">');
-							ctrl = $('<select>').appendTo(div);
+							ctrl = $('<select style="margin-left: 175px;">').appendTo(div);
 							if (checkbox) {
 								var label = $('<label>').text(checkbox.label);
 								chkbx = $('<input type="checkbox">').appendTo(label);
