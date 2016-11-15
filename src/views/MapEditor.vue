@@ -423,7 +423,7 @@ export default {
 
 #toc-container {
   width: 250px;
-  height: calc(100% - 65px);
+  height: calc(100% - 25px);
   box-sizing: border-box;
   position: absolute;
   left: 30px;

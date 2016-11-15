@@ -28,10 +28,6 @@
           <a class="mdl-navigation__link" v-link="{ path: '/user' }" v-else>{{username}}</a>
         </nav>
       </div>
-      <!-- <div class="userCenter">
-        <a v-link="{ path: '/studio/user' }">用户管理</a>
-        <a v-on:click.prevent="signout">注销</a>
-      </div> -->
     </header>
 
     <div class="mdl-layout--content">

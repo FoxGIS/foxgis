@@ -62,6 +62,9 @@
     var colpick = $(".colpick");
     if(!_con.is(e.target) && _con.has(e.target).length === 0 && !colpick.is(e.target) && colpick.has(e.target).length === 0){
       _con.hide();
+      if($("#stops-panel").is(":visible")===false){
+        $(".open-stops").removeClass("open");
+      }
     }
   });
 </script>

@@ -88,9 +88,10 @@
           </div>
           <div class="introduction" id="atlas-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[0].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[0].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[0].description}}</p>
+                <a href="#!/atlas">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -99,9 +100,10 @@
           </div>
           <div class="introduction" id="projects-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[1].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[1].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[1].description}}</p>
+                <a href="#!/studio/maps">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -110,9 +112,10 @@
           </div>
           <div class="introduction" id="tilesets-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[2].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[2].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[2].description}}</p>
+                <a href="#!/studio/tile">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -121,9 +124,10 @@
           </div>
           <div class="introduction" id="datasets-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[3].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[3].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[3].description}}</p>
+                <a href="#!/studio/data">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -132,9 +136,10 @@
           </div>
           <div class="introduction" id="fonts-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[4].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[4].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[4].description}}</p>
+                <a href="#!/studio/fonts">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -143,9 +148,10 @@
           </div>
           <div class="introduction" id="icons-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[5].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[5].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[5].description}}</p>
+                <a href="#!/studio/sprites">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -154,9 +160,10 @@
           </div>
           <div class="introduction" id="uploads-des">
             <div class="description">
-              <div class="model-name"><h3>{{serviceShowMessage[6].title}}</h3></div>
+              <div class="model-name"><h4>{{serviceShowMessage[6].title}}</h4></div>
               <div class="model-des">
                 <p>{{serviceShowMessage[6].description}}</p>
+                <a href="#!/studio/uploads">查看详情</a>
               </div>
             </div>
             <div class="preview">
@@ -332,37 +339,37 @@ export default {
       }],
       serviceShowMessage:[{
         title:"在线图集",
-        description:"描述1",
+        description:"提供主题词、制图区域、制图年份等多种检索手段，对系统地图资源进行按需检索生成在线图集供在线预览图件或下载到本地，实现辅助决策用图资源共享。",
         image:"../../static/images/show/01.jpg"
       },
       {
         title:"制图工程管理",
-        description:"描述2",
+        description:"对制图工程数据进行统一管理，通过选择样式创建制图工程开启制图编辑，同时对已有制图工程可进行查询、编辑及删除等操作，多种制图模板满足不同场景下的制图需求。",
         image:"../../static/images/show/02.jpg"
       },
       {
         title:"瓦片集管理",
-        description:"描述3",
+        description:"对瓦片集数据进行统一管理，新上传的制图数据经过后端自动数据处理链完成瓦片服务的发布，同时支持对已有瓦片数据进行查询、信息维护、删除及下载等操作，支撑多样化的专题地图制作。",
         image:"../../static/images/show/03.jpg"
       },
       {
         title:"数据集管理",
-        description:"描述4",
+        description:"对用户上传的数据进行统一管理，支持geojson格式矢量数据上传查询、属性预览、编辑及删除等操作，满足轻量化的在线矢量数据编辑需求。",
         image:"../../static/images/show/04.jpg"
       },
       {
         title:"字体管理",
-        description:"描述5",
+        description:"对字体数据进行统一管理，支持字体数据上传、查询、信息维护、字体预览、下载及删除等操作，丰富的字体数据资源满足多样化的制图需求。",
         image:"../../static/images/show/05.jpg"
       },
       {
         title:"符号库管理",
-        description:"描述6",
+        description:"对符号库数据进行统一管理，支持符号库数据上传、查询、信息维护、符号预览、下载及删除等操作，丰富的符号库数据资源满足多样化的制图需求。",
         image:"../../static/images/show/06.jpg"
       },
       {
         title:"决策用图",
-        description:"描述7",
+        description:"对用户图件进行统一管理，支持图件数据上传、查询、预览、信息维护、下载及删除等操作，用户可将地图权限设为公开进行地图分享。",
         image:"../../static/images/show/01.jpg"
       }]
   	}
@@ -555,19 +562,20 @@ table tr td:nth-child(3){
 }
 .introduction .description{
   position: absolute;
-  width: 380px;
+  width: 350px;
   height: 250px;
-  margin: 20px;
-  border-right: 1px solid #cecece;
+  padding: 20px;
   display: inline-block;
 }
 .introduction .preview{
   position: absolute;
   display: inline-block;
-  width: 300px;
+  border-left: 1px solid #cecece;
+  width: 325px;
   height: 250px;
   right: 0;
-  margin: 20px;
+  margin: 20px 20px 20px 0;
+  padding-left: 20px;
 }
 .preview img{
   width: 100%;
@@ -599,5 +607,19 @@ table tr td:nth-child(3){
   clear: both;
   display: block;
   margin: 0 auto;
+}
+h4{
+  font-family: SimHei;
+  margin: 15px 0;
+}
+.model-des a{
+  color: #2795e0;
+  border: 1px solid #2795e0;
+  width: 120px;
+  text-decoration: none;
+  padding: 8px 35px;
+}
+.model-des p{
+  margin: 0 0 38px;
 }
 </style>
