@@ -35,7 +35,13 @@
         <div class="als-container" id="share-image" style="height:200px;">
           <div class="als-viewport">
             <ul class="als-wrapper">
-              <li class="als-item" v-for="image in images" @click="showPreview(image.path)"><img :src="image.path" alt="{{image.title}}" title="{{image.title}}"/></li>
+              <li class="als-item" v-for="image in images" @click="showPreview(image.path)">
+                <div>
+                  <img :src="image.path" alt="{{image.title}}" title="{{image.title}}">
+                    <span></span>
+                  </img>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -470,12 +476,25 @@ export default {
   cursor: pointer;
   float: left;
 }
+li div {
+  position: relative; 
+  width: 200px; 
+  height: 150px;
+}
 li img{
   width:200px;
   height:150px;
   display: block;
   margin: 0 auto;
   vertical-align: middle;
+}
+li span {
+  position:absolute;
+  top:0;
+  left:15px;
+  width:24px;
+  height:24px;
+  background-image:url('../../static/icons/hot.gif')
 }
 
 table tr td:nth-child(1){
