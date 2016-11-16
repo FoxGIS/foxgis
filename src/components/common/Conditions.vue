@@ -1,6 +1,6 @@
 <template>
   <div class="filter">
-    <div style="width: 980px;">
+    <div style="width: 1080px;">
       <div class="condition" v-if="theme_tags.length>0">
         <strong>主题词：</strong>
         <div class="items">

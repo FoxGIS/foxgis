@@ -81,8 +81,10 @@
             </div>
           </div>
         </div>
-        <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
-      
+        <div class="logout">
+          <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
+        </div>
+        
         <div class="modal">
           <div class="container" >
             <div class="title">
