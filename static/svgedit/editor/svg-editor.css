@@ -1166,6 +1166,59 @@ ul li.current {
 	overflow: auto;
 }
 
+#tool_prefs_save,#tool_docprops_save {
+	background-color: white;
+	border-radius: 5px;
+	color: #000;
+	width: 80px;
+	height: 30px;
+	cursor: pointer;
+	border: 1px solid #c3c3c3;
+}
+
+#tool_prefs_save.mouse,
+#tool_prefs_cancel.mouse,
+#tool_docprops_save.mouse,
+#tool_docprops_cancel.mouse,
+#tool_source_save.mouse,
+#tool_source_cancel.mouse{
+  border: 1px solid #2388D0;
+  color: #2388D0;
+}
+
+#tool_source_save {
+	background-color: white;
+	border-radius: 5px;
+	color: #000;
+	width: 80px;
+	height: 30px;
+	cursor: pointer;
+	border: 1px solid #c3c3c3;
+	margin-left: 20px;
+}
+
+#tool_prefs_cancel,#tool_docprops_cancel {
+	background-color: white;
+	border-radius: 5px;
+	color: #000;
+	width: 80px;
+	height: 30px;
+	cursor: pointer;
+	border: 1px solid #c3c3c3;
+	margin: 0 5px 0 30px;
+}
+
+#tool_source_cancel {
+	background-color: white;
+	border-radius: 5px;
+	color: #000;
+	width: 80px;
+	height: 30px;
+	cursor: pointer;
+	border: 1px solid #c3c3c3;
+	margin: 5px 5px 0 30px;
+}
+
 #svg_docprops_container #svg_docprops_docprops,
 #svg_prefs #svg_docprops_prefs {
 	float: left;
@@ -1276,8 +1329,19 @@ ul li.current {
 
 #tool_prefs_option {
 	float: right;
-	color: rgb(146,146,146);
 	font-family: "Microsoft YaHei" ! important;
+	width: 50px;
+	height: 25px;
+	background-color: white;
+	border: 1px solid #c3c3c3;
+	border-radius: 5px;
+	cursor: pointer;
+	color: #000;
+}
+
+#tool_prefs_option.mouse {
+	border: 1px solid #2388D0;
+	color: #2388D0;
 }
 
 .toolbar_button button {
