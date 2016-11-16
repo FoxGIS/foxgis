@@ -133,7 +133,7 @@ select {
 	position: absolute;
 	right: 15px;
 	height: 16px;
-	background: #f0f0f0;
+	background: #ffffff;
 	border-radius: 3px;
 	z-index: 2;
 }
@@ -469,16 +469,16 @@ div.palette_item:first-child {
 .tool_button_current,
 .push_button_pressed
 {
-	background-color: #ffc !important;
+	background-color: #f3f3f3 !important;
 }
 
 .tool_button_current,
 .push_button_pressed,
 .buttondown {
-	background-color: #f4e284 !important;
-	-webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4), 1px 1px  0 white  !important;
-	-moz-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4), 1px 1px  0 white  !important;
-	box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4), 1px 1px  0 white  !important;
+	background-color: #f3f3f3 !important;
+	-webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2), 1px 1px  0 white  !important;
+	-moz-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2), 1px 1px  0 white  !important;
+	box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2), 1px 1px  0 white  !important;
 }
 
 #tools_top {
@@ -755,8 +755,8 @@ span.zoom_tool {
 
 .tool_sep {
 	width: 1px;
-	background: #888;
-	border-left: 1px outset #EEE;
+	background: #249de4;
+	border-left: 1px outset #249de4;
 	margin: 2px 3px;
 	padding: 0;
 	height: 24px;
@@ -832,7 +832,7 @@ span.zoom_tool {
 
 .tools_flyout .tool_button {
 	float: left;
-	background-color: #E8E8E8;
+	background-color: #ffffff;
 	border-left: 1px solid #FFFFFF;
 	border-top: 1px solid #FFFFFF;
 	border-right: 1px solid #808080;
@@ -938,7 +938,7 @@ span.zoom_tool {
 .color_tool {
 	position: absolute;
 	overflow: hidden;
-	background: #f0f0f0;
+	background: #ffffff;
 	height: 26px;
 	line-height: 26px;
 	border-radius: 3px;

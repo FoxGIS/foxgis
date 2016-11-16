@@ -433,7 +433,7 @@ export default {
 
 #style-editor {
   width: 250px;
-  height: calc(100% - 65px);
+  height: calc(100% - 25px);
   padding: 0;
   border: 0px;
   box-sizing: border-box;

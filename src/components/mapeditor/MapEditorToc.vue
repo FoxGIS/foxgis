@@ -1273,7 +1273,7 @@ export default {
         $("#icon-select-panel .icon-link").unbind("click");
       }else{
         iconPanel.show();
-        iconPanel.css("left","520px");
+        iconPanel.css("left","555px");
         $("#icon-select-panel .icon-link").unbind("click");
         $("#icon-select-panel .icon-link").bind("click",{inputEvent:e},this.iconClick);
       }
@@ -2054,7 +2054,7 @@ a {
   font-weight: bolder;
 }
 
-#property-panel {
+#new-layer-panel,#property-panel {
   position: absolute;
   width: 300px;
   height: 100%;
@@ -2066,22 +2066,7 @@ a {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
-  scrollbar-track-color:#e1f5fe;
-  scrollbar-face-color:#2061C6;
-}
-
-#new-layer-panel{
-  position: absolute;
-  width: 300px;
-  height: 100%;
-  background-color: white;
-  left: 250px;
-  top: 0px;
-  z-index: 1;
-  display: none;
-  font-size: 14px;
-  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
-  color: #333;
+  border-left: 1px solid rgb(199, 199, 199);
   scrollbar-track-color:#e1f5fe;
   scrollbar-face-color:#2061C6;
 }
@@ -2251,7 +2236,7 @@ a {
   width: 300px;
   height: 400px;
   position: absolute;
-  left: 515px;
+  left: 555px;
   top: 150px;
   background-color: #fbfbfd;
   z-index: 1;
