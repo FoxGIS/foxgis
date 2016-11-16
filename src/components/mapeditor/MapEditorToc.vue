@@ -82,8 +82,8 @@
         <div v-if="curPanelLayer.type=='symbol'">
           <nav class="mdl-navigation" id="symbol-property-control">
             <a class="mdl-navigation symbol symbol-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
-            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
-            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
+            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性" style="border-left: 1px solid #c3c3c3;">注记</a>
+            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性" style="border-left: 1px solid #c3c3c3;">符号</a>
           </nav>
           <!-- 注记 -->
           <div id="text-div" class="symbol-set" style="display: none">
@@ -169,31 +169,33 @@
           </div>
           <!-- 布局 -->
           <div id="symbol-div" class="symbol-set" style="display: block">
-            <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
-              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
-                <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+            <div class="paint-property prop-group">
+              <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
+                <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+                <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
+                  <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+                </div>
+                <div class="property-value" v-if="name=='symbol-avoid-edges'">
+                  <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                </div>
+                <div class="property-value" v-if="name=='visibility'">
+                  <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                </div>
+                <div class="property-value" v-if="name=='symbol-placement'">
+                  <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                    <option value="point">点</option>
+                    <option value="line">线</option>
+                  </select>
+                </div>
               </div>
-              <div class="property-value" v-if="name=='symbol-avoid-edges'">
-                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              </div>
-              <div class="property-value" v-if="name=='visibility'">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              </div>
-              <div class="property-value" v-if="name=='symbol-placement'">
-                <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                  <option value="point">点</option>
-                  <option value="line">线</option>
-                </select>
-              </div>
-            </div>
-            <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
-              <div class="property-name"><span >标注盾牌</span></div>
-              <div class="property-value">
-                <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+              <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
+                <div class="property-name"><span >标注盾牌</span></div>
+                <div class="property-value">
+                  <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                </div>
               </div>
             </div>
           </div>
@@ -2189,39 +2191,53 @@ a {
 
 #property-panel-close {
   position: absolute;
-  right: 0px;
-  top: 0px;
+  right: 5px;
+  top: 13px;
   cursor: pointer;
   z-index: 1;
 }
 
-#property-control,#symbol-property-control{
-    width: 290px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    height: 30px;
-    box-sizing: border-box;
-    background-color: #2061C6;
+#property-control{
+  width: 250px;
+  margin: 0 auto;
+  border-radius: 15px;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  height: 30px;
+  box-sizing: border-box;
+  background-color: #2061C6;
 }
 
 #property-control a{
-    color: white;
-    box-sizing: border-box;
-    width: 50px;
-    cursor: pointer;
-    padding: 3px 0 3px 10px;
+  color: white;
+  box-sizing: border-box;
+  width: 125px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  border-radius: 15px;
+  padding-top: 5px;
 }
 
 #property-control .style-control-active{
-    color: #2061C6;
-    background-color: #E5E2D3;
+  color: #2061C6;
+  background-color: #E5E2D3;
 }
 
 #symbol-property-control{
-  margin: 5px;
+  margin: 5px auto;
   background-color: white;
+  width: 250px;
+  border-radius: 5px;
+  border: 1px solid #c3c3c3;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  height: 30px;
+  box-sizing: border-box;
 }
 
 #symbol-property-control a{
@@ -2229,13 +2245,12 @@ a {
   text-align: center;
   display: inline-block;
   cursor: pointer;
-}
-#symbol-property-control a:hover{
-  color: #2388d0;
+  padding-top: 3px;
 }
 #symbol-property-control .symbol-control-active{
-  color: #2388d0;
-  border-bottom: 2px solid;
+  color: white;
+  background-color: #2388d0;
+  border-radius: 5px;
 }
 #stops-panel{
   position: absolute;
