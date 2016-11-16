@@ -227,6 +227,19 @@ export default {
       this.activeImg = this.clickImages[index];
       $('.image_item').removeClass('active');
       $(e.target).addClass('active');
+      var time=null;
+      var num=0;
+      var step=10;
+      clearInterval(time);
+      time = setInterval(function(){
+        num+=step;
+        if(num>=200){
+          num=200;
+          clearInterval(time);
+        }
+        $('.product-img img')[0].style.opacity = num/200;
+        $('.product-text span')[0].style.opacity = num/200;
+      },20)
     }
   },
   attached() {
@@ -239,6 +252,8 @@ export default {
     var that = this;
     this.activeImg = this.clickImages[0];
     $('.image_item:first').addClass('active');
+    $('.product-img img')[0].style.opacity = 1;
+    $('.product-text span')[0].style.opacity = 1;
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
@@ -648,6 +663,7 @@ table tr td:nth-child(3){
 .product-img img {
   width: 600px;
   height: 440px;
+  opacity: 0;
 }
 
 .product-text {
@@ -655,6 +671,10 @@ table tr td:nth-child(3){
   width: 290px;
   margin: 10px 40px 0 40px;
   border: 1px solid #c3c3c3;
+}
+
+.product-text span {
+  opacity: 0;
 }
 
 .change_img {
