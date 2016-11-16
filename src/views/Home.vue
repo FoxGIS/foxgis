@@ -32,13 +32,13 @@
             </table>
           </div>
         </div>
-        <div class="als-container" id="share-image" style="height:200px;">
+        <div class="als-container" id="share-image">
           <div class="als-viewport">
             <ul class="als-wrapper">
               <li class="als-item" v-for="image in images" @click="showPreview(image.path)">
                 <div>
                   <img :src="image.path" alt="{{image.title}}" title="{{image.title}}">
-                    <span></span>
+                    <span class="mdl-badge hot-badge" data-badge="HOT"></span>
                   </img>
                 </div>
               </li>
@@ -54,13 +54,15 @@
         </div>
         <div class="product-container">
           <div class="product-img">
-            <img :src="activeImg.path" title="{{activeImg.title}}"></img>
+            <div id="admin-map" class="map"></div>
+            <div id="terrain-map" class="map"></div>
+            <div id="default-map" class="map"></div>
           </div>
           <div class="product-text">
-            <span>{{activeImg.title}}</span>
+            <span>{{showText}}</span>
           </div>
           <div class="change_img">
-            <a class="image_item" @click="changeImg($event,$index)" v-for="image in clickImages"></a>
+            <a class="image_item" @click="changeMap($event,$index)" v-for="map in clickMaps"></a>
           </div>
         </div>
       </div>
@@ -230,23 +232,66 @@ export default {
         e.target.style.display = 'none';
       }
     },
-    changeImg:function(e,index){
-      this.activeImg = this.clickImages[index];
+    changeMap:function(e,index){
+      this.showText = this.clickMaps[index].des;
       $('.image_item').removeClass('active');
       $(e.target).addClass('active');
-      var time=null;
-      var num=0;
-      var step=10;
-      clearInterval(time);
-      time = setInterval(function(){
-        num+=step;
-        if(num>=200){
-          num=200;
-          clearInterval(time);
+      $(".map").hide();
+      if(index===0){
+        $("#admin-map").fadeIn(400);
+        if(!this.adminMap.loaded||this.adminMap.loaded()===false){
+          var adminUrl = "static/config/defaultStyle.json";
+          this.$http({url:terrainUrl,method:'GET'})
+          .then(function(res){//从服务器获取地图的stylejson样式
+            var data = res.data;
+            var initStyle = JSON.parse(JSON.stringify(data));
+            var map = new mapboxgl.Map({
+              container: 'admin-map',
+              style: initStyle,
+              attributionControl: false
+            });
+            this.adminMap = map;
+          },function(){
+            this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
+          }) 
         }
-        $('.product-img img')[0].style.opacity = num/200;
-        $('.product-text span')[0].style.opacity = num/200;
-      },20)
+      }else if(index===1){
+        $("#terrain-map").fadeIn(400);
+        if(!this.terrainMap.loaded||this.terrainMap.loaded()===false){
+          var terrainUrl = "static/config/terrainStyle.json";
+          this.$http({url:terrainUrl,method:'GET'})
+          .then(function(res){//从服务器获取地图的stylejson样式
+            var data = res.data;
+            var initStyle = JSON.parse(JSON.stringify(data));
+            var map = new mapboxgl.Map({
+              container: 'terrain-map',
+              style: initStyle,
+              attributionControl: false
+            });
+            this.terrainMap = map;
+          },function(){
+            this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
+          }) 
+        }
+      }else if(index===2){
+        $("#default-map").fadeIn(400);
+        if(!this.defaultMap.loaded||this.defaultMap.loaded()===false){
+          var terrainUrl = "static/config/defaultStyle.json";
+          this.$http({url:terrainUrl,method:'GET'})
+          .then(function(res){//从服务器获取地图的stylejson样式
+            var data = res.data;
+            var initStyle = JSON.parse(JSON.stringify(data));
+            var map = new mapboxgl.Map({
+              container: 'default-map',
+              style: initStyle,
+              attributionControl: false
+            });
+            this.defaultMap = map;
+          },function(){
+            this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
+          }) 
+        }
+      }
     }
   },
   attached() {
@@ -257,10 +302,7 @@ export default {
     }
     var url = SERVER_API.stats + '/uploads';
     var that = this;
-    this.activeImg = this.clickImages[0];
-    $('.image_item:first').addClass('active');
-    $('.product-img img')[0].style.opacity = 1;
-    $('.product-text span')[0].style.opacity = 1;
+    $(".image_item:first").addClass("active");
     //获取数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
@@ -305,71 +347,82 @@ export default {
           circular: "yes",
           autoscroll: "yes",
           interval: 3000
-        }); 
+        });
       }
     }, function(response) {
       console.log(response);
     });
-    
-  },
-  beforeDestroy() {
-    // 销毁实例
-    
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA';
+    var adminUrl = "static/config/adminStyle.json";
+    this.$http({url:adminUrl,method:'GET'})
+    .then(function(res){//从服务器获取地图的stylejson样式
+      var data = res.data;
+      var initStyle = JSON.parse(JSON.stringify(data));
+      var map = new mapboxgl.Map({
+        container: 'admin-map',
+        style: initStyle,
+        attributionControl: false
+      });
+      this.adminMap = map;
+    },function(){
+      this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
+    }) 
   },
 	
   data() {
   	return {
   	  uploadInfo:[],
       activeImg: {},
-      clickImages: [{
-        path:'../../static/images/show/01.jpg',
-        title:'样图1'
+      showText:"描述1",
+      terrainMap:{},
+      defaultMap:{},
+      clickMaps: [{
+        des:'描述1'
       },{
-        path:'../../static/images/show/02.jpg',
-        title:'样图2'
+        des:'描述2'
       },{
-        path:'../../static/images/show/03.jpg',
-        title:'样图3'
+        des:'描述3'
       }],
       images: [{
         image_id: 'pic1',
-        path:'../../static/images/show/01.jpg',
+        path:'',
         title:'样图1'
       },{
         image_id: 'pic2',
-        path:'../../static/images/show/02.jpg',
+        path:'',
         title:'样图2'
       },{
         image_id: 'pic3',
-        path:'../../static/images/show/03.jpg',
+        path:'',
         title:'样图3'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/04.jpg',
+        path:'',
         title:'样图4'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/05.jpg',
+        path:'',
         title:'样图5'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图6'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图7'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图8'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图9'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图10'
       }],
       serviceShowMessage:[{
@@ -405,7 +458,7 @@ export default {
       {
         title:"决策用图",
         description:"对用户图件进行统一管理，支持图件数据上传、查询、预览、信息维护、下载及删除等操作，用户可将地图权限设为公开进行地图分享。",
-        image:"../../static/images/show/01.jpg"
+        image:"../../static/images/show/07.png"
       }]
   	}
   }
@@ -441,8 +494,8 @@ export default {
 }
 
 .show{
-  width: 1000px;
-  height: 250px;
+  width: 1100px;
+  height: 300px;
   background-color: white;
   margin-top: 10px;
   margin-left: auto;
@@ -471,8 +524,8 @@ export default {
 
 #upload-rank{
   width:230px;
-  height:194px;
-  margin: 5px;
+  height:225px;
+  margin: 10px;
   float: left;
 }
 
@@ -500,7 +553,7 @@ export default {
   vertical-align: middle;
 }
 .als-item{
-  margin: 0px 10px;
+  margin: 0px 5px;
   padding: 4px 0px;
   min-height: 120px;
   min-width: 100px;
@@ -510,27 +563,34 @@ export default {
   cursor: pointer;
   float: left;
 }
+.als-viewport{
+  margin:20px 0 10px 0;
+}
 li div {
   position: relative; 
-  width: 200px; 
-  height: 150px;
+  width: 270px; 
+  height: 210px;
+  overflow: hidden;
 }
 li img{
-  width:200px;
-  height:150px;
+  width:270px;
+  height:210px;
   display: block;
   margin: 0 auto;
   vertical-align: middle;
 }
 li span {
   position:absolute;
-  top:0;
-  left:15px;
-  width:24px;
-  height:24px;
-  background-image:url('../../static/icons/hot.gif');
+  top:17px;
+  right:-35px;
 }
-
+.hot-badge[data-badge]:after{
+  width: 100px;
+  height: 22px;
+  border-radius: 0;
+  background: #ee832c;
+  transform: rotate(45deg);
+}
 table tr td:nth-child(1){
   width: 25px;
 }
@@ -574,7 +634,7 @@ table tr td:nth-child(3){
   width: 15px;
   height: 13px;
   text-align: center;
-  background-color: #2c67ed;
+  background-color: #2f80bc;
   border: none;
   color: white;
 }
@@ -600,7 +660,7 @@ table tr td:nth-child(3){
   background-color: #f3f2f2;
 }
 .introduction{
-  width: 755px;
+  width: 855px;
   height: 289px;
   position: absolute;
   right: 0;
@@ -609,20 +669,21 @@ table tr td:nth-child(3){
 }
 .introduction .description{
   position: absolute;
-  width: 350px;
+  width: 406px;
   height: 250px;
-  padding: 20px;
+  margin: 20px 0 20px 20px;
+  padding-right: 30px;
+  border-right: 1px solid #cecece;
   display: inline-block;
 }
 .introduction .preview{
   position: absolute;
   display: inline-block;
-  border-left: 1px solid #cecece;
-  width: 325px;
-  height: 250px;
+  width: 300px;
+  height: 230px;
   right: 0;
-  margin: 20px 20px 20px 0;
-  padding-left: 20px;
+  margin: 30px 50px 30px 0;
+  padding-left: 50px;
 }
 .preview img{
   width: 100%;
@@ -679,25 +740,22 @@ h4{
 
 .product-img {
   margin: 10px 0 0 20px;
-  width:600px;
+  width:705px;
   height:440px;
 }
-
-.product-img img {
-  width: 600px;
-  height: 440px;
-  opacity: 0;
+#admin-map{
+  display: block;
 }
-
+.product-img .map{
+  width: 100%;
+  height: 100%;
+  display: none;
+}
 .product-text {
   height: 440px;
   width: 290px;
   margin: 10px 40px 0 40px;
   border: 1px solid #c3c3c3;
-}
-
-.product-text span {
-  opacity: 0;
 }
 
 .change_img {
@@ -718,5 +776,11 @@ h4{
 
 .change_img a.active{
   background-color: #2F80BC;
+}
+#share-image{
+  height: 250px;
+  width: 850px;
+  float: right;
+  overflow: hidden;
 }
 </style>

@@ -38,3 +38,17 @@ input,select,span,p{
   color:#505050;
   font-family: "Microsoft YaHei" ! important;
 }
+body{
+  scrollbar-arrow-color: #f4ae21; /**//*三角箭头的颜色*/ 
+  scrollbar-face-color: #333; /**//*立体滚动条的颜色*/ 
+  scrollbar-3dlight-color: #666; /**//*立体滚动条亮边的颜 
+  色*/ 
+  scrollbar-highlight-color: #666; /**//*滚动条空白部分的 
+  颜色*/ 
+  scrollbar-shadow-color: #999; /**//*立体滚动条阴影的颜 
+  色*/ 
+  scrollbar-darkshadow-color: #666; /**//*立体滚动条强阴 
+  影的颜色*/ 
+  scrollbar-track-color: #ff0000; /**//*立体滚动条背景颜色*/ 
+  scrollbar-base-color:#f8f8f8; /**//*滚动条的基本颜色*
+}

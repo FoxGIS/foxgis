@@ -567,7 +567,7 @@ export default {
 }
 
 .atlas-stats{
-  width: 1000px;
+  width: 1100px;
   background-color: white;
   margin-top: 10px;
   margin-left: auto;
@@ -644,7 +644,7 @@ input:-moz-placeholder { text-align: center; }
   background-color: white;
   display: flex;
   flex-wrap: wrap;
-  width: 1000px;
+  width: 1100px;
   padding: 0px;
   margin-top: 10px;
 }
@@ -652,13 +652,13 @@ input:-moz-placeholder { text-align: center; }
 .search-results .atlas-container{
   margin: 10px;
   height: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
   flex-wrap: wrap;
   display: flex;
 }
 
 .foxgis-card {
-  width: 235px;
+  width: 260px;
   height: 310px;
   margin: 5px;
 }
@@ -686,7 +686,7 @@ input:-moz-placeholder { text-align: center; }
 
 .details{
   position: absolute;
-  width: 235px;
+  width: 260px;
   height: 210px;
   background-color: #659BF7;
   opacity: 0.9;
@@ -734,7 +734,7 @@ input:-moz-placeholder { text-align: center; }
 span.delete-badge{
   position: relative;
   bottom: 187px;
-  left: 230px;
+  left: 255px;
 }
 
 .meta-info {
@@ -848,6 +848,6 @@ span.delete-badge{
 }
 
 .atlas-pagination{
-  width: 1000px;
+  width: 1100px;
 }
 </style>

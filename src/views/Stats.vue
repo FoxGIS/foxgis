@@ -415,7 +415,7 @@ export default {
 }
 
 .stats{
-  width: 1000px;
+  width: 1100px;
   background-color: white;
   margin-top: 10px;
   margin-left: auto;

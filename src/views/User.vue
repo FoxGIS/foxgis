@@ -81,8 +81,10 @@
             </div>
           </div>
         </div>
-        <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
-      
+        <div class="logout">
+          <mdl-button id='logout-button' v-mdl-ripple-effect accent raised @click='logout'>退出登录</mdl-button>
+        </div>
+        
         <div class="modal">
           <div class="container" >
             <div class="title">
@@ -413,7 +415,7 @@ export default {
 }
 #user-info{
   margin: 50px auto 20px auto;
-  width: 1000px;
+  width: 1100px;
   background-color: white;
   margin-top: 10px;
   margin-left: auto;
@@ -441,7 +443,7 @@ export default {
   border-bottom: 1px solid #dedede;
 }
 table{
-  width: 960px;
+  width: 1060px;
   margin: 20px;
   font-size: 14px;
   font-family: "Microsoft YaHei";
