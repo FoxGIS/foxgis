@@ -353,15 +353,20 @@
         </div>
       </div>
       <!-- 数据选择 -->
-      <div id="data-div" class="style-set" style="display: none">
-        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      <div id="data-div" class="style-set" style="display: none;overflow-x: hidden;
+    height: calc(100% - 100px);">
+        <div class="paint-property prop-group">
+          <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+        </div>
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePropertyPanel">clear</i>
     </div>
 
     <div id="new-layer-panel">
       <div class="property-header">新建图层</div>
-      <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      <div class="paint-property prop-group">
+        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      </div>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">关闭</mdl-button>
     </div>
@@ -2072,6 +2077,24 @@ a {
   scrollbar-face-color:#2061C6;
 }
 
+#property-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+#property-panel::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#property-panel::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+#property-panel::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
+}
+
 #new-layer-panel{
   position: absolute;
   width: 300px;
@@ -2086,41 +2109,50 @@ a {
   color: #333;
   scrollbar-track-color:#e1f5fe;
   scrollbar-face-color:#2061C6;
+}  
+
+#new-layer-panel .prop-group {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100% - 205px);
 }
 
 #btn-createLayer,#btn-cancel{
   background-color: #0e66d2;
   width: 250px;
-  margin: 55px 25px 0px 25px;
+  margin: 30px 25px 0px 25px;
 }
 #btn-cancel{
   margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-#style-div::-webkit-scrollbar {
+#style-div::-webkit-scrollbar,#data-div::-webkit-scrollbar {
   width: 6px;
 }
 
-#style-div::-webkit-scrollbar:horizontal {
+#style-div::-webkit-scrollbar:horizontal,#data-div::-webkit-scrollbar:horizontal {
   height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
-#style-div::-webkit-scrollbar-track {
+#style-div::-webkit-scrollbar-track,#data-div::-webkit-scrollbar-track {
   background-color: #e1f5fe;
 }
 
 /* 滑块颜色 */
-#style-div::-webkit-scrollbar-thumb {
+#style-div::-webkit-scrollbar-thumb,#data-div::-webkit-scrollbar-thumb {
   background-color: #2061C6;
 }
+
 
 .property-header {
   background-color: rgb(227,227,227);
   margin: 10px 5px;
-  padding: 5px 0px 5px 0px;
-  width: 290px;
+  padding: 5px 0px 5px 10px;
+  width: 280px;
 }
+
 .property-header i{
   font-size: 18px;
   vertical-align: middle;
@@ -2418,7 +2450,7 @@ a {
   display: none;
 }
 
-#style-div{
+#style-div,#data-div{
   height: calc(100% - 80px);
   overflow-x: hidden;
   overflow-y: auto;
@@ -2436,4 +2468,22 @@ a {
 .prop-group .text span{
   color: #6f6f6f;
 }
+.prop-group::-webkit-scrollbar {
+  width: 6px;
+}
+
+.prop-group::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.prop-group::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+.prop-group::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
+}
+
 </style>
