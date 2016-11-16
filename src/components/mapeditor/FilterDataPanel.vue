@@ -506,8 +506,11 @@ export default {
   padding-right: 15px;
   white-space: nowrap;
   line-height: 30px;
+  font-size: 13px;
 }
-
+.select-data .property-name span{
+  color: #999999;
+}
 .select-data .property-value {
   margin-left: 100px;
   position: relative;
@@ -533,7 +536,9 @@ export default {
   height: 20px;
   padding: 2px 0px 5px 5px;
   border: none;
+  border-radius: 5px;
   font-size: 13px;
+  border: 1px solid #c3c3c3;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
@@ -545,7 +550,7 @@ export default {
   display: inline-block;
   width: 175px;
   padding: 2px 0px 5px 5px;
-  border: 1px solid #f2f2f2;
+  border: 1px solid #c3c3c3;
   border-radius: 2px;
   height: 30px;
   font-size: 13px;
@@ -570,7 +575,7 @@ select[name="filter-condition"]{
   margin-top: 10px;
 }
 .filter-item select,.filter-item input{
-  width: 80px;
+  width: 79px;
   margin-left: 3px;
   margin-top: 3px;
   margin-bottom: 3px;
@@ -602,7 +607,8 @@ select[name="filter-condition"]{
   left: 1px;   
   height: 18px;    
   width: 140px;    
-  margin-top: 1px;   
+  margin-top: 1px; 
+  border: none;  
   background-color: transparent;   
 }
 
@@ -654,7 +660,7 @@ select[name="filter-condition"]{
 .data-select-panel{
   position: absolute;
   width: 300px;
-  height: 400px;
+  height: 420px;
   background-color: #eaeaea;
   left: 310px;
   top: 50px;

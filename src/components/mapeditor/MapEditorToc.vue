@@ -50,7 +50,7 @@
 
     <div id="property-panel">
       <!-- 标题 -->
-      <div id="property-header"><i class="material-icons" :style="'background-image:url(../../static/icons/'+typeIcon[curPanelLayer.type]+')'"></i>{{curPanelLayer.id}}</div>
+      <div class="property-header"><i class="material-icons" :style="'background-image:url(../../static/icons/'+typeIcon[curPanelLayer.type]+')'"></i>{{curPanelLayer.id}}</div>
       <!-- 导航栏 -->
       <div>
         <nav class="mdl-navigation" id="property-control">
@@ -358,7 +358,7 @@
     </div>
 
     <div id="new-layer-panel">
-      <div id="property-header">新建图层</div>
+      <div class="property-header">新建图层</div>
       <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">关闭</mdl-button>
@@ -2074,8 +2074,8 @@ a {
   position: absolute;
   width: 300px;
   height: 100%;
-  background-color: rgb(237, 233, 217);
-  left: 200px;
+  background-color: white;
+  left: 250px;
   top: 0px;
   z-index: 1;
   display: none;
@@ -2113,13 +2113,13 @@ a {
   background-color: #2061C6;
 }
 
-#property-header {
+.property-header {
   background-color: rgb(227,227,227);
   margin: 10px 5px;
   padding: 5px 0px 5px 0px;
   width: 290px;
 }
-#property-header i{
+.property-header i{
   font-size: 18px;
   vertical-align: middle;
 }
