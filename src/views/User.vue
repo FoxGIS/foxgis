@@ -413,7 +413,7 @@ export default {
 }
 #user-info{
   margin: 50px auto 20px auto;
-  width: 1000px;
+  width: 1100px;
   background-color: white;
   margin-top: 10px;
   margin-left: auto;
@@ -441,7 +441,7 @@ export default {
   border-bottom: 1px solid #dedede;
 }
 table{
-  width: 960px;
+  width: 1060px;
   margin: 20px;
   font-size: 14px;
   font-family: "Microsoft YaHei";

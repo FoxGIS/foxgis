@@ -2224,7 +2224,7 @@ a {
   flex-direction: row;
   height: 30px;
   box-sizing: border-box;
-  background-color: #2061C6;
+  background-color: #1f78ba;
 }
 
 #property-control a{

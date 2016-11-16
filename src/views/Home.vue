@@ -38,7 +38,7 @@
               <li class="als-item" v-for="image in images" @click="showPreview(image.path)">
                 <div>
                   <img :src="image.path" alt="{{image.title}}" title="{{image.title}}">
-                    <span></span>
+                    <span class="mdl-badge hot-badge" data-badge="HOT"></span>
                   </img>
                 </div>
               </li>
@@ -339,7 +339,7 @@ export default {
           this.images[i].title = data[i].name;
         }
         //this.images = images;
-        $("#share-image").als("destroy"); 
+        $("#share-image").als("destroy");
         var als = $("#share-image").als({
           visible_items: 3,
           scrolling_items: 1,
@@ -348,7 +348,6 @@ export default {
           autoscroll: "yes",
           interval: 3000
         });
-        
       }
     }, function(response) {
       console.log(response);
@@ -387,43 +386,43 @@ export default {
       }],
       images: [{
         image_id: 'pic1',
-        path:'../../static/images/show/01.jpg',
+        path:'',
         title:'样图1'
       },{
         image_id: 'pic2',
-        path:'../../static/images/show/02.jpg',
+        path:'',
         title:'样图2'
       },{
         image_id: 'pic3',
-        path:'../../static/images/show/03.jpg',
+        path:'',
         title:'样图3'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/04.jpg',
+        path:'',
         title:'样图4'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/05.jpg',
+        path:'',
         title:'样图5'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图6'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/07.jpg',
+        path:'',
         title:'样图7'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图8'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图9'
       },{
         image_id: 'pic4',
-        path:'../../static/images/show/06.jpg',
+        path:'',
         title:'样图10'
       }],
       serviceShowMessage:[{
@@ -571,6 +570,7 @@ li div {
   position: relative; 
   width: 270px; 
   height: 210px;
+  overflow: hidden;
 }
 li img{
   width:270px;
@@ -581,13 +581,16 @@ li img{
 }
 li span {
   position:absolute;
-  top:0;
-  left:15px;
-  width:24px;
-  height:24px;
-  background-image:url('../../static/icons/hot.gif');
+  top:17px;
+  right:-35px;
 }
-
+.hot-badge[data-badge]:after{
+  width: 100px;
+  height: 22px;
+  border-radius: 0;
+  background: #ee832c;
+  transform: rotate(45deg);
+}
 table tr td:nth-child(1){
   width: 25px;
 }
@@ -666,20 +669,21 @@ table tr td:nth-child(3){
 }
 .introduction .description{
   position: absolute;
-  width: 390px;
-  height: 230px;
-  padding: 30px;
+  width: 406px;
+  height: 250px;
+  margin: 20px 0 20px 20px;
+  padding-right: 30px;
+  border-right: 1px solid #cecece;
   display: inline-block;
 }
 .introduction .preview{
   position: absolute;
   display: inline-block;
-  border-left: 1px solid #cecece;
-  width: 325px;
-  height: 250px;
+  width: 300px;
+  height: 230px;
   right: 0;
-  margin: 20px 40px 20px 0;
-  padding-left: 40px;
+  margin: 30px 50px 30px 0;
+  padding-left: 50px;
 }
 .preview img{
   width: 100%;
@@ -777,5 +781,6 @@ h4{
   height: 250px;
   width: 850px;
   float: right;
+  overflow: hidden;
 }
 </style>
