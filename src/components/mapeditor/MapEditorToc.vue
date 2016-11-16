@@ -82,8 +82,8 @@
         <div v-if="curPanelLayer.type=='symbol'">
           <nav class="mdl-navigation" id="symbol-property-control">
             <a class="mdl-navigation symbol symbol-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
-            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
-            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
+            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性" style="border-left: 1px solid #c3c3c3;">注记</a>
+            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性" style="border-left: 1px solid #c3c3c3;">符号</a>
           </nav>
           <!-- 注记 -->
           <div id="text-div" class="symbol-set" style="display: none">
@@ -169,31 +169,33 @@
           </div>
           <!-- 布局 -->
           <div id="symbol-div" class="symbol-set" style="display: block">
-            <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
-              <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
-                <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+            <div class="paint-property prop-group">
+              <div v-for="(name,value) in propertyGroup.symbol" class="property-item">
+                <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
+                <div class="property-value" v-if="name!=='symbol-placement'&&name!=='symbol-avoid-edges'&&name!=='visibility'">
+                  <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
+                </div>
+                <div class="property-value" v-if="name=='symbol-avoid-edges'">
+                  <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                </div>
+                <div class="property-value" v-if="name=='visibility'">
+                  <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                </div>
+                <div class="property-value" v-if="name=='symbol-placement'">
+                  <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
+                    <option value="point">点</option>
+                    <option value="line">线</option>
+                  </select>
+                </div>
               </div>
-              <div class="property-value" v-if="name=='symbol-avoid-edges'">
-                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              </div>
-              <div class="property-value" v-if="name=='visibility'">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              </div>
-              <div class="property-value" v-if="name=='symbol-placement'">
-                <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
-                  <option value="point">点</option>
-                  <option value="line">线</option>
-                </select>
-              </div>
-            </div>
-            <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
-              <div class="property-name"><span >标注盾牌</span></div>
-              <div class="property-value">
-                <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+              <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
+                <div class="property-name"><span >标注盾牌</span></div>
+                <div class="property-value">
+                  <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                  <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                </div>
               </div>
             </div>
           </div>
@@ -351,15 +353,20 @@
         </div>
       </div>
       <!-- 数据选择 -->
-      <div id="data-div" class="style-set" style="display: none">
-        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      <div id="data-div" class="style-set" style="display: none;overflow-x: hidden;
+    height: calc(100% - 100px);">
+        <div class="paint-property prop-group">
+          <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+        </div>
       </div>
       <i class="material-icons" id="property-panel-close" v-on:click="closePropertyPanel">clear</i>
     </div>
 
     <div id="new-layer-panel">
       <div class="property-header">新建图层</div>
-      <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      <div class="paint-property prop-group">
+        <foxgis-filter-data :selecteddata="selectedData" :layerfields="layerFields" :folders="Folders" :types="types"></foxgis-filter-data>
+      </div>
       <mdl-button colored raised id="btn-createLayer" @click="createNewLayer">创建图层</mdl-button>
       <mdl-button colored raised id="btn-cancel" @click="createPanelClose">关闭</mdl-button>
     </div>
@@ -2071,39 +2078,66 @@ a {
   scrollbar-face-color:#2061C6;
 }
 
-#btn-createLayer,#btn-cancel{
-  background-color: #0e66d2;
-  width: 250px;
-  margin: 55px 25px 0px 25px;
-}
-#btn-cancel{
-  margin-top: 10px;
-}
-
-#style-div::-webkit-scrollbar {
+#property-panel::-webkit-scrollbar {
   width: 6px;
 }
 
-#style-div::-webkit-scrollbar:horizontal {
+#property-panel::-webkit-scrollbar:horizontal {
   height: 6px;
 }
 
 /* 滚动条的滑轨背景颜色 */
-#style-div::-webkit-scrollbar-track {
+#property-panel::-webkit-scrollbar-track {
   background-color: #e1f5fe;
 }
 
 /* 滑块颜色 */
-#style-div::-webkit-scrollbar-thumb {
+#property-panel::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
+} 
+
+#new-layer-panel .prop-group {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100% - 205px);
+}
+
+#btn-createLayer,#btn-cancel{
+  background-color: #0e66d2;
+  width: 250px;
+  margin: 30px 25px 0px 25px;
+}
+#btn-cancel{
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#style-div::-webkit-scrollbar,#data-div::-webkit-scrollbar {
+  width: 6px;
+}
+
+#style-div::-webkit-scrollbar:horizontal,#data-div::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#style-div::-webkit-scrollbar-track,#data-div::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+#style-div::-webkit-scrollbar-thumb,#data-div::-webkit-scrollbar-thumb {
   background-color: #2061C6;
 }
+
 
 .property-header {
   background-color: rgb(227,227,227);
   margin: 10px 5px;
-  padding: 5px 0px 5px 0px;
-  width: 290px;
+  padding: 5px 0px 5px 10px;
+  width: 280px;
 }
+
 .property-header i{
   font-size: 18px;
   vertical-align: middle;
@@ -2174,39 +2208,53 @@ a {
 
 #property-panel-close {
   position: absolute;
-  right: 0px;
-  top: 0px;
+  right: 5px;
+  top: 13px;
   cursor: pointer;
   z-index: 1;
 }
 
-#property-control,#symbol-property-control{
-    width: 290px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    height: 30px;
-    box-sizing: border-box;
-    background-color: #2061C6;
+#property-control{
+  width: 250px;
+  margin: 0 auto;
+  border-radius: 15px;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  height: 30px;
+  box-sizing: border-box;
+  background-color: #2061C6;
 }
 
 #property-control a{
-    color: white;
-    box-sizing: border-box;
-    width: 50px;
-    cursor: pointer;
-    padding: 3px 0 3px 10px;
+  color: white;
+  box-sizing: border-box;
+  width: 125px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  border-radius: 15px;
+  padding-top: 5px;
 }
 
 #property-control .style-control-active{
-    color: #2061C6;
-    background-color: #E5E2D3;
+  color: #2061C6;
+  background-color: #E5E2D3;
 }
 
 #symbol-property-control{
-  margin: 5px;
+  margin: 5px auto;
   background-color: white;
+  width: 250px;
+  border-radius: 5px;
+  border: 1px solid #c3c3c3;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  height: 30px;
+  box-sizing: border-box;
 }
 
 #symbol-property-control a{
@@ -2214,13 +2262,12 @@ a {
   text-align: center;
   display: inline-block;
   cursor: pointer;
-}
-#symbol-property-control a:hover{
-  color: #2388d0;
+  padding-top: 3px;
 }
 #symbol-property-control .symbol-control-active{
-  color: #2388d0;
-  border-bottom: 2px solid;
+  color: white;
+  background-color: #2388d0;
+  border-radius: 5px;
 }
 #stops-panel{
   position: absolute;
@@ -2388,7 +2435,7 @@ a {
   display: none;
 }
 
-#style-div{
+#style-div,#data-div{
   height: calc(100% - 80px);
   overflow-x: hidden;
   overflow-y: auto;
@@ -2406,4 +2453,22 @@ a {
 .prop-group .text span{
   color: #6f6f6f;
 }
+.prop-group::-webkit-scrollbar {
+  width: 6px;
+}
+
+.prop-group::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.prop-group::-webkit-scrollbar-track {
+  background-color: #e1f5fe;
+}
+
+/* 滑块颜色 */
+.prop-group::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
+}
+
 </style>

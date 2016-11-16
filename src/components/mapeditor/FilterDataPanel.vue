@@ -47,9 +47,9 @@
     <div class="property-item">
       <div class="property-name"><span >级别</span></div>
       <div class="property-value">
-        <input type="text" name="minzoom" style="width:80px;" :value="selecteddata.minzoom" @change="propertyChange">
+        <input type="text" name="minzoom" style="width:60px;" :value="selecteddata.minzoom" @change="propertyChange">
         <label class="label minzoom-label">小</label>
-        <input type="text" name="maxzoom" style="width:80px;" :value="selecteddata.maxzoom" @change="propertyChange">
+        <input type="text" name="maxzoom" style="width:60px;" :value="selecteddata.maxzoom" @change="propertyChange">
         <label class="label maxzoom-label">大</label>
       </div>
     </div>
@@ -148,6 +148,9 @@ export default {
       this.$dispatch("layer-property-change",params);
     },
     filterChange:function(e,index) {
+      if(this.selecteddata.panel_type==="create"){
+        return;
+      }
       if(e.target.name && e.target.name === "filter-field"){
         $(".filter-item input.field_data")[index].value = "";
         $(".filter-item input.field_data")[index].title = "";
@@ -197,9 +200,7 @@ export default {
       }else{
         filter = ["all"];
       }
-      if(this.selecteddata.panel_type==="create"){
-        return;
-      }
+      
       var params = {};
       params.name = 'filter';
       params.value = filter;
@@ -262,16 +263,16 @@ export default {
           this.field_data = [];
           return;
         }
-        var top = e.target.offsetTop+380+index*50+"px";
+        var top = e.target.offsetTop+416+index*46+"px";
         if(this.selecteddata.panel_type==="create"){
-          top = e.target.offsetTop+350+index*50+"px";
+          top = e.target.offsetTop+376+index*46+"px";
         }
         
         if(this.field_data.length>0){
           if(fieldname === this.field_data[0].field_name){
             this.clickIndex = index;
             $(".field-tips").css({
-              "left":e.target.offsetLeft+4+"px",
+              "left":e.target.offsetLeft+13+"px",
               "top":top
             });
             $(".field-tips").show();
@@ -289,7 +290,7 @@ export default {
           if(this.field_data.length>0){
             this.clickIndex = index;
             $(".field-tips").css({
-              "left":e.target.offsetLeft+4+"px",
+              "left":e.target.offsetLeft+13+"px",
               "top":top
             });
             $(".field-tips").show();
@@ -329,12 +330,12 @@ export default {
           this.keyword = arr[arr.length-1];
           this.selecteddata.filter.filters[index].value = e.target.value;
           this.filterChange(e,index);
-          var top = e.target.offsetTop+380+index*50+"px";
+          var top = e.target.offsetTop+416+index*46+"px";
           if(this.selecteddata.panel_type==="create"){
-            top = e.target.offsetTop+350+index*50+"px";
+            top = e.target.offsetTop+376+index*46+"px";
           }
           $(".field-tips").css({
-            "left":e.target.offsetLeft+4+"px",
+            "left":e.target.offsetLeft+13+"px",
             "top":top
           });
           $(".field-tips").show();
@@ -524,11 +525,11 @@ export default {
 }
 
 .minzoom-label{
-  left: 65px;
+  left: 45px;
 }
 
 .maxzoom-label{
-  left: 155px;
+  left: 115px;
 }
 
 .property-value input[type='text'] {
@@ -543,17 +544,16 @@ export default {
   color: #333;
 }
 .property-value input[name='id']{
-  width: 170px;
+  width: 130px;
 }
 .property-value select {
   background-color: rgba(255, 255, 255, 0.9);
   display: inline-block;
-  width: 175px;
-  padding: 2px 0px 5px 5px;
+  width: 140px;
   border: 1px solid #c3c3c3;
-  border-radius: 2px;
+  border-radius: 5px;
   height: 30px;
-  font-size: 13px;
+  font-size: 12px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
@@ -564,29 +564,30 @@ export default {
 }
 
 select[name="filter-condition"]{
-  width: 110px;
+  width: 60px;
 }
 
 .filter-item{
-  width:284px;
-  border: 2px solid #c3c3c3;
+  width: 274px;
   position: relative;
-  left: -97px;
+  left: -102px;
   margin-top: 10px;
+  background-color: #fff;
 }
 .filter-item select,.filter-item input{
   width: 79px;
-  margin-left: 3px;
   margin-top: 3px;
   margin-bottom: 3px;
 }
 
 #add-filter{
-  background-color: #f78b9e;
-  padding: 4px;
-  border-radius: 3px;
+  background-color: #2061C6;
+  padding: 3px 5px 5px 5px;
+  border-radius: 5px;
   color: #ffffff;
   cursor: pointer;
+  display: inline-block;
+  margin-right: 12px;
 }
 
 #add-filter:hover{
@@ -594,7 +595,9 @@ select[name="filter-condition"]{
 }
 
 #field-filters i{
+  top: 4px;
   font-size: 16px;
+  position: relative;
   cursor: pointer;
 }
 
@@ -605,8 +608,8 @@ select[name="filter-condition"]{
 .property-value input[name='folder']{   
   position: absolute;    
   left: 1px;   
-  height: 18px;    
-  width: 140px;    
+  height: 20px;    
+  width: 110px;    
   margin-top: 1px; 
   border: none;  
   background-color: transparent;   
@@ -620,6 +623,8 @@ select[name="filter-condition"]{
   display: none;
   position: absolute;
   background-color: white;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
@@ -672,9 +677,11 @@ select[name="filter-condition"]{
 }
 
 .source-container{
-  background-color: #e4e0cf;
+  background-color: #EBEBE4;
   height: 50px;
-  width: 175px;
+  width: 135px;
+  border-radius: 5px;
+  border: 1px solid #c3c3c3;
 }
 .source-container:hover{
   background-color: #e0dac3;
