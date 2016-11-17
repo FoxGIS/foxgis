@@ -1,6 +1,6 @@
 <template>
   <div>
-    <textarea id="code" v-on:input="styleCodeChange"></textarea>
+    <textarea id="code" v-on:input="styleCodeChange" spellcheck="false"></textarea>
   </div>
 </template>
 

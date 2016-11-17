@@ -65,6 +65,10 @@ export default {
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.uploads + '?';
+      if(selectedYears.length==0&&selectedLocations.length==0&&selectedThemes.length==0){
+        this.calcStats(this.uploads,type);
+        return;
+      }
       if(selectedYears.length>0){
         var yearStr = selectedYears.toString().replace("未指定","null");
         url = url+"&year="+yearStr;
@@ -186,6 +190,7 @@ export default {
       this.$http({ url: SERVER_API.uploads, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
         var uploads = response.data;
+        this.uploads = uploads;
         this.calcStats(uploads,1);
         this.calcStats(uploads,2);
         this.calcStats(uploads,3);
@@ -245,6 +250,7 @@ export default {
       location_tags:[],
       year_tags:[],
       theme_tags:[],
+      uploads:{},
       userDownloadStats:[],//用户贡献
       userUploadStats:[],//用户上传
       mapDownloadStats:[],//地图下载
