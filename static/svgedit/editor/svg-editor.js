@@ -1038,7 +1038,18 @@ TODOS
 
 			var showSourceEditor = function(e, forSaving) {
 				if (editingsource) {return;}
-
+				$('#tool_source_save').bind('mouseout',function(e){
+					$('#tool_source_save').removeClass('mouse');
+				});
+				$('#tool_source_save').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
+				$('#tool_source_cancel').bind('mouseout',function(e){
+					$('#tool_source_cancel').removeClass('mouse');
+				});
+				$('#tool_source_cancel').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
 				editingsource = true;
 				origSource = svgCanvas.getSvgString();
 				$('#save_output_btns').toggle(!!forSaving);
@@ -3250,6 +3261,16 @@ TODOS
 						});
 					}
 				});
+
+				$('#tool_prefs_option').unbind('mouseout');
+				$('#tool_prefs_option').unbind('mouseover');
+				$('#tool_prefs_option').bind('mouseout',function(e){
+					$('#tool_prefs_option').removeClass('mouse');
+				});
+				$('#tool_prefs_option').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
+
 			}());
 			// Made public for UI customization.
 			// TODO: Group UI functions into a public editor.ui interface.
@@ -4125,6 +4146,18 @@ TODOS
 				$('#canvas_height').val(res.h);
 				$('#canvas_title').val(svgCanvas.getDocumentTitle());
 
+				$('#tool_docprops_save').bind('mouseout',function(e){
+					$('#tool_docprops_save').removeClass('mouse');
+				});
+				$('#tool_docprops_save').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
+				$('#tool_docprops_cancel').bind('mouseout',function(e){
+					$('#tool_docprops_cancel').removeClass('mouse');
+				});
+				$('#tool_docprops_cancel').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
 				$('#svg_docprops').show();
 			};
 
@@ -4152,7 +4185,20 @@ TODOS
 				$('#grid_snapping_step').attr('value', curConfig.snappingStep);
 				$('#grid_color').attr('value', curConfig.gridColor);
 
+				$('#tool_prefs_save').bind('mouseout',function(e){
+					$('#tool_prefs_save').removeClass('mouse');
+				});
+				$('#tool_prefs_save').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
+				$('#tool_prefs_cancel').bind('mouseout',function(e){
+					$('#tool_prefs_cancel').removeClass('mouse');
+				});
+				$('#tool_prefs_cancel').bind('mouseover',function(e){
+					$(e.target).addClass('mouse');
+				});
 				$('#svg_prefs').show();
+				
 			};
 
 			var hideSourceEditor = function() {
