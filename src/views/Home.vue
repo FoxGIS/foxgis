@@ -60,16 +60,10 @@
           </div>
           <div class="product-text">
             <div v-for="text in showText">
-              <div class="text-item" style="border-bottom: 0;" v-if="$index===3">
-                <img :src="text.img">
-                <p>{{text.text}}</p>
-              </div>
-              <div class="text-item" v-else>
-                <img :src="text.img" style="height: 38px;padding: 12px 14px 12px 12px;" v-if="$index===2">
-                <img :src="text.img" v-else>
-                <p style="padding-top: 10px;" v-if="$index===2">{{text.text}}</p>
-                <p v-else>{{text.text}}</p>
-              </div>
+              <img :src="text.img" style="height: 38px;padding: 12px 14px 12px 12px;" v-if="$index===2">
+              <img :src="text.img" v-else>
+              <p style="padding-top: 10px;" v-if="$index===2">{{text.text}}</p>
+              <p v-else>{{text.text}}</p>
             </div>
           </div>
           <div class="change_img">
@@ -785,7 +779,6 @@ h4{
 .product-text .text-item {
   height: 70px;
   padding: 15px 0;
-  border-bottom: 1px solid #c3c3c3;
 }
 .product-text .text-item p{
   font-size: 16px;
