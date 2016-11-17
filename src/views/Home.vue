@@ -59,7 +59,7 @@
             <div id="default-map" class="map"></div>
           </div>
           <div class="product-text">
-            <div v-for="text in showText">
+            <div class="text-item" v-for="text in showText">
               <img :src="text.img" style="height: 38px;padding: 12px 14px 12px 12px;" v-if="$index===2">
               <img :src="text.img" v-else>
               <p style="padding-top: 10px;" v-if="$index===2">{{text.text}}</p>
