@@ -111,11 +111,13 @@ export default {
 .contact-us{
   color: #b1b1b1;
   float: right;
+  margin-right: 10px;
 }
 
 .contact-us a{
   color: #b1b1b1;
   text-decoration: none;
+  font-size: 14px;
 }
 
 .mdl-layout.has-drawer .mdl-layout__header > .mdl-layout-icon {

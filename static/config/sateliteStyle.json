@@ -1,0 +1,67 @@
+{
+  "updatedAt": "2016-11-07T04:56:13.070Z",
+  "createdAt": "2016-11-07T04:33:14.067Z",
+  "owner": "wanyanyan",
+  "zoom": 14.53342610817344,
+  "sources": {
+    "satellite": {
+      "type": "raster",
+      "url": "mapbox://mapbox.satellite",
+      "tileSize": 256
+    },
+    "video": {
+      "type": "video",
+      "urls": [
+        "static/video/20161107_114324_clip.mp4"
+      ],
+      "coordinates": [
+        [
+          -104.638602,
+          24.068266
+        ],
+        [
+          -104.620619,
+          24.065732
+        ],
+        [
+          -104.622068,
+          24.056547
+        ],
+        [
+          -104.640256,
+          24.058948
+        ]
+      ]
+    }
+  },
+  "name": "mapbox卫星_长光样本",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "rgb(4,7,14)"
+      }
+    },
+    {
+      "id": "satellite",
+      "type": "raster",
+      "source": "satellite"
+    },
+    {
+      "id": "video",
+      "type": "raster",
+      "source": "video"
+    }
+  ],
+  "pitch": 0,
+  "bearing": 0,
+  "center": [
+    -104.63047242780516,
+    24.062527225812858
+  ],
+  "version": 8,
+  "tags": [],
+  "scope": "private",
+  "style_id": "rJgMfEtpxg"
+}

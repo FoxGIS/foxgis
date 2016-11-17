@@ -14,7 +14,7 @@
     },
     "replaceField": 513221
   },
-  "zoom": 8,
+  "zoom": 12.019713228091506,
   "sources": {
     "composite": {
       "tiles": [
@@ -382,34 +382,6 @@
             ]
           ]
         }
-      }
-    },
-    {
-      "id": "县界",
-      "source": "data2012",
-      "source-layer": "boua",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "minzoom": 7,
-      "maxzoom": 11,
-      "type": "line",
-      "filter": [
-        "==",
-        "pac",
-        513221
-      ],
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "rgb(0,0,255)",
-        "line-width": 2,
-        "line-dasharray": [
-          3,
-          3
-        ]
       }
     },
     {
@@ -835,165 +807,6 @@
       },
       "paint": {
         "text-color": "rgb(12,127,241)"
-      }
-    },
-    {
-      "id": "天地图_县界",
-      "source": "data2012",
-      "source-layer": "yunnan_xian",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "line",
-      "minzoom": 11,
-      "filter": [
-        "==",
-        "xianid",
-        "513221"
-      ],
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#e38bea",
-        "line-width": 10
-      }
-    },
-    {
-      "id": "天地图_县界光晕",
-      "source": "data2012",
-      "source-layer": "yunnan_xian",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "line",
-      "minzoom": 11,
-      "filter": [
-        "==",
-        "xianid",
-        "513221"
-      ],
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#f598f1",
-        "line-width": 13,
-        "line-opacity": 0.5
-      }
-    },
-    {
-      "id": "乡镇填充色1",
-      "source": "data2012",
-      "source-layer": "yunnan_village",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "fill",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "==",
-          "xianid",
-          "513221"
-        ],
-        [
-          "==",
-          "color",
-          1
-        ]
-      ],
-      "paint": {
-        "fill-color": "#a3eeb9",
-        "fill-outline-color": "rgba(238,170,102,0.5)",
-        "fill-opacity": 0.5
-      }
-    },
-    {
-      "id": "乡镇填充色2",
-      "source": "data2012",
-      "source-layer": "yunnan_village",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "fill",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "==",
-          "xianid",
-          "513221"
-        ],
-        [
-          "==",
-          "color",
-          2
-        ]
-      ],
-      "paint": {
-        "fill-color": "#9fec1c",
-        "fill-outline-color": "rgb(238,170,102)",
-        "fill-opacity": 0.5
-      }
-    },
-    {
-      "id": "乡镇填充色3",
-      "source": "data2012",
-      "source-layer": "yunnan_village",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "fill",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "==",
-          "xianid",
-          "513221"
-        ],
-        [
-          "==",
-          "color",
-          3
-        ]
-      ],
-      "paint": {
-        "fill-color": "#ec9eba",
-        "fill-outline-color": "rgb(238,170,102)",
-        "fill-opacity": 0.5
-      }
-    },
-    {
-      "id": "乡镇填充色4",
-      "source": "data2012",
-      "source-layer": "yunnan_village",
-      "metadata": {
-        "replaceLayer": true
-      },
-      "type": "fill",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "==",
-          "xianid",
-          "513221"
-        ],
-        [
-          "==",
-          "color",
-          4
-        ]
-      ],
-      "paint": {
-        "fill-color": "#eecbeb",
-        "fill-outline-color": "rgb(238,170,102)",
-        "fill-opacity": 0.5
       }
     },
     {
@@ -1681,8 +1494,8 @@
   "pitch": 0,
   "bearing": 0,
   "center": [
-    103.30421691752667,
-    31.239821182056858
+    103.78511954831498,
+    31.192278838897707
   ],
   "version": 8,
   "tags": [],
