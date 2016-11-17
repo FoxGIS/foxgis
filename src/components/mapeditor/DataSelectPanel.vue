@@ -6,6 +6,29 @@
         <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
         <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传数据</mdl-button>
         <input type="file" multiple style="display:none" id="file" accept=".zip,.json,.mbtiles">
+        <a class="show-status" @click="showStatusPanel">
+          <i class="material-icons" v-if="tileCopyStatus.length>0" style="color:#0f6db2;font-weight: bold;">alarm</i>
+          <i class="material-icons" v-else style="color:gray;">alarm</i>
+        </a>
+      </div>
+      <div class="tile-copy">
+        <div id='info-tip'></div>
+        <div class="status-container">
+          <div v-if="tileCopyStatus.length===0">
+            <span>没有文件正在上传</span>
+          </div>
+          <div v-for="status in tileCopyStatus" v-else>
+            <div class="file-name">
+              <span>{{status.name}}</span>
+            </div>
+            <div class="file-prog">
+              <span v-if="status.status==='upload'" style="color:red">正在上传</span>
+              <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
+              <span v-if="status.status==='complete'" style="color:green">完成</span>
+            </div> 
+          </div>
+        </div>
+        <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
       </div>
       <div class="sourcelist used">
         <div class="source-item" v-for="source in displaySources" v-if="source.used===true">
@@ -61,6 +84,7 @@
 <script>
 import Cookies from 'js-cookie'
 import commonMethod from '../../components/method.js'
+import util from '../../components/util.js'
 export default {
   props:['sources'],
   methods: {
@@ -71,95 +95,91 @@ export default {
       this.$dispatch("select-a-layer",{source:source,source_layer:source_layer,fields:fields});
       $(".data-select-panel").hide();
     },
-    getSource:function(id,url){
-      var access_token = Cookies.get('access_token');
-      var s = {
-        "id":id,
-        "name":"",
-        "owner":"",
-        "used":false,
-        "createdAt":"",
-        "filesize":0,
-        "minzoom":0,
-        "maxzoom":22,
-        "url":url,
-        "vector_layers":[]
-      };
-      if(this.usedSourceIds.indexOf(id)!==-1){s.used=true;}
-      this.$http({url:s.url,method:"GET",data:{id:s.id},headers:{'x-access-token':access_token}}).then(function(res){
-        var data = res.data;
-        var params = res.request.params;//请求参数
-        for(let m=0;m<this.sources.length;m++){
-          var date = new Date(data.createdAt);
-          if(this.sources[m].id===params.id){
-            this.sources[m].name = data.name;
-            this.sources[m].owner = data.owner;
-            this.sources[m].minzoom = data.minzoom||0;
-            this.sources[m].maxzoom = data.maxzoom||22;
-            this.sources[m].createdAt = date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate();
-            if (data.filesize / 1024 > 1024) {
-              data.filesize = (data.filesize / 1048576).toFixed(2) + 'MB';
-            } else {
-              data.filesize = (data.filesize / 1024).toFixed(2) + 'KB';
-            }
-            this.sources[m].filesize = data.filesize;
-            this.sources[m].vector_layers = data.vector_layers;
-          }
-        }
-      },function(res){});
-      this.sources.unshift(s);
-    },
     uploadClick: function(){//显示文件选择框
       var hidefile = document.getElementById('file');
       hidefile.click();
       hidefile.addEventListener('change', this.upload); 
     },
 
-    upload: function(e){//添加图标方法
+    upload: function(e){//添加数据方法
       var username = Cookies.get("username");
       var access_token = Cookies.get('access_token');
-      var num = 1;
       for(let i=0;i<e.target.files.length;i++){
+        $(".tile-copy").show();
+        var name = e.target.files[i].name;
+        this.tileCopyStatus.push({name:name,id:"",status:"upload"});
         var url = SERVER_API.tilesets+"/"+username;
         var formData = new FormData();
         formData.append('file', e.target.files[i]); 
         this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
         .then(function(response){
-          if(num===e.target.files.length){
-            this.$parent.$broadcast("mailSent",{message:"上传成功！",timeout:3000});
-          }else{
-            num++;
+          for(let j=0;j<this.tileCopyStatus.length;j++){
+            if(this.tileCopyStatus[j].name===name){
+              this.tileCopyStatus[j].status="copy";
+              this.tileCopyStatus[j].id=response.data.tileset_id;
+              break;
+            }
           }
-          var tileset_id = response.data.tileset_id;
-          var url = SERVER_API.tilesets+"/"+response.data.owner+"/"+tileset_id;
-          var source = {
-            id:response.data.tileset_id,
-            name:response.data.name,
-            owner:response.data.owner,
-            used:false,
-            createdAt:"",
-            filesize:0,
-            url:url,
-            vector_layers:response.data.vector_layers
-          };
-          var date = new Date(response.data.createdAt);
-          source.createdAt = date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate();
-          if (response.data.filesize / 1024 > 1024) {
-            response.data.filesize = (response.data.filesize / 1048576).toFixed(2) + 'MB';
-          } else {
-            response.data.filesize = (response.data.filesize / 1024).toFixed(2) + 'KB';
-          }
-          source.filesize = response.data.filesize;
-          this.sources.unshift(source);
+          this.getCopyStatus(response.data.tileset_id);
         }, function(response) {
-          this.$parent.$broadcast("mailSent",{message:"添加图标失败！",timeout:3000});
+          this.$parent.$broadcast("mailSent",{message:"添加瓦片失败！",timeout:3000});
         });
       }
     },
+
+    getCopyStatus:function(tileset_id){
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        if(response.data.complete){
+          var tileset = response.data.tileset;
+          tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
+          for(var i=0;i<this.tileCopyStatus.length;i++){
+            if(this.tileCopyStatus[i].id===tileset.tileset_id){
+              this.tileCopyStatus[i].status="complete";
+              break;
+            }
+          }
+          var source = {
+            id:tileset.tileset_id,
+            name:tileset.name,
+            owner:tileset.owner,
+            used:false,
+            createdAt:tileset.createdAt.split(' ')[0],
+            filesize:0,
+            minzoom:tileset.minzoom || 0,
+            maxzoom:tileset.maxzoom || 22,
+            url:SERVER_API.tilesets+"/"+username+"/"+tileset.tileset_id,
+            vector_layers:tileset.vector_layers,
+          };
+          this.sources.unshift(source);
+        }else{
+          var _this = this;
+          setTimeout(function(){
+            _this.getCopyStatus(tileset_id);
+          },1000);
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '瓦片集请求失败！',timeout:3000 });
+      })
+    },
+    closeTileCopy:function(){
+      $(".tile-copy").hide();
+    },
+    showStatusPanel:function() {
+      if($(".tile-copy").is(':visible')){
+        $(".tile-copy").hide();
+      }else{
+        $(".tile-copy").show();
+      }
+    }
   },
   data(){
     return {
-      searchKeyWords:""
+      searchKeyWords:"",
+      tileCopyStatus:[]//上传数据切片状态
     }
   },
   computed:{
@@ -198,26 +218,28 @@ export default {
 <style scoped>
 .search {
   background-color: white;
-  padding: 10px;
+  padding: 10px 5px;
   border-bottom: 1px solid #eaeaea;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
-.foxgis-search {
-  width: calc(100% - 100px);
-  height: 40px;
+.search .mdl-button {
+  height: 30px;
+  font-size: 12px;
+  line-height: 30px;
+  padding: 0 5px;
+  margin: auto 5px;
 }
 
-#picker{
-  width: 88px;
+.foxgis-search {
+  width: calc(100% - 120px);
   height: 40px;
-  position: relative;
-  display: inline-block;
-  line-height: 1.428571429;
-  vertical-align: middle;
+  margin: 0;
+  padding: 0;
 }
+
 .title{
   height: 25px;
   border-bottom: 1px solid #c5c4c4;
@@ -271,5 +293,76 @@ export default {
 .layer-container a{
   text-decoration: none;
   color: blue;
+}
+.tile-copy{
+  position: absolute;
+  z-index: 2;
+  font-size: 14px;
+  right: -84px;
+  top: 40px;
+  display: none;
+  width: 200px;
+  -webkit-animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+  animation: pulse 200ms cubic-bezier(0,0,.2,1)forwards;
+}
+.tile-copy .status-container{
+  padding: 10px;
+  max-height: 150px;
+  overflow: auto;
+  border-radius: 4px;
+  background-color: rgba(189,189,189,0.9);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+.status-container .file-name{
+  width: 65%;
+  display: inline-block;
+}
+.status-container .file-prog{
+  width: 30%;
+  display: inline-block;
+  font-size: 12px;
+  text-align: right;
+}
+.status-container>div:nth-child(odd){
+  background-color: rgba(220,220,220,0.5);
+}
+.status-container>div:nth-child(even){
+  background-color: rgba(240,240,240,0.5);
+}
+.status-container>div{
+  border-bottom: 1px dashed #cecece;
+  padding: 1px 5px;
+}
+#info-tip {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid rgba(189,189,189,0.9);
+  margin: 0 auto;
+}
+.tile-copy .material-icons{
+  position: absolute;
+  top: 7px;
+  right: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.show-status{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 20px;
+  right: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+.show-status i{
+  font-size: 16px;
+  line-height: 20px;
 }
 </style>
