@@ -59,10 +59,10 @@
             <div id="default-map" class="map"></div>
           </div>
           <div class="product-text">
-            <span>{{showText}}</span>
+            <p>{{showText}}</p>
           </div>
           <div class="change_img">
-            <a class="image_item" @click="changeMap($event,$index)" v-for="map in clickMaps"></a>
+            <a class="image_item" @click="changeMap($event,$index)" v-for="n in 3"></a>
           </div>
         </div>
       </div>
@@ -233,7 +233,6 @@ export default {
       }
     },
     changeMap:function(e,index){
-      this.showText = this.clickMaps[index].des;
       $('.image_item').removeClass('active');
       $(e.target).addClass('active');
       $(".map").hide();
@@ -373,17 +372,9 @@ export default {
   data() {
   	return {
   	  uploadInfo:[],
-      activeImg: {},
-      showText:"描述1",
+      showText:"系统提供省、市、县三级行政区划制图模板，满足不同区域的行政区划制图需求。基于矢量瓦片的前端地图实时渲染，实现在线制图编辑的新型在线制图交互。高分辨率的出图标准，符合地图打印精度要求。同时系统还支持用户自定义数据制图，支撑不同场景下的专题图制作。",
       terrainMap:{},
       defaultMap:{},
-      clickMaps: [{
-        des:'描述1'
-      },{
-        des:'描述2'
-      },{
-        des:'描述3'
-      }],
       images: [{
         image_id: 'pic1',
         path:'',
@@ -679,11 +670,11 @@ table tr td:nth-child(3){
 .introduction .preview{
   position: absolute;
   display: inline-block;
-  width: 300px;
+  width: 320px;
   height: 230px;
   right: 0;
   margin: 30px 50px 30px 0;
-  padding-left: 50px;
+  padding-left: 30px;
 }
 .preview img{
   width: 100%;
@@ -739,7 +730,8 @@ h4{
 }
 
 .product-img {
-  margin: 10px 0 0 20px;
+  padding: 10px 30px 10px 20px;
+  border-right: 1px solid #c3c3c3;
   width:705px;
   height:440px;
 }
@@ -752,12 +744,15 @@ h4{
   display: none;
 }
 .product-text {
-  height: 440px;
-  width: 290px;
-  margin: 10px 40px 0 40px;
-  border: 1px solid #c3c3c3;
+  height: 250px;
+  width: 270px;
+  margin: 55px 20px 0 20px;
+  padding: 10px;
 }
-
+.product-text p{
+  font-size: 16px;
+  line-height: 40px;
+}
 .change_img {
   height: 50px;
   width: 800px;
