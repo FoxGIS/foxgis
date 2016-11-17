@@ -19,7 +19,9 @@
           <input type="text" name="base" :value="stopsdata.stopsObj.base" @change='inputChange'>
         </div>
         <div id="stops-container">
-          <span style="margin-left: 10px;">级别</span><span style="float:right;margin-right: 50px;">值</span>
+          <span style="margin-left: 1px;">级别</span>
+          <span style="margin-left: 38px;">值</span>
+          <span style="margin-left: 50px;">操作</span>
           <div class="stops-item" v-for="stop in stopsdata.stopsObj.stops">
             <input type="text" name="zoom" :value="stop[0]" @change='inputChange($event,$index)'>
             <!-- translate-anchor  -->
@@ -77,7 +79,7 @@
               <input type="text" :value="stop[1]" v-if="stop[1].indexOf('{')==-1"name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)'>
               <input type="text" :value="" name="{{name}}" data-type='layout' v-on:change='inputChange($event,$index)' v-else> 
             </div>
-            <i class="material-icons" v-on:click="deleteStop($event,$index)" title="删除分级">clear</i>
+            <span class="stopActive" v-on:click="deleteStop($event,$index)" title="删除分级">删除</span>
           </div>
           <div id="stops-add">
             <a v-on:click.prevent="addStops">添加分级</a>
@@ -89,8 +91,8 @@
       </div>
       <span v-if="this.error!=''" style="font-size:12px;color:red;">{{error}}</span>
       <div class="action" v-if="stopsdata.hasStops">
-        <mdl-button raised colored v-mdl-ripple-effect v-on:click="doOk">√</mdl-button>
-        <mdl-button accent raised v-mdl-ripple-effect v-on:click="doCancel">×</mdl-button>
+        <mdl-button raised colored v-mdl-ripple-effect v-on:click="doOk">完成</mdl-button>
+        <mdl-button accent raised v-mdl-ripple-effect v-on:click="doCancel">取消</mdl-button>
       </div>
       <i class="material-icons" id="close" v-on:click="doCancel">clear</i>
     </div>
@@ -261,7 +263,7 @@ export default {
         $("#icon-select-panel .icon-link").unbind("click");
       }else{
         iconPanel.show();
-        iconPanel.css("left","720px");
+        iconPanel.css("left","760px");
         $("#icon-select-panel .icon-link").unbind("click");
         $("#icon-select-panel .icon-link").bind("click",{inputEvent:e,index:index},this.iconClick);
       }
@@ -281,7 +283,7 @@ export default {
         $("#font-select-panel .font-item").unbind("click");
       }else{
         fontPanel.show();
-        fontPanel.css("left","720px");
+        fontPanel.css("left","760px");
         $("#font-select-panel .font-item").unbind("click");
         $("#font-select-panel .font-item").bind("click",{inputEvent:e,index:index},this.fontClick);
       }
@@ -318,14 +320,14 @@ export default {
 .dialog {
   position: absolute;
   background-color: white;
-  border-radius: 3px;
+  border-radius: 10px;
   overflow: hidden;
   float: none;
   right: 0;
   left: 0;
   width: 200px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 0 10px 10px 10px;
   box-sizing: border-box;
 }
 
@@ -346,9 +348,8 @@ export default {
   margin-left: 25px;
 }
 .action button{
-  font-family: SimHei;
-  font-weight: bold;
-  font-size: 20px;
+  font-family: "Microsoft YaHei";
+  font-size: 12px;
   min-width: 50px;
   height: 28px;
   line-height: 30px;
@@ -369,14 +370,15 @@ export default {
   visibility: hidden;
 }
 #stops-base input{
-  height: 11px;
+  height: 13px;
   width: 25px;
 }
 
 #stops-container{
   max-height: 300px;
   overflow: auto;
-  border: 1px solid #c3c3c3;
+  border-top: 1px solid #c3c3c3;
+  border-bottom: 1px solid #c3c3c3;
   padding: 5px;
   margin-top: 10px;
 }
@@ -386,13 +388,13 @@ export default {
 }
 .stops-item input:nth-child(odd){
   margin-top: 5px;
-  width: 50px;
+  width: 30px;
   border: 1px solid gray;
 }
 
 .stops-item input:nth-child(even){
-  margin-top: 5px;
-  width: 100px;
+  margin: 5px 0 0 5px;
+  width: 87px;
   border: 1px solid gray;
 }
 
@@ -404,10 +406,10 @@ export default {
 
 .stops-item .text-field input{
   position: absolute;
-  left: 55px;
+  left: 30px;
   top: 0px;
   width: 80px;
-  height: 16px;
+  height: 18px;
   border: none;
   background-color: transparent;
 }
@@ -415,33 +417,41 @@ export default {
 .stops-item .text-field select{
   position: absolute;
   top: 0px;
-  left: 55px;
-  height: 19px;
-}
-
-.stops-item i{
-  position: absolute;
-  font-size: 12px;
-  top: 10px;
-  cursor: pointer;
-  right: 0px;
-}
-
-.stops-item i:hover{
-  color: red;
-  font-weight: bold;
+  left: 35px;
+  height: 21px;
 }
 
 .stops-item div.checkbox{
   position: absolute;
   top: 4px;
-  right: 40px;
+  right: 77px;
 }
+
+.stops-item span.stopActive{
+  position: absolute;
+  display: inline-block;
+  top: 5px;
+  right: 5px;
+  color: #2061C6;
+  cursor: pointer;
+}
+
+#stops-add{
+  text-align: center;
+  margin-top: 10px;
+}
+
+#stops-add a {
+  color: #fff;
+  background-color: #2061C6;
+  padding: 2px 15px;
+  border-radius: 5px;
+}
+
 #stops-none{
   margin:10px 0px 10px 10px;
 }
 a:hover{
   cursor: pointer;
-  font-weight: bold;
 }
 </style>

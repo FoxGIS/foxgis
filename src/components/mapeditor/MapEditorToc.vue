@@ -85,8 +85,8 @@
         <div v-if="curPanelLayer.type=='symbol'">
           <nav class="mdl-navigation" id="symbol-property-control">
             <a class="mdl-navigation symbol symbol-control-active" v-on:click="styleControlClick" title="设置符号属性">布局</a>
-            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性" style="border-left: 1px solid #c3c3c3;">注记</a>
-            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性" style="border-left: 1px solid #c3c3c3;">符号</a>
+            <a class="mdl-navigation text" v-on:click="styleControlClick" title="设置注记属性">注记</a>
+            <a class="mdl-navigation icon" v-on:click="styleControlClick" title="设置图标属性">符号</a>
           </nav>
           <!-- 注记 -->
           <div id="text-div" class="symbol-set" style="display: none">
@@ -2252,11 +2252,11 @@ a {
   flex-direction: row;
   height: 30px;
   box-sizing: border-box;
-  background-color: #1f78ba;
+  background-color: #E5E2D3;
 }
 
 #property-control a{
-  color: white;
+  color: #000;
   box-sizing: border-box;
   width: 125px;
   cursor: pointer;
@@ -2267,22 +2267,16 @@ a {
 }
 
 #property-control .style-control-active{
-  color: #2061C6;
-  background-color: #E5E2D3;
+  color: #FFF;
+  background-color: #2061C6;
 }
 
+
 #symbol-property-control{
+  color: #2388d0;
   margin: 5px auto;
   background-color: white;
-  width: 250px;
-  border-radius: 5px;
-  border: 1px solid #c3c3c3;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  height: 30px;
-  box-sizing: border-box;
+  width: 270px;
 }
 
 #symbol-property-control a{
@@ -2292,10 +2286,14 @@ a {
   cursor: pointer;
   padding-top: 3px;
 }
+
+#symbol-property-control a:hover{
+  color: #2388d0;
+}
+
 #symbol-property-control .symbol-control-active{
-  color: white;
-  background-color: #2388d0;
-  border-radius: 5px;
+  color: #2388d0;
+  border-bottom: 2px solid #2388d0;
 }
 #stops-panel{
   position: absolute;
