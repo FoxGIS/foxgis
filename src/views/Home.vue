@@ -265,8 +265,10 @@ export default {
             var map = new mapboxgl.Map({
               container: 'terrain-map',
               style: initStyle,
+              interactive:false,
               attributionControl: false
             });
+            map.addControl(new mapboxgl.Navigation());
             this.terrainMap = map;
           },function(){
             this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
@@ -283,8 +285,10 @@ export default {
             var map = new mapboxgl.Map({
               container: 'default-map',
               style: initStyle,
+              interactive:false,
               attributionControl: false
             });
+            map.addControl(new mapboxgl.Navigation());
             this.defaultMap = map;
           },function(){
             this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
@@ -361,8 +365,10 @@ export default {
       var map = new mapboxgl.Map({
         container: 'admin-map',
         style: initStyle,
+        scrollZoom:false,
         attributionControl: false
       });
+      map.addControl(new mapboxgl.Navigation());
       this.adminMap = map;
     },function(){
       this.$broadcast('mailSent', { message: '样式信息错误！',timeout:3000 });
@@ -467,9 +473,11 @@ export default {
  .home-show{
   background-repeat: no-repeat;
   height: 250px;
+  width: 1100px;
+  margin: 0 auto;
   background-position: center;
   background-color: #2c98e1;
-  background-image: url("../../static/images/login_bac.jpg");
+  background-image: url("../../static/images/jdfw.gif");
   overflow: hidden;
 } 
 .home-show video{
@@ -755,8 +763,7 @@ h4{
 }
 .change_img {
   height: 50px;
-  width: 800px;
-  margin: 0 auto;
+  width: 755px;
   text-align: center;
 }
 

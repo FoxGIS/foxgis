@@ -69,7 +69,7 @@
             </div>
             <!-- 透明度-->
             <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
-              <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+              <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
             </div>
           </div>
           <!-- layout -->
@@ -96,7 +96,7 @@
                 <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
                 <!-- 透明度-->
                 <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
-                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
                 </div>
                 <!-- 颜色 -->
                 <div class="property-value" v-if="name.indexOf('color')!=-1">
@@ -153,7 +153,7 @@
                 <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
                 <!-- 透明度-->
                 <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
-                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
                 </div>
                 <!-- 其他-->
                 <div class="property-value" v-if="name.indexOf('color')==-1&&name.indexOf('opacity')==-1">
@@ -227,7 +227,7 @@
               </div>
               <!-- 透明度-->
               <div class="property-value" v-if="name=='fill-opacity'" style="padding-top:7px;">
-                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='fill-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -267,7 +267,7 @@
               </div>
               <!-- 透明度-->
               <div class="property-value" v-if="name=='line-opacity'" style="padding-top:7px;">
-                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='line-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -328,7 +328,7 @@
               </div>
               <!-- 透明度-->
               <div class="property-value" v-if="name=='circle-opacity'" style="padding-top:7px;">
-                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='circle-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -364,7 +364,7 @@
               </div>
               <!-- 透明度-->
               <div class="property-value" v-if="name=='raster-opacity'" style="padding-top:7px;">
-                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @input='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -460,20 +460,20 @@ export default {
       var color = e.target.value;
       var that = this;
       $(e.target).colpick({
-        submitText:"确定",
-        layout:'rgbhexhsb',
+        submit:false,
+        layout:'hex',
         color:color,
-        onSubmit:function(hsb,hex,rgb,el){
+        onChange:function(hsb,hex,rgb,el){
           $(el).css('background-color','#'+hex);
           $(el).val('#'+hex);
-          $(el).colpickHide();
+          //$(el).colpickHide();
           var options = {};
           options.name = $(el).attr("name");
           options.type = el.dataset.type;
           options.value = "#"+hex;
           that.$emit("layer-property-change",options);
         }
-      });
+      }).colpickSetColor(color,true);
       $(e.target).click();
     },
     //点击新建图层，显示新建图层面板，初始化面板参数
@@ -2410,7 +2410,8 @@ a {
 }
 
 .open-stops.open{
-  background-color: #8ba1f3;
+  background-color: #1f78ba;
+  color: white;
 }
 
 #copy-layer-panel {
