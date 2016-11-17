@@ -263,7 +263,7 @@ export default {
         $("#icon-select-panel .icon-link").unbind("click");
       }else{
         iconPanel.show();
-        iconPanel.css("left","720px");
+        iconPanel.css("left","760px");
         $("#icon-select-panel .icon-link").unbind("click");
         $("#icon-select-panel .icon-link").bind("click",{inputEvent:e,index:index},this.iconClick);
       }
@@ -283,7 +283,7 @@ export default {
         $("#font-select-panel .font-item").unbind("click");
       }else{
         fontPanel.show();
-        fontPanel.css("left","720px");
+        fontPanel.css("left","760px");
         $("#font-select-panel .font-item").unbind("click");
         $("#font-select-panel .font-item").bind("click",{inputEvent:e,index:index},this.fontClick);
       }

@@ -25,7 +25,7 @@
 
     <div class="property-item">
       <div class="property-name"><span >数据类型</span></div>
-      <div class="property-value">
+      <div class="property-value" style="width: 135px;">
         <input type="radio" value="circle" id="circle_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
         <input type="radio" value="circle" id="circle_create" v-else v-model="selecteddata.type">
         <label for="one">圆</label>
@@ -37,7 +37,7 @@
         <label for="two">线</label>
         <input type="radio" value="fill" id="fill_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
         <input type="radio" value="fill" id="fill_create" v-else v-model="selecteddata.type">
-        <label for="one">面</label></br>
+        <label for="one">面</label>
         <input type="radio" value="raster" id="raster_update" v-if="selecteddata.panel_type=='update'" disabled v-model="selecteddata.type">
         <input type="radio" value="raster" id="raster_create" v-else v-model="selecteddata.type">
         <label for="two">栅格</label>
