@@ -64,17 +64,20 @@
         <div v-if="curPanelLayer.type=='background'">
           <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-            <div class="property-value">
-              <input type="text" :value="value" number v-on:change='propertyChange' name="{{name}}" v-if="name=='background-opacity'" data-type='paint'/>
+            <div class="property-value" v-if="name.indexOf('opacity')===-1">
               <input class="color" type="text" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
+            </div>
+            <!-- 透明度-->
+            <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
+              <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
             </div>
           </div>
           <!-- layout -->
           <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
             <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
             <div class="property-value">
-              <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-              <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+              <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout'></mdl-switch>
+              <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout'></mdl-switch>
             </div>
           </div>
         </div>
@@ -91,11 +94,17 @@
               <div class="text"><span>绘图属性</span></div>
               <div v-for="(name,value) in propertyGroup.text.paint" class="property-item">
                 <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-                <div class="property-value" v-if="name.indexOf('color')==-1">
-                  <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+                <!-- 透明度-->
+                <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
+                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
                 </div>
+                <!-- 颜色 -->
                 <div class="property-value" v-if="name.indexOf('color')!=-1">
                   <input class="color" type="text" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
+                </div>
+                <!-- 其他 -->
+                <div class="property-value" v-if="name.indexOf('color')==-1&&name.indexOf('opacity')==-1">
+                  <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
                 </div>
                 <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
               </div>
@@ -129,8 +138,8 @@
                   </select>
                 </div>
                 <div class="property-value" v-if="name=='text-allow-overlap'||name=='text-ignore-placement'">
-                  <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-switch :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
                 </div>
                 <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
               </div>
@@ -142,9 +151,15 @@
               <div class="text"><span>绘图属性</span></div>
               <div v-for="(name,value) in propertyGroup.icon.paint" class="property-item">
                 <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-                <div class="property-value" v-if="name.indexOf('color')==-1">
+                <!-- 透明度-->
+                <div class="property-value" v-if="name.indexOf('opacity')!==-1" style="padding-top:7px;">
+                  <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
+                </div>
+                <!-- 其他-->
+                <div class="property-value" v-if="name.indexOf('color')==-1&&name.indexOf('opacity')==-1">
                   <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
                 </div>
+                <!-- 颜色-->
                 <div class="property-value" v-if="name.indexOf('color')!=-1">
                   <input class="color" type="text" v-on:change='propertyChange' v-on:click="colorPickerClick" v-model="value" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
                 </div>
@@ -160,8 +175,8 @@
                   <input type="text" :value="value" name="{{name}}" v-else v-on:change='propertyChange' data-type='layout'/>
                 </div>
                 <div class="property-value" v-if="name=='icon-allow-overlap'||name=='icon-ignore-placement'">
-                  <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-switch :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
                 </div>
                 <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
               </div>
@@ -176,12 +191,12 @@
                   <input type="text" :value="value" name="{{name}}" v-on:change='propertyChange' data-type='layout'/>
                 </div>
                 <div class="property-value" v-if="name=='symbol-avoid-edges'">
-                  <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-switch :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
                 </div>
                 <div class="property-value" v-if="name=='visibility'">
-                  <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                  <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                  <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
                 </div>
                 <div class="property-value" v-if="name=='symbol-placement'">
                   <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
@@ -193,8 +208,8 @@
               <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
                 <div class="property-name"><span >标注盾牌</span></div>
                 <div class="property-value">
-                  <mdl-checkbox :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
-                  <mdl-checkbox :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-checkbox>
+                  <mdl-switch :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-switch>
                 </div>
               </div>
             </div>
@@ -206,9 +221,13 @@
             <div class="text"><span>绘图属性</span></div>
             <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
               <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'">
+              <div class="property-value" v-if="name!=='fill-antialias'&&name!=='fill-translate-anchor'&&name!=='fill-opacity'">
                 <input class="color" type="text" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
                 <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <!-- 透明度-->
+              <div class="property-value" v-if="name=='fill-opacity'" style="padding-top:7px;">
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='fill-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -217,8 +236,8 @@
                 </select>
               </div>
               <div class="property-value" v-if="name=='fill-antialias'">
-                <mdl-checkbox :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-checkbox>
+                <mdl-switch :checked.sync="true" v-if="value==true" v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-switch>
+                <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='paint' ></mdl-switch>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -229,8 +248,8 @@
             <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
               <div class="property-name"><span>{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
               <div class="property-value">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -242,9 +261,13 @@
             <div class="text"><span>绘图属性</span></div>
             <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
               <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value" v-if="name!=='line-translate-anchor'">
+              <div class="property-value" v-if="name!=='line-translate-anchor'&&name!=='line-opacity'">
                 <input class="color" type="text" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
                 <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <!-- 透明度-->
+              <div class="property-value" v-if="name=='line-opacity'" style="padding-top:7px;">
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='line-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -263,8 +286,8 @@
                 <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='layout' />
               </div>
               <div class="property-value" v-if="name=='visibility'">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
               </div>
               <div class="property-value" v-if="name=='line-cap'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
@@ -299,9 +322,13 @@
             <div class="text"><span>绘图属性</span></div>
             <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
               <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value" v-if="name!=='circle-translate-anchor'">
+              <div class="property-value" v-if="name!=='circle-translate-anchor'&&name!=='circle-opacity'">
                 <input class="color" type="text" v-model="value" v-if="name.indexOf('color')!=-1" v-on:change='propertyChange' v-on:click="colorPickerClick" name="{{name}}" data-type='paint' :style = "'background-color:'+value" lazy/>
                 <input type="text" :value="value" v-else v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <!-- 透明度-->
+              <div class="property-value" v-if="name=='circle-opacity'" style="padding-top:7px;">
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <div class="property-value" v-if="name=='circle-translate-anchor'">
                 <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='paint'>
@@ -318,8 +345,8 @@
             <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
               <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
               <div class="property-value">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -332,8 +359,12 @@
             <div class="text"><span>绘图属性</span></div>
             <div v-for="(name,value) in curPanelLayer.paint" class="property-item">
               <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
-              <div class="property-value">
+              <div class="property-value" v-if="name!=='raster-opacity'">
                 <input type="text" :value="value" v-on:change='propertyChange' name="{{name}}" data-type='paint' />
+              </div>
+              <!-- 透明度-->
+              <div class="property-value" v-if="name=='raster-opacity'" style="padding-top:7px;">
+                <mdl-slider :value.sync="value" min="0" max="1" step="0.05" name="{{name}}" @change='propertyChange' data-type='paint'></mdl-slider>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="paint" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -344,8 +375,8 @@
             <div v-for="(name,value) in curPanelLayer.layout" class="property-item">
               <div class="property-name"><span >{{translate[name.replace(curPanelLayer.type+'-','')]}}</span></div>
               <div class="property-value">
-                <mdl-checkbox :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
-                <mdl-checkbox :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-checkbox>
+                <mdl-switch :checked.sync="true" v-if="value=='visible'" v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
+                <mdl-switch :checked.sync="false" v-else v-on:change='propertyChange' data-name="{{name}}" data-type='layout' ></mdl-switch>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
             </div>
@@ -2146,6 +2177,7 @@ a {
 #property-panel .property-item {
   margin-top: 10px;
   position: relative;
+  clear: both;
 }
 
 #property-panel .property-name {
@@ -2163,17 +2195,13 @@ a {
   position: relative;
   width: 125px;
 }
+.property-value .mdl-switch{
+  width: initial;
+  margin-left: 50px;
+}
 #property-panel .property-name span{
   color: #999999;
 }
-/* #property-panel .property-value input[type='color'] {
-  position: absolute;
-  right: 20px;
-  top: 5px;
-  width: 15px;
-  height: 15px;
-  border-radius: 10px;
-} */
 
 .property-value input[type='text'] {
   display: inline-block;
