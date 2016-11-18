@@ -53,6 +53,18 @@
     </div>
   </div>
 
+  <div class="exportModal">
+    <div class="exportStatuDialog">
+      <div style="padding: 0 18px;">
+        <mdl-spinner :active="active"></mdl-spinner>
+      </div>
+      <div>
+        <span style="color: #c3c3c3;">{{status}}</span>
+      </div>
+      
+    </div>
+  </div>
+
   <foxgis-dialog-prompt id="save-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
 
   <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="deletecontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
@@ -208,18 +220,41 @@ export default {
       if(username === undefined){
         return;
       }
+      this.status = "正在导出";
+      $('.exportModal').show();
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.tilesets + '/' + username;
       this.$http({url:url,method:"POST",data:formData,headers:{'x-access-token':access_token}})
       .then(function(res){
         if(res.ok){
           var tileset_id = res.data.tileset_id;
-          this.editTagsAndScope(tileset_id);
-          this.$broadcast("mailSent",{message:"导出成功",timeout:3000});
+          this.status = "正在切片";
+          this.getCopyStatus(tileset_id);
         }
       },function(res){
         this.$broadcast("mailSent",{message:"导出失败",timeout:3000});
       }); 
+    },
+    getCopyStatus:function(tileset_id){
+      var username = Cookies.get('username');
+      var access_token = Cookies.get('access_token');
+      var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
+      this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
+      .then(function(response) {
+        if(response.data.complete){
+          this.status = "";
+          $('.exportModal').hide();
+          this.$broadcast('mailSent', { message: '导出完成！',timeout:3000 });
+          this.editTagsAndScope(tileset_id);
+        }else{
+          var _this = this;
+          setTimeout(function(){
+            _this.getCopyStatus(tileset_id);
+          },1000);
+        }
+      }, function(response) {
+        this.$broadcast('mailSent', { message: '瓦片集请求失败！',timeout:3000 });
+      })
     },
     editTagsAndScope:function(tileset_id){//更新tags、scope字段
       var username = Cookies.get('username');
@@ -316,7 +351,8 @@ export default {
         title: '确定删除该要素吗？',
         textOk:'确定',
         textCancel:'取消'
-      }
+      },
+      status:""//瓦片导出状态
     }
   }
 }
@@ -485,5 +521,27 @@ td a{
 }
 #save-dialog,#delete-dialog{
   display: none;
+}
+.exportModal {
+  position: fixed;
+  display: none;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(0,0,0,.5);
+  z-index: 100;
+}
+.exportStatuDialog {
+  position: absolute;
+  border-radius: 3px;
+  overflow: hidden;
+  float: none;
+  top: 30%;
+  right: 0;
+  left: 0;
+  width: 65px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 </style>
