@@ -346,6 +346,9 @@ export default {
       this.filterValueTitle = e.target.value;
     },
     showSelectSource:function(){ 
+      if(this.selecteddata.panel_type==="update"){
+        return;
+      }
       this.sources=[];this.usedSourceIds = [];
       var usedSourceNames = Object.keys(this.localStyle.sources);
       for(let i = 0;i<usedSourceNames.length;i++){
@@ -683,7 +686,10 @@ select[name="filter-condition"]{
   border-radius: 5px;
   border: 1px solid #c3c3c3;
 }
-.source-container:hover{
+#property-panel .source-container a{
+  cursor: default;
+}
+#new-layer-panel .source-container:hover{
   background-color: #e0dac3;
 }
 .source-container a{

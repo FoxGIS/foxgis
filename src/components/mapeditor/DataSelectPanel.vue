@@ -4,7 +4,10 @@
     <div class="data-select">
       <div class="search">
         <foxgis-search :placeholder="'搜索'" :value="searchKeyWords" :search-key-words.sync="searchKeyWords"></foxgis-search>
-        <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传数据</mdl-button>
+        <a @click.stop.prevent="uploadClick" id="upload-button">
+          <i class="material-icons">file_upload</i>上传数据
+        </a>
+        <!-- <mdl-button raised colored v-mdl-ripple-effect @click="uploadClick" id="upload-button">上传数据</mdl-button> -->
         <input type="file" multiple style="display:none" id="file" accept=".zip,.json,.mbtiles">
         <a class="show-status" @click="showStatusPanel">
           <i class="material-icons" v-if="tileCopyStatus.length>0" style="color:#0f6db2;font-weight: bold;">alarm</i>
@@ -221,8 +224,6 @@ export default {
   padding: 10px 5px;
   border-bottom: 1px solid #eaeaea;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .search .mdl-button {
@@ -235,7 +236,7 @@ export default {
 
 .foxgis-search {
   width: calc(100% - 120px);
-  height: 40px;
+  height: 30px;
   margin: 0;
   padding: 0;
 }
@@ -253,7 +254,7 @@ export default {
   background-color: white;
 }
 .unused{
-  height: 160px;
+  height: 190px;
 }
 
 .source-item{
@@ -352,7 +353,7 @@ export default {
   width: 20px;
   height: 20px;
   position: absolute;
-  top: 20px;
+  top: 15px;
   right: 5px;
   cursor: pointer;
   text-decoration: none;
@@ -364,5 +365,18 @@ export default {
 .show-status i{
   font-size: 16px;
   line-height: 20px;
+}
+#upload-button{
+  cursor: pointer;
+  color: #1c7ec4;
+  margin-left: 5px;
+  border-radius: 5px;
+  padding: 2px;
+}
+#upload-button:hover{
+  background-color: #dedede;
+}
+#upload-button i{
+  vertical-align: middle;
 }
 </style>

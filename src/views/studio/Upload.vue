@@ -56,7 +56,7 @@
         <span>全选</span>
       </a>
       <a class="select-btn" v-on:click.stop.prevent="inverseSelect">
-        <div class="outer"><div class="inner"></div></div>
+        <!-- <div class="outer"><div class="inner"></div></div> -->
         <span>反选</span>
       </a>
     </div>
@@ -124,15 +124,15 @@
 
   <foxgis-pagination v-show="displayUploads.length>0?true:false" :total_items="total_items" :value="pageConfig" :page-config.sync="pageConfig"></foxgis-pagination>
 
-  <div class="modal" @click="hidePreview">
+  <div class="modal preview" @click="hidePreview">
     <div class="image-container" >
        <img id='thumbnail'>
     </div>
   </div>
 
-  <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
+  <foxgis-dialog-prompt id="delete-dialog" class='modal delete' :dialog="dialogcontent" @dialog-action="deleteAction"></foxgis-dialog-prompt>
 
-  <foxgis-dialog-input id="batch-process-dialog" class='modal' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
+  <foxgis-dialog-input id="batch-process-dialog" class='modal input' :dialog="dialogcontent" @dialog-action="batchProcessAction"></foxgis-dialog-input>
 
   <foxgis-location-select id="location-control"></foxgis-location-select>
 
@@ -276,7 +276,7 @@ export default {
       }else{
         this.dialogcontent.title="批量编辑";
         this.dialogcontent.tips="（提示：多个主题请用空格隔开）";
-        this.$el.querySelector('#batch-process-dialog').style.display = 'block';
+        $("#batch-process-dialog").fadeIn(200);
       }
     },
     batchProcessAction:function(status){//执行批量编辑
@@ -365,7 +365,8 @@ export default {
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
       document.querySelector('#thumbnail').src = url;
-      document.querySelector('.modal').style.display = 'block';
+      $(".modal.preview").fadeIn(300);
+      //document.querySelector('.modal').style.display = 'block';
 
     },
 
@@ -481,7 +482,7 @@ export default {
 
     deleteUpload: function(upload_id) {//显示删除弹框
       this.dialogcontent.title = "确定删除吗？";
-      this.$el.querySelector('#delete-dialog').style.display = 'block';
+      $("#delete-dialog").fadeIn(200);
       this.deleteUploadId.push(upload_id);
     },
     batchDeleteUpload:function(){//显示批量删除弹框
@@ -609,6 +610,7 @@ export default {
         }
       }else if(type === 'tag'){
         if(this.keyTips.length>0){
+          console.log(e);
           $(".key-tips").css({
             "left":e.target.offsetLeft+"px",
             "top":e.target.offsetTop+18+"px",
@@ -700,8 +702,8 @@ export default {
         //生成制图年份下拉框数据
         var year=new Date().getFullYear();
         var years = [];
-        for(let j=2000;j<=year;j++){
-          years.unshift(j);
+        for(let j=year;j>=year-9;j--){
+          years.push(j);
         }
         this.selectYearsData = years;
         //生成制图区域下拉框数据
@@ -1197,20 +1199,6 @@ span {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
 }
-
-/* .condition .more{
-  position: absolute;
-  right: 2px;
-  bottom: 6px;
-  width: 58px;
-  overflow: hidden;
-}
-
-.filter .condition .more a{
-  color: #2f2f2f;
-  font-size: 12px;
-  margin: 0;
-} */
 .card {
   transform: translatez(0);
   background: #fff;

@@ -169,6 +169,7 @@ export default {
   background-color: #e4e4e4;
   display: flex;
   flex-flow: column;
+  overflow: auto;
 }
 
 a.disabled {

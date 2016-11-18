@@ -37,6 +37,7 @@
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>
     <foxgis-mapdata-view id="mapdata-view"></foxgis-mapdata-view>
     <foxgis-dialog-prompt id="delete-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
+    <foxgis-dialog-single id="layout-zoom" @dialog-action="printAction" :dialog="dialogcontent"></foxgis-dialog-single>
   </div>
 </div>
 </template>
@@ -148,6 +149,7 @@ export default {
     backToProject:function(){
       this.$broadcast("main-control-click");
       if(this.styleSaveStatus===false){
+        this.dialogcontent.title="存在未保存的改动，是否保存？";
         $("#delete-dialog").show();
       }else{
         this.saveAction('cancel');
@@ -196,28 +198,43 @@ export default {
         document.getElementById("back-button").style.background = '#2061c6'; 
         document.getElementById("back-button").style.display = 'block';
       }else if(e.target.textContent === '确定'){
-        var options = {};
-        options.API = SERVER_API;
-        options.style_id = this.styleId;
-        options.username = Cookies.get('username');
-        options.access_token = Cookies.get('access_token');
-        options.zoom = this.$refs.drafmap.map.getZoom();
-        options.scale = 1;
-        options.selectedDistrict = this.selectedDistrict;
-        options.templateName = this.style.metadata.template.type;
-        var controlBound = this.$refs.drafmap.controlBound;
-        options.bbox = '['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']';
-        options.organization = Cookies.get('organization');
-        options.location = Cookies.get('location');
-        this.$broadcast('map-layout',options);
-        this.SVGEditorClick();
-        this.patchStyle(this.style);
-        this.hideBoundsBox();
-        document.getElementById("print-button").innerHTML = "输出";
-        document.getElementById("back-button").disabled = true;
-        document.getElementById("back-button").style.background = '#888888';
-        document.getElementById("back-button").style.display = 'block';
+        this.dialogcontent.title="输出级别";
+        this.dialogcontent.type="zoom";
+        $("#layout-zoom").show();
       }
+    },
+    printAction:function(params){
+      if(params.status==="cancel"){
+        return;
+      }
+      var zoom = Number(params.value);
+      if(isNaN(zoom)||zoom===0){
+        this.$broadcast("mailSent",{message:"输入错误，请重新输入",timeout:3000});
+        return;
+      }
+      var controlBound = this.$refs.drafmap.controlBound;
+      var options = {
+        API:SERVER_API,
+        style_id:this.styleId,
+        username:Cookies.get('username'),
+        access_token:Cookies.get('access_token'),
+        zoom:zoom,
+        scale:1,
+        selectedDistrict:this.selectedDistrict,
+        templateName:this.style.metadata.template.type,
+        bbox:'['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']',
+        organization:Cookies.get('organization'),
+        location:Cookies.get('location')
+      };
+      this.$broadcast('map-layout',options);
+      this.SVGEditorClick();
+      this.patchStyle(this.style);
+      this.hideBoundsBox();
+      document.getElementById("print-button").innerHTML = "输出";
+      document.getElementById("back-button").disabled = true;
+      document.getElementById("back-button").style.background = '#888888';
+      document.getElementById("back-button").style.display = 'block';
+      $("#layout-zoom").hide();
     },
     backEditor: function(e){
       var operator = document.getElementById("print-button");
@@ -290,7 +307,8 @@ export default {
       dialogcontent: {
         title: '存在未保存的改动，是否保存？',
         textOk:'保存',
-        textCancel:'不保存'
+        textCancel:'不保存',
+        type:""
       }
     }
   },

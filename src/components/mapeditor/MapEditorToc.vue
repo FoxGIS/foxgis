@@ -423,18 +423,7 @@
 
     <foxgis-icon-panel id="icon-select-panel" class="panel" :dataset="spriteObj"></foxgis-icon-panel>
     <foxgis-stops-panel id="stops-panel" class="panel" :stopsdata="stopsData" :name="stopsData.property.name" :layerfields="layerFields"></foxgis-stops-panel>
-    <div class='copy_modal'>
-      <div id="copy-layer-panel">
-        <b>图层名称</b>
-
-        <mdl-textfield label="图层名称" floating-label="图层名称" id="copy-layer-name" class="textfield" :value=""></mdl-textfield>
-
-        <div class="action">
-          <mdl-button raised colored v-mdl-ripple-effect @click="copyPanelClose">取消</mdl-button>      
-          <mdl-button accent raised v-mdl-ripple-effect @click="copyNewLayer">确定</mdl-button>
-        </div>
-      </div>
-    </div>
+    <foxgis-dialog-single id="copy-layer-panel" @dialog-action="copyLayerAction" :dialog="dialogcontent"></foxgis-dialog-single>
     <foxgis-dialog-prompt id="layer-folder-dialog" class='modal' :dialog="dialogcontent" v-on:dialog-action="saveAction"></foxgis-dialog-prompt>
   </div>
 </template>
@@ -1114,48 +1103,43 @@ export default {
     },
     showCopyLayer:function(){
       if($("#property-panel").is(":visible")){
+        this.dialogcontent.title = "图层名称";
+        this.dialogcontent.type="copy-layer";
         $("#copy-layer-panel").show();
-        $(".copy_modal").show();
       }else{
         this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
       }
     },
-    copyPanelClose:function(){
-      $("#copy-layer-name").val("");
-      $("#copy-layer-panel").hide();
-      $(".copy_modal").hide();
-    },
-    copyNewLayer:function(){
-      var value = $("#copy-layer-name").val().trim();
-      var currentLayer = this.currentLayer;
-      var layers = this.styleObj.layers;
-      var index = 0;
-      var isName = false;
-      if(value){
-        var temp = JSON.parse(JSON.stringify(currentLayer));
-        for(let i=0,length=layers.length;i<length;i++){
-          if(layers[i].id === temp.id){
-            index = i;
+    copyLayerAction:function(params){
+      if(params.status==="ok"){
+        var value = params.value;
+        var currentLayer = this.currentLayer;
+        var layers = this.styleObj.layers;
+        var index = 0;
+        var isName = false;
+        if(value){
+          var temp = JSON.parse(JSON.stringify(currentLayer));
+          for(let i=0,length=layers.length;i<length;i++){
+            if(layers[i].id === temp.id){
+              index = i;
+            }
+            if(layers[i].id === value){
+              isName = true;
+            }
           }
-          if(layers[i].id === value){
-            isName = true;
+          if(!isName){
+            temp.id=value;
+            layers.splice(index+1,0,temp);
+            $("#property-panel").hide();
+            $("#copy-layer-panel").hide();
+            this.changeStyle(this.styleObj);
+            this.$broadcast("mailSent",{message:"请保存样式!",timeout:3000});
+          }else{
+            this.$broadcast("mailSent",{message:"图层名称已存在，请重新输入!",timeout:3000});
           }
-        }
-        if(!isName){
-          temp.id=value;
-          layers.splice(index+1,0,temp);
-          $("#property-panel").hide();
-          $("#icon-select-panel").hide();
-          $("#copy-layer-name").val("");
-          $("#copy-layer-panel").hide();
-          $(".copy_modal").hide();
-          this.changeStyle(this.styleObj);
-          this.$broadcast("mailSent",{message:"请保存样式!",timeout:3000});
         }else{
-          this.$broadcast("mailSent",{message:"图层名称已存在，请重新输入!",timeout:3000});
+          this.$broadcast("mailSent",{message:"请输入图层名称！",timeout:3000});
         }
-      }else{
-        this.$broadcast("mailSent",{message:"请输入图层名称！",timeout:3000});
       } 
     },
     eledragstart: function(e){
@@ -1635,7 +1619,8 @@ export default {
       dialogcontent: {//文件夹提示框
         title: '该文件夹已经存在，是否移入已有文件夹？',
         textOk:'是',
-        textCancel:'否'
+        textCancel:'否',
+        type:""
       },
       translate: {
         'color': '颜色',
@@ -2008,8 +1993,8 @@ export default {
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
-  scrollbar-track-color:#e1f5fe;
-  scrollbar-face-color:#2061C6;
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#dcdcdc;
   clear: both;
 }
 
@@ -2023,12 +2008,12 @@ export default {
 
 /* 滚动条的滑轨背景颜色 */
 #layer-control::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
+  background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
 #layer-control::-webkit-scrollbar-thumb {
-  background-color: #2061C6;
+  background-color: #dcdcdc;
 }
 
 a {
@@ -2105,8 +2090,8 @@ a {
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
   border-left: 1px solid rgb(199, 199, 199);
-  scrollbar-track-color:#e1f5fe;
-  scrollbar-face-color:#2061C6;
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#dcdcdc;
 }
 
 #property-panel::-webkit-scrollbar {
@@ -2119,12 +2104,12 @@ a {
 
 /* 滚动条的滑轨背景颜色 */
 #property-panel::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
+  background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
 #property-panel::-webkit-scrollbar-thumb {
-  background-color: #2061C6;
+  background-color: #dcdcdc;
 } 
 
 #new-layer-panel .prop-group {
@@ -2153,12 +2138,12 @@ a {
 
 /* 滚动条的滑轨背景颜色 */
 #style-div::-webkit-scrollbar-track,#data-div::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
+  background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
 #style-div::-webkit-scrollbar-thumb,#data-div::-webkit-scrollbar-thumb {
-  background-color: #2061C6;
+  background-color: #dcdcdc;
 }
 
 
@@ -2345,7 +2330,7 @@ a {
   height: calc(100% - 60px);
   background-color: #f5f5f5;
   scrollbar-track-color:#f5f5f5;
-  scrollbar-face-color:#adadad;
+  scrollbar-face-color:#dcdcdc;
 }
 
 .font-list .font-family{
@@ -2377,7 +2362,7 @@ a {
 
 /* 滑块颜色 */
 .font-list::-webkit-scrollbar-thumb {
-  background-color: #adadad;
+  background-color: #dcdcdc;
 }
 
 .font-family i{
@@ -2403,51 +2388,6 @@ a {
 .open-stops.open{
   background-color: #1f78ba;
   color: white;
-}
-
-#copy-layer-panel {
-  position: absolute;
-  width: 300px;
-  padding: 10px;
-  background-color: white;
-  z-index: 1;
-  overflow: hidden;
-  display: none;
-  font-size: 14px;
-  color: #333;
-  border-radius: 3px;
-  float: none;
-  top: 30%;
-  right: 0;
-  left: 0;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-#copy-layer-panel>b{
-  margin-left: 20px;
-  font-size: 18px;
-}
-#copy-layer-panel .textfield{
-  width: 200px;
-  margin-left: 30px;
-}
-#copy-layer-panel>div.action{
-  text-align: center;
-  margin-bottom: 20px;
-}
-#copy-layer-panel>div.action button:nth-child(2){
-  margin-left: 50px;
-}
-.copy_modal {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  display: none;
-  background-color: rgba(0,0,0,.5);
-  z-index: 100;
 }
 #layer-folder-dialog{
   display: none;
@@ -2481,12 +2421,12 @@ a {
 
 /* 滚动条的滑轨背景颜色 */
 .prop-group::-webkit-scrollbar-track {
-  background-color: #e1f5fe;
+  background-color: #f5f5f5;
 }
 
 /* 滑块颜色 */
 .prop-group::-webkit-scrollbar-thumb {
-  background-color: #2061C6;
+  background-color: #dcdcdc;
 }
 
 </style>
