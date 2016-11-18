@@ -59,7 +59,12 @@
             <div id="default-map" class="map"></div>
           </div>
           <div class="product-text">
-            <p>{{showText}}</p>
+            <div class="text-item" v-for="text in showText">
+              <img :src="text.img" style="height: 38px;padding: 12px 14px 12px 12px;" v-if="$index===2">
+              <img :src="text.img" v-else>
+              <p style="padding-top: 10px;" v-if="$index===2">{{text.text}}</p>
+              <p v-else>{{text.text}}</p>
+            </div>
           </div>
           <div class="change_img">
             <a class="image_item" @click="changeMap($event,$index)" v-for="n in 3"></a>
@@ -377,7 +382,21 @@ export default {
   data() {
   	return {
   	  uploadInfo:[],
-      showText:"系统提供省、市、县三级行政区划制图模板，满足不同区域的行政区划制图需求。基于矢量瓦片的前端地图实时渲染，实现在线制图编辑的新型在线制图交互。高分辨率的出图标准，符合地图打印精度要求。同时系统还支持用户自定义数据制图，支撑不同场景下的专题图制作。",
+      showText:[
+        {
+          text:"系统提供省、市、县三级行政区划制图模板，满足不同区域的行政区划制图需求。",
+          img:"../../static/icons/区域.png"
+        },{
+          text:"基于矢量瓦片的前端地图实时渲染，实现在线制图编辑的新型在线制图交互。",
+          img:"../../static/icons/交互.png"
+        },{
+          text:"高分辨率的出图标准，符合地图打印精度要求。",
+          img:"../../static/icons/打印.png"
+        },{
+          text:"同时系统还支持用户自定义数据制图，支撑不同场景下的专题图制作。",
+          img:"../../static/icons/专题图.png"
+        }
+      ],
       terrainMap:{},
       defaultMap:{},
       images: [{
@@ -756,14 +775,23 @@ h4{
   display: none;
 }
 .product-text {
-  height: 250px;
+  height: 400px;
   width: 270px;
-  margin: 55px 20px 0 20px;
-  padding: 10px;
+  margin: 0 20px;
+  padding: 30px 10px;
 }
-.product-text p{
+.product-text .text-item {
+  height: 70px;
+  padding: 15px 0;
+}
+.product-text .text-item p{
   font-size: 16px;
-  line-height: 40px;
+  line-height: 22px;
+}
+.product-text .text-item img{
+  height: 40px;
+  float: left;
+  padding: 12px;
 }
 .change_img {
   height: 50px;
