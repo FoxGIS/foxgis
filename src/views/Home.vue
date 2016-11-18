@@ -494,7 +494,6 @@ export default {
   width: 1100px;
   margin: 0 auto;
   background-position: 0 -125px;
-  background-color: #2c98e1;
   background-size: 100%;
   background-image: url("../../static/images/jdfw_ps.gif");
   overflow: hidden;

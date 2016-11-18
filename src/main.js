@@ -38,6 +38,7 @@ import Pagination from './components/common/Pagination'
 import SVGEditor from './components/common/SVGEditor.vue'
 import Footer from './components/common/Footer.vue'
 import Conditions from './components/common/Conditions.vue'
+import DialogSingle from './components/common/DialogSingleInput.vue'
 
 import DataCardsMap from './components/datacards/DataCards-Map'
 import DataCardsData from './components/datacards/DataCards-Data'
@@ -84,6 +85,7 @@ Vue.component('foxgis-loading',Loading)
 Vue.component('foxgis-location-select',LocationSelect)
 Vue.component('foxgis-dialog-prompt',DialogPrompt)
 Vue.component('foxgis-dialog-input',DialogInput)
+Vue.component('foxgis-dialog-single',DialogSingle)
 Vue.component('foxgis-icon-panel',IconPanel)
 Vue.component('foxgis-data-select',DataSelectPanel)
 Vue.component('foxgis-filter-data',FilterData)

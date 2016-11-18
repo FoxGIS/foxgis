@@ -1,7 +1,7 @@
 <template>
 <div>
   <foxgis-layout>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+  <div class="content">
     <div class="layout-container">
       <div class="mdl-layout__drawer">
         <nav class="mdl-navigation">
@@ -186,7 +186,7 @@ export default {
   /* position: relative;
   bottom: 252px; */
 }
-.mdl-layout--fixed-drawer>.mdl-layout__content {
+.content>.mdl-layout__content {
   background-color: #e4e4e4;
 }
 

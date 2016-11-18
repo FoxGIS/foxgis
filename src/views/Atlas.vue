@@ -195,7 +195,8 @@ export default {
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.uploads + '/' + username+'/'+this.displayUploads[index].upload_id+'/thumbnail?access_token='+access_token;
       document.querySelector('#thumbnail').src = url;
-      document.querySelector('.modal').style.display = 'block';
+      $(".modal").fadeIn(300);
+      //document.querySelector('.modal').style.display = 'block';
     },
 
     hidePreview: function(e) {//隐藏图片预览
@@ -562,10 +563,6 @@ export default {
 
 
 <style scoped>
-.content {
-  overflow: auto;
-}
-
 .atlas-stats{
   width: 1100px;
   background-color: white;
