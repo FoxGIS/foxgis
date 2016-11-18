@@ -776,7 +776,6 @@ h4{
 .product-text {
   height: 400px;
   width: 270px;
-  margin: 0 20px;
   padding: 30px 10px;
 }
 .product-text .text-item {

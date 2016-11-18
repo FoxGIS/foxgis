@@ -186,10 +186,11 @@ export default{
             this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
             return;
           } 
+          this.json.sources = {};
           this.json.sources[sources_name] = {
             "type": dataType_select,
             "url": sources_url
-          }
+          };
           var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
           $("#template-wizard_panel #glyphs-url").val(glyphs_url);
           if(glyphs_url){
