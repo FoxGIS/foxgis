@@ -193,9 +193,11 @@ export default {
 
     showLocationPanel: function(e,index){//显示制图区域选择面板
       this.message.index = index;
-      document.getElementById('location-select').style.display = 'block';
-      document.getElementById('location-select').style.left = e.target.offsetLeft + 'px';
-      document.getElementById('location-select').style.top = e.target.offsetTop+20+'px';
+      $("#location-select").css({
+        "left":e.target.offsetLeft+e.target.offsetParent.offsetLeft+"px",
+        "top":e.target.offsetTop+e.target.offsetParent.offsetTop+20+"px",
+        "display":"block"
+      });
       this.$broadcast('initLocationSelectPanel');
     },
 
@@ -599,8 +601,8 @@ export default {
       if(type === 'location'){
         if(this.locationTips.length>0){
           $(".location-tips").css({
-            "left":e.target.offsetLeft+"px",
-            "top":e.target.offsetTop+20+"px",
+            "left":e.target.offsetLeft+e.target.offsetParent.offsetLeft+"px",
+            "top":e.target.offsetTop+e.target.offsetParent.offsetTop+20+"px",
             "display":"block"
           });
           $(".location-tips ul")[0].dataset.index = index;
@@ -610,8 +612,8 @@ export default {
       }else if(type === 'tag'){
         if(this.keyTips.length>0){
           $(".key-tips").css({
-            "left":e.target.offsetLeft+"px",
-            "top":e.target.offsetTop+18+"px",
+            "left":e.target.offsetLeft+e.target.offsetParent.offsetLeft+"px",
+            "top":e.target.offsetTop+e.target.offsetParent.offsetTop+20+"px",
             "display":"block"
           });
           $(".key-tips ul")[0].dataset.index = index;
@@ -1217,6 +1219,7 @@ span {
   outline: none;
   overflow: hidden;
   transition: .2s;
+  position: relative;
 }
 
 .card input,.card select{
