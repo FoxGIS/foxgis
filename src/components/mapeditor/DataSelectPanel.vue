@@ -111,10 +111,11 @@ export default {
         var url = SERVER_API.tilesets+"/"+username;
         var formData = new FormData();
         formData.append('file', e.target.files[i]); 
+        formData['name'] = name;
         this.$http({url:url,method:'POST',data:formData,headers:{'x-access-token':access_token}})
         .then(function(response){
           for(let j=0;j<this.tileCopyStatus.length;j++){
-            if(this.tileCopyStatus[j].name===name){
+            if(this.tileCopyStatus[j].name===response.request.data.name && !this.tileCopyStatus[j].id){
               this.tileCopyStatus[j].status="copy";
               this.tileCopyStatus[j].id=response.data.tileset_id;
               break;
@@ -332,6 +333,23 @@ export default {
 .status-container>div{
   border-bottom: 1px dashed #cecece;
   padding: 1px 5px;
+}
+.status-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.status-container::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.status-container::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+/* 滑块颜色 */
+.status-container::-webkit-scrollbar-thumb {
+  background-color: #2061C6;
 }
 #info-tip {
   width: 0;
