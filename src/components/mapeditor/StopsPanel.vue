@@ -3,7 +3,7 @@
       <div class="title">分级设置</div>
       <div class="content"  v-if="stopsdata.hasStops">
         <div id="stops-type">
-          <span>类型</span>
+          <span>类型:</span>
           <select v-model="stopsdata.stopsObj.type" @change='inputChange' name="type">
             <option value="">不指定</option>
             <option value="exponential" v-if="value=='exponential'" selected>指数型</option>
@@ -15,7 +15,7 @@
           </select>
         </div>
         <div id="stops-base">
-          <span>指数</span>
+          <span>指数:</span>
           <input type="text" name="base" :value="stopsdata.stopsObj.base" @change='inputChange'>
         </div>
         <div id="stops-container">
@@ -245,7 +245,7 @@ export default {
       var that = this;
       $(e.target).colpick({
         submitText:"确定",
-        layout:'rgbhexhsb',
+        layout:'hex',
         color:color,
         onSubmit:function(hsb,hex,rgb,el){
           $(el).css('background-color','#'+hex);
@@ -327,32 +327,42 @@ export default {
   left: 0;
   width: 200px;
   margin: 0 auto;
-  padding: 0 10px 10px 10px;
   box-sizing: border-box;
 }
 
 .title{
   font-size: 15px;
   font-weight: bold;
+  color: #717070;
+  background-color: #f3f3f3;
+  padding: 2px 10px;
 }
 .content {
   margin-top: 5px;
   margin-bottom: 8px;
+  padding: 0 10px;
 }
 
 .action {
   text-align: center;
+  padding: 0 10px 10px 10px;
 }
 
 .action button:nth-child(2){
   margin-left: 25px;
+  background-color: white;
+  color: gray;
+  border: 1px solid #b9b9b9;
 }
 .action button{
   font-family: "Microsoft YaHei";
   font-size: 12px;
   min-width: 50px;
   height: 28px;
-  line-height: 30px;
+  line-height: 26px;
+  background: #1f78ba;
+  border-radius: 5px;
+  box-shadow: none;
 }
 #close {
   position: absolute;
@@ -389,13 +399,13 @@ export default {
 .stops-item input:nth-child(odd){
   margin-top: 5px;
   width: 30px;
-  border: 1px solid gray;
+  border: 1px solid #c5c5c5;
 }
 
 .stops-item input:nth-child(even){
   margin: 5px 0 0 5px;
   width: 87px;
-  border: 1px solid gray;
+  border: 1px solid #c5c5c5;
 }
 
 .stops-item select{
@@ -443,7 +453,7 @@ export default {
 
 #stops-add a {
   color: #fff;
-  background-color: #2061C6;
+  background-color: #4894c8;
   padding: 2px 15px;
   border-radius: 5px;
 }

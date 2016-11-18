@@ -241,6 +241,8 @@ export default {
       $('.image_item').removeClass('active');
       $(e.target).addClass('active');
       $(".map").hide();
+      mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA';
+      var adminUrl = "static/config/adminStyle.json";
       if(index===0){
         $("#admin-map").fadeIn(400);
         if(!this.adminMap.loaded||this.adminMap.loaded()===false){
@@ -270,7 +272,6 @@ export default {
             var map = new mapboxgl.Map({
               container: 'terrain-map',
               style: initStyle,
-              interactive:false,
               attributionControl: false
             });
             map.addControl(new mapboxgl.Navigation());
@@ -282,7 +283,7 @@ export default {
       }else if(index===2){
         $("#default-map").fadeIn(400);
         if(!this.defaultMap.loaded||this.defaultMap.loaded()===false){
-          var terrainUrl = "static/config/defaultStyle.json";
+          var terrainUrl = "static/config/sateliteStyle.json";
           this.$http({url:terrainUrl,method:'GET'})
           .then(function(res){//从服务器获取地图的stylejson样式
             var data = res.data;
@@ -290,7 +291,6 @@ export default {
             var map = new mapboxgl.Map({
               container: 'default-map',
               style: initStyle,
-              interactive:false,
               attributionControl: false
             });
             map.addControl(new mapboxgl.Navigation());
@@ -311,7 +311,7 @@ export default {
     var url = SERVER_API.stats + '/uploads';
     var that = this;
     $(".image_item:first").addClass("active");
-    //获取数据列表
+    //获取用户上传数据列表
     this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if(response.data.length > 0){
@@ -370,7 +370,6 @@ export default {
       var map = new mapboxgl.Map({
         container: 'admin-map',
         style: initStyle,
-        scrollZoom:false,
         attributionControl: false
       });
       map.addControl(new mapboxgl.Navigation());
@@ -494,9 +493,10 @@ export default {
   height: 250px;
   width: 1100px;
   margin: 0 auto;
-  background-position: center;
+  background-position: 0 -125px;
   background-color: #2c98e1;
-  background-image: url("../../static/images/jdfw.gif");
+  background-size: 100%;
+  background-image: url("../../static/images/jdfw_ps.gif");
   overflow: hidden;
 } 
 .home-show video{
@@ -511,6 +511,10 @@ export default {
   color: white;
 }
 
+.home-title span{
+  text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
+  color: white;
+}
 .show{
   width: 1100px;
   height: 300px;

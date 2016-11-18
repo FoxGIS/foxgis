@@ -410,7 +410,7 @@
         <div class="font-family" v-for="(family,fonts) in fontList" >
           <div class="family-name" @click="fontFamilyClick">
             <i class="material-icons">folder</i>
-            <span>{{family}}(<b style="color:blue;">{{fonts.length}}</b>)</span>
+            <span>{{family}}<b style="color:#1f78ba;">({{fonts.length}})</b></span>
           </div>
           
           <div class="font-item"  v-for="font in fonts" title="{{font.name}}" style="display:none;">
@@ -2268,7 +2268,7 @@ a {
 
 #property-control .style-control-active{
   color: #FFF;
-  background-color: #2061C6;
+  background-color: #1f78ba;
 }
 
 
@@ -2305,18 +2305,19 @@ a {
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
   color: #333;
 }
-#icon-select-panel{
+#icon-select-panel,#font-select-panel{
   width: 300px;
   height: 400px;
   position: absolute;
   left: 555px;
   top: 150px;
-  background-color: #fbfbfd;
   z-index: 1;
   display: none;
   font-size: 14px;
   font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
-  color: #333;
+  color: #989898;
+  border-radius: 10px;
+  background-color: white; 
 }
 
 #icon-select-panel .panel{
@@ -2327,32 +2328,22 @@ a {
   border-radius: 0;
   border: none;
 }
-
-#font-select-panel{
-  position: absolute;
-  width: 300px;
-  height: 400px;
-  background-color: #fbfbfd;
-  left: 555px;
-  top: 150px;
-  z-index: 1;
+#icon-select-panel .meta-explain{
   display: none;
-  font-size: 14px;
-  font-family: Microsoft YaHei, Arial, Verdana, Helvetica, AppleGothic, sans-serif;
-  color: #333;
 }
-
 .meta-title{
-  margin-top: 12px;
-  margin-bottom: 12px;
-  margin-left: 5px;
+  padding: 5px 10px;
+  color: #717070;
+  background-color: #f3f3f3;
+  border-radius: 10px 10px 0 0;
 }
 .font-list{
   display: block;
-  background-color: #D8D8D8;
   overflow: auto;
-  margin: 5px;
-  height: calc(100% - 50px);
+  margin: 10px;
+  padding: 5px;
+  height: calc(100% - 60px);
+  background-color: #f5f5f5;
   scrollbar-track-color:#f5f5f5;
   scrollbar-face-color:#adadad;
 }

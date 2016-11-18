@@ -7,12 +7,12 @@
       </div>
     </div>
     <div class="meta-title">
-      <b>符号详情（<b style="color:blue;">{{dataset.icons.length}}</b>）</b>
+      <b>符号详情（<b style="color:#1f78ba;">{{dataset.icons.length}}</b>）</b>
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="addSprite">添加符号</mdl-anchor-button>
       <input type="file" multiple style="display:none" id="icon-input" accept=".svg">
       <mdl-anchor-button colored v-mdl-ripple-effect class = "add-button" @click="delSprite" v-if="dataset.sprite_id">删除符号</mdl-anchor-button>
     </div>
-    <div class="icon-container" style="text-align:center;max-height: 230px;">
+    <div class="icon-container">
       <a v-for="icon in dataset.icons" class="icon-link" title="{{icon.name}}" @click="bindDel($event)">
         <div :style="'background-image:url('+dataset.pngUrl+');background-position:-'+icon.positions.x+'px -'+icon.positions.y+'px;width:'+icon.positions.width+'px;height:'+icon.positions.height+'px;background-repeat: no-repeat;margin:10px;'" title="{{icon.name}}">
         </div>
@@ -205,6 +205,8 @@ export default {
   overflow: auto;
   margin: 5px;
   height: calc(100% - 50px);
+  text-align: center;
+  max-height: 230px;
   scrollbar-track-color:#f5f5f5;
   scrollbar-face-color:#adadad;
 }
@@ -247,4 +249,21 @@ export default {
   line-height: 19px;
 }
 
+#icon-select-panel .meta-explain{
+  display: none;
+}
+#icon-select-panel .meta-title{
+  padding: 5px 10px;
+  color: #717070;
+  background-color: #f3f3f3;
+  border-radius: 10px 10px 0 0;
+  margin: 0;
+}
+#icon-select-panel .icon-container{
+  margin: 10px;
+  padding: 5px;
+  height: calc(100% - 60px);
+  max-height: initial;
+  background-color: whitesmoke;
+}
 </style>

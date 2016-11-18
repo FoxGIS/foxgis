@@ -361,6 +361,7 @@ export default {
 .contact-us a{
   color: #b1b1b1;
   text-decoration: none;
+  font-size: 14px;
 }
 
 #main-control .btm{

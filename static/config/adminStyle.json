@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2016-11-14T09:39:49.319Z",
-  "createdAt": "2016-11-11T06:59:37.544Z",
+  "updatedAt": "2016-11-17T11:10:52.341Z",
+  "createdAt": "2016-11-17T11:09:43.440Z",
   "owner": "wanyanyan",
-  "name": "县级行政区划图",
-  "zoom": 10,
+  "name": "县级",
+  "zoom": 12.167161698684804,
   "metadata": {
     "template": {
       "type": "行政区划图",
       "level": 3,
       "des": "0代表全国，1代表省，2代表市，3代表县"
     },
-    "replaceField": 510112,
+    "replaceField": 370104,
     "shield": [
       "11级省道编号",
       "11级高速编号",
@@ -61,7 +61,7 @@
       "filter": [
         "==",
         "pac",
-        510112
+        370104
       ]
     },
     {
@@ -82,7 +82,7 @@
       "filter": [
         "==",
         "pac",
-        510112
+        370104
       ]
     },
     {
@@ -101,7 +101,7 @@
       "filter": [
         "==",
         "pac",
-        510112
+        370104
       ],
       "layout": {
         "visibility": {
@@ -141,7 +141,7 @@
       "filter": [
         "==",
         "pac",
-        510112
+        370104
       ],
       "layout": {
         "visibility": "visible"
@@ -1014,41 +1014,6 @@
       }
     },
     {
-      "id": "乡镇符号",
-      "source": "ngcc_admin_v2",
-      "type": "symbol",
-      "minzoom": 0,
-      "maxzoom": 22,
-      "layout": {
-        "text-field": "{name}",
-        "text-font": [
-          "SimHei Regular"
-        ],
-        "icon-image": "circle-stroked-15",
-        "visibility": "visible",
-        "text-offset": [
-          2,
-          0
-        ],
-        "icon-size": 0.8,
-        "text-allow-overlap": true,
-        "text-ignore-placement": true
-      },
-      "source-layer": "agnp",
-      "paint": {
-        "icon-color": "#0d0c0d"
-      },
-      "filter": [
-        "any",
-        [
-          "in",
-          "class",
-          "AJ",
-          "AI"
-        ]
-      ]
-    },
-    {
       "id": "村屯符号",
       "source": "ngcc_admin_v2",
       "type": "symbol",
@@ -1345,11 +1310,11 @@
   "pitch": 0,
   "bearing": 0,
   "center": [
-    104.29685260021705,
-    30.594013339866336
+    116.89013428996526,
+    36.682634146428484
   ],
   "version": 8,
   "tags": [],
   "scope": "private",
-  "style_id": "SkMvny7bx"
+  "style_id": "SkgJ-gzs-l"
 }

@@ -65,7 +65,7 @@ export default {
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.uploads + '?';
-      if(selectedYears.length==0&&selectedLocations.length==0&&selectedThemes.length==0){
+      if(selectedYears.length==0&&selectedLocations.length==0&&selectedThemes.length==0&&this.uploads.length>0){
         this.calcStats(this.uploads,type);
         return;
       }
@@ -112,12 +112,12 @@ export default {
         for(var i=0;i<uploads.length;i++){
           var clipName = uploads[i].name.length>3?(uploads[i].name.substr(0,3)+"···"):uploads[i].name;
           xData.push(clipName);
-          yData.push(uploads[i].downloadNum);
-          var sum = eval(yData.join('+'))||0;
+          yData.push(uploads[i].downloadNum); 
         }
+        var sum = eval(yData.join('+'))||0;
         this.lineOption.xAxis[0].data = xData.slice(0,100);
         this.lineOption.series[0].data = yData.slice(0,100);
-        this.lineOption.title.text = "图件下载统计("+sum+")";
+        this.lineOption.title.text = "图件下载统计(共"+sum+"次)";
         this.mapDownloadChart.setOption(this.lineOption,true);
         return;
       }
@@ -141,7 +141,7 @@ export default {
         }
         this.pieOption.legend.data = xData;
         this.pieOption.series[0].data = yData;
-        this.pieOption.title.text = "图件资源统计("+sum+")";
+        this.pieOption.title.text = "图件资源统计(共"+sum+"幅)";
         this.userUploadChart.setOption(this.pieOption,true);
         return;
       }
@@ -186,15 +186,58 @@ export default {
     this.$http({ url: userDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       var data = response.data;
+      var xData = [];
+      var yData = [];
       this.userDownloadStats = data;
-      this.$http({ url: SERVER_API.uploads, method: 'GET', headers: { 'x-access-token': access_token } })
-      .then(function(response) {
-        var uploads = response.data;
-        this.uploads = uploads;
-        this.calcStats(uploads,1);
-        this.calcStats(uploads,2);
-        this.calcStats(uploads,3);
-      }, function(response) {});
+      for(var i = 0;i<data.length;i++){
+        if(!data[i].organization){data[i].organization="";}
+        var clipName = data[i].organization.length>3?(data[i].organization.substr(0,3)+"···"):data[i].organization;
+        xData.push(clipName);
+        yData.push(data[i].downloadNum)
+      }
+      this.barOption.xAxis[0].data = xData;
+      this.barOption.series[0].data = yData;
+      this.userDownloadChart.setOption(this.barOption,true);
+    }, function(response) {
+      console.log(response);
+    });
+    //用户上传统计
+    var userUploadUrl = SERVER_API.stats + '/uploads';
+    this.$http({ url: userUploadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      var data = response.data;
+      var sum = 0;
+      var xData = [];
+      var yData = [];
+      for(var i = 0;i<data.length;i++){
+        sum += data[i].total;
+        xData[i] = data[i].location;
+        yData[i] = {value:data[i].total,name:data[i].location}; 
+      }
+      this.pieOption.legend.data = xData;
+      this.pieOption.series[0].data = yData;
+      this.pieOption.title.text = "图件资源统计(共"+sum+"幅)";
+      this.userUploadChart.setOption(this.pieOption,true);
+    }, function(response) {
+      console.log(response);
+    });
+    //图件下载统计
+    var mapDownloadUrl = SERVER_API.stats + '/filedownloads';
+    this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      var data = response.data;
+      var xData = [];
+      var yData = [];
+      for(var i = 0;i<data.length;i++){
+        var clipName = data[i].name.length>3?(data[i].name.substr(0,3)+"···"):data[i].name;
+        xData.push(clipName);
+        yData.push(data[i].downloadNum); 
+      }
+      var sum = eval(yData.join('+'))||0;
+      this.lineOption.xAxis[0].data = xData.slice(0,100);
+      this.lineOption.series[0].data = yData.slice(0,100);
+      this.lineOption.title.text = "图件下载统计(共"+sum+"次)";
+      this.mapDownloadChart.setOption(this.lineOption,true);
     }, function(response) {
       console.log(response);
     });
@@ -243,6 +286,12 @@ export default {
     },function(response){
       this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
     });
+
+    this.$http({ url: SERVER_API.uploads, method: 'GET', headers: { 'x-access-token': access_token } })
+    .then(function(response) {
+      var uploads = response.data;
+      this.uploads = uploads;
+    }, function(response) {});
   },
   
   data() {
