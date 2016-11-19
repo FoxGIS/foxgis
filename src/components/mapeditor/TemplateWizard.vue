@@ -241,6 +241,7 @@ export default{
         this.json.sprite = sprite_url;
         this.json.glyphs = glyphs_url;
         this.$dispatch("style-params",{'name':this.json.name,'type':'empty','json':this.json});
+        $('.item-thumb.checked').removeClass('checked');
         this.panelHidden();
       },
       panelHidden:function(){//隐藏面板
