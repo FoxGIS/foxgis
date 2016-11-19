@@ -189,10 +189,10 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 850px;
+  width: 862px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: auto;
 }
 
 h5 {
@@ -216,7 +216,6 @@ span {
 }
 
 .map-content {
-  background-color: white;
   margin-top: 10px;
   width: 100%;
 }
@@ -226,6 +225,7 @@ span {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e4e4e4;
+  background-color: white;
 }
 
 .search-button {

@@ -223,6 +223,15 @@ export default {
   transition: .2s;
 }
 
+.card+.card {
+  margin-top: 1px;
+}
+
+.card:focus, .card:hover {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 12px -12px;
+}
+
 .card-click{
   float: left;
   height: 80px;

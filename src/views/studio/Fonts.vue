@@ -324,10 +324,10 @@ export default {
 <style scoped>
 .data {
   height: 100%;
-  width: 850px;
+  width: 862px;
   max-width: 1000px;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: auto;
 }
 
 h5 {
@@ -387,6 +387,15 @@ span {
   outline: none;
   overflow: hidden;
   transition: .2s;
+}
+
+.card+.card {
+  margin-top: 1px;
+}
+
+.card:focus, .card:hover {
+  box-shadow: 0 4px 4px rgba(0,0,0,.12);
+  margin: 12px -12px;
 }
 
 .card-click{
