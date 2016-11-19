@@ -19,73 +19,11 @@
 
     <div class="action">
       <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>      
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('one')">下一步</mdl-button>
+      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep">下一步</mdl-button>
     </div>
   </div>
 
   <div class="dialog step2">
-    <b>选择数据源</b>
-
-    <mdl-textfield label="数据源名称" floating-label="数据源名称" id="sources-name" class="textfield" :value=""></mdl-textfield>
-    <mdl-tooltip for="source-name_help">{{toolTips.sourceName}}</mdl-tooltip>
-    <mdl-button class="tip-button" id="source-name_help" fab primary>
-      <i class="material-icons">help</i>
-    </mdl-button>
-
-    <div class="select">
-      <div>数据源类型</div>
-      <select id="dataType-select" class="select-item">
-        <option value="{{d.value}}" v-for="d in dataTypeOptions">{{d.name}}</option>
-      </select>
-    </div>
-
-    <div class="select">
-      <span>url来源：</span>
-      <input type="radio" value="self" v-model="sources_checked" checked>
-      <label for="self">本地</label>
-      <input type="radio" value="public" v-model="sources_checked">
-      <label for="public">公开</label>
-      <input type="radio" value="other" v-model="sources_checked">
-      <label for="other">其他</label>
-    </div> 
-    <!--渲染其他数据源--> 
-    <div v-if="sources_checked === 'other'">
-      <mdl-textfield label="数据源地址" floating-label="数据源地址" id="sources-url" class="textfield" :value=""></mdl-textfield>
-      <mdl-tooltip for="source-url_help1">{{toolTips.sourceUrl.remote}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="source-url_help1" fab primary>
-        <i class="material-icons">help</i>
-      </mdl-button>
-    </div>
-    <!--渲染本地数据源--> 
-    <div class="select" v-if="sources_checked === 'self'">
-      <div>数据源地址</div>
-      <select id="sources-url" class="select-item">
-        <option value="{{s.url}}" data-url={{s.url}} v-for="s in sourcesOptions">{{s.name}}</option>
-      </select>
-      <mdl-tooltip for="source-url_help2">{{toolTips.sourceUrl.local}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="source-url_help2" fab primary >
-        <i class="material-icons">help</i>
-      </mdl-button>
-    </div>
-    <!--渲染公开的数据源--> 
-    <div class="select" v-if="sources_checked === 'public'">
-      <div>数据源地址</div>
-      <select id="sources-url" class="select-item">
-        <option value="{{s.url}}" v-for="s in publicSources">{{s.name}}</option>
-      </select>
-      <mdl-tooltip for="source-url_help3">{{toolTips.sourceUrl.publicTip}}</mdl-tooltip>
-      <mdl-button class="tip-button" id="source-url_help3" fab primary >
-        <i class="material-icons">help</i>
-      </mdl-button>
-    </div>
-
-    <div class="action">
-      <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('two')">上一步</mdl-button>
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep('two')">下一步</mdl-button>
-    </div>
-  </div>
-
-  <div class="dialog step3">
     <b>配置符号库和字体</b>
 
     <div class="select">
@@ -142,7 +80,7 @@
     </mdl-button>
 
     <div class="action">
-      <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep('three')">上一步</mdl-button> 
+      <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep">上一步</mdl-button> 
       <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
     </div>
   </div>
@@ -154,61 +92,32 @@ import Cookies from 'js-cookie'
 import _ from 'lodash'
 export default{
     methods: {
-      nextStep:function(step){//点击下一步执行的方法
-        if(step === 'one'){//step1跳到step2
-          var template_name = $("#template-wizard_panel #template-name").val();
-          if(template_name===""){
-            this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
-            return;
-          } 
-          var template_type = $("#template-wizard_panel #template-type").val();
-          if(template_type===""){
-            this.$parent.$broadcast("mailSent",{message:"模板类型不能为空",timeout:3000});
-            return;
-          } 
-          var level = parseInt($("#template-wizard_panel #scope-select").val());
-          this.json.name = template_name;
-          this.json.metadata.template.level = level;
-          this.json.metadata.template.type = template_type;
-          $('.step1').css('display','none');
-          $('.step2').css('display','block');
+      nextStep:function(){//点击下一步执行的方法
+        var template_name = $("#template-wizard_panel #template-name").val();
+        if(template_name===""){
+          this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
+          return;
+        } 
+        var template_type = $("#template-wizard_panel #template-type").val();
+        if(template_type===""){
+          this.$parent.$broadcast("mailSent",{message:"模板类型不能为空",timeout:3000});
+          return;
+        } 
+        var level = parseInt($("#template-wizard_panel #scope-select").val());
+        this.json.name = template_name;
+        this.json.metadata.template.level = level;
+        this.json.metadata.template.type = template_type;
+        var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
+        $("#template-wizard_panel #glyphs-url").val(glyphs_url);
+        if(glyphs_url){
+          this.changeMdlTextfield("#template-wizard_panel #glyphs-url",true);
         }
-        if(step === 'two'){//step2跳到step3
-          var username = Cookies.get('username');
-          var sources_name = $("#template-wizard_panel #sources-name").val();
-          if(sources_name===""){
-            this.$parent.$broadcast("mailSent",{message:"数据源名称不能为空",timeout:3000});
-            return;
-          } 
-          var dataType_select = $("#template-wizard_panel #dataType-select").val();
-          var sources_url = $("#template-wizard_panel #sources-url").val();
-          if(!sources_url){
-            this.$parent.$broadcast("mailSent",{message:"数据源地址不能为空",timeout:3000});
-            return;
-          } 
-          this.json.sources = {};
-          this.json.sources[sources_name] = {
-            "type": dataType_select,
-            "url": sources_url
-          };
-          var glyphs_url = SERVER_API.fonts + '/' + username + '/{fontstack}/{range}.pbf';
-          $("#template-wizard_panel #glyphs-url").val(glyphs_url);
-          if(glyphs_url){
-            this.changeMdlTextfield("#template-wizard_panel #glyphs-url",true);
-          }
-          $('.step2').css('display','none');
-          $('.step3').css('display','block');
-        }
+        $('.step1').css('display','none');
+        $('.step2').css('display','block');
       },
-      preStep:function(step){//点击上一步执行的方法
-        if(step === 'two'){//step2跳到step1
-          $('.step2').css('display','none');
-          $('.step1').css('display','block');
-        }
-        if(step === 'three'){//step3跳到step2
-          $('.step3').css('display','none');
-          $('.step2').css('display','block');
-        }
+      preStep:function(){//点击上一步执行的方法
+        $('.step3').css('display','none');
+        $('.step1').css('display','block');
       },
       changeGlyphsUrl:function(){//获取字体的url
         if(this.glyphs_checked === 'other'){

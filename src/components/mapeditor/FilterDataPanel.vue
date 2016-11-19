@@ -89,6 +89,8 @@
             <option value="<=">小于等于</option>
             <option value="in">包含</option>
             <option value="!in">不包含</option>
+            <option value="has">存在</option>
+            <option value="!has">不存在</option>
           </select>
           <input type="text" class="field_data" name="filter-value" title="{{filterValueTitle}}" :value="filter.value" @change="filterChange($event,$index)" @click="showInputTips($event,$index)" @input="editFieldData($event,$index)" @mouseover="changeTile($event)">
           <i class="material-icons" v-on:click="deleteFilterItem($event,$index)" title="删除过滤">clear</i>
@@ -148,9 +150,6 @@ export default {
       this.$dispatch("layer-property-change",params);
     },
     filterChange:function(e,index) {
-      if(this.selecteddata.panel_type==="create"){
-        return;
-      }
       if(e.target.name && e.target.name === "filter-field"){
         $(".filter-item input.field_data")[index].value = "";
         $(".filter-item input.field_data")[index].title = "";
@@ -158,11 +157,21 @@ export default {
       if(e.target.name && e.target.name === "filter-value"){
         this.selecteddata.filter.filters[index].value = e.target.value;
       }
+      if(e.target.name && e.target.name === "filter-operator"){
+        if(e.target.value==="has"||e.target.value==="!has"){//条件为存在或不存在时，不需要输入属性值
+          $(e.target).siblings("input[name='filter-value']").attr("disabled",true);
+        }else{
+          $(e.target).siblings("input[name='filter-value']").removeAttr("disabled");
+        }  
+      }
+      if(this.selecteddata.panel_type==="create"){
+        return;
+      }
       var tem = this.selecteddata.filter;
       var filter = [];
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
-          if(tem.filters[i].field===""||tem.filters[i].value.toString()===""){
+          if(tem.filters[i].field===""){
             continue;
           }
           var field = this.selecteddata.filter.filters[i].field;
@@ -183,6 +192,8 @@ export default {
               }
             }
             var t = [tem.filters[i].operator,tem.filters[i].field].concat(valueArr);
+          }else if(tem.filters[i].operator==="has"||tem.filters[i].operator==="!has"){//存在或不存在
+            var t = [tem.filters[i].operator,tem.filters[i].field];
           }else{
             if(type.toLowerCase()==="number"){
               tem.filters[i].value=Number(tem.filters[i].value);

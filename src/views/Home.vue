@@ -3,13 +3,13 @@
   <foxgis-layout>
     <div class="content">
       <div class="home-show">
-        <div class="home-title">
+        <!-- <div class="home-title">
           <div>
             <span style="font-size: 20px;">辅助</span>
             <span style="font-size: 28px;line-height: 40px;">决策用图</span><br />
             <span style="font-size: 40px;line-height: 40px;font-style: italic;">服务系统</span>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="share-show show">
         <div class="show-title">
@@ -384,7 +384,7 @@ export default {
   	  uploadInfo:[],
       showText:[
         {
-          text:"系统提供省、市、县三级行政区划制图模板，满足不同区域的行政区划制图需求。",
+          text:"提供省、市、县三级行政区划制图模板，满足不同区域的行政区划制图需求。",
           img:"../../static/icons/区域.png"
         },{
           text:"基于矢量瓦片的前端地图实时渲染，实现在线制图编辑的新型在线制图交互。",
@@ -393,7 +393,7 @@ export default {
           text:"高分辨率的出图标准，符合地图打印精度要求。",
           img:"../../static/icons/打印.png"
         },{
-          text:"同时系统还支持用户自定义数据制图，支撑不同场景下的专题图制作。",
+          text:"支持用户自定义数据制图，支撑不同场景下的专题图制作。",
           img:"../../static/icons/专题图.png"
         }
       ],
@@ -502,7 +502,7 @@ export default {
   width: 100%;
   height: auto;
 }
-.home-title{
+/* .home-title{
   width: 800px;
   margin:0 auto;
   position: relative;
@@ -513,7 +513,7 @@ export default {
 .home-title span{
   text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
   color: white;
-}
+} */
 .show{
   width: 1100px;
   height: 300px;

@@ -348,20 +348,24 @@ export default {
 
 <style scoped>
 .header-top{
-  background-color: rgb(76,90,100);
+  background-color: #1f57a2;
   height: 25px;
 }
 
 .header-top .header{
-  width: 80%;
+  height: 100%;
   margin:0 auto;
+  background-image: url("../../static/images/header.jpg");
+  background-repeat: no-repeat;
+  background-position: -65px -10px;
 }
 .base-title{
   float: left;
+  margin-left: 250px;
 }
 .base-title span:first-child{
   color: white;
-  background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(250, 250, 250, 1)), to(rgba(140, 140, 140, 1)));
+  background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(255, 255, 255, 1)), to(rgba(222, 222, 222, 1)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 20px;
