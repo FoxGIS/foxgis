@@ -93,6 +93,7 @@ import _ from 'lodash'
 export default{
     methods: {
       nextStep:function(){//点击下一步执行的方法
+        var username = Cookies.get('username');
         var template_name = $("#template-wizard_panel #template-name").val();
         if(template_name===""){
           this.$parent.$broadcast("mailSent",{message:"模板名称不能为空",timeout:3000});
