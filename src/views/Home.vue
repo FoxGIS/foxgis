@@ -453,7 +453,7 @@ export default {
       {
         title:"瓦片集管理",
         description:"对瓦片集数据进行统一管理，新上传的制图数据经过后端自动数据处理链完成瓦片服务的发布，同时支持对已有瓦片数据进行查询、信息维护、删除及下载等操作，支撑多样化的专题地图制作。",
-        image:"../../static/images/show/03.jpg"
+        image:"../../static/images/show/img_1.png"
       },
       {
         title:"数据集管理",
