@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index" >
 
     <div class="card-click">
-      <i class="material-icons">lock_outline</i>
+      <i class="material-icons">add_circle_outline</i>
     </div>
 
     <div class="card-middle">
@@ -55,7 +55,7 @@ export default {
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
         icons.className = icons.className.replace(' isOpen','');
-        icons.innerText = 'lock_outline';
+        icons.innerText = 'add_circle_outline';
       }
       //给当前的dom添加active
       var iconName = e.target.parentElement.parentElement.children[0].children[0].className;
@@ -100,9 +100,9 @@ export default {
       e.target.parentElement.parentElement.className = claName;
       e.target.parentElement.parentElement.children[0].children[0].className = iconName;
       if(iconName.indexOf('isOpen')!=-1){
-        e.target.parentElement.parentElement.children[0].children[0].innerText ='lock_open';
+        e.target.parentElement.parentElement.children[0].children[0].innerText ='remove_circle_outline';
       }else{
-        e.target.parentElement.parentElement.children[0].children[0].innerText = 'lock_outline';
+        e.target.parentElement.parentElement.children[0].children[0].innerText = 'add_circle_outline';
       }
     },
 
