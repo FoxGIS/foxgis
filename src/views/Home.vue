@@ -75,25 +75,25 @@
       <div class="service-show show">
         <div class="show-title">
           <div class="block"></div>
-          <div class="text"><span>数据功能服务</span></div>
+          <div class="text"><span>系统功能</span></div>
         </div>
         <div style="height:289px;position:relative;">
           <div class="mdl-layout__drawer">
             <nav class="mdl-navigation">
               <a class="mdl-navigation__link atlas v-link-active" @click.prevent.stop="serviceShowClick">
-                <i class="material-icons">map</i>在线图集
+                <i class="material-icons">filter_none_black</i>在线图集
               </a>
               <a class="mdl-navigation__link projects" @click.prevent.stop="serviceShowClick">
-                <i class="material-icons">layers</i>制图工程管理
+                <i class="material-icons">map</i>制图工程管理
               </a>
               <a class="mdl-navigation__link tilesets" @click.prevent.stop="serviceShowClick">
-                <i class="material-icons">public</i>瓦片集管理
+                <i class="material-icons">layers</i>瓦片集管理
               </a>
               <a class="mdl-navigation__link datasets" @click.prevent.stop="serviceShowClick">
-                <i class="material-icons">text_format</i>数据集管理
+                <i class="material-icons">public</i>数据集管理
               </a>
               <a class="mdl-navigation__link fonts" @click.prevent.stop="serviceShowClick">
-                <i class="material-icons">place</i>字体管理
+                <i class="material-icons">text_format</i>字体管理
               </a>
               <a class="mdl-navigation__link icons" @click.prevent.stop="serviceShowClick">
                 <i class="material-icons">place</i>符号库管理
