@@ -435,7 +435,7 @@ span {
 }
 
 .card .name {
-  margin: 10px 0 0 0;
+  margin: 5px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -445,7 +445,7 @@ span {
 
 .result_data .card.active {
   box-shadow: 0 4px 4px rgba(0,0,0,.12);
-  margin: 10px 0;
+  margin: 24px -24px;
 }
 
 .name p {

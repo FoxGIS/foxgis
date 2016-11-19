@@ -321,7 +321,7 @@ export default {
 }
 
 .card .name {
-  margin: 24px 0 0 0;
+  margin: 12px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

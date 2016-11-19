@@ -1223,7 +1223,7 @@ span {
   background-color: transparent;
 }
 .name {
-  margin: 10px 0 0 0;
+  margin: 5px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
