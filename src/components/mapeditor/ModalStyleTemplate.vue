@@ -78,6 +78,10 @@ export default {
   methods: {
     closeModal: function(){
       this.$el.style.display = 'none';
+      var checked = this.$el.querySelector('.item-thumb.checked');
+      if(checked){
+        checked.className = checked.className.replace(' checked','');
+      }
     },
     itemSelect: function(e){
       var checked = this.$el.querySelector('.item-thumb.checked');
