@@ -4,7 +4,7 @@
   <div class="card" v-for='u in pageConfig.page_item_num' v-if="((pageConfig.current_page-1)*pageConfig.page_item_num+$index) < dataset.length" track-by="$index">
 
     <div class="card-click">
-      <i class="material-icons">lock_outline</i>
+      <i class="material-icons">add_circle_outline</i>
     </div>
 
     <div class="card-middle">
@@ -91,11 +91,11 @@
             </tr>
           </table>
           <div class="fields" style="float: right;">
-            <div class='info-tip'></div>
             <div class="fields-container">
               <div class="field" v-for="(key,value) in fieldsData">{{key}}:{{value}}</div>
             </div>
             <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
+            <div class='info-tip'></div>
           </div>
         </div>
         
@@ -133,7 +133,7 @@ export default {
       if(activeCards&&activeCards!==e.target.parentElement.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
         icons.className = icons.className.replace(' isOpen','');
-        icons.innerText = 'lock_outline';
+        icons.innerText = 'add_circle_outline';
       }
       //给当前的dom添加active
       var iconName = e.target.parentElement.parentElement.children[0].children[0].className;
@@ -161,17 +161,17 @@ export default {
 
       e.target.parentElement.parentElement.children[0].children[0].className = iconName;
       if(iconName.indexOf('isOpen')!=-1){
-        e.target.parentElement.parentElement.children[0].children[0].innerText ='lock_open';
+        e.target.parentElement.parentElement.children[0].children[0].innerText ='remove_circle_outline';
       }else{
-        e.target.parentElement.parentElement.children[0].children[0].innerText = 'lock_outline';
+        e.target.parentElement.parentElement.children[0].children[0].innerText = 'add_circle_outline';
       }
   
     },
 
     lookFields:function(fields,index,e){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
-      var height = (index-this.fieldsLength)*37+37;
-      $('.fields').css("margin",height+'px'+' 15px 0 230px');
+      var bottom = (this.fieldsLength-index)*37+40;
+      $('.fields').css("bottom",bottom+'px');
       $(".fields").show();
     },
 
@@ -411,7 +411,7 @@ export default {
 }
 
 .card .name {
-  margin: 24px 0 0 0;
+  margin: 12px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -567,6 +567,8 @@ export default {
 }
 
 .preview-container div.fields {
+  position: absolute;
+  left: 618px;
   width: 170px;
   display: none;
   flex-wrap:wrap;
@@ -587,6 +589,7 @@ export default {
 
 .preview-container div.field {
   padding:5px;
+  height: 20px;
   font-family:verdana,arial,sans-serif;
   font-size:11px;
   color:#000000;
@@ -619,7 +622,7 @@ export default {
   height: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-bottom: 7px solid rgba(189,189,189,0.9);
+  border-top: 7px solid rgba(189,189,189,0.9);
   margin: 0 auto;
 }
 
