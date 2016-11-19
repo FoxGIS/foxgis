@@ -987,6 +987,8 @@ export default {
             }
           }
           temp = _.concat([operator,field],value);
+        }else if(operator==="has"||operator==="!has"){//存在或不存在
+          temp = [operator,field];
         }else{
           if(type.toLowerCase()==="number"){
             value=Number(value);
@@ -1095,11 +1097,24 @@ export default {
             break;
           }
         }
+        var hasSource = this.hasSource(currentLayer.source);
+        if(!hasSource){
+          delete this.styleObj.sources[currentLayer.source];
+        }
         this.closePropertyPanel();
         this.changeStyle(this.styleObj);
       }else{
         this.$broadcast("mailSent",{message:"未选择任何样式！",timeout:3000});
       }
+    },
+    hasSource:function(source){//判断图层中是否还有该source
+      var layers = this.styleObj.layers;
+      for(let i=0,length=layers.length;i<length;i++){
+        if(layers[i].source===source){
+          return true;
+        }
+      }
+      return false;
     },
     showCopyLayer:function(){
       if($("#property-panel").is(":visible")){
@@ -2372,7 +2387,7 @@ a {
 
 .open-stops{
   position: absolute;
-  right: 6px;
+  left: 230px;
   top: 3px;
   color: #2061c6;
   border-radius: 4px;

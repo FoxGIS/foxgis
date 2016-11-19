@@ -128,11 +128,12 @@ export default {
 }
 .title{
   margin: 50px 0;
-  color: white;
   font-size: 58px;
   line-height: 60px;
 }
-
+.title span{
+  color: white;
+}
 .login-outer{
   background-color:  rgba(255,255,255,0.5);
   width: 340px;
