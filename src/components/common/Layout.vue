@@ -125,9 +125,9 @@ export default {
 }
 .base-title span{
   color: white;
-  background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(255, 255, 255, 1)), to(rgba(222, 222, 222, 1)));
+  /* background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(255, 255, 255, 1)), to(rgba(222, 222, 222, 1)));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent; */
   font-size: 20px;
 }
 .contact-us{
