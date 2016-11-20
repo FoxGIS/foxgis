@@ -42,7 +42,7 @@
         <div class="meta-title title">
           <b>瓦片属性</b>
         </div>
-        <div class="meta-data content">
+        <div class="meta-data">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
             <span>最大缩放级别：{{detailsData.maxzoom}}</span>
             <span v-if="detailsData.bounds" style="width:300px;">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
@@ -56,7 +56,7 @@
         <div class="description-title title">
           <b>瓦片描述</b>
         </div>
-        <div class="description content">
+        <div class="description">
           <mdl-textfield floating-label="介绍：" style="width:100%;" textarea rows="2" :value.sync="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].description" @change="editDescription($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)"></mdl-textfield>
         </div>
         
@@ -65,7 +65,7 @@
         <div class="property-title title">
           <b>瓦片版权</b>
         </div>
-        <div class="tileset-property content">
+        <div class="tileset-property">
           <span>{{detailsData.attribution}}</span>
         </div>
       </div>
@@ -73,7 +73,7 @@
         <div class="preview-title title">
           <b>图层信息</b>
         </div>
-        <div class="preview content">
+        <div class="preview">
           <table>
             <tr>
               <th>图层标识</th>
@@ -397,6 +397,7 @@ export default {
   float: left;
   height: 120px;
   line-height: 120px;
+  padding-right: 62px;
   text-align: right;
   color: #2f80bc;
 }
@@ -465,6 +466,8 @@ export default {
   opacity: 1;
   transition:0.5s;
   float: left;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 .foxgis-data-cards .card.active {
@@ -477,15 +480,12 @@ export default {
 }
 
 .title{
-  padding: 12px 35px 0 35px;
-}
-
-.content{
-  padding: 16px 50px 0 50px;
+  padding: 12px 0;
 }
 
 .preview-container{
   margin-bottom:40px; 
+  padding-left:15px;
 }
 
 .tags {
@@ -568,7 +568,7 @@ export default {
 
 .preview-container div.fields {
   position: absolute;
-  left: 618px;
+  left: 633px;
   width: 170px;
   display: none;
   flex-wrap:wrap;
@@ -597,11 +597,17 @@ export default {
 
 .meta-container{
   background-color: #eee;
+  padding-left: 15px;
 } 
+
+.description-container {
+  padding-left: 15px;
+}
 
 .property-container {
   background-color: #eee;
   padding-bottom:20px;
+  padding-left: 15px;
 } 
 
 .meta-container div.meta-data {

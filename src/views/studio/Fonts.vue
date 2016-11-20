@@ -421,6 +421,7 @@ span {
   float: left;
   height: 80px;
   line-height: 80px;
+  padding-right: 62px;
   text-align: right;
   color: #2f80bc;
 }

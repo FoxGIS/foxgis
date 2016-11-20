@@ -42,7 +42,7 @@
         <div class="meta-title title">
           <b>数据属性</b>
         </div>
-        <div class="meta-data content">
+        <div class="meta-data">
             <span v-if="detailsData.center">中心：[{{detailsData.center[0]|currency '' 2 }},{{detailsData.center[1]|currency '' 2 }}]</span>
             <span v-if="detailsData.bounds">范围：[{{detailsData.bounds[0]|currency '' 2 }},{{detailsData.bounds[1]|currency '' 2 }},{{detailsData.bounds[2]|currency '' 2 }},{{detailsData.bounds[3]|currency '' 2 }}]</span>  
             <span>格式：{{detailsData.format}}</span>
@@ -307,6 +307,7 @@ export default {
   float: left;
   height: 120px;
   line-height: 120px;
+  padding-right: 62px;
   text-align: right;
   color: #2f80bc;
 }
@@ -404,11 +405,7 @@ export default {
 }
 
 .title{
-  padding: 12px 35px 0 35px;
-}
-
-.content{
-  padding: 16px 50px 0 50px;
+  padding: 12px 0;
 }
 
 .tags {
@@ -467,6 +464,10 @@ export default {
 
 .meta-container{
   background-color: #eee;
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-bottom: 45px;
+  padding-left: 15px;
 }
 
 .meta-container div.meta-data {
