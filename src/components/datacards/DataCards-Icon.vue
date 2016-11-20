@@ -247,11 +247,15 @@ export default {
 }
 
 .card .meta {
-  margin: 0 162px 0 0;
+  margin: 5px 162px 0 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.card .meta select {
+  background-color: transparent;
 }
 
 .active .meta {
@@ -289,6 +293,10 @@ export default {
   margin: 24px -24px;
 }
 
+.foxgis-data-cards .card:nth-child(even){
+  background-color: rgb(250,250,250);
+}
+
 .meta p {
   color: #9E9E9E;
   font-size: 12px;
@@ -316,6 +324,7 @@ export default {
   padding: 5px 5px 5px 0;
   width: 360px;
   transition: 0.2s;
+  background-color: transparent;
 }
 
 .modal {
