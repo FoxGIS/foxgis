@@ -7,28 +7,24 @@
       <i class="material-icons">add_circle_outline</i>
     </div>
 
-    <div class="card-middle">
-      <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
-        <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}" />
-      </div>
-      <div class="meta">
-        <p>
-        上传时间：<span>{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
-        共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
-            <option value="private">私有</option>
-            <option value="public">公开</option>
-          </select>
-        </p>
-      </div>
+    <div class="name" @click="showDetails($event,dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">
+      <input type="text" maxlength="50" class="sprite-name" :value="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name" @change="uploadNameChange($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" title="{{dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].name}}" />
     </div>
-
+    <div class="meta">
+      <p>
+      上传时间：<span>{{ dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].createdAt }}</span>
+      共享范围：<select id="icon-scope" v-model="dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scope" @change="editScope($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)">
+          <option value="private">私有</option>
+          <option value="public">公开</option>
+        </select>
+      </p>
+    </div>
+    <div class="details">
+      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
+    </div>
     <div class="card-right">
       <mdl-anchor-button colored v-mdl-ripple-effect @click="downloadSprite((pageConfig.current_page-1)*pageConfig.page_item_num+$index)">下载</mdl-anchor-button>|
       <mdl-anchor-button colored v-mdl-ripple-effect @click="deleteSprite(dataset[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].sprite_id)">删除</mdl-anchor-button>
-    </div>
-
-    <div class="details" id="icon-details">
-      <foxgis-icon-panel :dataset="sprite" class="icon-panel"></foxgis-icon-panel>
     </div>
   </div>
   
@@ -47,25 +43,22 @@ export default {
   methods: {
     showDetails: function (e,sprite_id) {//卡片点击事件，显示卡片详情(e:event事件，sprite_id:卡片的id)
       //移除之前的active
-      if(e.target.tagName !== 'DIV'){
-        return;
-      }
       var activeCards = this.$el.querySelector('.active');
       var icons=this.$el.querySelector('.isOpen');
-      if(activeCards&&activeCards!==e.target.parentElement.parentElement){
+      if(activeCards&&activeCards!==e.target.parentElement){
         activeCards.className = activeCards.className.replace(' active','');
         icons.className = icons.className.replace(' isOpen','');
         icons.innerText = 'add_circle_outline';
       }
       //给当前的dom添加active
-      var iconName = e.target.parentElement.parentElement.children[0].children[0].className;
-      var claName = e.target.parentElement.parentElement.className;
+      var iconName = e.target.parentElement.children[0].children[0].className;
+      var claName = e.target.parentElement.className;
       if(claName.indexOf('active')!=-1){
         claName = claName.replace(' active','');
         iconName = iconName.replace(' isOpen','');
       }else{
-        iconName += ' isOpen';
         claName += ' active';
+        iconName += ' isOpen';
         if(this.sprite.sprite_id!==sprite_id){
           this.sprite.sprite_id = '';
           this.sprite.pngUrl = '';
@@ -97,12 +90,12 @@ export default {
           });
         } 
       }
-      e.target.parentElement.parentElement.className = claName;
-      e.target.parentElement.parentElement.children[0].children[0].className = iconName;
+      e.target.parentElement.className = claName;
+      e.target.parentElement.children[0].children[0].className = iconName;
       if(iconName.indexOf('isOpen')!=-1){
-        e.target.parentElement.parentElement.children[0].children[0].innerText ='remove_circle_outline';
+        e.target.parentElement.children[0].children[0].innerText ='remove_circle_outline';
       }else{
-        e.target.parentElement.parentElement.children[0].children[0].innerText = 'add_circle_outline';
+        e.target.parentElement.children[0].children[0].innerText = 'add_circle_outline';
       }
     },
 
@@ -244,33 +237,8 @@ export default {
   top: 30px;
 }
 
-.card-middle {
-  float: left;
-  width: 650px;
-  height: 80px;
-}
-
-.card-right{
-  width: 100px;
-  float: left;
-  height: 80px;
-  line-height: 80px;
-  padding-right: 62px;
-  text-align: right;
-  color: #2f80bc;
-}
-
-.card-right .mdl-button{
-  padding: 0;
-  width: 40px;
-  line-height: 24px;
-  height: 24px;
-  min-width: inherit;
-  color: #2f80bc;
-}
-
 .card .name {
-  margin: 5px 0;
+  margin: 5px 162px 0 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -279,7 +247,7 @@ export default {
 }
 
 .card .meta {
-  margin: 0 0 5px 0;
+  margin: 0 162px 0 0;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
@@ -298,7 +266,6 @@ export default {
   font-size: 24px;
   transition:0.2s;
 } 
-
 .details{
   max-height: 0;
   opacity: 0;
@@ -308,16 +275,13 @@ export default {
 }
 
 .details .icon-panel{
-  margin-left: 45px;
   margin-right: 45px;
   margin-bottom: 45px;
 }
-
 .active .details{
   max-height: 1000px;
   opacity: 1;
   transition:0.5s;
-  float: left;
 }
 
 .foxgis-data-cards .card.active {
@@ -345,14 +309,6 @@ export default {
   display: inline-block;
 }
 
-.name {
-  margin: 24px 24px 0 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-}
-
 .name input {
   font-size: 16px;
   margin: 0;
@@ -360,11 +316,6 @@ export default {
   padding: 5px 5px 5px 0;
   width: 360px;
   transition: 0.2s;
-  background-color: transparent;
-}
-
-.card-middle select {
-  background-color: transparent;
 }
 
 .modal {
@@ -385,7 +336,6 @@ export default {
   background-color: #ababab;
   cursor:pointer;
 } 
-
 .details .meta-title{
   margin-top: 12px;
   margin-bottom: 12px;
@@ -400,7 +350,25 @@ export default {
   width: 60%;
 }
 
-.foxgis-data-cards .card:nth-child(even){
-  background-color: rgb(250,250,250);
+.card-right{
+  width: 100px;
+  float: left;
+  height: 80px;
+  line-height: 80px;
+  position: absolute;
+  padding-right: 62px;
+  top: 0;
+  right: 0;
+  text-align: right;
+  color: #2f80bc;
+}
+
+.card-right .mdl-button{
+  padding: 0;
+  width: 40px;
+  line-height: 24px;
+  height: 24px;
+  min-width: inherit;
+  color: #2f80bc;
 }
 </style>
