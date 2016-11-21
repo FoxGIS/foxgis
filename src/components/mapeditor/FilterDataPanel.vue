@@ -92,7 +92,7 @@
             <option value="has">存在</option>
             <option value="!has">不存在</option>
           </select>
-          <input type="text" class="field_data" name="filter-value" title="{{filterValueTitle}}" :value="filter.value" @change="filterChange($event,$index)" @click="showInputTips($event,$index)" @input="editFieldData($event,$index)" @mouseover="changeTile($event)">
+          <input type="text" class="field_data" name="filter-value" title="{{filterValueTitle}}" :value="filter.value" @change="filterChange($event,$index)" @click="showInputTips($event,$index)" @input="editFieldData($event,$index)" @mouseover="changeTitle($event)">
           <i class="material-icons" v-on:click="deleteFilterItem($event,$index)" title="删除过滤">clear</i>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default {
       if(this.selecteddata.panel_type==="create"){
         return;
       }
-      var tem = this.selecteddata.filter;
+      var tem = JSON.parse(JSON.stringify(this.selecteddata.filter));
       var filter = [];
       if(tem.filters.length>0){
         for(let i=0;i<tem.filters.length;i++){
@@ -326,34 +326,23 @@ export default {
       $(".field-tips").hide();
     },
     editFieldData:function(e,index){ 
-      var arr = e.target.value.split('');
-      var last = arr[arr.length-1];
-      $(".filter-item input.field_data")[index].value = e.target.value;
-      if(last === '，'){
-        this.$parent.$broadcast('mailSent', { message: '多个值之间只能使用英文逗号来分隔！',timeout:3000 });
-        return;
-      }
-      if(last === ','){
-        $(".field-tips").hide();
-      }else{
-        if(this.field_data.length>0){
-          arr = e.target.value.split(',');
-          this.keyword = arr[arr.length-1];
-          this.selecteddata.filter.filters[index].value = e.target.value;
-          this.filterChange(e,index);
-          var top = e.target.offsetTop+416+index*46+"px";
-          if(this.selecteddata.panel_type==="create"){
-            top = e.target.offsetTop+376+index*46+"px";
-          }
-          $(".field-tips").css({
-            "left":e.target.offsetLeft+13+"px",
-            "top":top
-          });
-          $(".field-tips").show();
+      if(this.field_data.length>0){
+        var arr = e.target.value.split(',');
+        this.keyword = arr[arr.length-1];
+        this.selecteddata.filter.filters[index].value = e.target.value;
+        this.filterChange(e,index);
+        var top = e.target.offsetTop+416+index*46+"px";
+        if(this.selecteddata.panel_type==="create"){
+          top = e.target.offsetTop+376+index*46+"px";
         }
+        $(".field-tips").css({
+          "left":e.target.offsetLeft+13+"px",
+          "top":top
+        });
+        $(".field-tips").show();
       }
     },
-    changeTile:function(e){
+    changeTitle:function(e){
       this.filterValueTitle = e.target.value;
     },
     showSelectSource:function(){ 

@@ -612,7 +612,6 @@ export default {
         }
       }else if(type === 'tag'){
         if(this.keyTips.length>0){
-          console.log(e);
           $(".key-tips").css({
             "left":e.target.offsetLeft+e.target.offsetParent.offsetLeft+"px",
             "top":e.target.offsetTop+e.target.offsetParent.offsetTop+20+"px",
