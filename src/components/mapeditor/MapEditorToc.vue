@@ -117,8 +117,8 @@
                   <select v-model="value" v-on:change='propertyChange' name="{{name}}" data-type='layout'>
                     <option value="{{'{'+field+'}'}}" type="{{type}}" v-for="(field,type) in layerFields">{{'{'+field+'}'}}</option>
                   </select>
-                  <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange'>
-                  <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' v-else> 
+                  <input type="text" v-if="value.indexOf('{')==-1" v-model="value" name="{{name}}" data-type='layout' v-on:change='propertyChange' @focus="fieldInputFocus" @blur="fieldInputBlur">
+                  <input type="text" v-model="" name="{{name}}" data-type='layout' v-on:change='propertyChange' @focus="fieldInputFocus" @blur="fieldInputBlur" v-else> 
                 </div>
                 <div class="property-value" v-if="name!=='text-anchor'&&name!=='text-allow-overlap'&&name!=='text-ignore-placement'&&name!=='text-field'">
                   <input type="text" :value="value" name="{{name}}" v-if="name==='text-font'" v-on:change='propertyChange' v-on:click='onShowFontPanel' data-type='layout'/>
@@ -1455,6 +1455,12 @@ export default {
         flag = true;
       }
       return flag;
+    },
+    fieldInputFocus:function(e){
+      $(e.target).css('background-color','white');
+    },
+    fieldInputBlur:function(e){
+      $(e.target).css('background-color','transparent');
     }
   },
   events: {

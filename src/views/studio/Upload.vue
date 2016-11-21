@@ -1496,4 +1496,7 @@ span {
 .foxgis-upload .card:nth-child(odd){
   background-color: rgb(250,250,250);
 }
+select#year,select#scope{
+  width: 60px;
+}
 </style>

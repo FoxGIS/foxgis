@@ -38,3 +38,14 @@ input,select,span,p{
   color:#505050;
   font-family: "Microsoft YaHei" ! important;
 }
+
+select{
+  border: 1px solid #e0e0e0;
+  appearance:none;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  background: url("../static/icons/arrow.png") no-repeat scroll right center transparent;
+  padding-right: 14px;
+}
+
+select::-ms-expand { display: none; }
