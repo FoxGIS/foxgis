@@ -992,6 +992,10 @@ export default {
         }else{
           if(type.toLowerCase()==="number"){
             value=Number(value);
+            if(isNaN(value)){
+              this.$broadcast('mailSent', { message: '属性值类型有误！',timeout:3000 });
+              return;
+            }
           }
           temp = [operator,field,value];
         }

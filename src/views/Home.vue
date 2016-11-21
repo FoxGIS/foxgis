@@ -500,6 +500,7 @@ export default {
   background-color:#2F80BC;
   overflow:hidden;
   position:relative;
+  border-top: 2px solid #c3c3c3
 }
 
 .home-show-black {

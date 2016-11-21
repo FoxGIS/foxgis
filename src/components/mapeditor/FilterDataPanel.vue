@@ -75,6 +75,9 @@
           <option value="all">且</option>
           <option value="none">非</option>
         </select>
+        <div style="width:270px;padding-top:5px;margin-left:-60px;">
+          <span style="color:red;font-size:12px;">注：多个值请使用英文逗号(,)分隔</span>
+        </div>
         <div class="filter-item" v-for="filter in selecteddata.filter.filters">
           <select name="filter-field" v-model="filter.field" @change="filterChange($event,$index)">
             <option value="">选择字段</option>
@@ -199,6 +202,7 @@ export default {
               tem.filters[i].value=Number(tem.filters[i].value);
               if(isNaN(tem.filters[i].value)){
                 this.$parent.$broadcast('mailSent', { message: '属性值类型有误！',timeout:3000 });
+                return;
               }
             }
             var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
@@ -277,9 +281,9 @@ export default {
           this.field_data = [];
           return;
         }
-        var top = e.target.offsetTop+416+index*46+"px";
+        var top = e.target.offsetTop+441+index*46+"px";
         if(this.selecteddata.panel_type==="create"){
-          top = e.target.offsetTop+376+index*46+"px";
+          top = e.target.offsetTop+401+index*46+"px";
         }
         
         if(this.field_data.length>0){
@@ -333,10 +337,9 @@ export default {
         var arr = e.target.value.split(',');
         this.keyword = arr[arr.length-1];
         this.selecteddata.filter.filters[index].value = e.target.value;
-        this.filterChange(e,index);
-        var top = e.target.offsetTop+416+index*46+"px";
+        var top = e.target.offsetTop+441+index*46+"px";
         if(this.selecteddata.panel_type==="create"){
-          top = e.target.offsetTop+376+index*46+"px";
+          top = e.target.offsetTop+401+index*46+"px";
         }
         $(".field-tips").css({
           "left":e.target.offsetLeft+13+"px",
