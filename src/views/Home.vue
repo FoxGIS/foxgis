@@ -514,7 +514,7 @@ export default {
   top: 50px;
   left: -185px;
   border-radius: 10px;
-  border-left: 8px solid #7392c1;
+  border-left: 8px solid #7da8e8;
 }
 
 .home-show{
@@ -530,7 +530,7 @@ export default {
   top: 92px;
   left: -150px;
   border-radius: 10px;
-  border-left: 10px solid #d8c7c7;
+  border-left: 10px solid #ffffff;
 } 
 .home-show video{
   width: 100%;
