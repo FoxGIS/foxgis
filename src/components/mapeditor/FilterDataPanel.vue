@@ -184,7 +184,7 @@ export default {
             }
           }
           var tempValue = tem.filters[i].value = String(tem.filters[i].value);
-          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"||tempValue.indexOf(',')!==-1){//值为数组
+          if(tem.filters[i].operator==="in"||tem.filters[i].operator==="!in"){//值为数组
             var valueArr = tem.filters[i].value.split(",");
             if(type.toLowerCase()==="number"){
               for(let p=0;p<valueArr.length;p++){
@@ -197,6 +197,9 @@ export default {
           }else{
             if(type.toLowerCase()==="number"){
               tem.filters[i].value=Number(tem.filters[i].value);
+              if(isNaN(tem.filters[i].value)){
+                this.$parent.$broadcast('mailSent', { message: '属性值类型有误！',timeout:3000 });
+              }
             }
             var t=[tem.filters[i].operator,tem.filters[i].field,tem.filters[i].value];
           }
