@@ -31,7 +31,7 @@
     <foxgis-svgeditor id="svg-editor"></foxgis-svgeditor>
     <foxgis-toc id="toc-container" :style-obj='styleObj' v-on:hide-mapbounds="hideBoundsBox"></foxgis-toc>
     <div id="map-tool">
-      <button v-on:click="backEditor" style="background-color:#888;" disabled="true" id="back-button">返回</button>
+      <button v-on:click="backEditor" style="background-color:#888;" disabled="true" id="back-button">取消</button>
       <button v-on:click="printMap" id="print-button">输出</button>
     </div>
     <foxgis-drafmap v-on:current-layer-change='setTocLayer' v-ref:drafmap></foxgis-drafmap>

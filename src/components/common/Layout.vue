@@ -104,7 +104,7 @@ export default {
 
 <style scoped>
 .mdl-layout__header {
-  height: 80px;
+  height: 85px;
   background-color: white;
 }
 
@@ -150,7 +150,7 @@ export default {
 }
 
 .mdl-layout__header-row {
-  height: 55px;
+  height: 60px;
   width: 1100px;
   margin:0 auto;
   padding: 0;
