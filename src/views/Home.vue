@@ -2,14 +2,19 @@
 <div class="foxgis-home">
   <foxgis-layout>
     <div class="content">
-      <div class="home-show">
-        <!-- <div class="home-title">
-          <div>
-            <span style="font-size: 20px;">辅助</span>
-            <span style="font-size: 28px;line-height: 40px;">决策用图</span><br />
-            <span style="font-size: 40px;line-height: 40px;font-style: italic;">服务系统</span>
+      <div class="home-show-bg">
+        <div class="home-show-black"></div>
+        <div class="home-show"></div>
+        <div class="home-title">
+          <div style="width:320px;float:right;">
+            <span style="font-size:27px;">辅助决策用图</span>
+            <span style="color:#EE832C;">共享</span><br />
+            <span style="color:#EE832C;padding-left:25px;display:inline-block;margin-top:10px;">在线</span>
+            <span style="font-size:27px;">快速制图编辑</span>
+            <img src="../../static/images/图片1.png"/>
           </div>
-        </div> -->
+
+        </div>
       </div>
       <div class="share-show show">
         <div class="show-title">
@@ -488,22 +493,51 @@ export default {
   overflow: auto;
 }
 
- .home-show{
-  background-repeat: no-repeat;
-  height: 250px;
-  width: 1100px;
+.home-show-bg {
+  width:1100px;
+  height:300px;
   margin: 0 auto;
+  background-color:#2F80BC;
+  overflow:hidden;
+  position:relative;
+}
+
+.home-show-black {
+  background-repeat: no-repeat;
+  height: 300px;
+  width: 1100px;
+  background-size: 100%;
+  background-image: url("../../static/images/home_show_block.jpg");
+  overflow: hidden;
+  transform: rotate3d(0.4,1.9,0,50deg);
+  position: absolute;
+  top: 50px;
+  left: -185px;
+  border-radius: 10px;
+  border-left: 8px solid #7392c1;
+}
+
+.home-show{
+  background-repeat: no-repeat;
+  height: 260px;
+  width: 1100px;
   background-position: 0 -125px;
   background-size: 100%;
   background-image: url("../../static/images/jdfw_ps.gif");
   overflow: hidden;
+  transform: rotate3d(0.4,1.9,0,50deg);
+  position: absolute;
+  top: 92px;
+  left: -150px;
+  border-radius: 10px;
+  border-left: 10px solid #d8c7c7;
 } 
 .home-show video{
   width: 100%;
   height: auto;
 }
-/* .home-title{
-  width: 800px;
+ .home-title{
+  width: 1100px;
   margin:0 auto;
   position: relative;
   top: 75px;
@@ -511,9 +545,18 @@ export default {
 }
 
 .home-title span{
-  text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
   color: white;
-} */
+  line-height: 40px;
+  font-weight: bold;
+  font-size:35px;
+} 
+
+.home-title img {
+  position:absolute;
+  right:-60px;
+  top:85px;
+}
+
 .show{
   width: 1100px;
   height: 300px;
