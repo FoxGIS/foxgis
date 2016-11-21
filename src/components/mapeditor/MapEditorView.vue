@@ -268,7 +268,7 @@ export default {
       map.on('drag', this.mapDrag);
       map.on('dragend', this.mapDragEnd);
       map.on('zoomend',this.mapZoomEnd);
-      map.on("load",this.autoVisible);
+      //map.on("load",this.autoVisible);
     },
     autoVisible:function(){//临时函数，自动设色
       var layers = this.localStyle.layers;
@@ -280,7 +280,6 @@ export default {
           var layer = _this.localStyle.layers[i];
           if(!layer.layout){layer.layout = {};}
           _this.map.setLayoutProperty(layer.id,"visibility","visible");
-          console.log("第"+i+"次");
           if(i<_this.localStyle.layers.length-1){
             i++;
             setTimeout(tem(_this,i),1000);
