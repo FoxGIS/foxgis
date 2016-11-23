@@ -71,5 +71,15 @@
       }
     }
   });
+
+  $(window).resize(function() { 
+    if($(window).width()<1000){
+      $('#map-header-contact').hide();
+    }else{
+      $('#map-header-contact').show();
+    }
+    
+  });
+
 </script>
 </html>

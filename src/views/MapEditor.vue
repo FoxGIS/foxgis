@@ -9,7 +9,7 @@
           <span>辅助决策用图服务系统</span>
           <span>|在线制图编辑</span>
         </div>
-        <div class="contact-us">
+        <div class="contact-us" id="map-header-contact">
           <a href="">关于我们 </a>|
           <a href="">意见反馈 </a>|
           <a href="">联系我们 </a>|
