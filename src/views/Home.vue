@@ -497,7 +497,10 @@ export default {
   width:1100px;
   height:300px;
   margin: 0 auto;
-  background-color:#2F80BC;
+  background:-webkit-linear-gradient(#3e9be0,#12335a);
+  background:-moz-linear-gradient(#3e9be0,#12335a);
+  background:-o-linear-gradient(#3e9be0,#12335a);
+  background:linear-gradient(#3e9be0,#12335a);
   overflow:hidden;
   position:relative;
   border-top: 2px solid #c3c3c3
