@@ -170,9 +170,9 @@ export default {
 
     lookFields:function(fields,index,e){//查看字段的点击事件(fields:字段,index:点击的行号)
       this.fieldsData = fields;
-      var bottom = (this.fieldsLength-index)*37+40;
-      $('.fields').css("bottom",bottom+'px');
-      $(".fields").show();
+      var bottom = (this.fieldsLength-index)*37+30;
+      $('.card.active .fields').css("bottom",bottom+'px');
+      $(".card.active .fields").show();
     },
 
     closeTileCopy:function(){

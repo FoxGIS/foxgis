@@ -304,7 +304,7 @@ span {
   position: absolute;
   z-index: 2;
   font-size: 14px;
-  right: -70px;
+  right: -53px;
   top: 80px;
   display: none;
   width: 200px;
