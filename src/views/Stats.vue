@@ -110,8 +110,9 @@ export default {
       }
       if(type===2){//图件下载
         for(var i=0;i<uploads.length;i++){
-          var clipName = uploads[i].name.length>3?(uploads[i].name.substr(0,3)+"···"):uploads[i].name;
-          xData.push(clipName);
+          /*var clipName = uploads[i].name.length>3?(uploads[i].name.substr(0,3)+"···"):uploads[i].name;
+          xData.push(clipName);*/
+          xData.push(uploads[i].name);
           yData.push(uploads[i].downloadNum); 
         }
         var sum = eval(yData.join('+'))||0;
@@ -153,7 +154,7 @@ export default {
           if(this.userDownloadStats[j].username===username[i]){
             var organization = this.userDownloadStats[j].organization;
             if(organization){
-              t[i] = organization.length>3?(organization.substr(0,3)+"···"):organization;
+              t[i] = organization;
             }else{
               t[i] = this.userDownloadStats[j].location;
             }
@@ -191,8 +192,9 @@ export default {
       this.userDownloadStats = data;
       for(var i = 0;i<data.length;i++){
         if(!data[i].organization){data[i].organization="";}
-        var clipName = data[i].organization.length>3?(data[i].organization.substr(0,3)+"···"):data[i].organization;
-        xData.push(clipName);
+        /*var clipName = data[i].organization.length>3?(data[i].organization.substr(0,3)+"···"):data[i].organization;
+        xData.push(clipName);*/
+        xData.push(data[i].organization||data[i].position);
         yData.push(data[i].downloadNum)
       }
       this.barOption.xAxis[0].data = xData;
@@ -229,8 +231,9 @@ export default {
       var xData = [];
       var yData = [];
       for(var i = 0;i<data.length;i++){
-        var clipName = data[i].name.length>3?(data[i].name.substr(0,3)+"···"):data[i].name;
-        xData.push(clipName);
+        /*var clipName = data[i].name.length>3?(data[i].name.substr(0,3)+"···"):data[i].name;
+        xData.push(clipName);*/
+        xData.push(data[i].name);
         yData.push(data[i].downloadNum); 
       }
       var sum = eval(yData.join('+'))||0;
@@ -330,7 +333,14 @@ export default {
             type : 'category',
             axisLabel : {
               interval:1,
-              rotate:-30
+              rotate:-30,
+              formatter: function (value, index) {
+                if(!value){
+                  return "";
+                }
+                var clipName = value.length>3?(value.substr(0,3)+"···"):value;
+                return clipName;
+              }
             },
             data : []
           }
@@ -390,7 +400,14 @@ export default {
             type : 'category',
             axisLabel : {
               interval:2,
-              rotate:-30
+              rotate:-30,
+              formatter: function (value, index) {
+                if(!value){
+                  return "";
+                }
+                var clipName = value.length>3?(value.substr(0,3)+"···"):value;
+                return clipName;
+              }
             },
             data : []
           }
