@@ -71,5 +71,17 @@
       }
     }
   });
+
+  $(window).resize(function() { 
+    if($(window).width()<1000){
+      $('#map-header-contact').hide();
+      $('#dataeditor-header-contact').hide();
+    }else{
+      $('#map-header-contact').show();
+      $('#dataeditor-header-contact').show();
+    }
+    
+  });
+
 </script>
 </html>

@@ -8,9 +8,9 @@
             <span>辅助决策用图服务系统</span>
           </div>
           <div class="contact-us">
-            <a href="">关于我们 </a>|
-            <a href="">意见反馈 </a>|
-            <a href="">联系我们 </a>|
+            <a href="javascript:void(0);">关于我们 </a>|
+            <a href="javascript:void(0);">意见反馈 </a>|
+            <a href="javascript:void(0);">联系我们 </a>|
             <a href="/static/document/用户手册.doc">帮助</a>
           </div>
         </div>
