@@ -350,6 +350,7 @@ export default {
 .header-top{
   background-color: #1f57a2;
   height: 25px;
+  overflow: hidden;
 }
 
 .header-top .header{
@@ -358,6 +359,8 @@ export default {
   background-image: url("../../static/images/header.jpg");
   background-repeat: no-repeat;
   background-position: -65px -10px;
+  position:relative;
+  min-width: 1000px;
 }
 .base-title{
   float: left;
