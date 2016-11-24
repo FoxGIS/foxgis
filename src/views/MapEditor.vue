@@ -93,13 +93,6 @@ export default {
       // 传入style 字符串到textarea
       this.$broadcast('editor-init',this.style);
 
-      /*//移动map，扩宽区域
-      var mapContainer = document.getElementById("map-editorview-container");
-      if(mapContainer.style.display == 'none'){
-        mapContainer = document.getElementById("map-layout-container");
-      }
-      mapContainer.style.width = mapContainer.getBoundingClientRect().width - 150 + "px";
-      mapContainer.style.left = mapContainer.getBoundingClientRect().left + 150 + "px";*/
       document.getElementById("map-tool").style.display = 'none';
     },
     changeControlStyle:function(e,type){
@@ -200,6 +193,8 @@ export default {
       }else if(e.target.textContent === '确定'){
         this.dialogcontent.title="输出级别";
         this.dialogcontent.type="zoom";
+        var currZoom = parseInt(this.$refs.drafmap.map.getZoom());
+        this.dialogcontent.value = currZoom;
         $("#layout-zoom").show();
       }
     },
@@ -308,7 +303,8 @@ export default {
         title: '存在未保存的改动，是否保存？',
         textOk:'保存',
         textCancel:'不保存',
-        type:""
+        type:"",
+        value:""
       }
     }
   },

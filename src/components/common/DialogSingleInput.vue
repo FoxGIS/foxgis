@@ -4,7 +4,7 @@
       <b>{{dialog.title}}</b>
 
       <mdl-textfield label="图层名称" floating-label="图层名称" class="textfield name" :value="" v-if="dialog.type==='copy-layer'"></mdl-textfield>
-      <mdl-textfield label="级别" floating-label="级别" class="textfield name" :value="" v-if="dialog.type==='zoom'" error="级别范围1-12" type="number" pattern="/^(1[0-2]|[1-9])$/is"></mdl-textfield>
+      <input type="number" class="textfield name" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="11">
 
       <div class="action">
         <mdl-button raised colored v-mdl-ripple-effect @click="doCancel">取消</mdl-button>      
@@ -18,12 +18,10 @@
 export default {
   methods: {
     doOK: function(){
-      var value = $(".dialog .name input").val().trim();
+      var value = $(".dialog .name").val().trim();
       this.$dispatch("dialog-action",{status:'ok',value:value});
-      $(".dialog .name input").val("");
     },
     doCancel: function(){
-      $(".dialog .name input").val("");
       this.$el.style.display = 'none';
       this.$dispatch("dialog-action",{status:'cancel',value:""});
     }
@@ -81,5 +79,11 @@ export default {
 }
 .dialog>div.action button:nth-child(2){
   margin-left: 50px;
+}
+input{
+  border: 1px solid #e6e6e6;
+  height: 25px;
+  margin: 10px 38px;
+  padding-left: 6px;
 }
 </style>
