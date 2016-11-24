@@ -103,6 +103,9 @@
               </div>
             </foxgis-data-cards>
           </div>
+          <div v-if="displayUploads.length === 0">
+            <span style="font-size:20px;color:red;position:relative;left:500px;">无搜索结果</span>
+          </div>
         </div>
       </div>
     
@@ -637,7 +640,7 @@ input:-moz-placeholder { text-align: center; }
 }
 
 .search-results {
-  /* background-image: radial-gradient(50% 30%,circle cover,#e4e4e4,#e4e4e4 60%); */
+  height: 660px;
   background-color: white;
   display: flex;
   flex-wrap: wrap;

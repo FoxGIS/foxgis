@@ -144,7 +144,7 @@ export default {
 .filter .condition a {
   cursor: pointer;
   text-decoration: none;
-  margin: 2px 5px;;
+  margin: 3px 5px;
   font-size: 14px;
   color: #666;
   padding: 0 10px;
