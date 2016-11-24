@@ -700,16 +700,16 @@ export default {
           data[i].checked = false;//增加checked属性，标记卡片是否被选中
         }
         this.uploads = data;
-        //生成制图年份下拉框数据
-        var year=new Date().getFullYear();
-        var years = [];
-        for(let j=year;j>=year-9;j--){
-          years.push(j);
-        }
-        this.selectYearsData = years;
-        //生成制图区域下拉框数据
-        this.selectLocationsData = [];
       }
+      //生成制图年份下拉框数据
+      var year=new Date().getFullYear();
+      var years = [];
+      for(let j=year;j>=year-9;j--){
+        years.push(j);
+      }
+      this.selectYearsData = years;
+      //生成制图区域下拉框数据
+      this.selectLocationsData = [];
     }, function(response) {
       this.$broadcast('mailSent', { message: '获取列表失败！',timeout:3000 });
     });
