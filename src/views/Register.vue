@@ -64,6 +64,7 @@
         <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
         <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
       </div>
+      <foxgis-footer></foxgis-footer>
     </div>
   </foxgis-layout>
 </div>
@@ -236,7 +237,7 @@ export default {
 #register-info{
   width: 740px;
   background-color: white;
-  margin-top: 10px;
+  margin-top: 30px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -250,6 +251,10 @@ export default {
   padding: 10px; 
   color:#0f6db2;
   border-bottom: 10px solid #e6e6e6;
+}
+
+.title span {
+  color: #2F80BC;
 }
 
 .info .info-title{
@@ -285,6 +290,7 @@ td input{
   font-family: "Microsoft YaHei";
   cursor: text;
   padding: 5px;
+  width: 165px;
   border-radius: 4px;
 }
 td a,th a{
@@ -295,7 +301,7 @@ td a,th a{
 
 td select{
   height: 31px;
-  width: 165px;
+  width: 177px;
   border: 1px solid #c3c3c3;
   font-size: 14px;
   font-family: "Microsoft YaHei";
@@ -311,6 +317,10 @@ td select{
   color: #fff;
   margin-top: 20px;
   line-height: 31px;
+}
+
+.footer-bottom {
+  width: 100%;
 }
 
 </style>
