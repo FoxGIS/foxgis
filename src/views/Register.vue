@@ -1,26 +1,69 @@
 <template>
 <div>
+  <mdl-snackbar display-on="mailSent"></mdl-snackbar>
   <foxgis-layout>
     <div class="wrapper">
-      <foxgis-data-cards class="register">
-        <div id="error-info"></div>
-        <mdl-textfield floating-label="用户名" id="username"></mdl-textfield>
-        <mdl-textfield floating-label="密码" type="password" id="password" pattern="(\w|[$,@]){6,}"></mdl-textfield>
-        <mdl-textfield floating-label="姓名" id="name"></mdl-textfield>
-        <mdl-textfield floating-label="邮箱" id="email"></mdl-textfield>
-        <mdl-textfield floating-label="手机" id="phone"></mdl-textfield>
-        <mdl-textfield floating-label="单位" id="organization"></mdl-textfield>
-        <div class="location">
-          <span>位置</span>
-          <select id="location">
-              <option v-for="province in provinces" value="{{province}}">{{province}}</option>
-          </select>
+      <div id="register-info">
+        <div class="title">
+          <span>注册</span>
         </div>
-        <div class="registerButton">
-          <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
-          <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
+        <div class="info">
+          <div class="info-title"><span>用户信息</span></div>
+          <div class="details">
+            <table>
+              <tr>
+                <th><span>用户名：</span></th>
+                <td><input id="username"></td>
+              </tr>
+              <tr>
+                <th><span>密码：</span></th>
+                <td ><input type="password" id="password" pattern="(\w|[$,@]){6,}"></td>
+              </tr>
+            </table>
+          </div>
+          <div class="info-title"><span>个人信息</span></div>
+          <div class="details">
+            <table>
+              <tr>
+                <th><span>姓名：</span></th>
+                <td>
+                  <input id="name">
+                </td>
+              </tr>
+              <tr>
+                <th><span>邮箱：</span></th>
+                <td>
+                  <input id="email">
+                </td>
+              </tr>
+              <tr>
+                <th><span>手机：</span></th>
+                <td>
+                  <input id="phone">
+                </td>
+              </tr>
+              <tr>
+                <th><span>单位：</span></th>
+                <td>
+                  <input id="organization">
+                </td>
+              </tr>
+              <tr>
+                <th><span>位置：</span></th>
+                <td>
+                  <select id="location">
+                    <option v-for="province in provinces" value="{{province}}">{{province}}</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-      </foxgis-data-cards>
+      </div>
+      <div class="registerButton">
+        <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
+      </div>
     </div>
   </foxgis-layout>
 </div>
@@ -129,15 +172,10 @@ export default {
       window.location.href = '#!/';
     },
     showError: function(msg){
-      var errorContainer = this.$el.querySelector('#error-info');
-      errorContainer.innerHTML = msg;
-      errorContainer.style.display = 'block';
+      this.$broadcast('mailSent', { message: msg,timeout:3000 });
     }
   },
   attached() {
-    //隐藏error info
-    var errorContainer = this.$el.querySelector('#error-info');
-    errorContainer.style.display = 'none';
     //判断是否为firefox浏览器
     if (navigator.userAgent.indexOf('Firefox') >= 0){ 
       $('.register').css('height','530px');
@@ -189,22 +227,10 @@ export default {
 
 <style scoped>
 .wrapper {
-  height: calc(100% - 64px);
   display: flex;
+  flex-direction: inherit;
   justify-content: center;
   align-items: center;
-}
-
-.register {
-  width: 300px;
-  height: 500px;
-  padding: 20px;
-  position: relative;
-}
-
-.disable {
-  background-color: #AD9AA1;
-  pointer-events: none;
 }
 
 .mdl-button {
@@ -213,55 +239,84 @@ export default {
   margin: 0 20px;
 }
 
-.tips {
-  display: flex;
-  justify-content: flex-end;
+#register-info{
+  width: 740px;
+  background-color: white;
   margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.tips a {
-  text-decoration: none;
+.title{
+  height: 20px;
+  background-color: white;
+  font-size: 18px;
+  text-align: left;
+  line-height: 20px;
+  padding: 10px; 
+  color:#0f6db2;
+  border-bottom: 10px solid #e6e6e6;
 }
 
-.sign-up {
-  border-top: 1px solid rgba(0,0,0,.1);
-  margin-top: 10px;
-  padding-top: 5px;
-  text-align: center;
+.info .info-title{
+  height: 40px;
+  clear: both;
+  background-color: rgb(250,250,250);
+  line-height: 40px;
+  padding-left: 20px;
+  text-align: left;
+  border-bottom: 1px solid #dedede;
+}
+table{
+  width: 700px;
+  margin: 20px;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+}
+tr{
+  line-height: 35px;
+}
+table th{
+  width: 10%;
+  text-align: right;
+}
+table td{
+  width: 40%;
+  text-align: left;
+}
+td input{
+  border: 1px solid #c3c3c3;
+  background: transparent;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  cursor: text;
+  padding: 5px;
+  border-radius: 4px;
+}
+td a,th a{
+  cursor: pointer;
+  margin-left: 10px;
+  color: #0f6db2;
 }
 
-#error-info {
-  position: absolute;
-  left: 10px;
-  top: 5px;
-  color: red;
-  font-size: 12px;
-  display: none;
+td select{
+  height: 31px;
+  width: 165px;
+  border: 1px solid #c3c3c3;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  padding: 5px;
+  border-radius: 4px;
 }
 
-.location{
-  position: relative;
-  font-size: 16px;
-  display: inline-block;
-  box-sizing: border-box;
+.registerButton {
+  font-family: inherit;
   width: 300px;
-  max-width: 100%;
-  margin: 0;
-  padding: 0px 0 20px 0;
-}
-
-.location span{
-  color: #3f51b5;
-  font-size: 12px;
-  margin: 0 20px 0 0;
-}
-
-.location select{
-  width:100%;
-}
-
-.registerButton{
+  font-size: 18px;
   display: flex;
+  color: #fff;
+  margin-top: 20px;
+  line-height: 31px;
 }
 
 </style>
