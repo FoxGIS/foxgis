@@ -117,7 +117,7 @@ export default{
         $('.step2').css('display','block');
       },
       preStep:function(){//点击上一步执行的方法
-        $('.step3').css('display','none');
+        $('.step2').css('display','none');
         $('.step1').css('display','block');
       },
       changeGlyphsUrl:function(){//获取字体的url
