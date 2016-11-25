@@ -313,6 +313,9 @@ export default {
     if(username === undefined){
       window.location.href = "#!/login";
     }
+    if(navigator.userAgent.indexOf("Firefox")!==-1){//火狐浏览器抗锯齿
+      $(".home-show-black,.home-show").css("outline","1px solid transparent");
+    }
     var url = SERVER_API.stats + '/uploads';
     var that = this;
     $(".image_item:first").addClass("active");
@@ -506,34 +509,29 @@ export default {
   border-top: 2px solid #c3c3c3
 }
 
-.home-show-black {
+.home-show-black,.home-show {
   background-repeat: no-repeat;
-  height: 300px;
   width: 1100px;
   background-size: 100%;
-  background-image: url("../../static/images/home_show_block.jpg");
   overflow: hidden;
   transform: rotate3d(0.4,1.9,0,50deg);
   position: absolute;
+  border-radius: 10px;
+  
+}
+.home-show-black{
+  height: 300px;
+  background-image: url("../../static/images/home_show_block.jpg");
   top: 50px;
   left: -185px;
-  border-radius: 10px;
   border-left: 8px solid #7da8e8;
 }
-
 .home-show{
-  background-repeat: no-repeat;
   height: 260px;
-  width: 1100px;
   background-position: 0 -125px;
-  background-size: 100%;
   background-image: url("../../static/images/jdfw_ps.gif");
-  overflow: hidden;
-  transform: rotate3d(0.4,1.9,0,50deg);
-  position: absolute;
   top: 92px;
   left: -150px;
-  border-radius: 10px;
   border-left: 10px solid #ffffff;
 } 
 .home-show video{

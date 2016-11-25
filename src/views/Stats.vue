@@ -102,16 +102,21 @@ export default {
             yData[xData.indexOf(uploads[i].owner)] += uploads[i].downloadNum;
           }
         }
-        xData = this.username2organization(xData);
-        this.barOption.xAxis[0].data = xData;
+        for(var i = 0;i<xData.length;i++){
+          for(var j=0;j<this.userDownloadStats.length;j++){
+            if(this.userDownloadStats[j].username===xData[i]){
+              xData[i] = this.userDownloadStats[j].organization||this.userDownloadStats[j].position||"未指定";
+              yData[i] = {value:yData[i],name:xData[i]};
+            }
+          }
+        }
+        this.barOption.legend.data = xData;
         this.barOption.series[0].data = yData;
         this.userDownloadChart.setOption(this.barOption,true);
         return;
       }
       if(type===2){//图件下载
         for(var i=0;i<uploads.length;i++){
-          /*var clipName = uploads[i].name.length>3?(uploads[i].name.substr(0,3)+"···"):uploads[i].name;
-          xData.push(clipName);*/
           xData.push(uploads[i].name);
           yData.push(uploads[i].downloadNum); 
         }
@@ -146,22 +151,6 @@ export default {
         this.userUploadChart.setOption(this.pieOption,true);
         return;
       }
-    },
-    username2organization:function(username){//根据用户名查找用户单位,username为数组
-      var t = [];
-      for(var i = 0;i<username.length;i++){
-        for(var j=0;j<this.userDownloadStats.length;j++){
-          if(this.userDownloadStats[j].username===username[i]){
-            var organization = this.userDownloadStats[j].organization;
-            if(organization){
-              t[i] = organization;
-            }else{
-              t[i] = this.userDownloadStats[j].location;
-            }
-          }
-        }
-      }
-      return t;
     }
   },
   attached() {
@@ -190,14 +179,25 @@ export default {
       var xData = [];
       var yData = [];
       this.userDownloadStats = data;
-      for(var i = 0;i<data.length;i++){
-        if(!data[i].organization){data[i].organization="";}
-        /*var clipName = data[i].organization.length>3?(data[i].organization.substr(0,3)+"···"):data[i].organization;
-        xData.push(clipName);*/
-        xData.push(data[i].organization||data[i].position);
-        yData.push(data[i].downloadNum)
+      if(data.length>20){
+        var other = 0;
+        for(var i = 0;i<data.length;i++){
+          if(i<20){
+            xData.push(data[i].organization||data[i].position||"未指定");
+            yData.push({value:data[i].downloadNum,name:data[i].organization||data[i].position||"未指定"});
+          }else{
+            other += data[i].downloadNum;
+          }
+        }
+        xData.push("其他");
+        yData.push({value:other,name:"其他"});
+      }else{
+        for(var i = 0;i<data.length;i++){
+          xData.push(data[i].organization||data[i].position||"未指定");
+          yData.push({value:data[i].downloadNum,name:data[i].organization||data[i].position||"未指定"}); 
+        }
       }
-      this.barOption.xAxis[0].data = xData;
+      this.barOption.legend.data = xData;
       this.barOption.series[0].data = yData;
       this.userDownloadChart.setOption(this.barOption,true);
     }, function(response) {
@@ -211,10 +211,25 @@ export default {
       var sum = 0;
       var xData = [];
       var yData = [];
-      for(var i = 0;i<data.length;i++){
-        sum += data[i].total;
-        xData[i] = data[i].location;
-        yData[i] = {value:data[i].total,name:data[i].location}; 
+      if(data.length>20){
+        var other = 0;
+        for(var i = 0;i<data.length;i++){
+          sum += data[i].total;
+          if(i<20){
+            xData.push(data[i].location);
+            yData.push({value:data[i].total,name:data[i].location}); 
+          }else{
+            other += data[i].total;
+          }
+        }
+        xData.push("其他");
+        yData.push({value:other,name:"其他"});
+      }else{
+        for(var i = 0;i<data.length;i++){
+          sum += data[i].total;
+          xData[i] = data[i].location;
+          yData[i] = {value:data[i].total,name:data[i].location}; 
+        }
       }
       this.pieOption.legend.data = xData;
       this.pieOption.series[0].data = yData;
@@ -231,8 +246,6 @@ export default {
       var xData = [];
       var yData = [];
       for(var i = 0;i<data.length;i++){
-        /*var clipName = data[i].name.length>3?(data[i].name.substr(0,3)+"···"):data[i].name;
-        xData.push(clipName);*/
         xData.push(data[i].name);
         yData.push(data[i].downloadNum); 
       }
@@ -310,70 +323,52 @@ export default {
       userUploadChart:{},
       mapDownloadChart:{},
       barOption:{
-        title: { text: '用户贡献度',x:'left' },
+        title: { text: '用户贡献统计',x:'left' },
         tooltip : {
-          trigger: 'axis'
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         legend: {
-          data:["用户贡献度"]
+          orient: 'vertical',
+          left: 'left',
+          top:"10%",
+          data:[]
         },
         toolbox: {
           show : true,
           feature : {
             mark : {show: true},
             dataView : {show: true, readOnly: true},
-            magicType : {show: true, type: ['line', 'bar']},
             restore : {show: true},
             saveAsImage : {show: true}
           }
         },
-        calculable : true,
-        xAxis:[
-          {
-            type : 'category',
-            axisLabel : {
-              interval:1,
-              rotate:-30,
-              formatter: function (value, index) {
-                if(!value){
-                  return "";
-                }
-                var clipName = value.length>3?(value.substr(0,3)+"···"):value;
-                return clipName;
-              }
-            },
-            data : []
-          }
-        ],
-        yAxis : [
-          {
-            type : 'value'
-          }
-        ],
-        series : [{
-          name:'用户贡献度',
-          type:'bar',
-          barWidth: 20,
-          data:[],
-          markPoint : {
-            data:[
-              {type : 'max', name: '最大值'},
-              {type : 'min', name: '最小值'}
-            ]
-          },
-          markLine : {
-            data:[
-              {type : 'average', name: '平均值'}
-            ]
-          },
-          itemStyle:{
+        series: [{
+          name: '用户贡献',
+          center: ['85%', '60%'],
+          radius:['50%', '70%'],
+          avoidLabelOverlap: false,
+          type: 'pie',
+          label: {
             normal: {
-              color:"#2f80bc"
-            },
+              show: false,
+              position: 'center'
+          },
             emphasis: {
-              
+              show: true,
+              textStyle: {
+                fontSize: '16',
+                fontWeight: 'bold'
+              },
+              position: 'center'
             }
-          }
+          },
+          labelLine: {
+            normal: {
+              show: false
+            }
+          },
+          data: []
         }]
       },
       lineOption:{
@@ -422,7 +417,7 @@ export default {
         ],
         series : [{
           name:'图件下载次数',
-          type:'line',
+          type:'bar',
           data:[],
           markPoint : {
             data:[
