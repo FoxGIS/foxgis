@@ -175,12 +175,6 @@ export default {
       this.$broadcast('mailSent', { message: msg,timeout:3000 });
     }
   },
-  attached() {
-    //判断是否为firefox浏览器
-    if (navigator.userAgent.indexOf('Firefox') >= 0){ 
-      $('.register').css('height','530px');
-    }
-  },
   data() {
     return {
       provinces: [
