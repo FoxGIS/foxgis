@@ -2084,6 +2084,7 @@ export default {
   font-family: icon;
   font-style: normal;
   font-size: 18px;
+  color: #4c4c4c;
 }
 
 .type-icon.symbol:before{

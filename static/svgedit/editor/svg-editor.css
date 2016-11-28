@@ -1647,14 +1647,15 @@ ul li.current {
 }
 .legend-item input[type='text']{
 	width: 84px;
-  float: left;
-  height: 16px;
-  margin-bottom: 5px;
-  margin-top: 4px;
-  border: 0;
-  background-color: transparent;
-  outline: none;
-  border-bottom: 1px solid gray;
+  	float: left;
+  	height: 16px;
+  	margin-bottom: 5px;
+  	margin-top: 4px;
+  	border: 0;
+  	background-color: transparent;
+  	outline: none;
+  	border-bottom: 1px solid gray;
+  	border-radius: 0;
 
 }
 
