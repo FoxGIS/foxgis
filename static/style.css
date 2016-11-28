@@ -49,3 +49,11 @@ select{
 }
 
 select::-ms-expand { display: none; }
+
+@font-face{
+  font-family:icon;
+  src:url(./icon.eot);
+  src:url(./icon.eot) format('embedded-opentype'),url(./icon.woff) format('woff');
+  font-weight:400;
+  font-style:normal
+}

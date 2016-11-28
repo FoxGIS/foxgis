@@ -35,12 +35,12 @@
             <i class="material-icons" v-if="layer.collapsed==true">keyboard_arrow_right</i>
             <i class="material-icons" v-if="layer.collapsed==false">keyboard_arrow_down</i>
             <i class="material-icons" v-if="layer.items!==undefined">folder</i>
-            <i class="material-icons" v-if="layer.items==undefined" :style="'background-image:url(../../static/icons/'+typeIcon[layer.type]+')'"></i>
+            <i class="type-icon {{layer.type}}" v-if="layer.items==undefined"></i>
             <span>{{layer.id}}</span>
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="material-icons" :style="'background-image:url(../../static/icons/'+typeIcon[layer.type]+')'"></i>
+              <i class="type-icon {{layer.type}}"></i>
               <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>
@@ -1743,12 +1743,12 @@ export default {
       },
       propertyGroup:{},
       typeIcon: {
-        symbol: 'point.svg',
-        line: 'line.svg',
-        background: 'filter_hdr',
-        fill: 'polygon.svg',
-        circle: 'lens',
-        raster: 'image'
+        symbol: '&#xe655;',
+        line: '\e665',
+        background: '\e63a',
+        fill: '\e600',
+        circle: '\e664',
+        raster: '\e668'
       },
       defaultStyle: {
         'background': {
@@ -2079,6 +2079,30 @@ export default {
   background-color: #dcdcdc;
 }
 
+#layer-control .type-icon:before{
+  font-family: icon;
+  font-style: normal;
+  font-size: 18px;
+}
+
+.type-icon.symbol:before{
+  content: "\e655";
+}
+.type-icon.line:before{
+  content: "\e665";
+}
+.type-icon.fill:before{
+  content: "\e600";
+}
+.type-icon.circle:before{
+  content: "\e664";
+}
+.type-icon.raster:before{
+  content: "\e668";
+}
+.type-icon.background:before{
+  content: "\e63a";
+}
 a {
   color: rgb(128,128,128);
 }
