@@ -1037,36 +1037,7 @@ export default {
       if(filter){
         layer.filter = filter;
       }
-      //处理文件夹
-      if($("#new-layer-panel select[name='folder']").val()){//选择了已有的文件夹
-        layer.metadata = {
-          "mapbox:group": $("#new-layer-panel select[name='folder']").find("option:selected").data("id")
-        };
-      }else if($("#new-layer-panel input[name='folder']").val()){//新建了一个文件夹
-        var folder_id = this.getFolderId();
-        if(this.styleObj.metadata){
-          if(!this.styleObj.metadata["mapbox:groups"]){
-            this.styleObj.metadata["mapbox:groups"] = {};
-          }
-          this.styleObj.metadata["mapbox:groups"][folder_id] = {
-            name:$("#new-layer-panel input[name='folder']").val(),
-            "collapsed": false
-          };
-          layer.metadata = {
-            "mapbox:group": folder_id
-          };
-        }else{
-          this.styleObj.metadata = {};
-          this.styleObj.metadata["mapbox:groups"] = {};
-          this.styleObj.metadata["mapbox:groups"][folder_id] = {
-            name:$("#new-layer-panel input[name='folder']").val(),
-            "collapsed": false
-          };
-          layer.metadata = {
-            "mapbox:group": folder_id
-          };
-        }
-      }
+      
       if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
         var url = this.selectedData.source_url;
         this.styleObj.sources[layer.source] = {
@@ -1075,8 +1046,75 @@ export default {
         }
       }
       this.styleObj.layers.push(layer);
+      //处理文件夹
+      var folder_id;
+      var flag = false;
+      if($("#new-layer-panel select[name='folder']").val()){//选择了已有的文件夹
+        folder_id = $("#new-layer-panel select[name='folder']").find("option:selected").data("id");
+        flag = true;
+      }else if($("#new-layer-panel input[name='folder']").val()){//新建了一个文件夹
+        var keys = Object.keys(this.Folders);
+        var name = $("#new-layer-panel input[name='folder']").val();
+        for(let i=0;i<keys.length;i++){//检索输入的文件夹名称是否已存在，flag=1表示已存在
+          if(name === this.Folders[keys[i]].name){
+            folder_id = keys[i];
+            flag = true;
+            break;
+          }
+        }
+        if(!flag){
+          folder_id  = this.getFolderId();
+        }
+      }
+      this.folder_id = folder_id;
+      this.createChangeFolder(layer,flag);
       this.changeStyle(this.styleObj);
       this.createPanelClose();
+    },
+    createChangeFolder:function(layer,flag){
+      var layers = this.styleObj.layers;
+      this.currentLayer = layer;
+      var currentLayer = this.currentLayer;
+      if(flag){
+        var currLayer_index,currFolder_index=[];
+        for(var i=0;i<layers.length;i++){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===this.folder_id&&layers[i].id!==currentLayer.id){
+            currFolder_index.push(i);
+          }
+          if(layers[i].id===currentLayer.id){
+            currLayer_index = i;
+          }
+        }
+        var rule1 = currFolder_index.indexOf(currLayer_index-1);
+        var rule2 = currFolder_index.indexOf(currLayer_index+1);
+        if(rule1===-1&&rule2===-1){//相邻的两个图层都没有在这个文件夹里
+          this.tempCurrFolder_index = currFolder_index;
+          this.tempCurrLayer_index = currLayer_index;
+          $("#layer-folder-dialog").show();
+        }else{
+          if(!currentLayer.metadata){
+            currentLayer.metadata = {};
+          }
+          currentLayer.metadata["mapbox:group"] = this.folder_id;
+        }
+      }else{
+        if(!currentLayer.metadata){
+          currentLayer.metadata = {};
+        }
+        currentLayer.metadata["mapbox:group"] = this.folder_id;
+        if(this.styleObj.metadata){
+          if(!this.styleObj.metadata["mapbox:groups"]){
+            this.styleObj.metadata["mapbox:groups"] = {};
+          } 
+        }else{
+          this.styleObj.metadata = {};
+          this.styleObj.metadata["mapbox:groups"] = {};
+        }
+        this.styleObj.metadata["mapbox:groups"][this.folder_id] = {
+          "name":$("#new-layer-panel input[name='folder']").val(),
+          "collapsed": false
+        };
+      }
     },
     createPanelClose:function(){
       this.$dispatch("map-view-change","hide");
