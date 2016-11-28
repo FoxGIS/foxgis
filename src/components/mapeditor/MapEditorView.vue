@@ -30,8 +30,8 @@
       <div class="dragresize dragresize-rb" v-on:mousedown="dragresizedown"></div>
     </div>
     <div style="position: absolute;bottom: 0;right: 0;z-index: 1;font-size:12px;" >
-      <span style="color: #1F78BA;" v-if="map.getZoom">级别：{{map.getZoom()}}</span>
-      <span style="color: #1F78BA;" v-if="map.getCenter">中心：{{map.getCenter().lng}},{{map.getCenter().lat}}</span>
+      <span style="color: #EC7500;" v-if="map.getZoom">级别：{{map.getZoom()}}</span>
+      <span style="color: #EC7500;" v-if="map.getCenter">中心：{{map.getCenter().lng}},{{map.getCenter().lat}}</span>
     </div>
   </div>
 </template>
