@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="static/lib/zTree/zTreeStyle.css" />
   <link rel="stylesheet" href="static/lib/jquery/autocomplete/jquery.autocomplete.css">
   <link rel="stylesheet" href="static/lib/colpick/colpick.css">
-  <!-- <link rel="stylesheet" href="static/lib/codemirror/codemirror.css"> -->
   <link rel="stylesheet" href="static/lib/outdatedbrowser/outdatedbrowser.min.css">
   <link rel="stylesheet" type="text/css" href="static/lib/als/CSSreset.min.css" />
   <link rel="stylesheet" href="static/style.css">
@@ -29,8 +28,6 @@
   <script src="static/lib/outdatedbrowser/outdatedbrowser.min.js"></script>
   <script src="static/lib/webuploader.js"></script>   
   <script src="static/lib/colpick/colpick.js"></script> 
-  <!-- <script src="static/lib/codemirror/codemirror.js"></script> 
-  <script src="static/lib/codemirror/javascript.js"></script>  -->
   <script type="text/javascript" src="static/lib/als/jquery.als-1.7.min.js"></script>  
   <script src="build/bundle.js"></script>  
   <!-- <script src="static/lib/mapbox-gl-0.13.0.js"></script> --> 
@@ -70,17 +67,6 @@
         $(".open-stops").removeClass("open");
       }
     }
-  });
-
-  $(window).resize(function() { 
-    if($(window).width()<1000){
-      $('#map-header-contact').hide();
-      $('#dataeditor-header-contact').hide();
-    }else{
-      $('#map-header-contact').show();
-      $('#dataeditor-header-contact').show();
-    }
-    
   });
 
 </script>

@@ -2,9 +2,8 @@
   <div class="modal">
     <div class="dialog">
       <b>{{dialog.title}}</b>
-
-      <mdl-textfield label="图层名称" floating-label="图层名称" class="textfield name" :value="" v-if="dialog.type==='copy-layer'"></mdl-textfield>
-      <input type="number" class="textfield name" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="11">
+      <input type="text" class="textfield copy" v-model="dialog.value" v-if="dialog.type==='copy-layer'">
+      <input type="number" class="textfield zoom" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="11">
 
       <div class="action">
         <mdl-button raised colored v-mdl-ripple-effect @click="doCancel">取消</mdl-button>      
@@ -18,12 +17,18 @@
 export default {
   methods: {
     doOK: function(){
-      var value = $(".dialog .name").val().trim();
+      if(this.dialog.type==='copy-layer'){
+        var value = $(".dialog .copy").val().trim();
+      }else{
+        var value = $(".dialog .zoom").val().trim();
+      }
       this.$dispatch("dialog-action",{status:'ok',value:value});
+      $(".dialog .copy").val("");
     },
     doCancel: function(){
       this.$el.style.display = 'none';
       this.$dispatch("dialog-action",{status:'cancel',value:""});
+      $(".dialog .copy").val("");
     }
   },
   data(){
