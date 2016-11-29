@@ -61,7 +61,7 @@
         </div>
         
       </div>
-      <div class="property-container">
+      <div class="property-container" v-if="detailsData.attribution!=='undefined'&&!detailsData.attribution===false">
         <div class="property-title title">
           <b>瓦片版权</b>
         </div>
@@ -69,7 +69,7 @@
           <span>{{detailsData.attribution}}</span>
         </div>
       </div>
-      <div class="preview-container" v-if="detailsData.vector_layers!=='undefined'">
+      <div class="preview-container" v-if="detailsData.vector_layers!=='undefined' && detailsData.vector_layers.length>0">
         <div class="preview-title title">
           <b>图层信息</b>
         </div>

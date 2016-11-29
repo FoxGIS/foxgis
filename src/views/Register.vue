@@ -61,10 +61,10 @@
         </div>
       </div>
       <div class="registerButton">
-        <mdl-button v-mdl-ripple-effect accent raised @keyup.enter="register" @click="register">注册</mdl-button>
-        <mdl-button v-mdl-ripple-effect accent raised @click="cancel">取消</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#2F80BC;width:150px;height:45px;" @keyup.enter="register" @click="register">注册</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#fff;color:#505050;width:150px;height:45px;" @click="cancel">取消</mdl-button>
       </div>
-      <foxgis-footer></foxgis-footer>
+      <foxgis-footer style="margin-top: 60px;"></foxgis-footer>
     </div>
   </foxgis-layout>
 </div>
@@ -231,7 +231,7 @@ export default {
 .mdl-button {
   width: 100%;
   font-size: 1em;
-  margin: 0 20px;
+  margin: 0 110px;
 }
 
 #register-info{
@@ -264,6 +264,7 @@ export default {
   line-height: 40px;
   padding-left: 20px;
   text-align: left;
+  border-top: 1px solid #dedede;
   border-bottom: 1px solid #dedede;
 }
 table{
@@ -311,7 +312,7 @@ td select{
 
 .registerButton {
   font-family: inherit;
-  width: 300px;
+  width: 740px;
   font-size: 18px;
   display: flex;
   color: #fff;

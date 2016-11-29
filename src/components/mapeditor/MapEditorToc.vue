@@ -1121,6 +1121,7 @@ export default {
       $("#new-layer-panel input[name='id']").val("new_layer");
       $("#new-layer-panel select[name='source']").val("");
       $("#new-layer-panel select[name='source-layer']").val("");
+      $("#new-layer-panel input[name='folder']").val("");
       //this.sourceLayers=[];
 
       $("#new-layer-panel input[name='minzoom']").val(0);
