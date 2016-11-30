@@ -50,7 +50,7 @@
 
     <div id="property-panel">
       <!-- 标题 -->
-      <div class="property-header"><i class="material-icons" :style="'background-image:url(../../static/icons/'+typeIcon[curPanelLayer.type]+')'"></i>{{curPanelLayer.id}}</div>
+      <div class="property-header"><i class="type-icon {{curPanelLayer.type}}"></i>{{curPanelLayer.id}}</div>
       <!-- 导航栏 -->
       <div>
         <nav class="mdl-navigation" id="property-control">
@@ -1875,7 +1875,7 @@ export default {
             'text-opacity':1,
             'text-color': '#000000',
             'text-halo-color': '#ffffff',
-            'text-halo-width': 1,
+            'text-halo-width': 0,
             'text-halo-blur':0
           },
           'layout': {
@@ -2080,7 +2080,7 @@ export default {
   background-color: #dcdcdc;
 }
 
-#layer-control .type-icon:before{
+.type-icon:before{
   font-family: icon;
   font-style: normal;
   font-size: 18px;

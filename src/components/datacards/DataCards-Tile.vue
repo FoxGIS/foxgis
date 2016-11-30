@@ -69,7 +69,7 @@
           <span>{{detailsData.attribution}}</span>
         </div>
       </div>
-      <div class="preview-container" v-if="detailsData.vector_layers!=='undefined' && detailsData.vector_layers.length>0">
+      <div class="preview-container" v-if="detailsData.vector_layers && detailsData.vector_layers.length>0">
         <div class="preview-title title">
           <b>图层信息</b>
         </div>

@@ -304,9 +304,16 @@ For usage and examples: colpick.com/plugin
 			init: function (opt) {
 				opt = $.extend({}, defaults, opt||{});
 				//Set color
-				if (typeof opt.color == 'string') {
+				if (opt.color.indexOf("#")!==-1) {
+					if(opt.color.length<7){
+						opt.color = opt.color[1]+opt.color[1]+opt.color[2]+opt.color[2]+opt.color[3]+opt.color[3];
+					}
 					opt.color = hexToHsb(opt.color);
-				} else if (opt.color.r != undefined && opt.color.g != undefined && opt.color.b != undefined) {
+				} else if (opt.color.indexOf("rgb")!==-1) {
+					var start = opt.color.indexOf("(");
+					var end = opt.color.indexOf(")");
+					var rgbArr = opt.color.substring(start+1,end).split(",");
+					opt.color = {r:rgbArr[0],g:rgbArr[1],b:rgbArr[2]}
 					opt.color = rgbToHsb(opt.color);
 				} else if (opt.color.h != undefined && opt.color.s != undefined && opt.color.b != undefined) {
 					opt.color = fixHSB(opt.color);
@@ -406,6 +413,18 @@ For usage and examples: colpick.com/plugin
 			},
 			//Sets a color as new and current (default)
 			setColor: function(col, setCurrent) {
+				if (typeof col == 'string'&&col.indexOf("#")!==-1) {
+					if(col.length<7){
+						col = col[1]+col[1]+col[2]+col[2]+col[3]+col[3];
+					}else{
+						col = col.replace("#","");
+					}
+				} else if (typeof col == 'string'&&col.indexOf("rgb")!==-1) {
+					var start = col.indexOf("(");
+					var end = col.indexOf(")");
+					var rgbArr = col.substring(start+1,end).split(",");
+					col = {r:rgbArr[0],g:rgbArr[1],b:rgbArr[2]}
+				}
 				setCurrent = (typeof setCurrent === "undefined") ? 1 : setCurrent;
 				if (typeof col == 'string') {
 					col = hexToHsb(col);
@@ -428,7 +447,7 @@ For usage and examples: colpick.com/plugin
 						setSelector(col, cal.get(0));
 						
 						setNewColor(col, cal.get(0));
-						cal.data('colpick').onChange.apply(cal.parent(), [col, hsbToHex(col), hsbToRgb(col), cal.data('colpick').el, 1]);
+						//cal.data('colpick').onChange.apply(cal.parent(), [col, hsbToHex(col), hsbToRgb(col), cal.data('colpick').el, 1]);
 						if(setCurrent) {
 							setCurrentColor(col, cal.get(0));
 						}
