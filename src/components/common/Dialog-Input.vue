@@ -9,8 +9,8 @@
         <mdl-textfield label="制图年份" floating-label="制图年份" id="year-input"></mdl-textfield>
         <mdl-select label="共享范围" id="scope-select" :value="scope" :options="scopeOptions"></mdl-select>
         <div class="action">
-          <mdl-button accent raised v-mdl-ripple-effect v-on:click="doOK">确定</mdl-button>
-          <mdl-button raised colored v-mdl-ripple-effect v-on:click="doCancel">取消</mdl-button>       
+          <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="doOK">确定</mdl-button>
+          <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="doCancel">取消</mdl-button>       
         </div>
         <i class="material-icons" id="close" v-on:click="doCancel">clear</i>
       </div>

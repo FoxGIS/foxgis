@@ -61,8 +61,8 @@
         </div>
       </div>
       <div class="registerButton">
-        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#2F80BC;width:150px;height:45px;" @keyup.enter="register" @click="register">注册</mdl-button>
-        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#fff;color:#505050;width:150px;height:45px;" @click="cancel">取消</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#4969CE;width:150px;height:45px;" @keyup.enter="register" @click="register">注册</mdl-button>
+        <mdl-button v-mdl-ripple-effect accent raised style="background-color:#0EB291;width:150px;height:45px;" @click="cancel">取消</mdl-button>
       </div>
       <foxgis-footer style="margin-top: 60px;"></foxgis-footer>
     </div>
