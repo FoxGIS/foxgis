@@ -471,12 +471,12 @@ export default {
       {
         title:"字体管理",
         description:"对字体数据进行统一管理，支持字体数据上传、查询、信息维护、字体预览、下载及删除等操作，丰富的字体数据资源满足多样化的制图需求。",
-        image:"../../static/images/show/字体1.jpg"
+        image:"../../static/images/show/字体.jpg"
       },
       {
         title:"符号库管理",
         description:"对符号库数据进行统一管理，支持符号库数据上传、查询、信息维护、符号预览、下载及删除等操作，丰富的符号库数据资源满足多样化的制图需求。",
-        image:"../../static/images/show/符号库1.jpg"
+        image:"../../static/images/show/符号库.jpg"
       },
       {
         title:"决策用图",
