@@ -64,10 +64,12 @@ export default {
       var selectedThemes = data[0].selectedThemes;
       var username = Cookies.get('username');
       var access_token = Cookies.get('access_token');
-      var url = SERVER_API.uploads + '?';
-      if(selectedYears.length==0&&selectedLocations.length==0&&selectedThemes.length==0&&this.uploads.length>0){
-        this.calcStats(this.uploads,type);
-        return;
+      if(type===1){//用户贡献
+        var url = SERVER_API.stats + '/userdownloads?';
+      }else if(type===2){//图件下载
+        var url = SERVER_API.stats + '/filedownloads?';
+      }else if(type===3){//用户上传
+        var url = SERVER_API.stats + '/uploads?';
       }
       if(selectedYears.length>0){
         var yearStr = selectedYears.toString().replace("未指定","null");
@@ -84,65 +86,79 @@ export default {
       //获取数据列表
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        var uploads = response.data;
-        this.calcStats(uploads,type);
+        var data = response.data;
+        this.calcStats(data,type);
       }, function(response) {
         this.$broadcast('mailSent', { message: '获取数据失败！',timeout:3000 });
       });
     },
-    calcStats:function(uploads,type){
+    calcStats:function(data,type){
       var xData = [];
       var yData = [];
       if(type===1){//用户贡献
-        for(var i=0;i<uploads.length;i++){
-          if(xData.indexOf(uploads[i].owner)===-1){
-            xData.push(uploads[i].owner);
-            yData.push(uploads[i].downloadNum)
-          }else{
-            yData[xData.indexOf(uploads[i].owner)] += uploads[i].downloadNum;
-          }
-        }
-        for(var i = 0;i<xData.length;i++){
-          for(var j=0;j<this.userDownloadStats.length;j++){
-            if(this.userDownloadStats[j].username===xData[i]){
-              xData[i] = this.userDownloadStats[j].organization||this.userDownloadStats[j].position||"未指定";
-              yData[i] = {value:yData[i],name:xData[i]};
+        if(data.length>20){
+          var other = 0;
+          for(var i = 0;i<data.length;i++){
+            if(i<20){
+              xData.push(data[i].organization||"未指定");
+              yData.push({value:data[i].total,name:data[i].organization||"未指定"});
+            }else{
+              other += data[i].total;
             }
           }
+          xData.push("其他");
+          yData.push({value:other,name:"其他"});
+        }else{
+          for(var i = 0;i<data.length;i++){
+            xData.push(data[i].organization||"未指定");
+            yData.push({value:data[i].total,name:data[i].organization||"未指定"}); 
+          }
         }
-        this.barOption.legend.data = xData;
-        this.barOption.series[0].data = yData;
-        this.userDownloadChart.setOption(this.barOption,true);
+        this.circleOption.legend.data = xData;
+        this.circleOption.series[0].data = yData;
+        this.userDownloadChart.setOption(this.circleOption,true);
         return;
       }
       if(type===2){//图件下载
-        for(var i=0;i<uploads.length;i++){
-          xData.push(uploads[i].name);
-          yData.push(uploads[i].downloadNum); 
+        for(var i = 0;i<data.length;i++){
+          xData.push(data[i].name);
+          yData.push(data[i].downloadNum); 
         }
         var sum = eval(yData.join('+'))||0;
-        this.lineOption.xAxis[0].data = xData.slice(0,100);
-        this.lineOption.series[0].data = yData.slice(0,100);
-        this.lineOption.title.text = "图件下载统计(共"+sum+"次)";
-        this.mapDownloadChart.setOption(this.lineOption,true);
+        this.barOption.xAxis[0].data = xData.slice(0,100);
+        this.barOption.series[0].data = yData.slice(0,100);
+        this.barOption.title.text = "图件下载统计(共"+sum+"次)";
+        if(data.length>50){
+          var interval = 2;
+        }else if(data.length>35&&data.length<=50){
+          var interval = 1;
+        }else if(data.length<=35){
+          var interval = 0;
+        }
+        this.barOption.xAxis[0].axisLabel.interval = interval;
+        this.mapDownloadChart.setOption(this.barOption,true);
         return;
       }
       if(type===3){//用户上传
-        for(var i=0;i<uploads.length;i++){
-          if(xData.indexOf(uploads[i].owner)===-1){
-            xData.push(uploads[i].owner);
-            yData.push(1);
-          }else{
-            yData[xData.indexOf(uploads[i].owner)] += 1;
-          }
-        }
-        var sum = eval(yData.join('+'))||0;
-        for(var i = 0;i<xData.length;i++){
-          for(var j=0;j<this.userDownloadStats.length;j++){
-            if(this.userDownloadStats[j].username===xData[i]){
-              xData[i] = this.userDownloadStats[j].location;
-              yData[i] = {value:yData[i],name:xData[i]};
+        var sum = 0;
+        if(data.length>20){
+          var other = 0;
+          for(var i = 0;i<data.length;i++){
+            sum += data[i].total;
+            if(i<20){
+              xData.push(data[i].location);
+              yData.push({value:data[i].total,name:data[i].location}); 
+            }else{
+              other += data[i].total;
             }
+          }
+          xData.push("其他");
+          yData.push({value:other,name:"其他"});
+        }else{
+          for(var i = 0;i<data.length;i++){
+            sum += data[i].total;
+            xData[i] = data[i].location;
+            yData[i] = {value:data[i].total,name:data[i].location}; 
           }
         }
         this.pieOption.legend.data = xData;
@@ -159,106 +175,29 @@ export default {
     if(username === undefined){
       window.location.href = "#!/login";
     }
-    // 基于准备好的dom，初始化echarts实例
-    var userUploadChart = echarts.init(document.getElementById('user-upload-chart'));
-    this.userUploadChart = userUploadChart;
-    
-    // 基于准备好的dom，初始化echarts实例
-    var mapDownloadChart = echarts.init(document.getElementById('image-download-chart'));
-    this.mapDownloadChart = mapDownloadChart;
-    
-    // 基于准备好的dom，初始化echarts实例
+    var selected = [{
+      selectedLocations:[],
+      selectedYears:[],
+      selectedThemes:[]
+    }]
+
+    // 基于准备好的dom，初始化“用户贡献”echarts实例
     var userDownloadChart = echarts.init(document.getElementById('user-download-chart'));
     this.userDownloadChart = userDownloadChart;
+    this.conditionSelect(selected,1);
+    
+    // 基于准备好的dom，初始化“图件下载”echarts实例
+    var mapDownloadChart = echarts.init(document.getElementById('image-download-chart'));
+    this.mapDownloadChart = mapDownloadChart;
+    this.conditionSelect(selected,2);
+    
+    // 基于准备好的dom，初始化“用户上传”echarts实例
+    var userUploadChart = echarts.init(document.getElementById('user-upload-chart'));
+    this.userUploadChart = userUploadChart;
+    this.conditionSelect(selected,3);
 
-    //用户贡献度统计
-    var userDownloadUrl = SERVER_API.stats + '/userdownloads';
-    this.$http({ url: userDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      var data = response.data;
-      var xData = [];
-      var yData = [];
-      this.userDownloadStats = data;
-      if(data.length>20){
-        var other = 0;
-        for(var i = 0;i<data.length;i++){
-          if(i<20){
-            xData.push(data[i].organization||data[i].position||"未指定");
-            yData.push({value:data[i].downloadNum,name:data[i].organization||data[i].position||"未指定"});
-          }else{
-            other += data[i].downloadNum;
-          }
-        }
-        xData.push("其他");
-        yData.push({value:other,name:"其他"});
-      }else{
-        for(var i = 0;i<data.length;i++){
-          xData.push(data[i].organization||data[i].position||"未指定");
-          yData.push({value:data[i].downloadNum,name:data[i].organization||data[i].position||"未指定"}); 
-        }
-      }
-      this.barOption.legend.data = xData;
-      this.barOption.series[0].data = yData;
-      this.userDownloadChart.setOption(this.barOption,true);
-    }, function(response) {
-      console.log(response);
-    });
-    //用户上传统计
-    var userUploadUrl = SERVER_API.stats + '/uploads';
-    this.$http({ url: userUploadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      var data = response.data;
-      var sum = 0;
-      var xData = [];
-      var yData = [];
-      if(data.length>20){
-        var other = 0;
-        for(var i = 0;i<data.length;i++){
-          sum += data[i].total;
-          if(i<20){
-            xData.push(data[i].location);
-            yData.push({value:data[i].total,name:data[i].location}); 
-          }else{
-            other += data[i].total;
-          }
-        }
-        xData.push("其他");
-        yData.push({value:other,name:"其他"});
-      }else{
-        for(var i = 0;i<data.length;i++){
-          sum += data[i].total;
-          xData[i] = data[i].location;
-          yData[i] = {value:data[i].total,name:data[i].location}; 
-        }
-      }
-      this.pieOption.legend.data = xData;
-      this.pieOption.series[0].data = yData;
-      this.pieOption.title.text = "图件资源统计(共"+sum+"幅)";
-      this.userUploadChart.setOption(this.pieOption,true);
-    }, function(response) {
-      console.log(response);
-    });
-    //图件下载统计
-    var mapDownloadUrl = SERVER_API.stats + '/filedownloads';
-    this.$http({ url: mapDownloadUrl, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      var data = response.data;
-      var xData = [];
-      var yData = [];
-      for(var i = 0;i<data.length;i++){
-        xData.push(data[i].name);
-        yData.push(data[i].downloadNum); 
-      }
-      var sum = eval(yData.join('+'))||0;
-      this.lineOption.xAxis[0].data = xData.slice(0,100);
-      this.lineOption.series[0].data = yData.slice(0,100);
-      this.lineOption.title.text = "图件下载统计(共"+sum+"次)";
-      this.mapDownloadChart.setOption(this.lineOption,true);
-    }, function(response) {
-      console.log(response);
-    });
     //获取制图区域统计信息
-    var locationUrl = SERVER_API.stats+"/location";
+    var locationUrl = SERVER_API.stats+"/location?for=stats";
     this.$http({ url: locationUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
@@ -275,7 +214,7 @@ export default {
     });
 
     //获取制图年份统计信息
-    var yearUrl = SERVER_API.stats+"/year";
+    var yearUrl = SERVER_API.stats+"/year?for=stats";
     this.$http({ url: yearUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
@@ -292,7 +231,7 @@ export default {
     });
 
     //获取主题词统计信息
-    var tagUrl = SERVER_API.stats+"/tags";
+    var tagUrl = SERVER_API.stats+"/tags?for=stats";
     this.$http({ url: tagUrl, method: 'GET', headers: { 'x-access-token': access_token } })
     .then(function(response) {
       if (response.data.length > 0) {
@@ -303,11 +242,6 @@ export default {
       this.$broadcast('mailSent', { message: '获取主题词失败！',timeout:3000 });
     });
 
-    this.$http({ url: SERVER_API.uploads, method: 'GET', headers: { 'x-access-token': access_token } })
-    .then(function(response) {
-      var uploads = response.data;
-      this.uploads = uploads;
-    }, function(response) {});
   },
   
   data() {
@@ -315,14 +249,10 @@ export default {
       location_tags:[],
       year_tags:[],
       theme_tags:[],
-      uploads:{},
-      userDownloadStats:[],//用户贡献
-      userUploadStats:[],//用户上传
-      mapDownloadStats:[],//地图下载
       userDownloadChart:{},
       userUploadChart:{},
       mapDownloadChart:{},
-      barOption:{
+      circleOption:{
         title: { text: '用户贡献统计',x:'left' },
         tooltip : {
           trigger: 'item',
@@ -336,16 +266,15 @@ export default {
         },
         toolbox: {
           show : true,
+          x:1000,
           feature : {
             mark : {show: true},
-            dataView : {show: true, readOnly: true},
-            restore : {show: true},
             saveAsImage : {show: true}
           }
         },
         series: [{
           name: '用户贡献',
-          center: ['85%', '60%'],
+          center: ['75%', '60%'],
           radius:['50%', '70%'],
           avoidLabelOverlap: false,
           type: 'pie',
@@ -371,7 +300,7 @@ export default {
           data: []
         }]
       },
-      lineOption:{
+      barOption:{
         title: { text: '图件下载统计',x:'left' },
         tooltip : {
           trigger: 'axis'
@@ -381,9 +310,9 @@ export default {
         },
         toolbox: {
           show : true,
+          x:920,
           feature : {
             mark : {show: true},
-            dataView : {show: true, readOnly: true},
             magicType : {show: true, type: ['line', 'bar']},
             restore : {show: true},
             saveAsImage : {show: true}
@@ -394,7 +323,6 @@ export default {
           {
             type : 'category',
             axisLabel : {
-              interval:2,
               rotate:-30,
               formatter: function (value, index) {
                 if(!value){
@@ -410,6 +338,7 @@ export default {
         yAxis : [
           {
             type : 'value',
+            boundaryGap:[0,0.05],
             axisLabel : {
               formatter: '{value}'
             }
@@ -419,6 +348,7 @@ export default {
           name:'图件下载次数',
           type:'bar',
           data:[],
+          barMaxWidth:30,
           markPoint : {
             data:[
               {type : 'max', name: '最大值'},
@@ -454,10 +384,9 @@ export default {
         },
         toolbox: {
           show : true,
+          x:1000,
           feature : {
             mark : {show: true},
-            dataView : {show: true, readOnly: true},
-            restore : {show: true},
             saveAsImage : {show: true}
           }
         },
@@ -521,7 +450,7 @@ export default {
   position: relative;
 }
 .stats-chart{
-  width: 95%;
+  width: 1060px;
   height: 380px;
   margin: 20px;
 }
