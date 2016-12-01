@@ -282,7 +282,7 @@ export default {
             normal: {
               show: false,
               position: 'center'
-          },
+            },
             emphasis: {
               show: true,
               textStyle: {
