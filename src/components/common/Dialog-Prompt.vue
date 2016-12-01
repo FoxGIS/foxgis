@@ -4,8 +4,8 @@
       <div class="dialog">
         <div class="content">{{dialog.title}}</div>
         <div class="action">
-          <mdl-button raised colored v-mdl-ripple-effect v-on:click="doCancel">{{dialog.textCancel}}</mdl-button>
-          <mdl-button accent raised v-mdl-ripple-effect v-on:click="doDelete">{{dialog.textOk}}</mdl-button>
+          <mdl-button raised colored v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="doCancel">{{dialog.textCancel}}</mdl-button>
+          <mdl-button accent raised v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="doDelete">{{dialog.textOk}}</mdl-button>
         </div>
       </div>
     </div>

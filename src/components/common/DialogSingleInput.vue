@@ -6,8 +6,8 @@
       <input type="number" class="textfield zoom" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="11">
 
       <div class="action">
-        <mdl-button raised colored v-mdl-ripple-effect @click="doCancel">取消</mdl-button>      
-        <mdl-button accent raised v-mdl-ripple-effect @click="doOK">确定</mdl-button>
+        <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" @click="doOK">确定</mdl-button>
+        <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" @click="doCancel">取消</mdl-button>      
       </div>
     </div>
   </div>

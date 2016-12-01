@@ -18,8 +18,8 @@
     </div>
 
     <div class="action">
-      <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>      
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="nextStep">下一步</mdl-button>
+      <mdl-button raised colored v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="newTemplateCancel">取消</mdl-button>      
+      <mdl-button accent raised v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="nextStep">下一步</mdl-button>
     </div>
   </div>
 
@@ -80,8 +80,8 @@
     </mdl-button>
 
     <div class="action">
-      <mdl-button raised colored v-mdl-ripple-effect v-on:click="preStep">上一步</mdl-button> 
-      <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
+      <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="preStep">上一步</mdl-button> 
+      <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="newTemplateOK">确定</mdl-button>
     </div>
   </div>
   <i class="material-icons" id="template-wizard-close" v-on:click="newTemplateCancel">clear</i>

@@ -39,8 +39,8 @@
             <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield"></mdl-textfield>
             <mdl-textfield label="替换字段默认值" floating-label="默认值" id="template-replace" class="textfield"></mdl-textfield>
             <div class="action">
-              <mdl-button accent raised v-mdl-ripple-effect v-on:click="newTemplateOK">确定</mdl-button>
-              <mdl-button raised colored v-mdl-ripple-effect v-on:click="newTemplateCancel">取消</mdl-button>
+              <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="newTemplateOK">确定</mdl-button>
+              <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="newTemplateCancel">取消</mdl-button>
             </div>
           </div>
         </div>
@@ -54,8 +54,8 @@
             <mdl-textfield label="模板名称" floating-label="模板名称" id="template-name" class="textfield" :value="templateItem.name"></mdl-textfield>
             <mdl-textfield label="替换字段默认值" floating-label="默认值" id="template-replace" class="textfield" :value="templateItem.replace"></mdl-textfield>
             <div class="action">
-              <mdl-button accent raised v-mdl-ripple-effect v-on:click="editTemplateOK">确定</mdl-button>
-              <mdl-button raised colored v-mdl-ripple-effect v-on:click="editTemplateCancel">取消</mdl-button>
+              <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" v-on:click="editTemplateOK">确定</mdl-button>
+              <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" v-on:click="editTemplateCancel">取消</mdl-button>
             </div>
           </div>
         </div>
