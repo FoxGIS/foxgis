@@ -89,7 +89,7 @@
       <div class="metadata">
         <div>
           <p>
-            制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @input="showInputTips($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index,'location')"/>
+            制图区域：<input class="location" type="text" style="width:180px;" :value="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].location" @click="showLocationPanel($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @change="editLocation($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" @input="showInputTips($event,$index,'location')"/>
 
             比例尺：<span style="width: 10px;">1:  </span> <input type="text" v-model="displayUploads[(pageConfig.current_page-1)*pageConfig.page_item_num+$index].scale" @change="editScale($event, (pageConfig.current_page-1)*pageConfig.page_item_num+$index)" lazy>
 
@@ -215,8 +215,9 @@ export default {
       this.$http({url:url,method:'PATCH',data:{'location':location},headers: {'x-access-token':access_token }})
       .then(function(response){
         var input = $(".location");
+        var w = (this.pageConfig.current_page-1)*this.pageConfig.page_item_num;
         for(let i=0;i<input.length;i++){
-          input[i].value = this.displayUploads[i].location;
+          input[i].value = this.displayUploads[w+i].location;
           input[i].blur();
         }
       },function(response){
@@ -571,19 +572,23 @@ export default {
           $(e.target.nextElementSibling).hide();
         }
       }else{
-        for(let i=0;i<status.length;i++){
+        for(let j=0;j<status.length;j++){
           if(type === 'location'){
-            if(status[i].location.indexOf(value)!==-1){
-              tips.push(status[i].location);
-              if(tips.length===10){
-                break;
+            if(status[j].location){
+              if(status[j].location.indexOf(value)!==-1){
+                tips.push(status[j].location);
+                if(tips.length===10){
+                  break;
+                }
               }
             }
           }else if(type === 'tag'){
-            if(status[i].tag.indexOf(value)!==-1){
-              tips.push(status[i].tag);
-              if(tips.length===10){
-                break;
+            if(status[j].tag){
+              if(status[j].tag.indexOf(value)!==-1){
+                tips.push(status[j].tag);
+                if(tips.length===10){
+                  break;
+                }
               }
             }
           }  
