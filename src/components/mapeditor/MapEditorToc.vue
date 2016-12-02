@@ -1578,17 +1578,18 @@ export default {
       var currentLayer = this.currentLayer;
       //1、名称为空，删除文件夹
       if(params.name === ""){
+        var groupId = currentLayer.metadata["mapbox:group"];
         delete currentLayer.metadata["mapbox:group"];//删除当前图层的文件夹
         var layers = this.styleObj.layers;
         var f = 0;
         for(var i=0;i<layers.length;i++){
-          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===params.id){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===groupId){
             f = 1;
-            return;
+            break;
           }
         }
         if(f===0){
-          delete this.styleObj.metadata["mapbox:groups"][folder_id];
+          delete this.styleObj.metadata["mapbox:groups"][groupId];
         }
         var data = JSON.parse(JSON.stringify(this.styleObj))
         this.changeStyle(data);
