@@ -304,11 +304,11 @@
                 </select>
               </div>
               <div class="property-value" v-if="name=='line-round-limit'">
-                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter' || curPanelLayer.layout['line-join']=='bevel'" disabled name="{{name}}" data-type='layout'/>
                 <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
               </div>
               <div class="property-value" v-if="name=='line-miter-limit'">
-                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round' || curPanelLayer.layout['line-join']=='bevel'" disabled name="{{name}}" data-type='layout'/>
                 <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
