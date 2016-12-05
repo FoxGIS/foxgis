@@ -103,9 +103,6 @@
               </div>
             </foxgis-data-cards>
           </div>
-          <div v-if="displayUploads.length === 0">
-            <span style="font-size:20px;color:red;position:relative;left:500px;">无搜索结果</span>
-          </div>
         </div>
       </div>
     

@@ -268,39 +268,6 @@ export default {
       map.on('drag', this.mapDrag);
       map.on('dragend', this.mapDragEnd);
       map.on('zoomend',this.mapZoomEnd);
-      //map.on("load",this.autoVisible);
-    },
-    autoVisible:function(){//临时函数，自动设色
-      var layers = this.localStyle.layers;
-      var _this = this;
-      var i = layers.length-1;
-      setTimeout(tem(_this,6),1000);
-      function tem(_this,i){
-        return function(){
-          var layer = _this.localStyle.layers[i];
-          if(!layer.layout){layer.layout = {};}
-          _this.map.setLayoutProperty(layer.id,"visibility","visible");
-          if(i<_this.localStyle.layers.length-1){
-            i++;
-            setTimeout(tem(_this,i),1000);
-          }
-        }
-      }
-    },
-    patchStyle: function(style){
-      var style_id = style.style_id;
-      var username = Cookies.get('username');
-      var access_token = Cookies.get('access_token');
-      var url = SERVER_API.styles + '/' + username + '/' + style_id;
-      var data = JSON.stringify(style);
-      this.$http({url:url,method:'PATCH',data:data,headers:{'x-access-token':access_token}})
-      .then(function(response){
-        if(response.ok){
-
-        }
-      },function(response){
-        this.$broadcast('mailSent', { message: '发生未知错误！',timeout:3000 });
-      })
     },
     // 给定 admin code，返回 admin 级别
     // 省市县的 admin code 是6位格式，乡镇为8位格式

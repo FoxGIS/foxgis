@@ -143,7 +143,7 @@ TODOS
 				// Change the following to preferences (already in the Editor Options dialog)?
 				gridSnapping: false,
 				gridColor: '#000',
-				baseUnit: 'px',
+				baseUnit: 'cm',
 				snappingStep: 10,
 				showRulers: true,
 				// URL BEHAVIOR CONFIGURATION
@@ -201,27 +201,64 @@ TODOS
 					retrieving: 'Retrieving \'%s\' ...'
 				}
 			};
+		var mapProperties = {//新增，地图属性
+			width:0,//图像的原始尺寸（像素）
+			height:0,
+			scale:0,//比例尺
+			zoom:1//图像缩放级别
+		}
 
 		/*动态改变模板(新添加的函数)*/
 		var changeSVGTemple = function(width,height,title){
 			if(title){
 				document.getElementById("title_name").innerHTML = title;
 			}
-			document.getElementById('background').setAttribute("width",width);
-			document.getElementById('background').setAttribute("height",height);
-			document.getElementById("title_name").setAttribute("x",width/2);
-			document.getElementById("map_outside").setAttribute("width",width-2*left_gap);
-			document.getElementById("map_outside").setAttribute("height",height-top_gap-bottom_gap);
-			document.getElementById("map_inside").setAttribute("width",width-2*(left_gap+rect_gap));
-			document.getElementById("map_inside").setAttribute("height",height-top_gap-bottom_gap-2*rect_gap);
-			document.getElementById("mapping_time").setAttribute("y",height-15);
-			document.getElementById("mapping_organization").setAttribute("x",width-left_gap);
-			document.getElementById("mapping_organization").setAttribute("y",height-15);
-			var translate = "translate("+(width-1600)+",0)";
-			document.getElementById("northArrow-group").setAttribute("transform",translate);
+			if(!width||!height){
+				return;
+			}
+			var image = $("#map_image image")[0];
+			image.setAttribute("width",width);
+			image.setAttribute("height",height);
+			var frameWidth = parseInt(width)+2*(rect_gap+left_gap);
+			var frameheight = parseInt(height)+top_gap+bottom_gap+2*rect_gap;
+			document.getElementById('background').setAttribute("width",frameWidth);
+			document.getElementById('background').setAttribute("height",frameheight);
+			document.getElementById("title_name").setAttribute("x",frameWidth/2);
+			document.getElementById("map_outside").setAttribute("width",frameWidth-2*left_gap);
+			document.getElementById("map_outside").setAttribute("height",frameheight-top_gap-bottom_gap);
+			document.getElementById("map_inside").setAttribute("width",frameWidth-2*(left_gap+rect_gap));
+			document.getElementById("map_inside").setAttribute("height",frameheight-top_gap-bottom_gap-2*rect_gap);
+			document.getElementById("mapping_time").setAttribute("y",frameheight-15);
+			document.getElementById("mapping_organization").setAttribute("x",frameWidth-left_gap);
+			document.getElementById("mapping_organization").setAttribute("y",frameheight-15);
+			var transX = frameWidth-1600,transY = frameheight-1200;
+			document.getElementById("northArrow-group").setAttribute("transform","translate("+transX+",0)");
+			var legend = $("#legend #legend-group");
+			if(legend){
+				legend.attr("transform","translate("+(width-mapProperties.width)+","+(height-mapProperties.height)+")");
+			}
+			var scale = document.getElementById("scale-text");
+			if(scale){
+				scale.setAttribute("x",frameWidth/2);
+				scale.setAttribute("y",frameheight-20);
+			}
 		};
+
+		var calcMapSize = function(scale){//根据比例尺计算地图尺寸（单位：cm）
+			var merc = new SphericalMercator({
+				size:256
+			});
+			var bbox = window.OPTIONS.bbox;
+			var ws = merc.forward([bbox[0],bbox[1]]);
+			var es = merc.forward([bbox[2],bbox[1]]);
+			var wn = merc.forward([bbox[0],bbox[3]]);
+			var w = Math.abs(es[0]-ws[0])*100/scale;
+			var h = Math.abs(ws[1]-wn[1])*100/scale;
+			return {w:w,h:h};
+		}
 		/**/
 
+		//从xml字符串加载地图模板
 		function loadSvgString (str, callback) {
 			var success = svgCanvas.setSvgString(str) !== false;
 			callback = callback || $.noop;
@@ -278,46 +315,11 @@ TODOS
 		*	so it won't affect pre-existing user storage (but then if users saves
 		*	that, it will then be subject to tampering
 		*/
+		//每次进入时加载模板
 		editor.loadContentAndPrefs = function () {
 			var res = $.ajax({url:"./template/map-template.xml",async:false});
 			var xml = res.responseText;
 			editor.loadFromString(xml);
-		
-			/*if (!curConfig.forceStorage && (curConfig.noStorageOnLoad || !document.cookie.match(/(?:^|;\s*)store=(?:prefsAndContent|prefsOnly)/))) {
-				return;
-			}
-
-			// LOAD CONTENT
-			if (editor.storage && // Cookies do not have enough available memory to hold large documents
-				(curConfig.forceStorage || (!curConfig.noStorageOnLoad && document.cookie.match(/(?:^|;\s*)store=prefsAndContent/)))
-			) {
-				var name = 'svgedit-' + curConfig.canvasName;
-				var cached = editor.storage.getItem(name);
-				if (cached) {
-					editor.loadFromString(cached);
-				}
-			}
-			
-			// LOAD PREFS
-			var key;
-			for (key in defaultPrefs) {
-				if (defaultPrefs.hasOwnProperty(key)) { // It's our own config, so we don't need to iterate up the prototype chain
-					var storeKey = 'svg-edit-' + key;
-					if (editor.storage) {
-						var val = editor.storage.getItem(storeKey);
-						if (val) {
-							defaultPrefs[key] = String(val); // Convert to string for FF (.value fails in Webkit)
-						}
-					}
-					else if (window.widget) {
-						defaultPrefs[key] = widget.preferenceForKey(storeKey);
-					}
-					else {
-						var result = document.cookie.match(new RegExp('(?:^|;\\s*)' + Utils.preg_quote(encodeURIComponent(storeKey)) + '=([^;]+)'));
-						defaultPrefs[key] = result ? decodeURIComponent(result[1]) : '';
-					}
-				}
-			}*/
 		};
 
 		/**
@@ -430,6 +432,7 @@ TODOS
 		*		'WEBP', 'PDF'), "mimeType", and "quality" (for 'JPEG' and 'WEBP'
 		*		types) to determine the proper output.
 		*/
+		//初始化“制图”菜单的处理函数
 		editor.setCustomHandlers = function (opts) {
 			editor.ready(function() {
 				if (opts.open) {
@@ -456,6 +459,7 @@ TODOS
 			svgCanvas.randomizeIds(arguments);
 		};
 
+		//制图编辑器的初始化
 		editor.init = function () {
 			// var host = location.hostname,
 			//	onWeb = host && host.indexOf('.') >= 0;
@@ -467,6 +471,7 @@ TODOS
 			} catch(err) {}
 
 			// Todo: Avoid var-defined functions and group functions together, etc. where possible
+			//语言选择
 			var good_langs = [];
 			$('#lang_select option').each(function() {
 				good_langs.push(this.value);
@@ -564,6 +569,7 @@ TODOS
 				}
 			}());
 			
+			//设置图标
 			var setIcon = editor.setIcon = function(elem, icon_id, forcedSize) {
 				var icon = (typeof icon_id === 'string') ? $.getSvgIcon(icon_id, true) : icon_id.clone();
 				if (!icon) {
@@ -573,6 +579,7 @@ TODOS
 				$(elem).empty().append(icon);
 			};
 
+			//加载拓展项
 			var extFunc = function() {
 				$.each(curConfig.extensions, function() {
 					var extname = this;
@@ -600,6 +607,8 @@ TODOS
 			} else {
 				extFunc();
 			}
+
+			//设置图标
 			$.svgIcons(curConfig.imgPath + 'svg_edit_icons.svg', {
 				w:24, h:24,
 				id_match: false,
@@ -795,6 +804,7 @@ TODOS
 				}
 			});
 
+			//初始化svgCanvas
 			editor.canvas = svgCanvas = new $.SvgCanvas(document.getElementById('svgcanvas'), curConfig);
 			var supportsNonSS, resize_timer, changeZoom, Actions, curScrollPos,
 				palette = [ // Todo: Make into configuration item?
@@ -843,6 +853,7 @@ TODOS
 			// needs to be included that returns the result as its first parameter.
 			// In the future we may want to add additional types of dialog boxes, since
 			// they should be easy to handle this way.
+			//初始化对话框
 			(function() {
 				$('#dialog_container').draggable({cancel: '#dialog_content, #dialog_buttons *', containment: 'window'});
 				var box = $('#dialog_box'),
@@ -933,6 +944,7 @@ TODOS
 				$.select = function(msg, opts, cb, changeCb, txt, checkbox) { dbox('select', msg, cb, txt, opts, changeCb, checkbox);};
 			}());
 
+			//svgCanvas设置成“select”模式
 			var setSelectMode = function() {
 				var curr = $('.tool_button_current');
 				if (curr.length && curr[0].id !== 'tool_select') {
@@ -1036,6 +1048,7 @@ TODOS
 				}
 			};
 
+			//显示svg源代码
 			var showSourceEditor = function(e, forSaving) {
 				if (editingsource) {return;}
 				$('#tool_source_save').bind('mouseout',function(e){
@@ -1078,6 +1091,7 @@ TODOS
 				}
 			};
 
+			//“制图”菜单点击“保存”（目前已取消该功能）
 			var saveHandler = function(wind, svg) {
 				editor.showSaveWarning = false;
 
@@ -1119,6 +1133,7 @@ TODOS
 				}
 			};
 
+			//“制图”菜单点击“导出”（目前已取消该功能）
 			var exportHandler = function(win, data) {
 				var issues = data.issues,
 					exportWindowName = data.exportWindowName;
@@ -1601,9 +1616,6 @@ TODOS
 					var elname = elem.nodeName;
 					// If this is a link with no transform and one child, pretend
 					// its child is selected
-//					if (elname === 'a') { // && !$(elem).attr('transform')) {
-//						elem = elem.firstChild;
-//					}
 
 					var angle = svgCanvas.getRotationAngle(elem);
 					$('#angle').val(angle);
@@ -1697,10 +1709,6 @@ TODOS
 					};
 
 					var el_name = elem.tagName;
-
-//					if ($(elem).data('gsvg')) {
-//						$('#g_panel').show();
-//					}
 
 					var link_href = null;
 					if (el_name === 'a') {
@@ -1813,9 +1821,6 @@ TODOS
 				var newTitle = origTitle + (title ? ': ' + title : '');
 
 				// Remove title update with current context info, isn't really necessary
-//				if (cur_context) {
-//					new_title = new_title + cur_context;
-//				}
 				$('title:first').text(newTitle);
 			};
 
@@ -1870,9 +1875,6 @@ TODOS
 							break;
 
 						// TODO: Update values that change on move/resize, etc
-//						case "select":
-//						case "resize":
-//							break;
 					}
 				}
 				svgCanvas.runExtensions('elementTransition', {
@@ -1911,7 +1913,6 @@ TODOS
 					// Update selectedElement if element is no longer part of the image.
 					// This occurs for the text elements in Firefox
 					else if (elem && selectedElement && selectedElement.parentNode == null) {
-//						|| elem && elem.tagName == "path" && !multiselected) { // This was added in r1430, but not sure why
 						selectedElement = elem;
 					}
 				}
@@ -2232,7 +2233,6 @@ TODOS
 
 			var setIconSize = editor.setIconSize = function (size) {
 
-//				var elems = $('.tool_button, .push_button, .tool_button_current, .disabled, .icon_label, #url_notice, #tool_open');
 				var sel_toscale = '#tools_top .toolset, #editor_panel > *, #history_panel > *,'+
 '				#main_button, #tools_left > *, #path_node_panel > *, #multiselected_panel > *,'+
 '				#g_panel > *, #tool_font_size > *, .tools_flyout';
@@ -2250,14 +2250,6 @@ TODOS
 				editor.tool_scale = scale;
 
 				setFlyoutPositions();
-				// $('.tools_flyout').each(function() {
-//					var pos = $(this).position();
-//					console.log($(this), pos.left+(34 * scale));
-//					$(this).css({'left': pos.left+(34 * scale), 'top': pos.top+(77 * scale)});
-//					console.log('l', $(this).css('left'));
-//				});
-
-//				var scale = .75;
 
 				var hidden_ps = elems.parents(':hidden');
 				hidden_ps.css('visibility', 'hidden').show();
@@ -2268,43 +2260,8 @@ TODOS
 				$.pref('iconsize', size);
 				$('#iconsize').val(size);
 
-				// Change icon size
-//				$('.tool_button, .push_button, .tool_button_current, .disabled, .icon_label, #url_notice, #tool_open')
-//				.find('> svg, > img').each(function() {
-//					this.setAttribute('width',size_num);
-//					this.setAttribute('height',size_num);
-//				});
-//
-//				$.resizeSvgIcons({
-//					'.flyout_arrow_horiz > svg, .flyout_arrow_horiz > img': size_num / 5,
-//					'#logo > svg, #logo > img': size_num * 1.3,
-//					'#tools_bottom .icon_label > *': (size_num === 16 ? 18 : size_num * .75)
-//				});
-//				if (size != 's') {
-//					$.resizeSvgIcons({'#layerbuttons svg, #layerbuttons img': size_num * .6});
-//				}
-
 				// Note that all rules will be prefixed with '#svg_editor' when parsed
 				var cssResizeRules = {
-//					'.tool_button,\
-//					.push_button,\
-//					.tool_button_current,\
-//					.push_button_pressed,\
-//					.disabled,\
-//					.icon_label,\
-//					.tools_flyout .tool_button': {
-//						'width': {s: '16px', l: '32px', xl: '48px'},
-//						'height': {s: '16px', l: '32px', xl: '48px'},
-//						'padding': {s: '1px', l: '2px', xl: '3px'}
-//					},
-//					'.tool_sep': {
-//						'height': {s: '16px', l: '32px', xl: '48px'},
-//						'margin': {s: '2px 2px', l: '2px 5px', xl: '2px 8px'}
-//					},
-//					'#main_icon': {
-//						'width': {s: '31px', l: '53px', xl: '75px'},
-//						'height': {s: '22px', l: '42px', xl: '64px'}
-//					},
 					'#tools_top': {
 						'left': 50 + $('#main_button').width(),
 						'height': 72
@@ -2317,88 +2274,6 @@ TODOS
 						'left': 38,
 						'top': 74
 					}
-//					'#tools_bottom': {
-//						'left': {s: '27px', l: '46px', xl: '65px'},
-//						'height': {s: '58px', l: '98px', xl: '145px'}
-//					},
-//					'#color_tools': {
-//						'border-spacing': {s: '0 1px'},
-//						'margin-top': {s: '-1px'}
-//					},
-//					'#color_tools .icon_label': {
-//						'width': {l:'43px', xl: '60px'}
-//					},
-//					'.color_tool': {
-//						'height': {s: '20px'}
-//					},
-//					'#tool_opacity': {
-//						'top': {s: '1px'},
-//						'height': {s: 'auto', l:'auto', xl:'auto'}
-//					},
-//					'#tools_top input, #tools_bottom input': {
-//						'margin-top': {s: '2px', l: '4px', xl: '5px'},
-//						'height': {s: 'auto', l: 'auto', xl: 'auto'},
-//						'border': {s: '1px solid #555', l: 'auto', xl: 'auto'},
-//						'font-size': {s: '.9em', l: '1.2em', xl: '1.4em'}
-//					},
-//					'#zoom_panel': {
-//						'margin-top': {s: '3px', l: '4px', xl: '5px'}
-//					},
-//					'#copyright, #tools_bottom .label': {
-//						'font-size': {l: '1.5em', xl: '2em'},
-//						'line-height': {s: '15px'}
-//					},
-//					'#tools_bottom_2': {
-//						'width': {l: '295px', xl: '355px'},
-//						'top': {s: '4px'}
-//					},
-//					'#tools_top > div, #tools_top': {
-//						'line-height': {s: '17px', l: '34px', xl: '50px'}
-//					},
-//					'.dropdown button': {
-//						'height': {s: '18px', l: '34px', xl: '40px'},
-//						'line-height': {s: '18px', l: '34px', xl: '40px'},
-//						'margin-top': {s: '3px'}
-//					},
-//					'#tools_top label, #tools_bottom label': {
-//						'font-size': {s: '1em', l: '1.5em', xl: '2em'},
-//						'height': {s: '25px', l: '42px', xl: '64px'}
-//					},
-//					'div.toolset': {
-//						'height': {s: '25px', l: '42px', xl: '64px'}
-//					},
-//					'#tool_bold, #tool_italic': {
-//						'font-size': {s: '1.5em', l: '3em', xl: '4.5em'}
-//					},
-//					'#sidepanels': {
-//						'top': {s: '50px', l: '88px', xl: '125px'},
-//						'bottom': {s: '51px', l: '68px', xl: '65px'}
-//					},
-//					'#layerbuttons': {
-//						'width': {l: '130px', xl: '175px'},
-//						'height': {l: '24px', xl: '30px'}
-//					},
-//					'#layerlist': {
-//						'width': {l: '128px', xl: '150px'}
-//					},
-//					'.layer_button': {
-//						'width': {l: '19px', xl: '28px'},
-//						'height': {l: '19px', xl: '28px'}
-//					},
-//					'input.spin-button': {
-//						'background-image': {l: 'url('images/spinbtn_updn_big.png')', xl: 'url('images/spinbtn_updn_big.png')'},
-//						'background-position': {l: '100% -5px', xl: '100% -2px'},
-//						'padding-right': {l: '24px', xl: '24px' }
-//					},
-//					'input.spin-button.up': {
-//						'background-position': {l: '100% -45px', xl: '100% -42px'}
-//					},
-//					'input.spin-button.down': {
-//						'background-position': {l: '100% -85px', xl: '100% -82px'}
-//					},
-//					'#position_opts': {
-//						'width': {all: (size_num*4) +'px'}
-//					}
 				};
 
 				var rule_elem = $('#tool_size_rules');
@@ -2726,22 +2601,8 @@ TODOS
 									sel: '#'+id,
 									fn: btn.events.click,
 									icon: btn.id,
-//									key: btn.key,
 									isDefault: true
 								}, ref_data];
-	//
-	//							// {sel:'#tool_rect', fn: clickRect, evt: 'mouseup', key: 4, parent: '#tools_rect', icon: 'rect'}
-	//
-	//							var pos = ('position' in opts)?opts.position:'last';
-	//							var len = flyout_holder.children().length;
-	//
-	//							// Add at given position or end
-	//							if (!isNaN(pos) && pos >= 0 && pos < len) {
-	//								flyout_holder.children().eq(pos).before(button);
-	//							} else {
-	//								flyout_holder.append(button);
-	//								cur_h.reverse();
-	//							}
 							} else if (btn.type == 'app_menu') {
 								button.append('<div>').append(btn.title);
 							}
@@ -3194,13 +3055,6 @@ TODOS
 				var height = 0;
 				var js_hover = true;
 				var set_click = false;
-
-				/*
-				// Currently unused
-				var hideMenu = function() {
-					list.fadeOut(200);
-				};
-				*/
 
 				$(window).mouseup(function(evt) {
 					if (!on_button) {
@@ -3696,12 +3550,13 @@ TODOS
 					var height = parseInt(viewBox.split(' ')[3]);
 					var width = parseInt(viewBox.split(' ')[2]);
 
-					var scale = this.scaleClick == 0 ? 4 : this.scaleClick;
-					svg.attr("height",height*scale);
-					svg.attr("width",width*scale);
+					var mapScale = this.scaleClick == 0 ? 4 : this.scaleClick;
+					var svgScale = mapScale/mapProperties.zoom;
+					svg.attr("height",height*svgScale);
+					svg.attr("width",width*svgScale);
 					var options = window.OPTIONS;
 					if(document.getElementById("mapImg")&&options){
-						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
+						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+mapScale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
 						getDataUri(url, function(dataUri) {
 							url = dataUri;
 							imageObj.attr("xlink:href",url);
@@ -3796,6 +3651,8 @@ TODOS
 							document.getElementById('myCanvas').setAttribute("width",this.width);
 							document.getElementById('myCanvas').setAttribute("height",this.height);
 							var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+							context.fillStyle = "#ffffff";
+							context.fillRect(0,0,this.width,this.height);
 							context.drawImage(this, 0, 0);
 							var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
 							if(imgType==="JPEG"){
@@ -3910,161 +3767,23 @@ TODOS
 						$('#image-resolution .resolution').removeClass('click');
 						var parent = $(e.target).parent(".resolution");
 						parent.length == 0 ? $(e.target).addClass('click') : parent.addClass('click');
-						that.scaleClick = parseInt($(e.target).text())/72;
+						var dpi = parseInt($(e.target).text());
+						var scale = mapProperties.scale;//比例尺
+						var size = calcMapSize(scale);//地图尺寸
+						var mapPixelWidth = dpi*size.w/2.54;//该分辨率下地图像素宽
+						that.scaleClick = mapPixelWidth/mapProperties.width;
 					});
 				}
 			};
 
 			//新增分享到决策用图模块
+			//制图————分享
 			var clickShare = function(){
 				exportAndShare('share');
 			};
-
+			//制图————导出
 			var clickExport = function() {
-				exportAndShare('export');
-				/*$.select('请选择输出图片的格式: ', [
-					// See http://kangax.github.io/jstests/toDataUrl_mime_type_test/ for a useful list of MIME types and browser support
-					// 'ICO', // Todo: Find a way to preserve transparency in SVG-Edit if not working presently and do full packaging for x-icon; then switch back to position after 'PNG'
-					'PNG',
-					'JPEG', 'BMP', 'WEBP', 'PDF'
-				], function (imgType) { // todo: replace hard-coded msg with uiStrings.notification.
-					if (!imgType) {
-						return;
-					}
-					$("#spinner").css("display","block");
-					var str = $('#svgcontent')[0].outerHTML; 
-					var xmlObj = $.parseXML(str);//xml对象
-					var svg = $(xmlObj).find("svg");
-					var imageObj = $(xmlObj).find("image");
-					//var height = document.getElementById("svgcontent").getAttribute("height");
-					//var width = document.getElementById("svgcontent").getAttribute("width");
-					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
-					var height = parseInt(viewBox.split(' ')[3]);
-					var width = parseInt(viewBox.split(' ')[2]);
-					svg.attr("height",height*4);
-					svg.attr("width",width*4);
-					var options = window.OPTIONS;
-					if(document.getElementById("mapImg")&&options){
-						var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale=4&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
-						getDataUri(url, function(dataUri) {
-							url = dataUri;
-
-							imageObj.attr("xlink:href",url);
-
-							if (window.ActiveXObject){//code for ie
-							    str = xmlObj.xml;
-							}else{// code for Mozilla, Firefox, Opera, etc.
-							    str = (new XMLSerializer()).serializeToString(xmlObj);
-							}
-							var quality = parseInt($('#image-slider').val(), 10)/100;	
-							downLoad(str,imgType,quality);
-						});
-					}else{
-						if (window.ActiveXObject){//code for ie
-							str = xmlObj.xml;
-						}else{// code for Mozilla, Firefox, Opera, etc.
-							str = (new XMLSerializer()).serializeToString(xmlObj);
-						}
-						var quality = parseInt($('#image-slider').val(), 10)/100;	
-						downLoad(str,imgType,quality);
-					}
-
-					function downLoad(str,imgType,quality){
-						
-						if(imgType==="JPEG"||imgType==="WEBP"){
-							var quality=quality||1;
-						}
-						var svgXml = str;
-						var image1 = new Image();
-						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
-
-						var canvas = document.getElementById('myCanvas');  //准备空画布
-						document.getElementById('myCanvas').setAttribute("width",width*4);
-						document.getElementById('myCanvas').setAttribute("height",height*4);
-						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-						context.drawImage(image1, 0, 0);
-						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
-						if(imgType==="JPEG"){
-							canvas.toBlob(function(blob) {
-								$("#spinner").css("display","none");
-								saveAs(blob, filename+".jpg");
-							},"image/jpeg",quality);
-						}else if(imgType==="WEBP"){
-							canvas.toBlob(function(blob) {
-								$("#spinner").css("display","none");
-								saveAs(blob, filename+".webp");
-							},"image/webp",quality);
-						}else if(imgType==="PNG"){
-							canvas.toBlob(function(blob) {
-								$("#spinner").css("display","none");
-								saveAs(blob, filename+".png");
-							},"image/png");
-						}else if(imgType==="BMP"){
-							canvas.toBlob(function(blob) {
-								$("#spinner").css("display","none");
-								saveAs(blob, filename+".bmp");
-							},"image/bmp");
-						}
-					};
-					
-					function getDataUri(url, callback) {
-
-						var image2 = new Image();
-
-					    image2.onload = function () {
-
-					        var canvas = document.createElement('canvas');
-					        canvas.width = this.width; // or 'width' if you want a special/scaled size
-					        canvas.height = this.height; // or 'height' if you want a special/scaled size
-
-					        canvas.getContext('2d').drawImage(this, 0, 0);
-
-					        // Get raw image data
-					        var raw="data:image/png;base64,"+canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
-					        callback(raw);
-					    };
-					    image2.crossOrigin = "Anonymous";
-					    image2.src = url;
-					};
-
-					// Open placeholder window (prevents popup)
-					var exportWindowName;
-					function openExportWindow () {
-						var str = uiStrings.notification.loadingImage;
-						if (curConfig.exportWindowType === 'new') {
-							editor.exportWindowCt++;
-						}
-						exportWindowName = curConfig.canvasName + editor.exportWindowCt;
-						exportWindow = window.open(
-							'data:text/html;charset=utf-8,' + encodeURIComponent('<title>' + str + '</title><h1>' + str + '</h1>'),
-							exportWindowName
-						);
-					}
-					if (imgType === 'PDF') {
-						if (!customExportPDF) {
-							openExportWindow();
-						}
-						svgCanvas.exportPDF(exportWindowName);
-					}
-					else {
-						if (!customExportImage) {
-							openExportWindow();
-						}
-						var quality = parseInt($('#image-slider').val(), 10)/100;
-						svgCanvas.rasterExport(imgType, quality, exportWindowName);
-					}
-				}, function () {
-					var sel = $(this);
-					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
-						if (!$('#image-slider').length) {
-							$('<div><label>Quality: <input id="image-slider" type="range" min="1" max="100" value="92" /></label></div>').appendTo(sel.parent()); // Todo: i18n-ize label
-						}
-					}
-					else {
-						$('#image-slider').parent().remove();
-					}
-				});*/
-				
+				exportAndShare('export');		
 			};
 
 			// by default, svgCanvas.open() is a no-op.
@@ -4128,6 +3847,7 @@ TODOS
 
 			$('#svg_docprops_container, #svg_prefs_container').draggable({cancel: 'button,fieldset', containment: 'window'});
 
+			//“制图”菜单点击“输出属性”
 			var showDocProperties = function() {
 				if (docprops) {return;}
 				docprops = true;
@@ -4233,7 +3953,7 @@ TODOS
 			var hideDocProperties = function() {
 				$('#svg_docprops').hide();
 				$('#canvas_width,#canvas_height').removeAttr('disabled');
-				$('#resolution')[0].selectedIndex = 0;
+				$('#paper')[0].selectedIndex = 0;
 				$('#image_save_opts input').val([$.pref('img_save')]);
 				docprops = false;
 			};
@@ -4252,7 +3972,6 @@ TODOS
 				// update resolution
 				var width = $('#canvas_width'), w = width.val();
 				var height = $('#canvas_height'), h = height.val();
-				changeSVGTemple(w,h,newTitle);
 
 				if (w != 'fit' && !svgedit.units.isValidUnit('width', w)) {
 					$.alert(uiStrings.notification.invalidAttrValGiven);
@@ -4275,11 +3994,26 @@ TODOS
 					return false;
 				}
 
-				// Set image save option
-				$.pref('img_save', $('#image_save_opts :checked').val());
+				var scale = mapProperties.scale = Number($("#scale_ratio").val());
+				updateMapFrame(scale,newTitle);
+
 				updateCanvas();
 				hideDocProperties();
 			};
+			
+			var updateMapFrame = function(scale,newTitle){
+				if(scale){
+					window.OPTIONS.scale = scale;
+					var size = calcMapSize(scale);
+					var width = svgedit.units.convertToNum("width",size.w+"cm");
+					var height = svgedit.units.convertToNum("width",size.h+"cm");
+					mapProperties.zoom = width/mapProperties.width;
+					document.getElementById("scale-text").innerHTML = "比例尺：1:"+scale;
+					changeSVGTemple(width,height,newTitle);
+				}else{
+					changeSVGTemple(0,0,newTitle);
+				}
+			}
 
 			var savePreferences = editor.savePreferences = function() {
 				// Set background
@@ -4878,29 +4612,13 @@ TODOS
 				return orig_val / 2;
 			}
 
-		//	function setResolution(w, h, center) {
-		//		updateCanvas();
-		// //		w-=0; h-=0;
-		// //		$('#svgcanvas').css( { 'width': w, 'height': h } );
-		// //		$('#canvas_width').val(w);
-		// //		$('#canvas_height').val(h);
-		// //
-		// //		if (center) {
-		// //			var w_area = workarea;
-		// //			var scroll_y = h/2 - w_area.height()/2;
-		// //			var scroll_x = w/2 - w_area.width()/2;
-		// //			w_area[0].scrollTop = scroll_y;
-		// //			w_area[0].scrollLeft = scroll_x;
-		// //		}
-		//	}
-
-			$('#resolution').change(function() {
+			$('#paper').change(function() {
 				var wh = $('#canvas_width,#canvas_height');
 				if (!this.selectedIndex) {
 					if ($('#canvas_width').val() == 'fit') {
 						wh.removeAttr('disabled').val(100);
 					}
-				} else if (this.value == 'content') {
+				} else if (this.value == 'content') {//适应内容
 					wh.val('fit').attr('disabled', 'disabled');
 				} else {
 					var dims = this.value.split('x');
@@ -5446,13 +5164,7 @@ TODOS
 				$('#tool_import').show().prepend(imgImport);
 			}
 
-//			$(function() {
-				updateCanvas(true);
-//			});
-
-			//	var revnums = "svg-editor.js ($Rev$) ";
-			//	revnums += svgCanvas.getVersion();
-			//	$('#copyright')[0].setAttribute('title', revnums);
+			updateCanvas(true);
 
 			// For Compatibility with older extensions
 			$(function() {
@@ -5565,7 +5277,8 @@ TODOS
 				var img = new Image();	// 创建对象		  		
 				img.src = url;	// 改变图片的src		  
 				img.onload = function(){// 加载完成执行
-					
+					mapProperties.width = this.width;
+					mapProperties.height = this.height;
 					var w = this.width+2*(rect_gap+left_gap);
 					var h = this.height+top_gap+bottom_gap+2*rect_gap;
 
@@ -5589,9 +5302,9 @@ TODOS
 					if(window.OPTIONS.selectedDistrict!==""){
 						var templateName = window.OPTIONS.templateName;
 						var title = window.OPTIONS.selectedDistrict+templateName;
-						changeSVGTemple(w,h,title);
+						changeSVGTemple(this.width,this.height,title);
 					}else{
-						changeSVGTemple(w,h);
+						changeSVGTemple(this.width,this.height);
 					}
 					document.getElementById('mapImg').setAttribute("width",this.width);
 					document.getElementById('mapImg').setAttribute("height",this.height);
@@ -5600,6 +5313,19 @@ TODOS
 					var date = new Date();
 					document.getElementById('mapping_time').innerHTML = date.getFullYear() + "年" + (date.getMonth()+1) +"月";
 					document.getElementById('mapping_organization').innerHTML = options.organization;
+					//计算比例尺
+					var merc = new SphericalMercator({
+						size:256
+					});
+					var bbox = window.OPTIONS.bbox;
+					var ws = merc.forward([bbox[0],bbox[1]]);
+					var es = merc.forward([bbox[2],bbox[1]]);
+					var wn = merc.forward([bbox[0],bbox[3]]);
+					var realWidth = Math.abs(es[0]-ws[0])*100;
+					var cmWidth = svgedit.units.convertUnit(this.width,"cm");
+					var scale = parseInt(realWidth/cmWidth);
+					window.OPTIONS.scale = mapProperties.scale = scale;
+					$("#scale_ratio").val(scale);
 				};
 			}
 			

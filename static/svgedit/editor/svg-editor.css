@@ -530,6 +530,7 @@ input#image_url {
 
 #workarea.wireframe #canvasBackground > rect {
 	fill: #FFF !important;
+	stroke: none;
 }
 
 #tools_top div[id$="_panel"]:not(#editor_panel):not(#history_panel) {
@@ -1139,8 +1140,11 @@ ul li.current {
 #svg_docprops #svg_docprops_container,
 #svg_prefs #svg_prefs_container {
 	position: absolute;
-	top: 50px;
-	padding: 10px;
+	top: 50%;
+	left: 50%;
+    padding: 10px;
+    margin-top: -180px;
+    margin-left: -130px;
 	background-color: #fff;
 	border: 1px outset #777;
 	opacity: 1.0;

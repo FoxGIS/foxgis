@@ -309,12 +309,14 @@ svgEditor.addExtension('ext-legend', function() {
 		}
 		canv.createLayer("图例");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		current_layer.setAttribute("id","legend");
 		current_layer.appendChild($("#legend-group").clone()[0]);
-		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
-		var frameWidth = parseFloat(viewBox[2]);
-		var frameHeight = parseFloat(viewBox[3]);
-		var rectWidth = (col*colWidth+20)*scale;
+		var frameWidth = $("#svgcontent rect#background").attr("width");//地图边框
+		var frameHeight = $("#svgcontent rect#background").attr("height");
+		var rectWidth = (col*colWidth+20)*scale;//图例边框
 		var rectHeight = (Math.ceil(selected_count/col)*rowHeight+30)*scale;
+		console.log("frameWidth:"+frameWidth);
+		console.log("frameHeight:"+frameHeight);
 		var transX = frameWidth-rectWidth-50;
 		var transY = frameHeight-rectHeight-50;
 		if(scale===1){
@@ -330,7 +332,7 @@ svgEditor.addExtension('ext-legend', function() {
 			}
 		}
 		//图例的默认起点是（0,0），需要根据画布大小进行偏移到右下角
-		current_layer.setAttribute("transform","translate("+transX+","+transY+")");
+		document.getElementById("legend").setAttribute("transform","translate("+transX+","+transY+")");
 		canv.recalculateDimensions(current_layer);
 		//init();
 	}

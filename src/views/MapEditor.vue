@@ -214,7 +214,7 @@ export default {
         username:Cookies.get('username'),
         access_token:Cookies.get('access_token'),
         zoom:zoom,
-        scale:1,
+        scale:0,
         selectedDistrict:this.selectedDistrict,
         templateName:this.style.metadata.template.type,
         bbox:'['+controlBound.nw.lng+','+controlBound.se.lat+','+controlBound.se.lng+','+controlBound.nw.lat+']',
@@ -250,6 +250,9 @@ export default {
       this.styleSaveStatus = true;
       var style_id = style.style_id;
       var username = Cookies.get('username');
+      if(username === undefined){
+        window.location.href = "#!/login";
+      }
       var access_token = Cookies.get('access_token');
       var url = SERVER_API.styles + '/' + username + '/' + style_id;
       var data = JSON.stringify(style);

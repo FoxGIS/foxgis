@@ -402,7 +402,7 @@ svgedit.select.SelectorManager.prototype.initGroup = function() {
 			'x': 0,
 			'y': 0,
 			'stroke-width': 1,
-			'stroke': '#000',
+			'stroke': '#fff',
 			'fill': '#FFF',
 			'style': 'pointer-events:none'
 		}

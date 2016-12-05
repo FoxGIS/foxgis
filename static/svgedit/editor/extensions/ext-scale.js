@@ -19,21 +19,27 @@ svgEditor.addExtension('ext-scale', function() {
 	});
 	function scaleClick(){
 		canv.setMode("select");
-		var ppi = 288;
-		var scale = calculateScale(ppi);
-		window.OPTIONS.scale = scale;
-		drawScale(scale)
+		if(!window.OPTIONS.scale){
+			var ppi = 288;
+			var scale = calculateScale(ppi);
+			window.OPTIONS.scale = scale;
+		}
+		drawScale(window.OPTIONS.scale)
 	}
 	function drawScale(scale){
+		if(canv.setCurrentLayer("比例尺")){
+			canv.deleteCurrentLayer();
+		}
 		canv.createLayer("比例尺");
 		var current_layer = canv.getCurrentDrawing().getCurrentLayer();
+		current_layer.setAttribute("id","scale");
 		var text = canv.addSvgElementFromJson({//创建“图例”文字
 			'element': 'text',
 			'curStyles': true,
 			'attr': {
 				x: 0,
 				y: 0,
-				id: canv.getNextId(),
+				id: "scale-text",
 				fill: '#000000',
 				'stroke-width': 0,
 				'font-size': 12,
@@ -44,9 +50,8 @@ svgEditor.addExtension('ext-scale', function() {
 			}
 		});
 		text.textContent = "比例尺：1:"+scale;
-		var viewBox = $("#svgcontent").attr("viewBox").split(" ");
-		var frameWidth = parseFloat(viewBox[2]);
-		var frameHeight = parseFloat(viewBox[3]);
+		var frameWidth = $("#svgcontent rect#background").attr("width");//地图边框
+		var frameHeight = $("#svgcontent rect#background").attr("height");
 		current_layer.setAttribute("transform","translate("+(frameWidth/2)+","+(frameHeight-20)+")");
 		canv.recalculateDimensions(current_layer);
 	}

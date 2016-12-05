@@ -13,7 +13,7 @@
 			<rect id="map_inside" height="1060" width="1500" y="90" x="50" stroke-linecap="null" stroke-width="2" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="#ffffff"/>
 		</g>
 	</g>
-	<g class="layer">
+	<g class="layer" id="map_image">
 		<title>地图预览</title>
 		<image xlink:href="images/default-map.png" id="mapImg" height="1060" width="1500" y="90" x="50"/>
 	</g>

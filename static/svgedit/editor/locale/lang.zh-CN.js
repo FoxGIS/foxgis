@@ -126,7 +126,7 @@ svgEditor.readLang({
 		"to_path": "转换为路径",
 		"reorient_path": "调整路径",
 		"ungroup": "取消组合元素",
-		"docprops": "文档属性",
+		"docprops": "输出属性",
 		"imagelib": "图像库",
 		"move_bottom": "移至底部",
 		"move_top": "移至顶部",
@@ -162,9 +162,9 @@ svgEditor.readLang({
 		"move_selected": "移动元素至另一个图层"
 	},
 	config: {
-		"image_props": "图像属性",
+		"image_props": "输出属性",
 		"doc_title": "标题",
-		"doc_dims": "画布大小",
+		"doc_dims": "分辨率",
 		"included_images": "包含图像",
 		"image_opt_embed": "嵌入数据 (本地文件)",
 		"image_opt_ref": "Use file reference",
