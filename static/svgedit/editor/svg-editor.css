@@ -1717,6 +1717,14 @@ ul li.current {
     width: 100px;
     height: 20px;
 }
+
+#change_paper input{
+	width: 150px;
+}
+
+#change_paper select,#change_scale input{
+	width: 185px;
+}
 /*
 	Adding Icons
 	You can add icons to the context menu by adding

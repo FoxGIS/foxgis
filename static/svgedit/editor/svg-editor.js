@@ -4008,7 +4008,8 @@ TODOS
 					var width = svgedit.units.convertToNum("width",size.w+"cm");
 					var height = svgedit.units.convertToNum("width",size.h+"cm");
 					mapProperties.zoom = width/mapProperties.width;
-					document.getElementById("scale-text").innerHTML = "比例尺：1:"+scale;
+					var scaleElement = document.getElementById("scale-text");
+					if(scaleElement){scaleElement.innerHTML = "比例尺：1:"+scale;}
 					changeSVGTemple(width,height,newTitle);
 				}else{
 					changeSVGTemple(0,0,newTitle);
@@ -4619,7 +4620,12 @@ TODOS
 						wh.removeAttr('disabled').val(100);
 					}
 				} else if (this.value == 'content') {//适应内容
-					wh.val('fit').attr('disabled', 'disabled');
+					var frameWidth = mapProperties.width+2*(rect_gap+left_gap);
+					var frameheight = mapProperties.height+top_gap+bottom_gap+2*rect_gap;
+					var cmWidth = svgedit.units.convertUnit(frameWidth,"cm");
+					var cmHeight = svgedit.units.convertUnit(frameheight,"cm");
+					$('#canvas_width').val(cmWidth+"cm");
+					$('#canvas_height').val(cmHeight+"cm");
 				} else {
 					var dims = this.value.split('x');
 					$('#canvas_width').val(dims[0]);
