@@ -304,11 +304,11 @@
                 </select>
               </div>
               <div class="property-value" v-if="name=='line-round-limit'">
-                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter'" disabled name="{{name}}" data-type='layout'/>
+                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='miter' || curPanelLayer.layout['line-join']=='bevel'" disabled name="{{name}}" data-type='layout'/>
                 <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
               </div>
               <div class="property-value" v-if="name=='line-miter-limit'">
-                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round'" disabled name="{{name}}" data-type='layout'/>
+                <input type="text" :value="value" v-on:change='propertyChange' v-if="curPanelLayer.layout['line-join']=='round' || curPanelLayer.layout['line-join']=='bevel'" disabled name="{{name}}" data-type='layout'/>
                 <input type="text" :value="value" v-on:change='propertyChange' v-else name="{{name}}" data-type='layout'/>
               </div>
               <i class="material-icons open-stops" data-name="{{name}}" data-type="layout" v-on:click="openStopsPanel">timeline</i>
@@ -1578,17 +1578,18 @@ export default {
       var currentLayer = this.currentLayer;
       //1、名称为空，删除文件夹
       if(params.name === ""){
+        var groupId = currentLayer.metadata["mapbox:group"];
         delete currentLayer.metadata["mapbox:group"];//删除当前图层的文件夹
         var layers = this.styleObj.layers;
         var f = 0;
         for(var i=0;i<layers.length;i++){
-          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===params.id){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===groupId){
             f = 1;
-            return;
+            break;
           }
         }
         if(f===0){
-          delete this.styleObj.metadata["mapbox:groups"][folder_id];
+          delete this.styleObj.metadata["mapbox:groups"][groupId];
         }
         var data = JSON.parse(JSON.stringify(this.styleObj))
         this.changeStyle(data);
