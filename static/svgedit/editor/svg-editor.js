@@ -4617,6 +4617,13 @@ TODOS
 				return orig_val / 2;
 			}
 
+			$('.svginfo_layout').change(function(){
+				var width = $('#canvas_width').val();
+				var height = $('#canvas_height').val();
+				$('#canvas_width').val(height);
+				$('#canvas_height').val(width);
+			});
+
 			$('#paper').change(function() {
 				var wh = $('#canvas_width,#canvas_height');
 				if (!this.selectedIndex) {

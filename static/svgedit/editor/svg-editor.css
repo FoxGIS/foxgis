@@ -1722,6 +1722,10 @@ ul li.current {
 	width: 150px;
 }
 
+#change_paper input[type="radio"]{
+	width: 15px;
+}
+
 #change_paper select,#change_scale input{
 	width: 185px;
 }

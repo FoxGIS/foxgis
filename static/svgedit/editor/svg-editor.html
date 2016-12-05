@@ -741,7 +741,7 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 			</fieldset> -->
 
 			<fieldset id="change_paper">
-				<legend id="svginfo_pap">纸张大小</legend>
+				<legend id="svginfo_pap">纸张设置</legend>
 
 				<label><span id="svginfo_width">宽度:</span> <input type="text" id="canvas_width" size="6"/></label>
 
@@ -757,6 +757,12 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 						<option value="29.7cmx21cm">A4</option>
 						<option id="fitToContent" value="content">适应内容</option>
 					</select>
+				</label>
+
+				<label>
+					<span>布局:</span> 
+					<input class="svginfo_layout" type="radio" checked="checked" name="canvas_layout" value="horizontal"/>横向
+					<input class="svginfo_layout" type="radio" name="canvas_layout" value="vertical"/>纵向
 				</label>
 			</fieldset>
 			<!-- <fieldset id="change_resolution">
