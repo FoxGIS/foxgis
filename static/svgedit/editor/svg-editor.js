@@ -3544,12 +3544,16 @@ TODOS
 					var xmlObj = $.parseXML(str);//xml对象
 					var svg = $(xmlObj).find("svg");
 					var imageObj = $(xmlObj).find("image");
-					//var height = document.getElementById("svgcontent").getAttribute("height");
-					//var width = document.getElementById("svgcontent").getAttribute("width");
 					var viewBox = document.getElementById("svgcontent").getAttribute("viewBox");
 					var height = parseInt(viewBox.split(' ')[3]);
 					var width = parseInt(viewBox.split(' ')[2]);
-
+					if(!this.scaleClick){
+						var dpi = 288;//默认dpi
+						var scale = mapProperties.scale;//比例尺
+						var size = calcMapSize(scale);//地图尺寸
+						var mapPixelWidth = dpi*size.w/2.54;//该分辨率下地图像素宽
+						this.scaleClick = mapPixelWidth/mapProperties.width;
+					}
 					var mapScale = this.scaleClick == 0 ? 4 : this.scaleClick;
 					var svgScale = mapScale/mapProperties.zoom;
 					svg.attr("height",height*svgScale);
