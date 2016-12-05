@@ -4617,7 +4617,7 @@ TODOS
 				return orig_val / 2;
 			}
 
-			$('.svginfo_layout').change(function(){
+			$("input:radio[name='canvas_layout']").change(function(){
 				var width = $('#canvas_width').val();
 				var height = $('#canvas_height').val();
 				$('#canvas_width').val(height);
@@ -4625,6 +4625,7 @@ TODOS
 			});
 
 			$('#paper').change(function() {
+				$("input:radio[name='canvas_layout']").eq(0).attr("checked",true);
 				var wh = $('#canvas_width,#canvas_height');
 				if (!this.selectedIndex) {
 					if ($('#canvas_width').val() == 'fit') {
