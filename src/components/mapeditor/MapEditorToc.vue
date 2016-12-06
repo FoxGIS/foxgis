@@ -40,7 +40,7 @@
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="type-icon {{layer.type}}"></i>
+              <i class="type-icon {{item.type}}"></i>
               <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>
