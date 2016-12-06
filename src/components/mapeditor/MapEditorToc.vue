@@ -836,6 +836,8 @@ export default {
             metadatagroup[index].collapsed = !collapsed;
           }
         }
+        var data = JSON.parse(JSON.stringify(this.styleObj));
+        this.changeStyle(data);
 
       }else{
         this.showPropertyPanel(layer_id);
