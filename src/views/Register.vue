@@ -39,13 +39,25 @@
               <tr>
                 <th><span>手机：</span></th>
                 <td>
-                  <input id="phone">
+                  <input id="mobile">
+                </td>
+              </tr>
+              <tr>
+                <th><span>电话：</span></th>
+                <td>
+                  <input id="telephone">
                 </td>
               </tr>
               <tr>
                 <th><span>单位：</span></th>
                 <td>
                   <input id="organization">
+                </td>
+              </tr>
+              <tr>
+                <th><span>职务：</span></th>
+                <td>
+                  <input id="position">
                 </td>
               </tr>
               <tr>
@@ -105,23 +117,35 @@ export default {
         this.showError('请输入正确的邮箱地址');
         return ;
       }
-      var phoneReg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-      var phone = this.$el.querySelector('#phone').value;
-      if(phone === ''){
+      var mobileReg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      var mobile = this.$el.querySelector('#mobile').value;
+      if(mobile === ''){
         this.showError('手机不能为空');
         return ;
-      }else if(!phoneReg.test(phone)){
-        this.showError('请输入正确的电话格式');
+      }else if(!mobileReg.test(mobile)){
+        this.showError('请输入正确的手机格式');
         return;
       }
-      var location = document.getElementById('location').selectedOptions[0].value;
-      if(location === ''){
-        this.showError('位置不能为空');
-        return ;
+      var telephone = this.$el.querySelector('#telephone').value;
+      if(telephone!=""){
+        
+      }else{
+        this.showError('电话不能为空');
+        return;
       }
       var organization = this.$el.querySelector('#organization').value;
       if(organization === ''){
         this.showError('单位不能为空');
+        return ;
+      }
+      var position = this.$el.querySelector('#position').value;
+      if(position === ''){
+        this.showError('职务/职称不能为空');
+        return ;
+      }
+      var location = document.getElementById('location').selectedOptions[0].value;
+      if(location === ''){
+        this.showError('位置不能为空');
         return ;
       }
       var registerbutton = e.target.parentElement;
@@ -131,9 +155,11 @@ export default {
         'password':password,
         'name':name,
         'email':email,
-        'phone':phone,
-        'location':location,
-        'organization':organization
+        'mobile':mobile,
+        'telephone':telephone,
+        'organization':organization,
+        'position':position,
+        'location':location
       }
       this.$http.post(url,options).then(function(response){     
         var data = response.data;
@@ -143,23 +169,17 @@ export default {
           this.showError("注册成功,请联系管理员进行认证");
           return;
         }
-        
-        var access_token = data.access_token;
-        var username = data.username;
-        var name = data.name;
-        var email = data.email;
-        var phone = data.phone;
-        var location = data.location;
-        var organization = data.organization;
         var days = 30;
         
-        Cookies.set('access_token',access_token);
-        Cookies.set('username',username);
-        Cookies.set('name',name);
-        Cookies.set('email',email);
-        Cookies.set('phone',phone);
-        Cookies.set('location',location);
-        Cookies.set('organization',organization);
+        Cookies.set('access_token',data.access_token);
+        Cookies.set('username',data.username);
+        Cookies.set('name',data.name);
+        Cookies.set('email',data.email);
+        Cookies.set('mobile',data.mobile);
+        Cookies.set('telephone',data.telephone);
+        Cookies.set('organization',data.organization);
+        Cookies.set('position',data.position);
+        Cookies.set('location',data.location);
         
         window.location.href = '#!/studio';
       },function(response){
