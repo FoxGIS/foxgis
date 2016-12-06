@@ -1256,62 +1256,89 @@ export default {
 
       var styleObj = this.styleObj;
       var maplayers = styleObj.layers;
+      var groupId = '';
 
-      //移除
-      for(let i=0,length=maplayers.length;i<length;i++){
-        var name = maplayers[i].id;
-        if(name === dragLayerId){
-          dragLayerIndex = i;
-
-          //判断是否是组，是组则移除整组
-          if(dragLayer&&dragLayer.items&&dragLayer.items.length>0){
-
-            maplayers.splice(dragLayerIndex,dragLayer.items.length);
-          }else{
-            dragLayer = maplayers[i];
-            maplayers.splice(dragLayerIndex,1);
+      if(dragLayerId !== refLayerId){
+        //移除
+        for(let i=0,length=maplayers.length;i<length;i++){
+          var name = maplayers[i].id;
+          if(name === dragLayerId){
+            dragLayerIndex = i;
+            //判断是否是组，是组则移除整组
+            if(dragLayer&&dragLayer.items&&dragLayer.items.length>0){
+              maplayers.splice(dragLayerIndex,dragLayer.items.length);
+            }else{
+              dragLayer = maplayers[i];
+              maplayers.splice(dragLayerIndex,1);
+            }
+            break;
           }
-          break;
         }
-      }
-      //插入
-      for(let i=0,length=maplayers.length;i<length;i++){
-        var name = maplayers[i].id;
-        if(name === refLayerId){
-          refLayerIndex = i;
-          //如果是组
-          if(dragLayer&&dragLayer.items){
-            for(let j=0,length = dragLayer.items.length;j<length;j++){
-              maplayers.splice(refLayerIndex+1,0,dragLayer.items[j]);
+
+        //插入
+        for(let i=0,length=maplayers.length;i<length;i++){
+          var name = maplayers[i].id;
+          if(name === refLayerId){
+            refLayerIndex = i;
+            //如果是组
+            if(dragLayer&&dragLayer.items){
+              for(let j=0,length = dragLayer.items.length;j<length;j++){
+                maplayers.splice(refLayerIndex+1,0,dragLayer.items[j]);
+              }
+            }else{
+              maplayers.splice(refLayerIndex+1,0,dragLayer);
+            }
+            break;
+          }
+        }
+
+        //如果dragnode 是sublayer
+        if(dragnode.className.indexOf('sublayer-item') !== -1){
+          groupId = dragLayer.metadata["mapbox:group"];
+          delete dragLayer['metadata'];
+        }
+
+        //如果refnode是sublayer
+        if(refnode.className.indexOf('sublayer-item') !== -1){
+          //如果dragnode是group
+          if(dragLayer.items&&dragLayer.items.length>0){
+            //移动group
+            for(let j=dragLayer.items.length-1;j>=0;j--){
+              dragLayer.items[j]['metadata'] = {};
+              dragLayer.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
             }
           }else{
-            maplayers.splice(refLayerIndex+1,0,dragLayer);
+            dragLayer['metadata'] = {};
+            dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
           }
+        }
+      }else{
+        //如果把文件夹中的第一个移出文件夹
+        for(let i=0,length=maplayers.length;i<length;i++){
+          var name = maplayers[i].id;
+          if(name === dragLayerId){
+            delete maplayers[i]['metadata'];
+            if(refLayer.items&&refLayer.items.length === 1){
+              groupId = refLayer.items[0].metadata["mapbox:group"];
+            }
+            break;
+          }
+        }
+      }
+
+      //change toc
+      this.tocLayers = this.createTocLayer(styleObj);
+      //移除文件夹
+      var f = 0;
+      for(let i=0;i<maplayers.length;i++){
+        if(maplayers[i].metadata&&maplayers[i].metadata["mapbox:group"]===groupId){
+          f = 1;
           break;
         }
       }
-
-      //如果dragnode 是sublayer
-      if(dragnode.className.indexOf('sublayer-item') !== -1){
-        delete dragLayer['metadata'];
+      if(f===0){
+        delete this.styleObj.metadata["mapbox:groups"][groupId];
       }
-
-      //如果refnode是sublayer
-      if(refnode.className.indexOf('sublayer-item') !== -1){
-        //如果dragnode是group
-        if(dragLayer.items&&dragLayer.items.length>0){
-          //移动group
-          for(let j=dragLayer.items.length-1;j>=0;j--){
-            dragLayer.items[j]['metadata'] = {};
-            dragLayer.items[j]['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
-          }
-        }else{
-          dragLayer['metadata'] = {};
-          dragLayer['metadata']['mapbox:group'] = maplayers[refLayerIndex]['metadata']['mapbox:group'];
-        }
-      }
-      //change toc
-      this.tocLayers = this.createTocLayer(styleObj);
 
       var data = JSON.parse(JSON.stringify(this.styleObj));
       this.changeStyle(data);
