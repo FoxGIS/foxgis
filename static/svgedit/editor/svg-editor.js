@@ -4625,7 +4625,7 @@ TODOS
 			});
 
 			$('#paper').change(function() {
-				$("input:radio[name='canvas_layout']").eq(0).attr("checked",true);
+				var layouts = $("input:radio[name='canvas_layout']");
 				var wh = $('#canvas_width,#canvas_height');
 				if (!this.selectedIndex) {
 					if ($('#canvas_width').val() == 'fit') {
@@ -4636,12 +4636,22 @@ TODOS
 					var frameheight = mapProperties.height+top_gap+bottom_gap+2*rect_gap;
 					var cmWidth = svgedit.units.convertUnit(frameWidth,"cm");
 					var cmHeight = svgedit.units.convertUnit(frameheight,"cm");
-					$('#canvas_width').val(cmWidth+"cm");
-					$('#canvas_height').val(cmHeight+"cm");
+					if(layouts[0].checked){
+						$('#canvas_width').val(cmWidth+"cm");
+						$('#canvas_height').val(cmHeight+"cm");
+					}else{
+						$('#canvas_width').val(cmHeight+"cm");
+						$('#canvas_height').val(cmWidth+"cm");
+					}
 				} else {
 					var dims = this.value.split('x');
-					$('#canvas_width').val(dims[0]);
-					$('#canvas_height').val(dims[1]);
+					if(layouts[0].checked){
+						$('#canvas_width').val(dims[0]);
+						$('#canvas_height').val(dims[1]);
+					}else{
+						$('#canvas_width').val(dims[1]);
+						$('#canvas_height').val(dims[0]);
+					}
 					wh.removeAttr('disabled');
 				}
 			});
