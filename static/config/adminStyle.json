@@ -1,23 +1,5 @@
 {
-  "updatedAt": "2016-11-17T11:10:52.341Z",
-  "createdAt": "2016-11-17T11:09:43.440Z",
-  "owner": "wanyanyan",
-  "name": "县级",
   "zoom": 12.167161698684804,
-  "metadata": {
-    "template": {
-      "type": "行政区划图",
-      "level": 3,
-      "des": "0代表全国，1代表省，2代表市，3代表县"
-    },
-    "replaceField": 370104,
-    "shield": [
-      "11级省道编号",
-      "11级高速编号",
-      "11级国道编号",
-      "国道编号"
-    ]
-  },
   "sources": {
     "ngcc_admin_v2": {
       "type": "vector",
@@ -36,11 +18,103 @@
     },
     {
       "id": "亚洲面",
-      "type": "fill",
       "source": "ngcc_admin_v2",
-      "source-layer": "asia_a",
+      "type": "fill",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {},
       "paint": {
-        "fill-color": "#ebecec"
+        "fill-color": "#ececec",
+        "fill-opacity": 1,
+        "fill-outline-color": "#ececec"
+      },
+      "source-layer": "asia_a",
+      "metadata": {}
+    },
+    {
+      "id": "国界光晕",
+      "type": "line",
+      "source": "ngcc_admin_v2",
+      "source-layer": "china_l",
+      "minzoom": 3,
+      "maxzoom": 11,
+      "paint": {
+        "line-offset": -3,
+        "line-color": "rgba(255, 214, 211, 0.98)",
+        "line-width": {
+          "stops": [
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              6,
+              8
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "国界",
+      "type": "line",
+      "source": "ngcc_admin_v2",
+      "source-layer": "china_l",
+      "maxzoom": 11,
+      "paint": {
+        "line-color": "#e8ae59",
+        "line-width": {
+          "stops": [
+            [
+              2,
+              1
+            ],
+            [
+              7,
+              2
+            ],
+            [
+              9,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "省界线",
+      "type": "line",
+      "source": "ngcc_admin_v2",
+      "source-layer": "boua_prov",
+      "minzoom": 4,
+      "maxzoom": 9,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "rgb(150,150,150)",
+        "line-width": 1,
+        "line-dasharray": [
+          1.5,
+          3
+        ]
+      }
+    },
+    {
+      "id": "居民地",
+      "source": "ngcc_admin_v2",
+      "source-layer": "resa",
+      "minzoom": 6,
+      "maxzoom": 11,
+      "type": "fill",
+      "paint": {
+        "fill-color": "#8029fc",
+        "fill-opacity": 0.4
       }
     },
     {
@@ -151,7 +225,7 @@
       "id": "省界",
       "source": "ngcc_admin_v2",
       "type": "line",
-      "minzoom": 0,
+      "minzoom": 8,
       "maxzoom": 22,
       "source-layer": "boua_prov",
       "filter": [
@@ -230,37 +304,73 @@
       "id": "高速3",
       "source": "ngcc_admin_v2",
       "type": "line",
-      "minzoom": 0,
+      "minzoom": 6,
       "maxzoom": 22,
       "paint": {
         "line-color": "#781432",
         "line-opacity": 1,
-        "line-width": 9
+        "line-width": {
+          "stops": [
+            [
+              6,
+              5
+            ],
+            [
+              8,
+              7
+            ],
+            [
+              10,
+              9
+            ]
+          ]
+        }
       },
       "source-layer": "lrdl",
       "filter": [
         "==",
         "rteg",
         "高速"
-      ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      }
     },
     {
       "id": "高速2",
       "source": "ngcc_admin_v2",
       "type": "line",
-      "minzoom": 0,
+      "minzoom": 6,
       "maxzoom": 22,
       "paint": {
         "line-color": "#ffff00",
         "line-opacity": 1,
-        "line-width": 5
+        "line-width": {
+          "stops": [
+            [
+              6,
+              3
+            ],
+            [
+              8,
+              4
+            ],
+            [
+              10,
+              5
+            ]
+          ]
+        }
       },
       "source-layer": "lrdl",
       "filter": [
         "==",
         "rteg",
         "高速"
-      ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      }
     },
     {
       "id": "高速1",
@@ -278,7 +388,10 @@
         "==",
         "rteg",
         "高速"
-      ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      }
     },
     {
       "id": "国道1",
@@ -882,6 +995,124 @@
       ]
     },
     {
+      "id": "“亚洲”注记",
+      "type": "symbol",
+      "source": "ngcc_admin_v2",
+      "source-layer": "zhou_label",
+      "minzoom": 1,
+      "maxzoom": 5,
+      "filter": [
+        "==",
+        "name",
+        "亚洲"
+      ],
+      "layout": {
+        "symbol-placement": "point",
+        "text-field": "{name}",
+        "text-font": [
+          "SimHei Regular"
+        ],
+        "text-allow-overlap": true,
+        "text-size": {
+          "stops": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              25
+            ]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": "#93471D"
+      }
+    },
+    {
+      "id": "“中国”注记",
+      "type": "symbol",
+      "source": "ngcc_admin_v2",
+      "source-layer": "zhou_label",
+      "minzoom": 1,
+      "maxzoom": 4,
+      "filter": [
+        "==",
+        "name",
+        "中国"
+      ],
+      "layout": {
+        "symbol-placement": "point",
+        "text-field": "中华人民共和国",
+        "text-font": [
+          "SimHei Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              1,
+              10
+            ],
+            [
+              2,
+              12
+            ],
+            [
+              3,
+              16
+            ],
+            [
+              4,
+              25
+            ]
+          ]
+        },
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": "#FF0000"
+      }
+    },
+    {
+      "id": "省名注记",
+      "source": "ngcc_admin_v2",
+      "source-layer": "prov_label",
+      "type": "symbol",
+      "minzoom": 4,
+      "maxzoom": 5,
+      "layout": {
+        "text-size": 12,
+        "text-font": [
+          "STXinwei Regular"
+        ],
+        "text-offset": [
+          1,
+          0
+        ],
+        "symbol-placement": "point",
+        "text-field": "{name}",
+        "text-max-width": 8
+      },
+      "paint": {
+        "text-color": "rgb(250,0,0)",
+        "text-halo-color": "rgb(255,255,255)",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 1
+      }
+    },
+    {
       "id": "11级高速编号",
       "source": "ngcc_admin_v2",
       "type": "symbol",
@@ -908,6 +1139,50 @@
       ],
       "paint": {
         "text-color": "#696108"
+      }
+    },
+    {
+      "id": "首都注记",
+      "type": "symbol",
+      "source": "ngcc_admin_v2",
+      "source-layer": "agnp",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "AB"
+        ],
+        [
+          "==",
+          "capname",
+          "北京"
+        ]
+      ],
+      "minzoom": 3,
+      "maxzoom": 11,
+      "layout": {
+        "text-size": 14,
+        "icon-image": "star-15",
+        "text-font": [
+          "SimHei Regular"
+        ],
+        "symbol-placement": "point",
+        "text-allow-overlap": false,
+        "text-offset": [
+          0,
+          1
+        ],
+        "text-anchor": "top",
+        "text-field": "{capname}",
+        "text-letter-spacing": 0.02,
+        "text-max-width": 8
+      },
+      "paint": {
+        "text-color": "rgb(255,0,0)",
+        "text-halo-color": "rgb(255,255,255)",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 1
       }
     },
     {
@@ -1143,7 +1418,7 @@
       "id": "县级注记及符号",
       "source": "ngcc_admin_v2",
       "type": "symbol",
-      "minzoom": 0,
+      "minzoom": 8,
       "maxzoom": 22,
       "layout": {
         "text-field": "{name}",
@@ -1227,10 +1502,10 @@
         "text-allow-overlap": false,
         "icon-image": "circle-11",
         "text-offset": [
-          2,
+          0.5,
           0
         ],
-        "text-anchor": "center"
+        "text-anchor": "left"
       },
       "paint": {
         "text-color": "#545454",
@@ -1313,8 +1588,5 @@
     116.89013428996526,
     36.682634146428484
   ],
-  "version": 8,
-  "tags": [],
-  "scope": "private",
-  "style_id": "SkgJ-gzs-l"
+  "version": 8
 }
