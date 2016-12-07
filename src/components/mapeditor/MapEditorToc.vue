@@ -40,7 +40,7 @@
           </label>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="type-icon {{layer.type}}"></i>
+              <i class="type-icon {{item.type}}"></i>
               <span name="{{item.id}}">{{item.id}}</span>
             </div>
           </div>
@@ -208,8 +208,15 @@
               <div v-if="curPanelLayer.layout['symbol-placement']==='line'" class="property-item">
                 <div class="property-name"><span >标注盾牌</span></div>
                 <div class="property-value">
-                  <mdl-switch :checked.sync="true" v-if="styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-switch>
-                  <mdl-switch :checked.sync="false" v-else v-on:change='shieldChange' data-name="shield" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="true" v-if="styleObj.metadata&&styleObj.metadata.shield&&styleObj.metadata.shield.indexOf(curPanelLayer.id)!==-1" v-on:change='labelChange' data-name="shield" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='labelChange' data-name="shield" data-type='layout' ></mdl-switch>
+                </div>
+              </div>
+              <div v-if="curPanelLayer.layout['symbol-placement']==='point'" class="property-item">
+                <div class="property-name"><span >动态标注</span></div>
+                <div class="property-value">
+                  <mdl-switch :checked.sync="true" v-if="styleObj.metadata&&styleObj.metadata.autolabel&&styleObj.metadata.autolabel.indexOf(curPanelLayer.id)!==-1" v-on:change='labelChange' data-name="autolabel" data-type='layout' ></mdl-switch>
+                  <mdl-switch :checked.sync="false" v-else v-on:change='labelChange' data-name="autolabel" data-type='layout' ></mdl-switch>
                 </div>
               </div>
             </div>
@@ -836,6 +843,8 @@ export default {
             metadatagroup[index].collapsed = !collapsed;
           }
         }
+        var data = JSON.parse(JSON.stringify(this.styleObj));
+        this.changeStyle(data);
 
       }else{
         this.showPropertyPanel(layer_id);
@@ -920,23 +929,25 @@ export default {
       var data = JSON.parse(JSON.stringify(this.styleObj));
       this.changeStyle(data);
     },
-    shieldChange:function(e){
+    labelChange:function(e){
       var currentLayer = this.currentLayer;
       var targetDom = e.target;
+      var type = targetDom.parentElement.dataset.name;
       var value = targetDom.checked;
 
       if(value===true){
         if(!this.styleObj.metadata){
-          this.styleObj.metadata = {shield:[]};
+          this.styleObj.metadata = {};
+          this.styleObj.metadata[type] = [];
         }
-        if(!this.styleObj.metadata.shield){
-          this.styleObj.metadata.shield = [];
+        if(!this.styleObj.metadata[type]){
+          this.styleObj.metadata[type] = [];
         }
-        this.styleObj.metadata.shield.push(currentLayer.id);
+        this.styleObj.metadata[type].push(currentLayer.id);
       }else{
-        for(var i = 0;i<this.styleObj.metadata.shield.length;i++){
-          if(this.styleObj.metadata.shield[i]===currentLayer.id){
-            this.styleObj.metadata.shield.splice(i,1);
+        for(var i = 0;i<this.styleObj.metadata[type].length;i++){
+          if(this.styleObj.metadata[type][i]===currentLayer.id){
+            this.styleObj.metadata[type].splice(i,1);
           }
         }
       }
