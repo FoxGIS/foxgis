@@ -2299,6 +2299,7 @@ a {
   margin: 10px 5px;
   padding: 5px 0px 5px 10px;
   width: 280px;
+  height: 20px;
 }
 
 .property-header i{
