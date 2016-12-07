@@ -1628,6 +1628,12 @@ export default {
       this.folder_id = folder_id;
       this.tempFolder_id = folder_id;
       this.tempCurrentLayer = currentLayer;
+      var groupId,isGroup=false;
+      if(currentLayer.metadata&&currentLayer.metadata["mapbox:group"]){
+        //记录已有文件夹的ID
+        groupId = currentLayer.metadata["mapbox:group"];
+        isGroup = true;
+      }
       if(!flag){//文件夹不存在
         if(!currentLayer.metadata){
           currentLayer.metadata = {};
@@ -1667,6 +1673,19 @@ export default {
             currentLayer.metadata = {};
           }
           currentLayer.metadata["mapbox:group"] = this.folder_id;
+        }
+      }
+      if(isGroup){//文件夹改变名称
+        var layers = this.styleObj.layers;
+        var f = 0;
+        for(var i=0;i<layers.length;i++){
+          if(layers[i].metadata&&layers[i].metadata["mapbox:group"]===groupId){
+            f = 1;
+            break;
+          }
+        }
+        if(f===0){
+          delete this.styleObj.metadata["mapbox:groups"][groupId];
         }
       }
       var data = JSON.parse(JSON.stringify(this.styleObj))

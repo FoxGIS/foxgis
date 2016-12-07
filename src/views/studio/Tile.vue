@@ -30,18 +30,22 @@
           <span v-if="status.status==='upload'" style="color:red">正在上传</span>
           <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
           <span v-if="status.status==='complete'" style="color:green">完成</span>
+          <span v-if="status.status==='error'" style="color:red">上传失败</span>
         </div> 
       </div>
     </div>
     <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
   </div>
-  <div class='progress-bar' style="display:none">
-    <div class="activebar bar" :style="uploadStatus.percentage"></div>
-    <div class="bufferbar bar"></div>
-    <span id='uplate-status'>
-      <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
-      <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
-    </span>
+  
+  <div class='progress-panel' style="display:none">
+    <div class='progress-bar'>
+      <div class="activebar bar" :style="uploadStatus.percentage"></div>
+      <div class="bufferbar bar"></div>
+      <span id='uplate-status'>
+        <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
+        <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
+      </span>
+    </div>
   </div>
 
   <foxgis-data-cards-tile :dataset="displayDataset"></foxgis-data-cards-tile>
@@ -62,7 +66,7 @@ export default {
       var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        if(response.data.complete){
+        if(response.data.complete === true){
           var tileset = response.data.tileset;
           tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
           this.dataset.unshift(tileset);
@@ -72,7 +76,14 @@ export default {
               break;
             }
           }
-          //this.$broadcast('mailSent', { message: tileset.name+'切片完成！',timeout:1000 });
+        }else if(response.data.complete === 'error'){
+          var tileset = response.data.tileset;
+          for(var i=0;i<this.tileCopyStatus.length;i++){
+            if(this.tileCopyStatus[i].id===tileset.tileset_id){
+              this.tileCopyStatus[i].status="error";
+              break;
+            }
+          }
         }else{
           var _this = this;
           setTimeout(function(){
@@ -262,6 +273,12 @@ span {
 }
 
 /* 进度条样式 */
+.progress-panel{
+  height:25px;
+  width: 100%;
+  position: relative;
+}
+
 .progress-bar{
   display: block;
   position: relative;
@@ -322,6 +339,10 @@ span {
 .status-container .file-name{
   width: 65%;
   display: inline-block;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .status-container .file-prog{
   width: 30%;
