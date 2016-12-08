@@ -3868,7 +3868,8 @@ TODOS
 
 				$('#canvas_width').val(res.w);
 				$('#canvas_height').val(res.h);
-				$('#canvas_title').val(svgCanvas.getDocumentTitle());
+				var filename = document.getElementById("title_name").innerHTML;
+				$('#canvas_title').val(filename);
 
 				$('#tool_docprops_save').bind('mouseout',function(e){
 					$('#tool_docprops_save').removeClass('mouse');
