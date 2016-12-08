@@ -76,4 +76,22 @@ export default {
   width: 250px;
   height: calc(100% - 50px);
 }
+
+#district-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+#district-container::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#district-container::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+#district-container::-webkit-scrollbar-thumb {
+  background-color: #dcdcdc;
+}
 </style>

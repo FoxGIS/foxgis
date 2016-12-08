@@ -47,4 +47,21 @@ export default {
   padding: 0;
   border: 0px;
 }
+#code::-webkit-scrollbar {
+  width: 6px;
+}
+
+#code::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+#code::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+#code::-webkit-scrollbar-thumb {
+  background-color: #dcdcdc;
+}
 </style>
