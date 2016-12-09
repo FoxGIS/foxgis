@@ -19,18 +19,20 @@
   <div id="tile-copy">
     <div id='info-tip'></div>
     <div class="status-container">
-      <div v-if="tileCopyStatus.length===0">
-        <span>没有文件正在上传</span>
-      </div>
-      <div v-for="status in tileCopyStatus" v-else>
-        <div class="file-name">
-          <span>{{status.name}}</span>
+      <div>
+        <div v-if="tileCopyStatus.length===0">
+          <span>没有文件正在上传</span>
         </div>
-        <div class="file-prog">
-          <span v-if="status.status==='upload'" style="color:red">正在上传</span>
-          <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
-          <span v-if="status.status==='complete'" style="color:green">完成</span>
-        </div> 
+        <div v-for="status in tileCopyStatus" v-else>
+          <div class="file-name">
+            <span>{{status.name}}</span>
+          </div>
+          <div class="file-prog">
+            <span v-if="status.status==='upload'" style="color:red">正在上传</span>
+            <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
+            <span v-if="status.status==='complete'" style="color:green">完成</span>
+          </div> 
+        </div>
       </div>
     </div>
     <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
@@ -320,11 +322,11 @@ span {
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 .status-container .file-name{
-  width: 65%;
+  width: calc(100% - 70px);
   display: inline-block;
 }
 .status-container .file-prog{
-  width: 30%;
+  width: 50px;
   display: inline-block;
   font-size: 12px;
   text-align: right;

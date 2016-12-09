@@ -35,7 +35,7 @@ TODOS
 		// STATE MAINTENANCE PROPERTIES
 		editor.tool_scale = 1; // Dependent on icon size, so any use to making configurable instead? Used by JQuerySpinBtn.js
 		editor.exportWindowCt = 0;
-		editor.langChanged = false;
+		/*editor.langChanged = false;*/
 		editor.showSaveWarning = false;
 		editor.storagePromptClosed = false; // For use with ext-storage.js
 
@@ -45,8 +45,6 @@ TODOS
 		var svgCanvas, urldata,
 			Utils = svgedit.utilities,
 			isReady = false,
-			customExportImage = false,
-			customExportPDF = false,
 			callbacks = [],
 			/**
 			* PREFS AND CONFIG
@@ -54,7 +52,6 @@ TODOS
 			// The iteration algorithm for defaultPrefs does not currently support array/objects
 			defaultPrefs = {
 				// EDITOR OPTIONS (DIALOG)
-				lang: '', // Default to "en" if locale.js detection does not detect another language
 				iconsize: '', // Will default to 's' if the window height is smaller than the minimum height and 'm' otherwise
 				bkgd_color: '#FFF',
 				bkgd_url: '',
@@ -93,16 +90,9 @@ TODOS
 				'ext-overview_window.js',
 				'ext-markers.js',
 				'ext-connector.js',
-				/*'ext-eyedropper.js',*/
-				/*'ext-shapes.js',*/
 				'ext-compass.js',
 				'ext-legend.js',
-				'ext-imagelib.js',
-				/*'ext-grid.js',*/
-				/*'ext-polygon.js',
-				'ext-star.js',*/
-				'ext-panning.js',
-				'ext-storage.js'
+				'ext-panning.js'
 			],
 			defaultConfig = {
 				// Todo: svgcanvas.js also sets and checks: show_outside_canvas, selectNew; add here?
@@ -133,7 +123,7 @@ TODOS
 				// PATH CONFIGURATION
 				// The following path configuration items are disallowed in the URL (as should any future path configurations)
 				imgPath: 'images/',
-				langPath: 'locale/',
+				/*langPath: 'locale/',*/
 				extPath: 'extensions/',
 				jGraduatePath: 'jgraduate/images/',
 				// DOCUMENT PROPERTIES
@@ -177,28 +167,28 @@ TODOS
 					layer: 'Layer'
 				},
 				notification: {
-					invalidAttrValGiven: 'Invalid value given',
-					noContentToFitTo: 'No content to fit to',
-					dupeLayerName: 'There is already a layer named that!',
-					enterUniqueLayerName: 'Please enter a unique layer name',
-					enterNewLayerName: 'Please enter the new layer name',
-					layerHasThatName: 'Layer already has that name',
-					QmoveElemsToLayer: 'Move selected elements to layer \'%s\'?',
-					QwantToClear: 'Do you want to clear the drawing?\nThis will also erase your undo history!',
-					QwantToOpen: 'Do you want to open a new file?\nThis will also erase your undo history!',
-					QerrorsRevertToSource: 'There were parsing errors in your SVG source.\nRevert back to original SVG source?',
-					QignoreSourceChanges: 'Ignore changes made to SVG source?',
-					featNotSupported: 'Feature not supported',
-					enterNewImgURL: 'Enter the new image URL',
-					defsFailOnSave: 'NOTE: Due to a bug in your browser, this image may appear wrong (missing gradients or elements). It will however appear correct once actually saved.',
-					loadingImage: 'Loading image, please wait...',
-					saveFromBrowser: 'Select \'Save As...\' in your browser to save this image as a %s file.',
-					noteTheseIssues: 'Also note the following issues: ',
-					unsavedChanges: 'There are unsaved changes.',
-					enterNewLinkURL: 'Enter the new hyperlink URL',
-					errorLoadingSVG: 'Error: Unable to load SVG data',
-					URLloadFail: 'Unable to load from URL',
-					retrieving: 'Retrieving \'%s\' ...'
+					"invalidAttrValGiven":"无效的参数",
+					"noContentToFitTo":"无可适应的内容",
+					"dupeLayerName":"已存在同名的图层!",
+					"enterUniqueLayerName":"请输入一个唯一的图层名称",
+					"enterNewLayerName":"请输入新的图层名称",
+					"layerHasThatName":"图层已经采用了该名称",
+					"QmoveElemsToLayer":"您确定移动所选元素到图层'%s'吗?",
+					"QwantToClear":"您希望清除当前绘制的所有图形吗?\n该操作将无法撤消!",
+					"QwantToOpen":"您希望打开一个新文档吗?\n该操作将无法撤消!",
+					"QerrorsRevertToSource":"SVG文件解析错误.\n是否还原到最初的SVG文件?",
+					"QignoreSourceChanges":"忽略对SVG文件所作的更改么?",
+					"featNotSupported":"不支持该功能",
+					"enterNewImgURL":"请输入新图像的URLL",
+					"defsFailOnSave": "注意: 由于您所使用的浏览器存在缺陷, 该图像无法正确显示 (不支持渐变或相关元素). 修复该缺陷后可正确显示.",
+					"loadingImage":"正在加载图像, 请稍候...",
+					"saveFromBrowser": "选择浏览器中的 \"另存为...\" 将该图像保存为 %s 文件.",
+					"noteTheseIssues": "同时注意以下几点: ",
+					"unsavedChanges": "存在未保存的修改.",
+					"enterNewLinkURL": "输入新建链接的URL地址",
+					"errorLoadingSVG": "错误: 无法加载SVG数据",
+					"URLloadFail": "无法从URL中加载",
+					"retrieving": "检索 \"%s\"..."
 				}
 			};
 		var mapProperties = {//新增，地图属性
@@ -296,25 +286,6 @@ TODOS
 			return (key in curPrefs) ? curPrefs[key] : defaultPrefs[key];
 		};
 		
-		/**
-		* EDITOR PUBLIC METHODS
-		* locale.js also adds "putLang" and "readLang" as editor methods
-		* @todo Sort these methods per invocation order, ideally with init at the end
-		* @todo Prevent execution until init executes if dependent on it?
-		*/
-
-		/**
-		* Where permitted, sets canvas and/or defaultPrefs based on previous
-		*	storage. This will override URL settings (for security reasons) but
-		*	not config.js configuration (unless initial user overriding is explicitly
-		*	permitted there via allowInitialUserOverride).
-		* @todo Split allowInitialUserOverride into allowOverrideByURL and
-		*	allowOverrideByUserStorage so config.js can disallow some
-		*	individual items for URL setting but allow for user storage AND/OR
-		*	change URL setting so that it always uses a different namespace,
-		*	so it won't affect pre-existing user storage (but then if users saves
-		*	that, it will then be subject to tampering
-		*/
 		//每次进入时加载模板
 		editor.loadContentAndPrefs = function () {
 			var res = $.ajax({url:"./template/map-template.xml",async:false});
@@ -415,68 +386,13 @@ TODOS
 			editor.curConfig = curConfig; // Update exported value
 		};
 
-		/**
-		* @param {object} opts Extension mechanisms may call setCustomHandlers with three functions: opts.open, opts.save, and opts.exportImage
-		* opts.open's responsibilities are:
-		*	- invoke a file chooser dialog in 'open' mode
-		*	- let user pick a SVG file
-		*	- calls svgCanvas.setSvgString() with the string contents of that file
-		*  opts.save's responsibilities are:
-		*	- accept the string contents of the current document
-		*	- invoke a file chooser dialog in 'save' mode
-		*	- save the file to location chosen by the user
-		*  opts.exportImage's responsibilities (with regard to the object it is supplied in its 2nd argument) are:
-		*	- inform user of any issues supplied via the "issues" property
-		*	- convert the "svg" property SVG string into an image for export;
-		*		utilize the properties "type" (currently 'PNG', 'JPEG', 'BMP',
-		*		'WEBP', 'PDF'), "mimeType", and "quality" (for 'JPEG' and 'WEBP'
-		*		types) to determine the proper output.
-		*/
-		//初始化“制图”菜单的处理函数
-		editor.setCustomHandlers = function (opts) {
-			editor.ready(function() {
-				if (opts.open) {
-					$('#tool_open > input[type="file"]').remove();
-					$('#tool_open').show();
-					svgCanvas.open = opts.open;
-				}
-				if (opts.save) {
-					editor.showSaveWarning = false;
-					svgCanvas.bind('saved', opts.save);
-				}
-				if (opts.exportImage) {
-					customExportImage = opts.exportImage;
-					svgCanvas.bind('exported', customExportImage); // canvg and our RGBColor will be available to the method
-				}
-				if (opts.exportPDF) {
-					customExportPDF = opts.exportPDF;
-					svgCanvas.bind('exportedPDF', customExportPDF); // jsPDF and our RGBColor will be available to the method
-				}
-			});
-		};
-
 		editor.randomizeIds = function () {
 			svgCanvas.randomizeIds(arguments);
 		};
 
 		//制图编辑器的初始化
 		editor.init = function () {
-			// var host = location.hostname,
-			//	onWeb = host && host.indexOf('.') >= 0;
-			// Some FF versions throw security errors here when directly accessing
-			try {
-				if ('localStorage' in window) { // && onWeb removed so Webkit works locally
-					editor.storage = localStorage;
-				}
-			} catch(err) {}
-
 			// Todo: Avoid var-defined functions and group functions together, etc. where possible
-			//语言选择
-			var good_langs = [];
-			$('#lang_select option').each(function() {
-				good_langs.push(this.value);
-			});
-
 			function setupCurPrefs () {
 				curPrefs = $.extend(true, {}, defaultPrefs, curPrefs); // Now safe to merge with priority for curPrefs in the event any are already set
 				// Export updated prefs
@@ -522,8 +438,7 @@ TODOS
 					// ways with other script resources
 					$.each(
 						[
-							'extPath', 'imgPath',
-							'langPath', 'jGraduatePath'
+							'extPath', 'imgPath'
 						],
 						function (pathConfig) {
 							if (urldata[pathConfig]) {
@@ -595,9 +510,6 @@ TODOS
 						}
 					});
 				});
-
-				// var lang = ('lang' in curPrefs) ? curPrefs.lang : null;
-				editor.putLocale(null, good_langs);
 			};
 
 			// Load extensions
@@ -670,7 +582,7 @@ TODOS
 				},
 				placement: {
 					'#logo': 'logo',
-
+					
 					'#tool_clear div,#layer_new': 'new_image',
 					'#tool_export div': 'export',
 					'#tool_share div': 'share',
@@ -678,7 +590,6 @@ TODOS
 					'#tool_import div div': 'import',
 					'#tool_source': 'source',
 					'#tool_docprops > div': 'docprops',
-					'#tool_wireframe': 'wireframe',
 
 					'#tool_undo': 'undo',
 					'#tool_redo': 'redo',
@@ -697,28 +608,9 @@ TODOS
 					'#tool_image': 'image',
 					'#tool_zoom': 'zoom',
 
-					'#tool_clone,#tool_clone_multi': 'clone',
-					'#tool_node_clone': 'node_clone',
 					'#layer_delete,#tool_delete,#tool_delete_multi': 'delete',
-					'#tool_node_delete': 'node_delete',
-					'#tool_add_subpath': 'add_subpath',
-					'#tool_openclose_path': 'open_path',
-					'#tool_move_top': 'move_top',
-					'#tool_move_bottom': 'move_bottom',
-					'#tool_topath': 'to_path',
-					'#tool_node_link': 'link_controls',
-					'#tool_reorient': 'reorient',
 					'#tool_group_elements': 'group_elements',
 					'#tool_ungroup': 'ungroup',
-					'#tool_unlink_use': 'unlink_use',
-
-					'#tool_alignleft, #tool_posleft': 'align_left',
-					'#tool_aligncenter, #tool_poscenter': 'align_center',
-					'#tool_alignright, #tool_posright': 'align_right',
-					'#tool_aligntop, #tool_postop': 'align_top',
-					'#tool_alignmiddle, #tool_posmiddle': 'align_middle',
-					'#tool_alignbottom, #tool_posbottom': 'align_bottom',
-					'#cur_position': 'align',
 
 					'#linecap_butt,#cur_linecap': 'linecap_butt',
 					'#linecap_round': 'linecap_round',
@@ -742,7 +634,6 @@ TODOS
 					'#rheightLabel, #iheightLabel': 'height',
 					'#cornerRadiusLabel span': 'c_radius',
 					'#angleLabel': 'angle',
-					'#linkLabel,#tool_make_link,#tool_make_link_multi': 'globe_link',
 					'#zoomLabel': 'zoom',
 					'#tool_fill label': 'fill',
 					'#tool_stroke .icon_label': 'stroke',
@@ -1065,99 +956,11 @@ TODOS
 				});
 				editingsource = true;
 				origSource = svgCanvas.getSvgString();
-				$('#save_output_btns').toggle(!!forSaving);
+				/*$('#save_output_btns').toggle(!!forSaving);*/
 				$('#tool_source_back').toggle(!forSaving);
 				$('#svg_source_textarea').val(origSource);
 				$('#svg_source_editor').fadeIn();
 				$('#svg_source_textarea').focus();
-			};
-
-			var togglePathEditMode = function(editmode, elems) {
-				$('#path_node_panel').toggle(editmode);
-				$('#tools_bottom_2,#tools_bottom_3').toggle(!editmode);
-				if (editmode) {
-					// Change select icon
-					$('.tool_button_current').removeClass('tool_button_current').addClass('tool_button');
-					$('#tool_select').addClass('tool_button_current').removeClass('tool_button');
-					setIcon('#tool_select', 'select_node');
-					multiselected = false;
-					if (elems.length) {
-						selectedElement = elems[0];
-					}
-				} else {
-					setTimeout(function () {
-						setIcon('#tool_select', 'select');
-					}, 1000);
-				}
-			};
-
-			//“制图”菜单点击“保存”（目前已取消该功能）
-			var saveHandler = function(wind, svg) {
-				editor.showSaveWarning = false;
-
-				// by default, we add the XML prolog back, systems integrating SVG-edit (wikis, CMSs)
-				// can just provide their own custom save handler and might not want the XML prolog
-				svg = '<?xml version="1.0" encoding="UTF-8"?>\n' + svg;
-
-				// IE9 doesn't allow standalone Data URLs
-				// https://connect.microsoft.com/IE/feedback/details/542600/data-uri-images-fail-when-loaded-by-themselves
-				if (svgedit.browser.isIE()) {
-					showSourceEditor(0, true);
-					return;
-				}
-
-				// Opens the SVG in new window
-				var win = wind.open('data:image/svg+xml;base64,' + Utils.encode64(svg));
-
-				// Alert will only appear the first time saved OR the first time the bug is encountered
-				var done = $.pref('save_notice_done');
-				if (done !== 'all') {
-					var note = uiStrings.notification.saveFromBrowser.replace('%s', 'SVG');
-
-					// Check if FF and has <defs/>
-					if (svgedit.browser.isGecko()) {
-						if (svg.indexOf('<defs') !== -1) {
-							// warning about Mozilla bug #308590 when applicable (seems to be fixed now in Feb 2013)
-							note += '\n\n' + uiStrings.notification.defsFailOnSave;
-							$.pref('save_notice_done', 'all');
-							done = 'all';
-						} else {
-							$.pref('save_notice_done', 'part');
-						}
-					} else {
-						$.pref('save_notice_done', 'all');
-					}
-					if (done !== 'part') {
-						win.alert(note);
-					}
-				}
-			};
-
-			//“制图”菜单点击“导出”（目前已取消该功能）
-			var exportHandler = function(win, data) {
-				var issues = data.issues,
-					exportWindowName = data.exportWindowName;
-
-				if (exportWindowName) {
-					exportWindow = window.open('', exportWindowName); // A hack to get the window via JSON-able name without opening a new one
-				}
-				
-				exportWindow.location.href = data.datauri;
-				var done = $.pref('export_notice_done');
-				if (done !== 'all') {
-					var note = uiStrings.notification.saveFromBrowser.replace('%s', data.type);
-
-					// Check if there's issues
-					if (issues.length) {
-						var pre = '\n \u2022 ';
-						note += ('\n\n' + uiStrings.notification.noteTheseIssues + pre + issues.join(pre));
-					}
-
-					// Note that this will also prevent the notice even though new issues may appear later.
-					// May want to find a way to deal with that without annoying the user
-					$.pref('export_notice_done', 'all');
-					exportWindow.alert(note);
-				}
 			};
 
 			var operaRepaint = function() {
@@ -1208,44 +1011,12 @@ TODOS
 				}
 			};
 
-			var setImageURL = editor.setImageURL = function(url) {
-				if (!url) {
-					url = defaultImageURL;
-				}
-				svgCanvas.setImageURL(url);
-				$('#image_url').val(url);
-
-				if (url.indexOf('data:') === 0) {
-					// data URI found
-					$('#image_url').hide();
-					$('#change_image_url').show();
-				} else {
-					// regular URL
-					svgCanvas.embedImage(url, function(dataURI) {
-						// Couldn't embed, so show warning
-						$('#url_notice').toggle(!dataURI);
-						defaultImageURL = url;
-					});
-					$('#image_url').show();
-					$('#change_image_url').hide();
-				}
-			};
-
 			function setBackground (color, url) {
-				// if (color == $.pref('bkgd_color') && url == $.pref('bkgd_url')) {return;}
 				$.pref('bkgd_color', color);
 				$.pref('bkgd_url', url);
 
 				// This should be done in svgcanvas.js for the borderRect fill
 				svgCanvas.setBackground(color, url);
-			}
-
-			function promptImgURL() {
-				var curhref = svgCanvas.getHref(selectedElement);
-				curhref = curhref.indexOf('data:') === 0 ? '' : curhref;
-				$.prompt(uiStrings.notification.enterNewImgURL, curhref, function(url) {
-					if (url) {setImageURL(url);}
-				});
 			}
 
 			var setInputWidth = function(elem) {
@@ -1609,9 +1380,7 @@ TODOS
 
 				var is_node = currentMode == 'pathedit'; //elem ? (elem.id && elem.id.indexOf('pathpointgrip') == 0) : false;
 				var menu_items = $('#cmenu_canvas li');
-				$('#selected_panel, #multiselected_panel, #g_panel, #rect_panel, #circle_panel,'+
-					'#ellipse_panel, #line_panel, #text_panel, #image_panel, #container_panel,'+
-					' #use_panel, #a_panel').hide();
+				$('#multiselected_panel, #g_panel,#circle_panel,#ellipse_panel, #line_panel, #text_panel').hide();
 				if (elem != null) {
 					var elname = elem.nodeName;
 					// If this is a link with no transform and one child, pretend
@@ -1623,78 +1392,6 @@ TODOS
 					var blurval = svgCanvas.getBlur(elem);
 					$('#blur').val(blurval);
 					$('#blur_slider').slider('option', 'value', blurval);
-
-					if (svgCanvas.addedNew) {
-						if (elname === 'image' && svgCanvas.getMode() === 'image') {
-							// Prompt for URL if not a data URL
-							if (svgCanvas.getHref(elem).indexOf('data:') !== 0) {
-								promptImgURL();
-							}
-						} /*else if (elname == 'text') {
-							// TODO: Do something here for new text
-						}*/
-					}
-
-					if (!is_node && currentMode != 'pathedit') {
-						$('#selected_panel').show();
-						// Elements in this array already have coord fields
-						if (['line', 'circle', 'ellipse'].indexOf(elname) >= 0) {
-							$('#xy_panel').hide();
-						} else {
-							var x, y;
-
-							// Get BBox vals for g, polyline and path
-							if (['g', 'polyline', 'path'].indexOf(elname) >= 0) {
-								var bb = svgCanvas.getStrokedBBox([elem]);
-								if (bb) {
-									x = bb.x;
-									y = bb.y;
-								}
-							} else {
-								x = elem.getAttribute('x');
-								y = elem.getAttribute('y');
-							}
-
-							if (unit) {
-								x = svgedit.units.convertUnit(x);
-								y = svgedit.units.convertUnit(y);
-							}
-
-							$('#selected_x').val(x || 0);
-							$('#selected_y').val(y || 0);
-							$('#xy_panel').show();
-						}
-
-						// Elements in this array cannot be converted to a path
-						var no_path = ['image', 'text', 'path', 'g', 'use'].indexOf(elname) == -1;
-						$('#tool_topath').toggle(no_path);
-						$('#tool_reorient').toggle(elname === 'path');
-						$('#tool_reorient').toggleClass('disabled', angle === 0);
-					} else {
-						var point = path.getNodePoint();
-						$('#tool_add_subpath').removeClass('push_button_pressed').addClass('tool_button');
-						$('#tool_node_delete').toggleClass('disabled', !path.canDeleteNodes);
-
-						// Show open/close button based on selected point
-						setIcon('#tool_openclose_path', path.closed_subpath ? 'open_path' : 'close_path');
-
-						if (point) {
-							var seg_type = $('#seg_type');
-							if (unit) {
-								point.x = svgedit.units.convertUnit(point.x);
-								point.y = svgedit.units.convertUnit(point.y);
-							}
-							$('#path_node_x').val(point.x);
-							$('#path_node_y').val(point.y);
-							if (point.type) {
-								seg_type.val(point.type).removeAttr('disabled');
-							} else {
-								seg_type.val(4).attr('disabled', 'disabled');
-							}
-						}
-						return;
-					}
-
 					// update contextual tools here
 					var panels = {
 						g: [],
@@ -1721,13 +1418,6 @@ TODOS
 							$('#a_panel').show();
 							link_href = svgCanvas.getHref(elem.parentNode);
 						}
-					}
-
-					// Hide/show the make_link buttons
-					$('#tool_make_link, #tool_make_link').toggle(!link_href);
-
-					if (link_href) {
-						$('#link_url').val(link_href);
 					}
 
 					if (panels[el_name]) {
@@ -1767,17 +1457,6 @@ TODOS
 								}, 100);
 							}
 						} // text
-						else if (el_name == 'image' && svgCanvas.getMode() == 'image') {
-							setImageURL(svgCanvas.getHref(elem));
-						} // image
-						else if (el_name === 'g' || el_name === 'use') {
-							$('#container_panel').show();
-							var title = svgCanvas.getTitle();
-							var label = $('#g_title')[0];
-							label.value = title;
-							setInputWidth(label);
-							$('#g_title').prop('disabled', el_name == 'use');
-						}
 					}
 					menu_items[(el_name === 'g' ? 'en' : 'dis') + 'ableContextMenuItems']('#ungroup');
 					menu_items[((el_name === 'g' || !multiselected) ? 'dis' : 'en') + 'ableContextMenuItems']('#group');
@@ -1845,7 +1524,7 @@ TODOS
 				} // if (elem != null)
 
 				// Deal with pathedit mode
-				togglePathEditMode(is_node, elems);
+				//togglePathEditMode(is_node, elems);
 				updateContextPanel();
 				svgCanvas.runExtensions('selectedChanged', {
 					elems: elems,
@@ -1945,10 +1624,7 @@ TODOS
 			};
 
 			var zoomChanged = svgCanvas.zoomChanged = function(win, bbox, autoCenter) {
-				var scrbar = 15,
-					// res = svgCanvas.getResolution(), // Currently unused
-					w_area = workarea;
-				// var canvas_pos = $('#svgcanvas').position(); // Currently unused
+				var scrbar = 15,w_area = workarea;
 				var z_info = svgCanvas.setBBoxZoom(bbox, w_area.width()-scrbar, w_area.height()-scrbar);
 				if (!z_info) {return;}
 				var zoomlevel = z_info.zoom,
@@ -2149,7 +1825,6 @@ TODOS
 							} else {
 								holder.css('left', l).show();
 							}
-							/*holder.data('shown_popop', true);*/
 						},time);
 						evt.preventDefault();
 					}).mouseup(function(evt) {
@@ -2203,12 +1878,10 @@ TODOS
 
 				elems.each(function() {
 					// Handled in CSS
-					// this.style[uaPrefix + 'Transform'] = 'scale(' + scale + ')';
 					var i;
 					var el = $(this);
 					var w = el.outerWidth() * (scale - 1);
 					var h = el.outerHeight() * (scale - 1);
-					// var margins = {}; // Currently unused
 
 					for (i = 0; i < 4; i++) {
 						var s = sides[i];
@@ -2226,7 +1899,6 @@ TODOS
 						}
 
 						el.css('margin-' + s, val);
-						// el.css('outline', '1px solid red');
 					}
 				});
 			};
@@ -2234,7 +1906,7 @@ TODOS
 			var setIconSize = editor.setIconSize = function (size) {
 
 				var sel_toscale = '#tools_top .toolset, #editor_panel > *, #history_panel > *,'+
-'				#main_button, #tools_left > *, #path_node_panel > *, #multiselected_panel > *,'+
+'				#main_button, #tools_left > *, #multiselected_panel > *,'+
 '				#g_panel > *, #tool_font_size > *, .tools_flyout';
 
 				var elems = $(sel_toscale);
@@ -2299,7 +1971,6 @@ TODOS
 						});
 						styleStr += '}';
 					});
-					//this.style[uaPrefix + 'Transform'] = 'scale(' + scale + ')';
 					var prefix = '-' + uaPrefix.toLowerCase() + '-';
 					styleStr += (sel_toscale + '{' + prefix + 'transform: scale(' + scale + ');}'
 					+ ' #svg_editor div.toolset .toolset {' + prefix + 'transform: scale(1); margin: 1px !important;}' // Hack for markers
@@ -2338,7 +2009,6 @@ TODOS
 					on_button = false;
 				});
 
-				// var height = list.height(); // Currently unused
 				button.bind('mousedown',function() {
 					var off = button.offset();
 					if (dropUp) {
@@ -2371,7 +2041,7 @@ TODOS
 				}
 			};
 
-			var extsPreLang = [];
+			/*var extsPreLang = [];*/
 			var extAdded = function(win, ext) {
 				if (!ext) {
 					return;
@@ -2380,16 +2050,6 @@ TODOS
 				var resize_done = false;
 				var cb_ready = true; // Set to false to delay callback (e.g. wait for $.svgIcons)
 				
-				if (ext.langReady) {
-					if (editor.langChanged) { // We check for this since the "lang" pref could have been set by storage
-						var lang = $.pref('lang');
-						ext.langReady({lang:lang, uiStrings:uiStrings});
-					}
-					else {
-						extsPreLang.push(ext);
-					}
-				}
-
 				function prepResize() {
 					if (resize_timer) {
 						clearTimeout(resize_timer);
@@ -2570,9 +2230,6 @@ TODOS
 							}
 
 							if (btn.type =='mode_flyout') {
-							// Add to flyout menu / make flyout menu
-	//							var opts = btn.includeWith;
-	//							// opts.button, default, position
 								ref_btn = $(button);
 
 								flyout_holder = ref_btn.parent();
@@ -2591,7 +2248,6 @@ TODOS
 									flyout_holder.data('isLibrary', true);
 									show_btn.data('isLibrary', true);
 								}
-	//							ref_data = Actions.getButtonData(opts.button);
 
 								placement_obj['#' + tls_id + '_show'] = btn.id;
 								// TODO: Find way to set the current icon using the iconloader if this is not default
@@ -2655,8 +2311,6 @@ TODOS
 								isDefault: btn.includeWith ? btn.includeWith.isDefault : 0
 							}, ref_data];
 
-							// {sel:'#tool_rect', fn: clickRect, evt: 'mouseup', key: 4, parent: '#tools_rect', icon: 'rect'}
-
 							var pos = ('position' in opts) ? opts.position : 'last';
 							var len = flyout_holder.children().length;
 
@@ -2717,7 +2371,6 @@ TODOS
 						placement: placement_obj,
 						callback: function (icons) {
 							// Non-ideal hack to make the icon match the current size
-							//if (curPrefs.iconsize && curPrefs.iconsize !== 'm') {
 							if ($.pref('iconsize') !== 'm') {
 								prepResize();
 							}
@@ -2756,15 +2409,6 @@ TODOS
 			svgCanvas.bind('selected', selectedChanged);
 			svgCanvas.bind('transition', elementTransition);
 			svgCanvas.bind('changed', elementChanged);
-			svgCanvas.bind('saved', saveHandler);
-			svgCanvas.bind('exported', exportHandler);
-			svgCanvas.bind('exportedPDF', function (win, data) {
-				var exportWindowName = data.exportWindowName;
-				if (exportWindowName) {
-					exportWindow = window.open('', exportWindowName); // A hack to get the window via JSON-able name without opening a new one
-				}
-				exportWindow.location.href = data.dataurlstring;
-			});
 			svgCanvas.bind('zoomed', zoomChanged);
 			svgCanvas.bind('contextset', contextChanged);
 			svgCanvas.bind('extension_added', extAdded);
@@ -2889,11 +2533,6 @@ TODOS
 					populateLayers();
 				};
 				if (destLayer) {
-					/*if (promptMoveLayerOnce) {
-						moveToLayer(true);
-					} else {
-						$.confirm(confirmStr, moveToLayer);
-					}*/
 					$.confirm(confirmStr, moveToLayer);
 				}
 			});
@@ -2902,66 +2541,8 @@ TODOS
 				svgCanvas.setFontFamily(font_English2Chinese(this.value));
 			});
 
-			$('#seg_type').change(function() {
-				svgCanvas.setSegType($(this).val());
-			});
-
 			$('#text').bind("keyup input", function() {
 				svgCanvas.setTextContent(this.value);
-			});
-
-			$('#image_url').change(function() {
-				setImageURL(this.value);
-			});
-
-			$('#link_url').change(function() {
-				if (this.value.length) {
-					svgCanvas.setLinkURL(this.value);
-				} else {
-					svgCanvas.removeHyperlink();
-				}
-			});
-
-			$('#g_title').change(function() {
-				svgCanvas.setGroupTitle(this.value);
-			});
-
-			$('.attr_changer').change(function() {
-				var attr = this.getAttribute('data-attr');
-				var val = this.value;
-				var valid = svgedit.units.isValidUnit(attr, val, selectedElement);
-
-				if (!valid) {
-					$.alert(uiStrings.notification.invalidAttrValGiven);
-					this.value = selectedElement.getAttribute(attr);
-					return false;
-				}
-
-				if (attr !== 'id' && attr !== 'class') {
-					if (isNaN(val)) {
-						val = svgCanvas.convertToNum(attr, val);
-					} else if (curConfig.baseUnit !== 'px') {
-						// Convert unitless value to one with given unit
-
-						var unitData = svgedit.units.getTypeMap();
-
-						if (selectedElement[attr] || svgCanvas.getMode() === 'pathedit' || attr === 'x' || attr === 'y') {
-							val *= unitData[curConfig.baseUnit];
-						}
-					}
-				}
-
-				// if the user is changing the id, then de-select the element first
-				// change the ID, then re-select it with the new ID
-				if (attr === 'id') {
-					var elem = selectedElement;
-					svgCanvas.clearSelection();
-					elem.id = val;
-					svgCanvas.addToSelection([elem],true);
-				} else {
-					svgCanvas.changeSelectedAttribute(attr, val);
-				}
-				this.blur();
 			});
 
 			// Prevent selection of elements when shift-clicking
@@ -3276,61 +2857,61 @@ TODOS
 				});
 			}());
 
-			var clickFHPath = function() {
+			var clickFHPath = function() {//铅笔工具
 				if (toolButtonClick('#tool_fhpath')) {
 					svgCanvas.setMode('fhpath');
 				}
 			};
 
-			var clickLine = function() {
+			var clickLine = function() {//连接工具
 				if (toolButtonClick('#tool_line')) {
 					svgCanvas.setMode('line');
 				}
 			};
 
-			var clickSquare = function() {
+			var clickSquare = function() {//矩形----正方形
 				if (toolButtonClick('#tool_square')) {
 					svgCanvas.setMode('square');
 				}
 			};
 
-			var clickRect = function() {
+			var clickRect = function() {//矩形
 				if (toolButtonClick('#tool_rect')) {
 					svgCanvas.setMode('rect');
 				}
 			};
 
-			var clickFHRect = function() {
+			var clickFHRect = function() {//手绘矩形
 				if (toolButtonClick('#tool_fhrect')) {
 					svgCanvas.setMode('fhrect');
 				}
 			};
 
-			var clickCircle = function() {
+			var clickCircle = function() {//圆
 				if (toolButtonClick('#tool_circle')) {
 					svgCanvas.setMode('circle');
 				}
 			};
 
-			var clickEllipse = function() {
+			var clickEllipse = function() {//椭圆
 				if (toolButtonClick('#tool_ellipse')) {
 					svgCanvas.setMode('ellipse');
 				}
 			};
 
-			var clickFHEllipse = function() {
+			var clickFHEllipse = function() {//手绘椭圆
 				if (toolButtonClick('#tool_fhellipse')) {
 					svgCanvas.setMode('fhellipse');
 				}
 			};
 
-			var clickImage = function() {
+			var clickImage = function() {//图像
 				if (toolButtonClick('#tool_image')) {
 					svgCanvas.setMode('image');
 				}
 			};
 
-			var clickZoom = function() {
+			var clickZoom = function() {//缩放
 				if (toolButtonClick('#tool_zoom')) {
 					svgCanvas.setMode('zoom');
 					workarea.css('cursor', zoomInIcon);
@@ -3354,52 +2935,46 @@ TODOS
 				}
 			};
 
-			var clickText = function() {
+			var clickText = function() {//文本
 				if (toolButtonClick('#tool_text')) {
 					svgCanvas.setMode('text');
 				}
 			};
 
-			var clickPath = function() {
-				if (toolButtonClick('#tool_path')) {
-					svgCanvas.setMode('path');
-				}
-			};
-
 			// Delete is a contextual tool that only appears in the ribbon if
 			// an element has been selected
-			var deleteSelected = function() {
+			var deleteSelected = function() {//删除
 				if (selectedElement != null || multiselected) {
 					svgCanvas.deleteSelectedElements();
 				}
 			};
 
-			var cutSelected = function() {
+			var cutSelected = function() {//剪切
 				if (selectedElement != null || multiselected) {
 					svgCanvas.cutSelectedElements();
 				}
 			};
 
-			var copySelected = function() {
+			var copySelected = function() {//复制
 				if (selectedElement != null || multiselected) {
 					svgCanvas.copySelectedElements();
 				}
 			};
 
-			var pasteInCenter = function() {
+			var pasteInCenter = function() {//粘贴
 				var zoom = svgCanvas.getZoom();
 				var x = (workarea[0].scrollLeft + workarea.width()/2)/zoom - svgCanvas.contentW;
 				var y = (workarea[0].scrollTop + workarea.height()/2)/zoom - svgCanvas.contentH;
 				svgCanvas.pasteElements('point', x, y);
 			};
 
-			var moveToTopSelected = function() {
+			var moveToTopSelected = function() {//顶部对齐
 				if (selectedElement != null) {
 					svgCanvas.moveToTopSelectedElement();
 				}
 			};
 
-			var moveToBottomSelected = function() {
+			var moveToBottomSelected = function() {//底部对齐
 				if (selectedElement != null) {
 					svgCanvas.moveToBottomSelectedElement();
 				}
@@ -3420,14 +2995,6 @@ TODOS
 			var reorientPath = function() {
 				if (selectedElement != null) {
 					path.reorient();
-				}
-			};
-
-			var makeHyperlink = function() {
-				if (selectedElement != null || multiselected) {
-					$.prompt(uiStrings.notification.enterNewLinkURL, 'http://', function(url) {
-						if (url) {svgCanvas.makeHyperlink(url);}
-					});
 				}
 			};
 
@@ -3488,41 +3055,16 @@ TODOS
 				updateContextPanel();
 			};
 
-			var clickClear = function() {
-				var dims = curConfig.dimensions;
-				$.confirm(uiStrings.notification.QwantToClear, function(ok) {
-					if (!ok) {return;}
-					setSelectMode();
-					svgCanvas.clear();
-					svgCanvas.setResolution(dims[0], dims[1]);
-					updateCanvas(true);
-					zoomImage();
-					populateLayers();
-					updateContextPanel();
-					prepPaints();
-					svgCanvas.runExtensions('onNewDocument');
-				});
-			};
-
-			var clickBold = function() {
+			var clickBold = function() {//文字设置黑体
 				svgCanvas.setBold( !svgCanvas.getBold() );
 				updateContextPanel();
 				return false;
 			};
 
-			var clickItalic = function() {
+			var clickItalic = function() {//文字设置斜体
 				svgCanvas.setItalic( !svgCanvas.getItalic() );
 				updateContextPanel();
 				return false;
-			};
-
-			var clickSave = function() {
-				// In the future, more options can be provided here
-				var saveOpts = {
-					'images': $.pref('img_save'),
-					'round_digits': 6
-				};
-				svgCanvas.save(saveOpts);
 			};
 
 			var exportAndShare = function(type){
@@ -3530,12 +3072,7 @@ TODOS
 				if(type == "share"){
 					prompt_text = '请选择分享图片的格式: ';
 				}
-				$.select(prompt_text, [
-					// See http://kangax.github.io/jstests/toDataUrl_mime_type_test/ for a useful list of MIME types and browser support
-					// 'ICO', // Todo: Find a way to preserve transparency in SVG-Edit if not working presently and do full packaging for x-icon; then switch back to position after 'PNG'
-					'PNG',
-					'JPEG', 'BMP', 'WEBP'/*, 'PDF'*/
-				], function (imgType) { // todo: replace hard-coded msg with uiStrings.notification.
+				$.select(prompt_text, ['PNG','JPEG', 'BMP', 'WEBP'], function (imgType) { // todo: replace hard-coded msg with uiStrings.notification.
 					if (!imgType) {
 						return;
 					}
@@ -3595,49 +3132,7 @@ TODOS
 						    	image.crossOrigin = "Anonymous";
 						        image.setAttribute("src", data)
 						        image.onload=function(){
-						        	var canvas = document.getElementById('myCanvas');  //准备空画布
-						        	document.getElementById('myCanvas').setAttribute("width",this.width);
-						        	document.getElementById('myCanvas').setAttribute("height",this.height);
-						        	var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-						        	context.drawImage(this, 0, 0);
-						        	var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
-						        	if(imgType==="JPEG"){
-						        		canvas.toBlob(function(blob) {
-						        			if(type === "share"){
-						        				uploadImg(blob,imgType,filename)
-						        			}else if(type === "export"){
-						        				$("#spinner").css("display","none");
-						        				saveAs(blob, filename+".jpg");
-						        			}
-						        		},"image/jpeg",quality);
-						        	}else if(imgType==="WEBP"){
-						        		canvas.toBlob(function(blob) {
-						        			if(type === "share"){
-						        				uploadImg(blob,imgType,filename)
-						        			}else if(type === "export"){
-						        				$("#spinner").css("display","none");
-						        				saveAs(blob, filename+".webp");
-						        			}
-						        		},"image/webp",quality);
-						        	}else if(imgType==="PNG"){
-						        		canvas.toBlob(function(blob) {
-						        			if(type === "share"){
-						        				uploadImg(blob,imgType,filename)
-						        			}else if(type === "export"){
-						        				$("#spinner").css("display","none");
-						        				saveAs(blob, filename+".png");
-						        			}
-						        		},"image/png");
-						        	}else if(imgType==="BMP"){
-						        		canvas.toBlob(function(blob) {
-						        			if(type === "share"){
-						        				uploadImg(blob,imgType,filename)
-						        			}else if(type === "export"){
-						        				$("#spinner").css("display","none");
-						        				saveAs(blob, filename+".bmp");
-						        			}
-						        		},"image/bmp");
-						        	}
+						        	onSvgImageLoad(this,imgType,quality);
 						        }	
 						    }
 						})
@@ -3651,55 +3146,57 @@ TODOS
 						image1.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgXml))); //给图片对象写入base64编码的svg流
 
 						image1.onload=function(){
-							var canvas = document.getElementById('myCanvas');  //准备空画布
-							document.getElementById('myCanvas').setAttribute("width",this.width);
-							document.getElementById('myCanvas').setAttribute("height",this.height);
-							var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
-							context.fillStyle = "#ffffff";
-							context.fillRect(0,0,this.width,this.height);
-							context.drawImage(this, 0, 0);
-							var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
-							if(imgType==="JPEG"){
-								canvas.toBlob(function(blob) {
-									if(type === "share"){
-										uploadImg(blob,imgType,filename)
-									}else if(type === "export"){
-										$("#spinner").css("display","none");
-										saveAs(blob, filename+".jpg");
-									}
-								},"image/jpeg",quality);
-							}else if(imgType==="WEBP"){
-								canvas.toBlob(function(blob) {
-									if(type === "share"){
-										uploadImg(blob,imgType,filename)
-									}else if(type === "export"){
-										$("#spinner").css("display","none");
-										saveAs(blob, filename+".webp");
-									}
-								},"image/webp",quality);
-							}else if(imgType==="PNG"){
-								canvas.toBlob(function(blob) {
-									if(type === "share"){
-										uploadImg(blob,imgType,filename)
-									}else if(type === "export"){
-										$("#spinner").css("display","none");
-										saveAs(blob, filename+".png");
-									}
-								},"image/png");
-							}else if(imgType==="BMP"){
-								canvas.toBlob(function(blob) {
-									if(type === "share"){
-										uploadImg(blob,imgType,filename)
-									}else if(type === "export"){
-										$("#spinner").css("display","none");
-										saveAs(blob, filename+".bmp");
-									}
-								},"image/bmp");
-							}
+							onSvgImageLoad(this,imgType,quality);
 						}
-						
 					};
 					
+					function onSvgImageLoad(image,imgType,quality){
+						var canvas = document.getElementById('myCanvas');  //准备空画布
+						document.getElementById('myCanvas').setAttribute("width",image.width);
+						document.getElementById('myCanvas').setAttribute("height",image.height);
+						var context = canvas.getContext('2d');  //取得画布的2d绘图上下文
+						context.fillStyle = "#ffffff";
+						context.fillRect(0,0,image.width,image.height);
+						context.drawImage(image, 0, 0);
+						var filename = document.getElementById("title_name").innerHTML||"辅助决策用图";
+						if(imgType==="JPEG"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".jpg");
+								}
+							},"image/jpeg",quality);
+						}else if(imgType==="WEBP"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".webp");
+								}
+							},"image/webp",quality);
+						}else if(imgType==="PNG"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".png");
+								}
+							},"image/png");
+						}else if(imgType==="BMP"){
+							canvas.toBlob(function(blob) {
+								if(type === "share"){
+									uploadImg(blob,imgType,filename)
+								}else if(type === "export"){
+									$("#spinner").css("display","none");
+									saveAs(blob, filename+".bmp");
+								}
+							},"image/bmp");
+						}
+					}
 					function getDataUri(url, callback) {
 						var image2 = new Image();
 					    image2.onload = function () {
@@ -3748,8 +3245,6 @@ TODOS
 						xhr.open('POST', upload_url, true);
 						xhr.send(formData);	
 					}
-
-
 				}, function () {
 					var sel = $(this);
 					if (sel.val() === 'JPEG' || sel.val() === 'WEBP') {
@@ -3790,15 +3285,6 @@ TODOS
 				exportAndShare('export');		
 			};
 
-			// by default, svgCanvas.open() is a no-op.
-			// it is up to an extension mechanism (opera widget, etc)
-			// to call setCustomHandlers() which will make it do something
-			var clickOpen = function() {
-				svgCanvas.open();
-			};
-
-			var clickImport = function() {
-			};
 
 			var clickUndo = function() {
 				if (undoMgr.getUndoStackSize() > 0) {
@@ -3814,7 +3300,7 @@ TODOS
 				}
 			};
 
-			var clickGroup = function() {
+			var clickGroup = function() {//组合或取消组合
 				// group
 				if (multiselected) {
 					svgCanvas.groupSelectedElements();
@@ -3823,30 +3309,6 @@ TODOS
 				else if (selectedElement) {
 					svgCanvas.ungroupSelectedElement();
 				}
-			};
-
-			var clickClone = function() {
-				svgCanvas.cloneSelectedElements(20, 20);
-			};
-
-			var clickAlign = function() {
-				var letter = this.id.replace('tool_align', '').charAt(0);
-				svgCanvas.alignSelectedElements(letter, $('#align_relative_to').val());
-			};
-
-			var clickWireframe = function() {
-				$('#tool_wireframe').toggleClass('push_button_pressed tool_button');
-				workarea.toggleClass('wireframe');
-
-				if (supportsNonSS) {return;}
-				var wf_rules = $('#wireframe_rules');
-				if (!wf_rules.length) {
-					wf_rules = $('<style id="wireframe_rules"></style>').appendTo('head');
-				} else {
-					wf_rules.empty();
-				}
-
-				updateWireFrame();
 			};
 
 			$('#svg_docprops_container, #svg_prefs_container').draggable({cancel: 'button,fieldset', containment: 'window'});
@@ -3885,6 +3347,7 @@ TODOS
 				$('#svg_docprops').show();
 			};
 
+			//“制图”菜单点击“选项”
 			var showPreferences = function() {
 				if (preferences) {return;}
 				preferences = true;
@@ -4025,12 +3488,6 @@ TODOS
 				var color = $('#bg_blocks div.cur_background').css('background-color') || '#FFF';
 				setBackground(color, $('#canvas_bg_url').val());
 
-				// set language
-				var lang = $('#lang_select').val();
-				if (lang !== $.pref('lang')) {
-					editor.putLocale(lang, good_langs);
-				}
-
 				// set icon size
 				setIconSize($('#iconsize').val());
 
@@ -4138,8 +3595,6 @@ TODOS
 				$.alert(this.title);
 			});
 
-			$('#change_image_url').click(promptImgURL);
-
 			// added these event handlers for all the push buttons so they
 			// behave more like buttons being pressed-in and not images
 			(function() {
@@ -4168,7 +3623,7 @@ TODOS
 			// NOTE: This code is not used yet until I can figure out how to successfully bind ctrl/meta
 			// in Opera and Chrome
 			if (svgedit.browser.isMac() && !window.opera) {
-				var shortcutButtons = ['tool_clear', 'tool_source', 'tool_undo', 'tool_redo', 'tool_clone'];
+				var shortcutButtons = ['tool_source', 'tool_undo', 'tool_redo'];
 				i = shortcutButtons.length;
 				while (i--) {
 					var button = document.getElementById(shortcutButtons[i]);
@@ -4187,7 +3642,6 @@ TODOS
 //				var opacity = (picker == 'stroke' ? $('#stroke_opacity') : $('#fill_opacity'));
 				var paint = paintBox[picker].paint;
 				var title = (picker == 'stroke' ? 'Pick a Stroke Paint and Opacity' : 'Pick a Fill Paint and Opacity');
-				// var was_none = false; // Currently unused
 				var pos = elem.offset();
 				$('#color_picker')
 					.draggable({cancel: '.jGraduate_tabs, .jGraduate_colPick, .jGraduate_gradPick, .jPicker', containment: 'window'})
@@ -4569,11 +4023,6 @@ TODOS
 
 			populateLayers();
 
-		//	function changeResolution(x,y) {
-		//		var zoom = svgCanvas.getResolution().zoom;
-		//		setResolution(x * zoom, y * zoom);
-		//	}
-
 			var centerCanvas = function() {
 				// this centers the canvas vertically in the workarea (horizontal handled in CSS)
 				workarea.css('line-height', workarea.height() + 'px');
@@ -4672,49 +4121,24 @@ TODOS
 					{sel: '#tool_ellipse', fn: clickEllipse, evt: 'mouseup', key: ['E', true], parent: '#tools_ellipse', icon: 'ellipse'},
 					{sel: '#tool_circle', fn: clickCircle, evt: 'mouseup', parent: '#tools_ellipse', icon: 'circle'},
 					{sel: '#tool_fhellipse', fn: clickFHEllipse, evt: 'mouseup', parent: '#tools_ellipse', icon: 'fh_ellipse'},
-					{sel: '#tool_path', fn: clickPath, evt: 'click', key: ['P', true]},
 					{sel: '#tool_text', fn: clickText, evt: 'click', key: ['T', true]},
-					{sel: '#tool_image', fn: clickImage, evt: 'mouseup'},
 					{sel: '#tool_zoom', fn: clickZoom, evt: 'mouseup', key: ['Z', true]},
-					{sel: '#tool_clear', fn: clickClear, evt: 'mouseup', key: ['N', true]},
 					{sel: '#tool_export', fn: clickExport, evt: 'mouseup'},
 					{sel: '#tool_share', fn: clickShare, evt: 'mouseup'},				
-					{sel: '#tool_open', fn: clickOpen, evt: 'mouseup', key: ['O', true]},
-					{sel: '#tool_import', fn: clickImport, evt: 'mouseup'},
 					{sel: '#tool_source', fn: showSourceEditor, evt: 'click', key: ['U', true]},
-					{sel: '#tool_wireframe', fn: clickWireframe, evt: 'click', key: ['F', true]},
 					{sel: '#tool_source_cancel,.overlay,#tool_docprops_cancel,#tool_prefs_cancel', fn: cancelOverlays, evt: 'click', key: ['esc', false, false], hidekey: true},
 					{sel: '#tool_source_save', fn: saveSourceEditor, evt: 'click'},
 					{sel: '#tool_docprops_save', fn: saveDocProperties, evt: 'click'},
 					{sel: '#tool_docprops', fn: showDocProperties, evt: 'mouseup'},
 					{sel: '#tool_prefs_save', fn: savePreferences, evt: 'click'},
 					{sel: '#tool_prefs_option', fn: function() {showPreferences(); return false;}, evt: 'mouseup'},
-					{sel: '#tool_delete,#tool_delete_multi', fn: deleteSelected, evt: 'click', key: ['del/backspace', true]},
-					{sel: '#tool_reorient', fn: reorientPath, evt: 'click'},
-					{sel: '#tool_node_link', fn: linkControlPoints, evt: 'click'},
-					{sel: '#tool_node_clone', fn: clonePathNode, evt: 'click'},
-					{sel: '#tool_node_delete', fn: deletePathNode, evt: 'click'},
-					{sel: '#tool_openclose_path', fn: opencloseSubPath, evt: 'click'},
-					{sel: '#tool_add_subpath', fn: addSubPath, evt: 'click'},
-					{sel: '#tool_move_top', fn: moveToTopSelected, evt: 'click', key: 'ctrl+shift+]'},
-					{sel: '#tool_move_bottom', fn: moveToBottomSelected, evt: 'click', key: 'ctrl+shift+['},
-					{sel: '#tool_topath', fn: convertToPath, evt: 'click'},
-					{sel: '#tool_make_link,#tool_make_link_multi', fn: makeHyperlink, evt: 'click'},
 					{sel: '#tool_undo', fn: clickUndo, evt: 'click'},
 					{sel: '#tool_redo', fn: clickRedo, evt: 'click'},
-					{sel: '#tool_clone,#tool_clone_multi', fn: clickClone, evt: 'click', key: ['D', true]},
 					{sel: '#tool_group_elements', fn: clickGroup, evt: 'click', key: ['G', true]},
 					{sel: '#tool_ungroup', fn: clickGroup, evt: 'click'},
-					{sel: '#tool_unlink_use', fn: clickGroup, evt: 'click'},
-					{sel: '[id^=tool_align]', fn: clickAlign, evt: 'click'},
-					// these two lines are required to make Opera work properly with the flyout mechanism
-		//			{sel: '#tools_rect_show', fn: clickRect, evt: 'click'},
-		//			{sel: '#tools_ellipse_show', fn: clickEllipse, evt: 'click'},
 					{sel: '#tool_bold', fn: clickBold, evt: 'mousedown'},
 					{sel: '#tool_italic', fn: clickItalic, evt: 'mousedown'},
 					{sel: '#sidepanel_handle', fn: toggleSidePanel, key: ['X']},
-					{sel: '#copy_save_done', fn: cancelOverlays, evt: 'click'},
-
 					// Shortcuts not associated with buttons
 
 					{key: 'ctrl+left', fn: function(){rotateSelected(0,1);}},
@@ -4833,13 +4257,6 @@ TODOS
 						// Setup flyouts
 						setupFlyouts(flyouts);
 
-						// Misc additional actions
-
-						// Make 'return' keypress trigger the change event
-						$('.attr_changer, #image_url').bind('keydown', 'return',
-							function(evt) {$(this).change();evt.preventDefault();}
-						);
-
 						$(window).bind('keydown', 'tab', function(e) {
 							if (ui_context === 'canvas') {
 								e.preventDefault();
@@ -4910,10 +4327,6 @@ TODOS
 					tool = $('#tool_select');
 				}
 				tool.click().mouseup();
-
-				if (curConfig.wireframe) {
-					$('#tool_wireframe').click();
-				}
 
 				if (curConfig.showlayers) {
 					toggleSidePanel();
@@ -5101,10 +4514,6 @@ TODOS
 						$('#dialog_box').hide();
 						return;
 					}
-					/* if (file.type === 'application/pdf') { // Todo: Handle PDF imports
-						
-					}
-					else */
 					if (file.type.indexOf('image') != -1) {
 						// Detected an image
 						// svg handling
@@ -5199,60 +4608,6 @@ TODOS
 				window.svgCanvas = svgCanvas;
 				svgCanvas.ready = editor.ready;
 			});
-
-			editor.setLang = function(lang, allStrings) {
-				editor.langChanged = true;
-				$.pref('lang', lang);
-				$('#lang_select').val(lang);
-				if (!allStrings) {
-					return;
-				}
-				// var notif = allStrings.notification; // Currently unused
-				// $.extend will only replace the given strings
-				var oldLayerName = $('#layerlist tr.layersel td.layername').text();
-				var rename_layer = (oldLayerName == uiStrings.common.layer + ' 1');
-
-				$.extend(uiStrings, allStrings);
-				svgCanvas.setUiStrings(allStrings);
-				Actions.setTitles();
-
-				if (rename_layer) {
-					svgCanvas.renameCurrentLayer(uiStrings.common.layer + ' 1');
-					populateLayers();
-				}
-
-				// In case extensions loaded before the locale, now we execute a callback on them
-				if (extsPreLang.length) {
-					while (extsPreLang.length) {
-						var ext = extsPreLang.shift();
-						ext.langReady({lang: lang, uiStrings: uiStrings});
-					}
-				}
-				else {
-					svgCanvas.runExtensions('langReady', {lang: lang, uiStrings: uiStrings});
-				}
-				svgCanvas.runExtensions('langChanged', lang);
-
-				// Update flyout tooltips
-				setFlyoutTitles();
-
-				// Copy title for certain tool elements
-				var elems = {
-					'#stroke_color': '#tool_stroke .icon_label, #tool_stroke .color_block',
-					'#fill_color': '#tool_fill label, #tool_fill .color_block',
-					'#linejoin_miter': '#cur_linejoin',
-					'#linecap_butt': '#cur_linecap'
-				};
-
-				$.each(elems, function(source, dest) {
-					$(dest).attr('title', $(source)[0].title);
-				});
-
-				// Copy alignment titles
-				$('#multiselected_panel div[id^=tool_align]').each(function() {
-					$('#tool_pos' + this.id.substr(10))[0].title = this.title;
-				});
-			};
 		};
 
 		editor.ready = function (cb) {
@@ -5271,7 +4626,6 @@ TODOS
 		};
 
 		editor.loadFromString = function (str) {
-			//var url = "images/default-map.png";
 			var options = window.OPTIONS;
 			if(options){
 				var url = options.API.styles+"/"+options.username+"/"+options.style_id+"/thumbnail?zoom="+options.zoom+"&scale="+options.scale+"&bbox=["+options.bbox.toString()+"]&access_token="+options.access_token;
@@ -5357,13 +4711,6 @@ TODOS
 				};
 			}
 			
-		};
-
-		editor.disableUI = function (featList) {
-//			$(function() {
-//				$('#tool_wireframe, #tool_image, #main_button, #tool_source, #sidepanels').remove();
-//				$('#tools_top').css('left', 5);
-//			});
 		};
 
 		editor.loadFromURL = function (url, opts) {

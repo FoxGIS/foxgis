@@ -3,7 +3,7 @@
     <div class="dialog">
       <b>{{dialog.title}}</b>
       <input type="text" class="textfield copy" v-model="dialog.value" v-if="dialog.type==='copy-layer'">
-      <input type="number" class="textfield zoom" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="11">
+      <input type="number" class="textfield zoom" v-model="dialog.value" v-if="dialog.type==='zoom'" min="0" max="22">
 
       <div class="action">
         <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" @click="doOK">确定</mdl-button>
