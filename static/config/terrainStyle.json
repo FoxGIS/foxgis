@@ -17,10 +17,7 @@
   "zoom": 12.019713228091506,
   "sources": {
     "composite": {
-      "tiles": [
-        "http://a.tiles.mapbox.com/v4/mapbox.mapbox-terrain-v2/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoibWFwZXIiLCJhIjoiY2lsNmZ4MjVoMDAwZ3Zxa3U1am9ndnZjYyJ9.Po8UY7yYwu6Y2Y7HOrJVpQ",
-        "http://b.tiles.mapbox.com/v4/mapbox.mapbox-terrain-v2/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoibWFwZXIiLCJhIjoiY2lsNmZ4MjVoMDAwZ3Zxa3U1am9ndnZjYyJ9.Po8UY7yYwu6Y2Y7HOrJVpQ"
-      ],
+      "url": "http://218.244.250.70:8090/api/v1/tilesets/foxgis/ngcc_terrain_v2",
       "type": "vector"
     },
     "data2012": {

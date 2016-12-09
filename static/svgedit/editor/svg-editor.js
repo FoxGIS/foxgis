@@ -194,6 +194,7 @@ TODOS
 		var mapProperties = {//新增，地图属性
 			width:0,//图像的原始尺寸（像素）
 			height:0,
+			
 			scale:0,//比例尺
 			zoom:1//图像缩放级别
 		}
@@ -3330,7 +3331,8 @@ TODOS
 
 				$('#canvas_width').val(res.w);
 				$('#canvas_height').val(res.h);
-				$('#canvas_title').val(svgCanvas.getDocumentTitle());
+				var filename = document.getElementById("title_name").innerHTML;
+				$('#canvas_title').val(filename);
 
 				$('#tool_docprops_save').bind('mouseout',function(e){
 					$('#tool_docprops_save').removeClass('mouse');
@@ -3470,11 +3472,8 @@ TODOS
 			
 			var updateMapFrame = function(scale,newTitle){
 				if(scale){
-					window.OPTIONS.scale = scale;
-					var size = calcMapSize(scale);
-					var width = svgedit.units.convertToNum("width",size.w+"cm");
-					var height = svgedit.units.convertToNum("width",size.h+"cm");
-					mapProperties.zoom = width/mapProperties.width;
+					var width = mapProperties.width*mapProperties.zoom;
+					var height = mapProperties.height*mapProperties.zoom;
 					var scaleElement = document.getElementById("scale-text");
 					if(scaleElement){scaleElement.innerHTML = "比例尺：1:"+scale;}
 					changeSVGTemple(width,height,newTitle);
@@ -4067,10 +4066,12 @@ TODOS
 			}
 
 			$("input:radio[name='canvas_layout']").change(function(){
-				var width = $('#canvas_width').val();
-				var height = $('#canvas_height').val();
-				$('#canvas_width').val(height);
-				$('#canvas_height').val(width);
+				if($('#paper option:selected').val()!=='content'){
+					var width = $('#canvas_width').val();
+					var height = $('#canvas_height').val();
+					$('#canvas_width').val(height);
+					$('#canvas_height').val(width);
+				}
 			});
 
 			$('#paper').change(function() {
@@ -4081,17 +4082,12 @@ TODOS
 						wh.removeAttr('disabled').val(100);
 					}
 				} else if (this.value == 'content') {//适应内容
-					var frameWidth = mapProperties.width+2*(rect_gap+left_gap);
-					var frameheight = mapProperties.height+top_gap+bottom_gap+2*rect_gap;
+					var frameWidth = mapProperties.width*mapProperties.zoom+2*(rect_gap+left_gap);
+					var frameheight = mapProperties.height*mapProperties.zoom+top_gap+bottom_gap+2*rect_gap;
 					var cmWidth = svgedit.units.convertUnit(frameWidth,"cm");
 					var cmHeight = svgedit.units.convertUnit(frameheight,"cm");
-					if(layouts[0].checked){
-						$('#canvas_width').val(cmWidth+"cm");
-						$('#canvas_height').val(cmHeight+"cm");
-					}else{
-						$('#canvas_width').val(cmHeight+"cm");
-						$('#canvas_height').val(cmWidth+"cm");
-					}
+					$('#canvas_width').val(cmWidth+"cm");
+					$('#canvas_height').val(cmHeight+"cm");
 				} else {
 					var dims = this.value.split('x');
 					if(layouts[0].checked){
@@ -4103,6 +4099,15 @@ TODOS
 					}
 					wh.removeAttr('disabled');
 				}
+			});
+
+			$('#scale_ratio').change(function() {
+				var scale = Number(this.value);
+				window.OPTIONS.scale = scale;
+				var size = calcMapSize(scale);
+				var width = svgedit.units.convertToNum("width",size.w+"cm");
+				var height = svgedit.units.convertToNum("width",size.h+"cm");
+				mapProperties.zoom = width/mapProperties.width;
 			});
 
 			//Prevent browser from erroneously repopulating fields

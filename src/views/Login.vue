@@ -139,8 +139,9 @@ export default {
   width: 340px;
   height: 250px;
   padding: 6px;
-  position: relative;
-  margin: auto;
+  position: absolute;
+  top: calc(50% - 130px);
+  left: calc(50% - 175px);
 }
 .login-inner {
   background-color: white;

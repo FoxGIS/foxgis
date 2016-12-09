@@ -28,6 +28,7 @@
               <span v-if="status.status==='upload'" style="color:red">正在上传</span>
               <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
               <span v-if="status.status==='complete'" style="color:green">完成</span>
+              <span v-if="status.status==='error'" style="color:red">上传失败</span>
             </div> 
           </div>
         </div>
@@ -127,6 +128,12 @@ export default {
           this.getCopyStatus(response.data.tileset_id);
         }, function(response) {
           this.$parent.$broadcast("mailSent",{message:"添加瓦片失败！",timeout:3000});
+          for(let j=0;j<this.tileCopyStatus.length;j++){
+            if(this.tileCopyStatus[j].name===response.request.data.name){
+              this.tileCopyStatus[j].status="error";
+              break;
+            }
+          }
         });
       }
     },
@@ -137,7 +144,7 @@ export default {
       var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        if(response.data.complete){
+        if(response.data.complete === true){
           var tileset = response.data.tileset;
           tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
           for(var i=0;i<this.tileCopyStatus.length;i++){
@@ -159,6 +166,14 @@ export default {
             vector_layers:tileset.vector_layers,
           };
           this.sources.unshift(source);
+        }else if(response.data.complete === 'error'){
+          var tileset = response.data.tileset;
+          for(var i=0;i<this.tileCopyStatus.length;i++){
+            if(this.tileCopyStatus[i].id===tileset.tileset_id){
+              this.tileCopyStatus[i].status="error";
+              break;
+            }
+          }
         }else{
           var _this = this;
           setTimeout(function(){
@@ -318,6 +333,10 @@ export default {
 .status-container .file-name{
   width: 65%;
   display: inline-block;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .status-container .file-prog{
   width: 30%;

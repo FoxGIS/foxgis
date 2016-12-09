@@ -241,11 +241,15 @@ export default {
       var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        if(response.data.complete){
+        if(response.data.complete === true){
           this.status = "";
           $('.exportModal').hide();
           this.$broadcast('mailSent', { message: '导出完成！',timeout:3000 });
           this.editTagsAndScope(tileset_id);
+        }else if(response.data.complete === 'error'){
+          this.status = "";
+          $('.exportModal').hide();
+          this.$broadcast('mailSent', { message: '导出失败！',timeout:3000 });
         }else{
           var _this = this;
           setTimeout(function(){

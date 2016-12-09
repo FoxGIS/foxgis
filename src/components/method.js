@@ -88,7 +88,7 @@ export default {
         $("#tile-copy").show();
         this.options.Vue.tileCopyStatus.push({name:file.name,id:"",status:"upload"});
       }
-      $('.progress-bar').css('display','block');
+      $('.progress-panel').css('display','block');
       $('#picker input').attr('disabled','disabled');
     });
     uploader.on( 'uploadProgress', function( file, percentage ) {//上传进度消息
@@ -128,7 +128,6 @@ export default {
         data.createdAt = util.dateFormat(new Date(data.createdAt));
         this.options.Vue.dataset.unshift(data);
       }else if(model==='tile'){
-        //this.options.Vue.$broadcast('mailSent', { message: '上传完成,等待切片！',timeout:1000 });
         for(var i=0;i<this.options.Vue.tileCopyStatus.length;i++){
           if(this.options.Vue.tileCopyStatus[i].name===file.name){
             this.options.Vue.tileCopyStatus[i].status="copy";
@@ -136,7 +135,6 @@ export default {
             break;
           }
         }
-        //this.options.Vue.tileCopyStatus.push({tileset_id:data.tileset_id,name:data.tileset_id,complete:false});
         this.options.Vue.getCopyStatus(data.tileset_id);
         if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
           initProgressBar(this.options.Vue.uploadStatus);
@@ -151,13 +149,22 @@ export default {
     uploader.on( 'uploadError', function( file,reason) {//上传失败
       this.options.Vue.uploadStatus.current_file +=1;
       this.options.Vue.$broadcast('mailSent',{message: '上传失败！请重新上传'+reason,timeout:3000});
+      if(model==='tile'){
+        for(var i=0;i<this.options.Vue.tileCopyStatus.length;i++){
+          if(this.options.Vue.tileCopyStatus[i].name===file.name){
+            this.options.Vue.tileCopyStatus[i].status="error";
+            this.options.Vue.tileCopyStatus[i].id=data.tileset_id;
+            break;
+          }
+        }
+      }
       if(this.options.Vue.uploadStatus.current_file===(this.options.Vue.uploadStatus.total_files+1)){
         initProgressBar(this.options.Vue.uploadStatus);
       }
     });
 
     function initProgressBar(uploadStatus){
-      $('.progress-bar').css('display','none');//所有状态初始化
+      $('.progress-panel').css('display','none');//所有状态初始化
       $('#picker input').removeAttr('disabled');
       uploadStatus.current_file=1;
       uploadStatus.total_files=0;

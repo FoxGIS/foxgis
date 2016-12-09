@@ -19,31 +19,35 @@
   <div id="tile-copy">
     <div id='info-tip'></div>
     <div class="status-container">
-      <div>
+      <div class="items">
         <div v-if="tileCopyStatus.length===0">
           <span>没有文件正在上传</span>
         </div>
-        <div v-for="status in tileCopyStatus" v-else>
+        <div v-for="status in tileCopyStatus" v-else class="status-item">
           <div class="file-name">
-            <span>{{status.name}}</span>
+            <span title="{{status.name}}">{{status.name}}</span>
           </div>
           <div class="file-prog">
             <span v-if="status.status==='upload'" style="color:red">正在上传</span>
             <span v-if="status.status==='copy'" style="color:orangered">正在切片</span>
             <span v-if="status.status==='complete'" style="color:green">完成</span>
+            <span v-if="status.status==='error'" style="color:red">上传失败</span>
           </div> 
         </div>
       </div>
     </div>
     <i class="material-icons" id="close-info" v-on:click="closeTileCopy">clear</i>
   </div>
-  <div class='progress-bar' style="display:none">
-    <div class="activebar bar" :style="uploadStatus.percentage"></div>
-    <div class="bufferbar bar"></div>
-    <span id='uplate-status'>
-      <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
-      <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
-    </span>
+  
+  <div class='progress-panel' style="display:none">
+    <div class='progress-bar'>
+      <div class="activebar bar" :style="uploadStatus.percentage"></div>
+      <div class="bufferbar bar"></div>
+      <span id='uplate-status'>
+        <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
+        <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
+      </span>
+    </div>
   </div>
 
   <foxgis-data-cards-tile :dataset="displayDataset"></foxgis-data-cards-tile>
@@ -64,7 +68,7 @@ export default {
       var url = SERVER_API.tilesets+"/"+username+"/"+tileset_id+"/status";
       this.$http({ url: url, method: 'GET', headers: { 'x-access-token': access_token } })
       .then(function(response) {
-        if(response.data.complete){
+        if(response.data.complete === true){
           var tileset = response.data.tileset;
           tileset.createdAt = util.dateFormat(new Date(tileset.createdAt));
           this.dataset.unshift(tileset);
@@ -74,7 +78,14 @@ export default {
               break;
             }
           }
-          //this.$broadcast('mailSent', { message: tileset.name+'切片完成！',timeout:1000 });
+        }else if(response.data.complete === 'error'){
+          var tileset = response.data.tileset;
+          for(var i=0;i<this.tileCopyStatus.length;i++){
+            if(this.tileCopyStatus[i].id===tileset.tileset_id){
+              this.tileCopyStatus[i].status="error";
+              break;
+            }
+          }
         }else{
           var _this = this;
           setTimeout(function(){
@@ -264,6 +275,12 @@ span {
 }
 
 /* 进度条样式 */
+.progress-panel{
+  height:25px;
+  width: 100%;
+  position: relative;
+}
+
 .progress-bar{
   display: block;
   position: relative;
@@ -315,8 +332,6 @@ span {
 }
 #tile-copy .status-container{
   padding: 10px;
-  max-height: 150px;
-  overflow: auto;
   border-radius: 4px;
   background-color: rgba(189,189,189,0.9);
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
@@ -324,6 +339,10 @@ span {
 .status-container .file-name{
   width: calc(100% - 70px);
   display: inline-block;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .status-container .file-prog{
   width: 50px;
@@ -331,10 +350,14 @@ span {
   font-size: 12px;
   text-align: right;
 }
-.status-container>div:nth-child(odd){
+.status-container>div{
+  max-height: 150px;
+  overflow: auto;
+}
+.status-container .items>div:nth-child(odd){
   background-color: rgba(220,220,220,0.5);
 }
-.status-container>div:nth-child(even){
+.status-container .items>div:nth-child(even){
   background-color: rgba(240,240,240,0.5);
 }
 .status-container>div{

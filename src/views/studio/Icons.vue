@@ -12,13 +12,15 @@
     </div>
   </div>
 
-  <div class='progress-bar' style="display:none">
-    <div class="activebar bar" :style="uploadStatus.percentage"></div>
-    <div class="bufferbar bar"></div>
-    <span id='uplate-status'>
-      <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
-      <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
-    </span>
+  <div class='progress-panel' style="display:none">
+    <div class='progress-bar'>
+      <div class="activebar bar" :style="uploadStatus.percentage"></div>
+      <div class="bufferbar bar"></div>
+      <span id='uplate-status'>
+        <span style = 'font-size:12px;color:#6F6F49;'>文件大小：{{uploadStatus.total_size}}</span>
+        <span style = 'font-size:12px;color:blue;'> - ({{uploadStatus.current_file}}/{{uploadStatus.total_files}}) - {{uploadStatus.progress}}%</span>
+      </span>
+    </div>
   </div>
 
   <foxgis-data-cards-icon :dataset.sync="displayDataset"></foxgis-data-cards-icon>
@@ -189,6 +191,12 @@ span {
 }
 
 /* 进度条样式 */
+.progress-panel{
+  height:25px;
+  width: 100%;
+  position: relative;
+}
+
 .progress-bar{
   display: block;
   position: relative;
