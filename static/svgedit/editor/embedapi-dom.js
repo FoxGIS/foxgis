@@ -72,7 +72,8 @@ $(function () {'use strict';
     $('#exportPNG').click(exportPNG);
     $('#exportPDF').click(exportPDF);
     var url = window.location.href.replace(/\?(.*)$/, '&$1');
-    if (!!window.ActiveXObject || "ActiveXObject" in window){
+    if (!!window.ActiveXObject || "ActiveXObject" in window 
+        || navigator.userAgent.indexOf("Edge")>-1){
         url = encodeURI(url);
     }
     $('body').append(

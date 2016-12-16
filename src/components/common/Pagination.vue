@@ -136,7 +136,7 @@ export default {
   cursor: pointer;
   text-align: center;
   font-size: 14px;
-  width:20px;
+  width:30px;
   border: 1px solid #c5c5c5;
   border-radius: 2px;
 }
