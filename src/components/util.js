@@ -47,5 +47,6 @@ export default {
       }
     }
     return "#"+str;
-  }
+  },
+  systemSourceIds:["admin2","ngcc_terrain_v2"]
 }

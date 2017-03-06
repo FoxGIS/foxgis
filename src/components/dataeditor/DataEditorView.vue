@@ -73,7 +73,7 @@
 <script>
 /*import mapboxgl from 'mapbox-gl'*/
 import { diff, validate} from 'mapbox-gl-style-spec'
-import Draw from 'gl-draw-foxgis'
+import Draw from 'mapbox-gl-draw'
 import Cookies from 'js-cookie'
 export default {
   methods: {
