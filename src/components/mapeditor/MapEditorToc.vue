@@ -38,10 +38,20 @@
             <i class="type-icon {{layer.type}}" v-if="layer.items==undefined"></i>
             <span>{{layer.id}}</span>
           </label>
+          <div class="visibility">
+            <i class="material-icons" v-if="layer.visibility=='none'" @click="visibilityChange(layer,$index)" data-type="layout">visibility_off</i>
+            <i class="material-icons" v-else @click="visibilityChange(layer,$index)" data-type="layout">visibility</i>
+          </div>
           <div v-if="layer.items!==undefined" class="sublayer" v-show="layer.collapsed==false">
             <div v-for="item in layer.items" v-on:click="showPropertyPanel(item.id)" title="{{item.id}}" name="{{item.id}}" id="{{item.id}}" v-on:dragstart="eledragstart" v-on:dragenter.prevent.stop="eledragenter" class="sublayer-item" draggable="true" v-on:mouseover="sublayerMouseover" v-on:mouseleave="sublayerMouseleave">
-              <i class="type-icon {{item.type}}"></i>
-              <span name="{{item.id}}">{{item.id}}</span>
+              <label for="{{$index}}" title="{{layer.id}}">
+                <i class="type-icon {{item.type}}"></i>
+                <span name="{{item.id}}">{{item.id}}</span>
+              </label>
+              <div class="visibility">
+                <i class="material-icons" v-if="item.visibility=='none'" @click="visibilityChange(item,$index)" data-type="layout">visibility_off</i>
+                <i class="material-icons" v-else @click="visibilityChange(item,$index)" data-type="layout">visibility</i>
+              </div>
             </div>
           </div>
         </a>
@@ -657,6 +667,7 @@ export default {
       for(let i=0,length=layers.length;i<length;i++){
         var layer = layers[i];
         this.fixType(layer);
+        layer.visibility = layer.layout?(layer.layout.visibility?layer.layout.visibility:'visible'):'visible';
         if(layer['metadata']&&layer['metadata']['mapbox:group']){
           var layername = groups[layer['metadata']['mapbox:group']].name;
           var collapsed = groups[layer['metadata']['mapbox:group']].collapsed;
@@ -666,10 +677,14 @@ export default {
           }else{
             layerIndex++;
             mylayers[layerIndex] = {};
+            mylayers[layerIndex]['visibility'] = 'none';
             mylayers[layerIndex]['items'] = [];
             mylayers[layerIndex]['id'] = layername;
             mylayers[layerIndex]['collapsed'] = collapsed;
             mylayers[layerIndex]['items'].push(layer);
+          }
+          if(!layer.layout||layer.layout.visibility!=='none'){
+            mylayers[layerIndex]['visibility'] = 'visible';
           }
         }else{
           layerIndex++;
@@ -718,6 +733,37 @@ export default {
         layers.splice(currFolder_index[currFolder_index.length-1]+1,1,tem);
       }
       var data = JSON.parse(JSON.stringify(this.styleObj))
+      this.changeStyle(data);
+    },
+    //图层可见控制
+    visibilityChange:function(layer,index) {
+      var layers = this.styleObj.layers;
+      var value = layer.visibility === 'visible'?'none':'visible';
+      if(layer.items){
+        for(let j=0;j<layer.items.length;j++){
+          for(let i=0,length=layers.length;i<length;i++){
+            if(layers[i].id === layer.items[j].id){
+              if(!layers[i].layout){
+                layers[i].layout = {};
+              }
+              layers[i].layout.visibility = value;
+              break;
+            }
+          }
+        }
+      } else {
+        for(let i=0,length=layers.length;i<length;i++){
+          if(layers[i].id === layer.id){
+            if(!layers[i].layout){
+              layers[i].layout = {};
+            }
+            layers[i].layout.visibility = value;
+            break;
+          }
+        }
+      }
+      
+      var data = JSON.parse(JSON.stringify(this.styleObj));
       this.changeStyle(data);
     },
     //点击图层列表时，显示当前图层的属性设置面板
@@ -2119,7 +2165,10 @@ export default {
   scrollbar-face-color:#dcdcdc;
   clear: both;
 }
-
+#layer-control .visibility{
+  width: 30px;
+  float: right;
+}
 #layer-control::-webkit-scrollbar {
   width: 6px;
 }
@@ -2178,7 +2227,6 @@ a {
   display: inline-block;
   line-height: 25px;
   width: 100%;
-  padding-left: 5px;
 }
 
 .layer a:hover {
@@ -2189,9 +2237,9 @@ a {
   border-top: #ff4081 1px solid;
 }
 
-.layer label {
-  width:100%;
-  display: block;
+.layer a>label {
+  width: calc(100% - 30px);
+  display: inline-block;
 }
 
 .layer a label{
@@ -2208,16 +2256,17 @@ a {
 .layer.active {
   background-color: rgba(247, 223, 128, 0.55);
 }
-
-.sublayer {
-  margin-left: 20px;
+.sublayer .sublayer-item>label{
+  width: calc(100% - 30px);
+  display: inline-block;
 }
 
-.sublayer div {
+.sublayer .sublayer-item {
   white-space: nowrap;
   text-overflow:ellipsis;
   overflow:hidden;
-  margin: 15px 0px;
+  margin: 10px 0px;
+  padding-left: 20px;
 }
 
 .sublayer-over {
