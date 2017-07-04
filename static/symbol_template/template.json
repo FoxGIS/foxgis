@@ -1,0 +1,148 @@
+{
+	"point_symbol": {},
+	"line_symbol": {
+		"铁路": {
+			"preview": "railway.svg",
+			"style": [{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "rgb(170,170,170)",
+	        "line-opacity": 1,
+	        "line-width": 3
+	      }
+	    },{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#ffffff",
+	        "line-opacity": 1,
+	        "line-width": 1,
+	        "line-dasharray": [6,6]
+	      }
+	    }]
+		},
+		"高速公路": {
+			"preview": "highway.svg",
+			"style":[{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#7d59cb",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11,4.8],[12,5.25],[13,6],[14,6.75],[15,7.5],[16,8.5],[18,10.5]]
+	        }
+	      }
+	    },{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#ba92f1",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11,3],[12,3.5],[13,4.5],[14,5],[15,6],[16,7],[18,9]]
+	        }
+	      }
+	    }]
+		},
+		"快速路": {
+			"preview": "highstreet.svg",
+			"style":[{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#d08f58",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11,4.5],[14,6.5],[17,9]]
+	        }
+	      }
+	    },{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#fecd78",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11,3],[14,5],[17,7.5]]
+	        }
+	      }
+	    }]
+		},
+		"省道": {
+			"preview": "provincial_road.svg",
+			"style": [{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#d6b95a",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11, 3.5],[14,6],[17,8.5]]
+	        }
+	      }
+	    },
+	    {
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#fef082",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[11,2],[14,4],[17,7]]
+	        }
+	      }
+	    }]
+		},
+		"乡道": {
+			"preview": "village_road.svg",
+			"style": [{
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#d2d2b4",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[12,2.5],[14,3.8],[15,4.5]]
+	        }
+	      }
+	    },
+	    {
+	      "type": "line",
+	      "layout": {},
+	      "paint": {
+	        "line-color": "#fafafa",
+	        "line-opacity": 1,
+	        "line-width": {
+	          "stops": [[12,1.5],[14,2],[15,3]]
+	        }
+	      }
+	    }]
+		}
+	},
+	"fill_symbol": {
+		"植被": {
+			"preview": "vegetation.svg",
+			"style": [{
+	      "type": "fill",
+	      "layout": {},
+	      "paint": {
+	        "fill-color": "#bbd78d",
+	        "fill-opacity": 1
+	      }
+	    }]
+		},
+		"水系": {
+			"preview": "water.svg",
+			"style": [{
+	      "type": "fill",
+	      "layout": {},
+	      "paint": {
+	        "fill-color": "#abc6ef",
+	        "fill-opacity": 1
+	      }
+	    }]
+		}
+	}
+}

@@ -1,5 +1,6 @@
 <template>
   <div class="select-data">
+    <mdl-snackbar display-on="mailSent"></mdl-snackbar>
     <div class="property-item">
       <div class="property-name"><span >样式ID</span></div>
       <div class="property-value">
@@ -65,6 +66,14 @@
         <input type="text" :value="selecteddata.folder" name="folder" v-on:change='folderChange' @focus="inputFocus" @blur="inputBlur" v-else>   
       </div>   
     </div>
+    
+    <div class="property-item" v-if="selecteddata.panel_type === 'create'">   
+      <div class="property-name"><span >符号</span></div>   
+      <div class="property-value">   
+        <a id="select-symbol" v-on:click.prevent="showSelectPresetSymbol">选择符号</a>
+        <div class="selected_symbol"></div>  
+      </div>   
+    </div>
 
     <div class="property-item" style="border-top: 1px solid #c7c7c7;padding-top: 10px;">
       <div class="property-name"><span >数据过滤</span></div>
@@ -115,6 +124,20 @@
             <span name="filter-value">{{data}}</span>
           </li>
         </ul>
+      </div>
+    </div>
+    
+    <div class="modal symbol_panel">
+      <div class="symbol_template">
+        <div class="meta-title">
+          <b>选择符号</b>
+        </div>
+        <div class="icon-container">
+          <a v-for="(name,options) in displayTemplates" class="icon-link" title="{{name}}" @click="selectPresetSymbol(name,options)">
+            <div :style="'background-image:url(/static/symbol_template/svgs/'+options.preview+');width:50px;height:30px;background-repeat: no-repeat;margin:10px;'" title="{{name}}">
+            </div>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -412,7 +435,7 @@ export default {
       var access_token = Cookies.get('access_token');
       var systemSourceIds = util.systemSourceIds;//暂时不加admin
       for(let i = 0;i<systemSourceIds.length;i++){
-        var url = SERVER_API.tilesets+"/foxgis/"+systemSourceIds[i];
+        var url = SERVER_API.tilesets+"/geoway/"+systemSourceIds[i];
         this.getSource(systemSourceIds[i],url);
       }
     },
@@ -427,7 +450,57 @@ export default {
           this.getSource(id,url);
         }
       },function(res){});
+    },
+    showSelectPresetSymbol: function() {
+      var type = this.selecteddata.type;
+      var typeName = '';
+      switch (type) {
+        case 'symbol':
+          typeName = '点符号';
+          this.displayTemplates = this.templates.point_symbol;
+          break;
+        case 'line':
+          typeName = '线符号';
+          this.displayTemplates = this.templates.line_symbol;
+          break;
+        case 'fill':
+          typeName = '面符号';
+          this.displayTemplates = this.templates.fill_symbol;
+          break;
+        case 'circle':
+          typeName = '圆符号';
+          this.displayTemplates = {};
+          break;
+        case 'raster':
+          typeName = '栅格符号';
+          this.displayTemplates = {};
+          break;
+        default:
+          this.displayTemplates = {};
+          break;
+      }
+      if(Object.keys(this.displayTemplates).length === 0) {
+        this.$broadcast("mailSent",{message:'暂无'+typeName+'预设',timeout:3000});
+      } else {
+        $('.modal.symbol_panel').show();
+      }
+    },
+    selectPresetSymbol: function(name,options) {
+      var style = options.style;
+      this.selecteddata.presetSymbol = style;
+      $('.selected_symbol').css('background-image','url(/static/symbol_template/svgs/'+options.preview+')')
+      $('.modal.symbol_panel').hide();
     }
+  },
+  attached () {
+    var url = '/static/symbol_template/template.json';
+    this.$http({ url: url, method: 'GET'})
+    .then(function(response) {
+      var data = response.data;
+      this.templates = data;
+    }, function(response) {
+      this.$broadcast("mailSent",{message:"获取模板失败！",timeout:3000});
+    });
   },
   data(){
     return {
@@ -437,7 +510,9 @@ export default {
       filterValueTitle:'',
       localStyle:{},
       usedSourceIds:[],
-      sources:[]//所有供选择的数据源，用于新建样式图层时选择source,
+      sources:[],//所有供选择的数据源，用于新建样式图层时选择source,
+      templates:{}, //预设符号的模板
+      displayTemplates:{}
     }
   },
   events:{
@@ -506,6 +581,16 @@ export default {
 </script>
 
 <style scoped>
+.modal {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(0,0,0,.2);
+  display: none;
+  z-index: 100;
+}
 .select-data .property-item {
   margin-top: 10px;
 }
@@ -590,7 +675,7 @@ select[name="filter-condition"]{
   margin-bottom: 3px;
 }
 
-#add-filter{
+#add-filter,#select-symbol{
   background-color: #2061C6;
   padding: 3px 5px 5px 5px;
   border-radius: 5px;
@@ -600,7 +685,7 @@ select[name="filter-condition"]{
   margin-right: 12px;
 }
 
-#add-filter:hover{
+#add-filter:hover,#select-symbol:hover{
   background-color: #f95d5d;
 }
 
@@ -706,5 +791,64 @@ select[name="filter-condition"]{
 .source-container .s_c{
   height: 100%;
   padding: 5px;
+}
+
+.meta-title{
+  margin: 5px;
+}
+
+.icon-container{
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  background-color: #dadada;
+  overflow: auto;
+  margin: 5px;
+  text-align: center;
+  height: 230px;
+  scrollbar-track-color:#f5f5f5;
+  scrollbar-face-color:#adadad;
+}
+
+.icon-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.icon-container::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* 滚动条的滑轨背景颜色 */
+.icon-container::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* 滑块颜色 */
+.icon-container::-webkit-scrollbar-thumb {
+  background-color: #adadad;
+}
+.symbol_template{
+  position: absolute;
+  top: calc(50% - 150px);
+  left: calc(50% - 150px);
+  background-color: #fff;
+  width: 300px;
+  overflow: auto;
+  border-radius: 4px;
+}
+
+.icon-link{
+  height: 50px;
+}
+.icon-link:hover {
+  background-color: #d0d0d0;
+  cursor: pointer;
+}
+.selected_symbol{
+  width: 50px;
+  height: 30px;
+  float: right;
+  margin-right: 35px;
 }
 </style>

@@ -509,7 +509,8 @@ export default {
             'condition':'any',
             'filters':[]
           },
-          'folder':""
+          'folder':"",
+          'presetSymbol':[]
         }
         //this.sourceLayers=[];
       }
@@ -1077,32 +1078,55 @@ export default {
         this.$broadcast("mailSent",{message:"地图级别设置有误！",timeout:3000});
         return;
       }
-      var layout = this.defaultStyle[datatype].layout||{};
-      var paint = this.defaultStyle[datatype].paint||{};
-      var layer = {
-        'id':id,
-        "source":source,
-        'type':datatype,
-        "minzoom":minzoom,
-        "maxzoom":maxzoom,
-        'layout':layout,
-        'paint':paint
+      var layers = [];
+      if(this.selectedData.presetSymbol.length>0) {
+        for(var i in this.selectedData.presetSymbol) {
+          var layer = {
+            'id':id+'_'+i,
+            "source":source,
+            'type':this.selectedData.presetSymbol[i].type,
+            "minzoom":minzoom,
+            "maxzoom":maxzoom,
+            'layout':this.selectedData.presetSymbol[i].layout,
+            'paint':this.selectedData.presetSymbol[i].paint
+          }
+          if(source_layer!==""){
+            layer['source-layer'] = source_layer;
+          }
+          if(filter){
+            layer.filter = filter;
+          } 
+          layers.push(layer);
+        }
+      } else {
+        var layout = this.defaultStyle[datatype].layout||{};
+        var paint = this.defaultStyle[datatype].paint||{};
+        var layer = {
+          'id':id,
+          "source":source,
+          'type':datatype,
+          "minzoom":minzoom,
+          "maxzoom":maxzoom,
+          'layout':layout,
+          'paint':paint
+        }
+        if(source_layer!==""){
+          layer['source-layer'] = source_layer;
+        }
+        if(filter){
+          layer.filter = filter;
+        }
+        layers.push(layer)
       }
-      if(source_layer!==""){
-        layer['source-layer'] = source_layer;
-      }
-      if(filter){
-        layer.filter = filter;
-      }
-      
-      if(!this.styleObj.sources.hasOwnProperty(layer.source)){//如果样式中没有该source，则新建source
+
+      if(!this.styleObj.sources.hasOwnProperty(source)){//如果样式中没有该source，则新建source
         var url = this.selectedData.source_url;
-        this.styleObj.sources[layer.source] = {
+        this.styleObj.sources[source] = {
           "url":url,
           "type":layer.type==="raster"?"raster":"vector"
         }
       }
-      this.styleObj.layers.push(layer);
+      this.styleObj.layers = this.styleObj.layers.concat(layers);
       //处理文件夹
       var folder_id;
       var flag = false;
@@ -1124,7 +1148,10 @@ export default {
         }
       }
       this.folder_id = folder_id;
-      this.createChangeFolder(layer,flag);
+      for(var j in layers) {
+        this.createChangeFolder(layers[j],flag);
+      }
+      
       this.changeStyle(this.styleObj);
       this.createPanelClose();
     },
@@ -1185,6 +1212,7 @@ export default {
       $("#new-layer-panel input[name='maxzoom']").val(22);
 
       $("#new-layer-panel input[name='type'][value='fill']").attr("checked",true);
+      $('.selected_symbol').css('background-image','');
       $("#new-layer-panel").hide();
     },
     deleteStyleLayer:function(){

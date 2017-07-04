@@ -1,4 +1,4 @@
-var baseURL = 'http://218.244.250.70:8090/api/v1'
+var baseURL = 'http://192.98.100.122:8090/api/v1'
 window.SERVER_API = {
   users: baseURL + '/users',
   styles: baseURL + '/styles',
