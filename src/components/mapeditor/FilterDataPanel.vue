@@ -806,7 +806,7 @@ select[name="filter-condition"]{
   overflow: auto;
   margin: 5px;
   text-align: center;
-  height: 230px;
+  max-height: 230px;
   scrollbar-track-color:#f5f5f5;
   scrollbar-face-color:#adadad;
 }
@@ -838,9 +838,6 @@ select[name="filter-condition"]{
   border-radius: 4px;
 }
 
-.icon-link{
-  height: 50px;
-}
 .icon-link:hover {
   background-color: #d0d0d0;
   cursor: pointer;
