@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="title">
-        <b style="margin-left:7px;">未使用的数据</b>
+        <b style="margin-left:7px;">未使用的数据</b> <a @click.stop.prevent="addExtSource">添加外部数据</a>
       </div>
       <div class="sourcelist unused">
         <div class="source-item" v-for="source in displaySources" v-if="source.used===false">
@@ -79,6 +79,25 @@
               </a>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal ext-source">
+      <div class="dialog">
+        <div class="title">
+          <b>添加外部数据</b>
+        </div>
+        <div style="padding:10px;">
+          <span>名称：</span>
+          <input type="text" class="textfield name" v-model="extSource.name" @input="errorMsg = ''">
+          <span>地址(请确保能获取正确的tilejson)：</span>
+          <input type="text" class="textfield url" v-model="extSource.url" @input="errorMsg = ''">
+          <span style="color:#ff0000">{{errorMsg}}</span>
+        </div>
+        <div class="action">
+          <mdl-button accent raised v-mdl-ripple-effect style="background-color:#4969CE;" @click="doOK">确定</mdl-button>
+          <mdl-button raised colored v-mdl-ripple-effect style="background-color:#0EB291;" @click="doCancel">取消</mdl-button>      
         </div>
       </div>
     </div>
@@ -193,13 +212,69 @@ export default {
       }else{
         $(".tile-copy").show();
       }
+    },
+    addExtSource: function() {
+      $('.modal.ext-source').show();
+    },
+    doOK: function() {
+      var name = this.extSource.name;
+      var url = this.extSource.url;
+      /*判断是否为空*/
+      if(name === '' || url === '') {
+        this.errorMsg = '名称和地址不能为空！';
+        return;
+      }
+      /*判断名称是否存在*/
+      for(var i in this.sources) {
+        if(name === this.sources[i].name) {
+          this.errorMsg = '输入的名称已存在';
+          return;
+        }
+      }
+      /*获取tilejson*/
+      this.$http({ url: url, method: 'GET'})
+      .then(function(response) {
+        var data = response.data;
+        if(!data.tiles || data.tiles.length === 0 || !data.vector_layers || data.vector_layers.length === 0) {
+          this.errorMsg = 'tilejson无效，请输入正确的地址';
+          return;
+        }
+        var date = new Date(data.createdAt);
+        var source = {
+          id:data.tileset_id || name,
+          name:name,
+          owner:data.owner || "",
+          used:false,
+          createdAt:date?date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate():'',
+          filesize:0,
+          minzoom:data.minzoom || 0,
+          maxzoom:data.maxzoom || 22,
+          url:url,
+          vector_layers:data.vector_layers,
+        };
+        this.sources.push(source);
+        this.doCancel();
+      }, function(response) {
+        this.$broadcast("mailSent",{message:"获取模板失败！",timeout:3000});
+      });
+    },
+    doCancel: function() {
+      this.extSource.name = '';
+      this.extSource.url = '';
+      this.errorMsg = '';
+      $('.modal.ext-source').hide();
     }
   },
   data(){
     return {
       searchKeyWords:"",
       tileCopyStatus:[],//上传数据切片状态
-      systemSourceIds:[]
+      systemSourceIds:[],
+      extSource:{
+        name:'',
+        url:''
+      },
+      errorMsg:''
     }
   },
   attached(){
@@ -264,6 +339,12 @@ export default {
 .title{
   height: 25px;
   border-bottom: 1px solid #c5c4c4;
+}
+.title a{
+  color: #0c66b5;
+  float: right;
+  margin: 0 30px;
+  cursor: pointer;
 }
 .sourcelist{
   overflow-y: auto;
@@ -419,5 +500,55 @@ export default {
 }
 #upload-button i{
   vertical-align: middle;
+}
+
+.modal {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(0,0,0,.2);
+  z-index: 100;
+  display: none;
+}
+
+.dialog {
+  position: absolute;
+  width: 400px;
+  padding: 10px;
+  background-color: white;
+  z-index: 1;
+  overflow: hidden;
+  font-size: 14px;
+  color: #333;
+  border-radius: 3px;
+  float: none;
+  top: 30%;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.dialog>b{
+  margin-left: 20px;
+  font-size: 18px;
+}
+.dialog .textfield{
+  width: 350px;
+}
+.dialog>div.action{
+  text-align: center;
+  margin-bottom: 20px;
+}
+.dialog>div.action button:nth-child(2){
+  margin-left: 50px;
+}
+input{
+  border: 1px solid #d0d0d0;
+  height: 25px;
+  margin: 5px 0;
+  padding-left: 6px;
 }
 </style>

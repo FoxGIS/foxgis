@@ -384,14 +384,57 @@ export default {
       for(let i = 0;i<usedSourceNames.length;i++){
         var url = this.localStyle.sources[usedSourceNames[i]].url;
         if(url){
-          var t = url.split("/");
-          var id = t[t.length-1];
-          this.usedSourceIds.push(id);
+          if(url.indexOf(SERVER_API.tilesets) !== -1) {
+            var t = url.split("/");
+            var id = t[t.length-1];
+            this.usedSourceIds.push(id);
+          } else {
+            this.usedSourceIds.push(usedSourceNames[i]);
+            this.getExtSource(usedSourceNames[i], url)
+          }
+          
         }
       }
       this.getSystemSources();//获取系统的数据
       this.getPublicSources();//获取公开的数据
       this.$el.querySelector('.data-select-panel').style.display="block";
+    },
+    getExtSource:function(id,url){
+      var access_token = Cookies.get('access_token');
+      var source = {
+        id:id,
+        name:id,
+        owner:"",
+        used:false,
+        createdAt:"",
+        filesize:0,
+        minzoom:0,
+        maxzoom:22,
+        url:url,
+        vector_layers:[],
+      };
+      if(this.usedSourceIds.indexOf(id)!==-1){source.used=true;}
+      this.$http({url:source.url,method:"GET",data:{id:source.id},headers:{'x-access-token':access_token}}).then(function(res){
+        var data = res.data;
+        var params = res.request.params;//请求参数
+        for(let m=0;m<this.sources.length;m++){
+          var date = new Date(data.createdAt);
+          if(this.sources[m].id===params.id){
+            this.sources[m].owner = data.owner||'';
+            this.sources[m].minzoom = data.minzoom||0;
+            this.sources[m].maxzoom = data.maxzoom||22;
+            this.sources[m].createdAt = date?date.getFullYear()+"-"+(date.getMonth() + 1)+"-"+date.getDate():'';
+            if (data.filesize / 1024 > 1024) {
+              data.filesize = (data.filesize / 1048576).toFixed(2) + 'MB';
+            } else {
+              data.filesize = (data.filesize / 1024).toFixed(2) + 'KB';
+            }
+            this.sources[m].filesize = data.filesize;
+            this.sources[m].vector_layers = data.vector_layers;
+          }
+        }
+      },function(res){});
+      this.sources.push(source);
     },
     getSource:function(id,url){
       var access_token = Cookies.get('access_token');
