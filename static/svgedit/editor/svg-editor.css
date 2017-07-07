@@ -394,7 +394,7 @@ div.palette_item:first-child {
 	float: left;
 }
 
-#main_button .dropdown {
+#main_button .dropdown,#frame_button .dropdown {
 	position: absolute;
 	right: 7px;
 	top: 2px;
@@ -533,7 +533,7 @@ input#image_url {
 	stroke: none;
 }
 
-#tools_top div[id$="_panel"]:not(#editor_panel):not(#history_panel) {
+#tools_top div[id$="_panel"]:not(#editor_panel):not(#history_panel):not(#map_frame_panel) {
 	display: none;
 }
 
@@ -1728,6 +1728,46 @@ ul li.current {
 
 #change_paper select,#change_scale input{
 	width: 185px;
+}
+#frame_button{
+	width: 100px;
+  position: relative;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding-left: 5px;
+  cursor: pointer;
+}
+#frame_button:hover{
+	background-color: #eeeeee;
+}
+#frame_select{
+	display: none;
+	position: absolute;
+	z-index: 5;
+	width: 110px;
+	padding: 5px;
+	background-color: rgb(255, 255, 255);
+	list-style: none;
+	left: 260px;
+	top: 29px;
+	border: 1px solid rgb(208, 208, 208);
+}
+#frame_select ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#frame_select li{
+	height: 35px; 
+  line-height: 35px;
+  padding-top: 7px;
+  padding-left: 7px;
+  margin: -5px;
+  overflow: auto;
+  cursor: pointer;
+}
+#frame_select li:hover{
+	background: #ffc;
 }
 /*
 	Adding Icons

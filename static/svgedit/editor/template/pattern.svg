@@ -1,0 +1,8 @@
+<svg width="100" height="10" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 10">
+	<defs>
+  	<pattern id="sample" x="0" y="0" width="0.1" height="1" patternUnits="objectBoundingBox">
+    	
+  	</pattern>
+	</defs>
+	<rect x="0" y="0" width="100" height="10" stroke="rgba(0,0,0,0)" fill="url(#sample)" stroke-width="0"/>
+</svg>

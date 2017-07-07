@@ -1,17 +1,31 @@
 <svg width="1600" height="1200" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
 	<title>辅助决策用图</title>
+	<defs>
+    <pattern id="grid_x" x="0" y="0" width="0.0065789473684211" height="1" patternUnits="objectBoundingBox">
+      <path xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd" d="M 8,2 C 8.552,2 9,1.552 9,1 9,0.448 8.552,0 8,0 7.448,0 7,0.448 7,1 7,1.552 7.448,2 8,2 z M 3,12 c -0.552,0 -1,0.448 -1,1 0,0.552 0.448,1 1,1 0.552,0 1,-0.448 1,-1 C 4,12.448 3.552,12 3,12 z M 1,7 C 0.448,7 0,7.448 0,8 0,8.552 0.448,9 1,9 1.552,9 2,8.552 2,8 2,7.448 1.552,7 1,7 z M 3,4 C 3.552,4 4,3.552 4,3 4,2.448 3.552,2 3,2 2.448,2 2,2.448 2,3 2,3.552 2.448,4 3,4 z m 10,8 c -0.552,0 -1,0.448 -1,1 0,0.552 0.448,1 1,1 0.552,0 1,-0.448 1,-1 0,-0.552 -0.448,-1 -1,-1 z m 2,-5 c -0.552,0 -1,0.448 -1,1 0,0.552 0.448,1 1,1 0.552,0 1,-0.448 1,-1 C 16,7.448 15.552,7 15,7 z M 8,4 C 5.791,4 4,5.791 4,8 c 0,2.209 1.791,4 4,4 2.209,0 4,-1.791 4,-4 C 12,5.791 10.209,4 8,4 z m 0,6 C 6.895,10 6,9.105 6,8 6,6.895 6.895,6 8,6 c 1.105,0 2,0.895 2,2 0,1.105 -0.895,2 -2,2 z m 0,4 c -0.552,0 -1,0.448 -1,1 0,0.552 0.448,1 1,1 0.552,0 1,-0.448 1,-1 C 9,14.448 8.552,14 8,14 z M 13,4 c 0.552,0 1,-0.448 1,-1 0,-0.552 -0.448,-1 -1,-1 -0.552,0 -1,0.448 -1,1 0,0.552 0.448,1 1,1 z" id="path3117" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:connector-curvature="0"/>
+    </pattern>
+    <pattern id="grid_y" x="0" y="0" width="1" height="0.01" patternUnits="objectBoundingBox">
+      <rect x="0" y="0" width="5" height="12" fill="#000000"></rect>
+    </pattern>
+	</defs>
 	<g class="layer">
 	  <title>背景</title>
 	  <rect fill="rgba(0,0,0,0)" stroke="#000000" stroke-width="0" x="0" y="0" width="1600" height="1200" id="background"/>
 	</g>
 	<g class="layer">
-		<title>地图标题与图框</title>
-		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="52" font-family="Microsoft YaHei" stroke-width="0" xml:space="preserve">辅助决策用图</text>
+		<title>图框</title>
 		<g id="map_box">
+			<!-- <rect id="map_top" height="10" width="1530" y="75" x="35" stroke-width="0" stroke="#000000" fill="url(#grid_x)"></rect>
+			<rect id="map_bottom" height="10" width="1530" y="1155" x="35" stroke-width="0" stroke="#000000" fill="url(#grid_x)"></rect>
+			<rect id="map_left" height="1070" width="10" y="85" x="35" stroke-width="0" stroke="#000000" fill="url(#grid_y)"></rect>
+			<rect id="map_right" height="1070" width="10" y="85" x="1555" stroke-width="0" stroke="#000000" fill="url(#grid_y)"></rect> -->
 			<rect id="map_outside" height="1080" width="1520" y="80" x="40" stroke-width="4" stroke="#000000" fill="rgba(0,0,0,0)"/>
 			<rect id="map_inside" height="1060" width="1500" y="90" x="50" stroke-linecap="null" stroke-width="2" stroke-linejoin="null" stroke-dasharray="null" stroke="#000000" fill="rgba(0,0,0,0)"/>
 		</g>
+	</g>
+	<g class="layer">
+		<title>标题</title>
+		<text fill="#000000" text-anchor="middle" stroke="#000000" x="800" y="60" id="title_name" font-size="52" font-family="Microsoft YaHei" stroke-width="0" xml:space="preserve">辅助决策用图</text>
 	</g>
 	<g class="layer" id="map_image">
 		<title>地图预览</title>

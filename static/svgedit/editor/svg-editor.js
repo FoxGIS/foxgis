@@ -41,7 +41,8 @@ TODOS
 
 		var scaleClick = 0;
 		var left_gap,right_gap,top_gap,rect_gap,
-			bottom_gap = 40;
+			bottom_gap = 40,frameStrokeWidth = 10;
+		var patterns = {}; //地图边框配置
 		var svgCanvas, urldata,
 			Utils = svgedit.utilities,
 			isReady = false,
@@ -215,8 +216,21 @@ TODOS
 			document.getElementById('background').setAttribute("width",frameWidth);
 			document.getElementById('background').setAttribute("height",frameheight);
 			document.getElementById("title_name").setAttribute("x",frameWidth/2);
-			document.getElementById("map_outside").setAttribute("width",frameWidth-2*left_gap);
-			document.getElementById("map_outside").setAttribute("height",frameheight-top_gap-bottom_gap);
+			if($('#map_outside').length === 0) {
+				document.getElementById("map_top").setAttribute("width",frameWidth-2*left_gap+frameStrokeWidth);
+				document.getElementById("map_left").setAttribute("height",frameheight-top_gap-bottom_gap-frameStrokeWidth);
+				document.getElementById("map_right").setAttribute("x",frameWidth-right_gap-frameStrokeWidth/2);
+				document.getElementById("map_right").setAttribute("height",frameheight-top_gap-bottom_gap-frameStrokeWidth);
+				document.getElementById("map_bottom").setAttribute("y",frameheight-bottom_gap-frameStrokeWidth/2);
+				document.getElementById("map_bottom").setAttribute("width",frameWidth-2*left_gap+frameStrokeWidth);
+				var patternWidth = 1/parseInt($('#map_top').attr('width')/10);
+				var patternHeight = 1/parseInt($('#map_left').attr('height')/10);
+				$('#grid_x').attr('width',patternWidth);
+				$('#grid_y').attr('height',patternHeight);
+			}else {
+				document.getElementById("map_outside").setAttribute("width",frameWidth-2*left_gap);
+				document.getElementById("map_outside").setAttribute("height",frameheight-top_gap-bottom_gap);
+			}
 			document.getElementById("map_inside").setAttribute("width",frameWidth-2*(left_gap+rect_gap));
 			document.getElementById("map_inside").setAttribute("height",frameheight-top_gap-bottom_gap-2*rect_gap);
 			document.getElementById("mapping_time").setAttribute("y",frameheight-15);
@@ -261,6 +275,98 @@ TODOS
 				});
 			}
 		}
+
+		function changeMapFrame(e) {
+			var id = '';
+			if(e.target.tagName === 'DIV') {
+				id = $(e.target).attr('id');
+			} else {
+				id = $(e.target).parents("div[id=^'pattern']").attr('id');
+			}
+			if(id === 'default') {//默认矩形边框
+				if($('#map_outside').length === 0) {
+					$('#map_top,#map_bottom,#map_left,#map_right').remove();
+					var svgns = "http://www.w3.org/2000/svg";     
+					var rect = document.createElementNS(svgns, 'rect');
+					$(rect).attr({
+						id:'map_outside',
+						x:40,
+						y:80,
+						width:1520,
+						height:1080,
+						'stroke-width':4,
+						stroke:'#000000',
+						fill:'rgba(0,0,0,0)'
+					})
+					$('#map_box').prepend($(rect));
+				}
+			}else{
+				var elements = patterns[id];
+				$('#grid_x').html(patterns[id][0]);
+				if(patterns[id][1]) {
+					$('#grid_y').html(patterns[id][1]);
+				}else{
+					$('#grid_y').html(patterns[id][0]);
+				}
+				if($('#map_top,#map_bottom,#map_left,#map_right').length !== 4) {
+					$('#map_outside').remove();
+					var top = document.createElementNS(svgns, 'rect');
+					$(top).attr({
+						id:'map_top',
+						x:35,
+						y:75,
+						width:1530,
+						height:10,
+						'stroke-width':0,
+						stroke:'#000000',
+						fill:'url(#grid_x)'
+					})
+					$('#map_box').prepend($(top));
+					var bottom = document.createElementNS(svgns, 'rect');
+					$(bottom).attr({
+						id:'map_bottom',
+						x:35,
+						y:1135,
+						width:1530,
+						height:10,
+						'stroke-width':0,
+						stroke:'#000000',
+						fill:'url(#grid_x)'
+					})
+					$('#map_box').prepend($(bottom));
+					var left = document.createElementNS(svgns, 'rect');
+					$(left).attr({
+						id:'map_left',
+						x:35,
+						y:85,
+						width:10,
+						height:1070,
+						'stroke-width':0,
+						stroke:'#000000',
+						fill:'url(#grid_y)'
+					})
+					$('#map_box').prepend($(left));
+					var right = document.createElementNS(svgns, 'rect');
+					$(right).attr({
+						id:'map_right',
+						x:1555,
+						y:85,
+						width:10,
+						height:1070,
+						'stroke-width':0,
+						stroke:'#000000',
+						fill:'url(#grid_y)'
+					})
+					$('#map_box').prepend($(right));
+				}
+			}
+			var width = mapProperties.width*mapProperties.zoom;
+			var height = mapProperties.height*mapProperties.zoom;
+			changeSVGTemple(width,height);
+			var str = svgCanvas.getSvgString();
+			svgCanvas.setSvgString(str);
+			$('#frame_select').hide();
+		}
 		
 		/**
 		* EXPORTS
@@ -292,7 +398,33 @@ TODOS
 			var res = $.ajax({url:"./template/map-template.xml",async:false});
 			var xml = res.responseText;
 			editor.loadFromString(xml);
+			editor.loadFramePattern();
 		};
+
+		editor.loadFramePattern = function() {
+			$('#frame_button').click(function(){
+				$('#frame_select').toggle();
+			})
+			var res1 = $.ajax({url:"./template/patterns.json",async:false});
+			var res2 = $.ajax({url:"./template/pattern.svg",async:false});
+			var sample = $(res2.responseText);
+			patterns = JSON.parse(res1.responseText);
+			for(var id in patterns){
+				var elm = sample.clone();
+				var li = $('<li></li>');
+				var div = $('<div id='+id+' title='+id+'></div>');
+				
+				
+				li.appendTo($('#frame_select ul'));
+				div.appendTo(li);
+				elm.appendTo(div);
+				var pattern_ele = $('#'+id+' pattern');
+				pattern_ele.html(patterns[id][0]);
+				$('#'+id).bind('click',changeMapFrame);
+				//$(patterns[id][0]).appendTo(pattern_ele);
+				//li.appendTo($('#frame_select ul'));
+			}
+		}
 
 		/**
 		* Allows setting of preferences or configuration (including extensions).
@@ -520,6 +652,13 @@ TODOS
 			} else {
 				extFunc();
 			}
+
+			$(document).mouseup(function(e){
+			  var _con = $("#frame_select");   // 隐藏目标
+			  if(!_con.is(e.target) && _con.has(e.target).length === 0){
+			    _con.hide();
+			  }
+			});
 
 			//设置图标
 			$.svgIcons(curConfig.imgPath + 'svg_edit_icons.svg', {
